@@ -4,9 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JexFlix_Scraper {
+namespace JexFlix {
+
     class Program {
+
         static void Main(string[] args) {
+
         }
+
     }
+
 }
