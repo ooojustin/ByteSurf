@@ -38,13 +38,4 @@ namespace JexFlix_Scraper {
         public long released_sec_ago { get; set; }
         public Images images { get; set; }
     }
-
-    public class Item2 {
-        public string url { get; set; }
-        public object @class { get; set; }
-        public string title { get; set; }
-        public string active { get; set; }
-        public string type { get; set; }
-        public string value { get; set; }
-    }
 }
