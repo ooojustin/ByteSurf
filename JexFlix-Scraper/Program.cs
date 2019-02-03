@@ -8,15 +8,19 @@ using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
 using System.Threading;
+using System.IO;
+using System.Collections.Generic;
+using JexFlix_Scraper.Classes;
 
 class Program {
     // uwu
     public static CookieAwareWebClient web = new CookieAwareWebClient();
-    public static string BASE_URL = "https://flixify.com/";
-    public static string MOVIES_URL = "https://flixify.com/movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
+    public const string BASE_URL = "https://flixify.com/";
+    public const string MOVIES_URL = "https://flixify.com/movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
+    public const string MOVIES_URL_FOR_DOWNLOAD = "https://flixify.com/{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
+
 
     static void Main(string[] args) {
-
         ClearanceHandler handler = new ClearanceHandler();
         HttpClient client = new HttpClient(handler);
 
@@ -66,12 +70,12 @@ class Program {
     public static void InitializeScraper() {
         foreach (string genre in genres) {
             for (int page = 1; page <= 100; page++) {
-                SetHeaders();
-                string URL = string.Format(MOVIES_URL, genre, page);
+                Networking.SetHeaders(web);
+                string url = string.Format(MOVIES_URL, genre, page);
 
                 // check if the page returns a 404 to move onto the next genre
                 try {
-                    response = web.DownloadData(URL);
+                    response = web.DownloadData(url);
                 } catch (WebException ex) {
                     HttpWebResponse webResponse = ex.Response as HttpWebResponse;
                     if (webResponse.StatusCode == HttpStatusCode.NotFound) break;
@@ -86,18 +90,53 @@ class Program {
         }
     }
 
-    public static void Parse(string raw) {
-        ServerData data = JsonConvert.DeserializeObject<ServerData>(raw);
-
-        foreach (Item x in data.items) {
-            Console.WriteLine(x.title);
-        }
+    public class Data {
+        public string title;
+        public string url;
+        public string description;
+        public long duration;
+        public string thumbnail;
+        public string preview;
+        public string download_720;
+        public string download_1080;
+        public List<string> genres;
+        public string imdb_id;
+        public int year;
+        public string certification;
     }
 
-    public static void SetHeaders() {
-        web.Headers.Add("Host", "flixify.com");
-        web.Headers.Add("Accept", "application/json");
-        web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-        web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
+    public static void Parse(string raw) {
+        ServerData serverData = JsonConvert.DeserializeObject<ServerData>(raw);
+
+        foreach (Item x in serverData.items) {
+            SafeRequest.Response safeResponse = Networking.CheckFileExists(x.title);
+
+            // if it already exists on the server, go to next movie
+            if (safeResponse.GetData<bool>("exists")) continue;
+
+            Networking.SetHeaders(web);
+
+            byte[] response = web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, x.url));
+            byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
+            string new_raw = Encoding.Default.GetString(response_decompressed);
+
+            RootObject rootObject = JsonConvert.DeserializeObject<RootObject>(new_raw);
+
+            Data data = new Data();
+            data.title = rootObject.item.title;
+            data.url = rootObject.item.url;
+            data.description = rootObject.item.description;
+            data.duration = rootObject.item.duration;
+            data.thumbnail = rootObject.item.images.poster;
+            data.preview = rootObject.item.images.preview_large;
+            data.download_720 = rootObject.item.download.__invalid_name__720;
+            data.download_1080 = rootObject.item.download.__invalid_name__1080;
+            data.genres = rootObject.item.genres;
+            data.imdb_id = rootObject.item.imdb_id;
+            data.year = rootObject.item.year;
+            data.certification = rootObject.item.certification;
+
+            Console.WriteLine(JsonConvert.SerializeObject(data));
+        }
     }
 }
