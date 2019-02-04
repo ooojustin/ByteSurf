@@ -1,4 +1,5 @@
-﻿using SafeRequest;
+﻿using JexFlix_Scraper.Classes;
+using SafeRequest;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -18,18 +19,61 @@ namespace JexFlix_Scraper {
             web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
         }
 
-        public static void UploadFile(string name, string path) {
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com/movies/" + "test.txt");
-            request.Credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
-            request.Method = WebRequestMethods.Ftp.UploadFile;
+        public const string BASE_IMAGES_URL = "https://a.flixify.com";
+        public const string BASE_URL = "https://flixify.com";
+        public static void DownloadFiles(RootObject data) {
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            // create directory to download the files to, we will delete this later.
+            string directory = data.item.title;
+            if(!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
-            using (Stream fileStream = File.OpenRead(@"test.txt"))
-            using (Stream ftpStream = request.GetRequestStream()) {
-                byte[] buffer = new byte[10240];
-                int read;
-                while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0) {
-                    ftpStream.Write(buffer, 0, read);
-                    Console.WriteLine("Uploaded {0} bytes", fileStream.Position);
+            string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
+            string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
+
+            web.DownloadFile(preview_url, directory + "/preview.jpg");
+            web.DownloadFile(thumbnail_url, directory + "/thumbnail.jpg");
+
+            if (data.item.download.download_720 != null) web.DownloadFile(BASE_URL + data.item.download.download_720, directory + "/720.mp4");
+            if (data.item.download.download_1080 != null) web.DownloadFile(BASE_URL + data.item.download.download_1080, directory + "/1080.mp4");
+        }
+
+
+        public static void UploadFiles(RootObject data) {
+
+            DirectoryInfo d = new DirectoryInfo(data.item.title);
+            FileInfo[] files = d.GetFiles();
+            string directory = data.item.url;
+
+            foreach (FileInfo file in files) {
+                NetworkCredential credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
+
+                try {
+                    FtpWebRequest create = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory);
+                    create.Method = WebRequestMethods.Ftp.MakeDirectory;
+                    create.Credentials = credentials;
+                    create.Proxy = new WebProxy();
+                    FtpWebResponse create_response = (FtpWebResponse)create.GetResponse();
+                } catch (Exception ex) {
+                    if (ex.Message.Contains("directory already exists")) Console.WriteLine("Directory exists");
+                }
+
+
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory + "/" + file.Name);
+                request.Method = WebRequestMethods.Ftp.UploadFile;
+                request.Credentials = credentials;
+                request.Proxy = new WebProxy();
+
+                using (Stream fileStream = File.OpenRead(Directory.GetCurrentDirectory() + "\\" + data.item.title + "\\" + file.Name))
+                using (Stream ftpStream = request.GetRequestStream()) {
+                    byte[] buffer = new byte[1024 * 1024];
+                    int totalReadBytesCount = 0;
+                    int readBytesCount;
+                    while ((readBytesCount = fileStream.Read(buffer, 0, buffer.Length)) > 0) {
+                        ftpStream.Write(buffer, 0, readBytesCount);
+                        totalReadBytesCount += readBytesCount;
+                        Double progress = totalReadBytesCount * 100.0 / fileStream.Length;
+                        Console.WriteLine("\r Upload progress: " + progress);
+                    }
                 }
             }
         }

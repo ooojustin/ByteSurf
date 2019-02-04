@@ -90,21 +90,7 @@ class Program {
         }
     }
 
-    public class Data {
-        public string title;
-        public string url;
-        public string description;
-        public long duration;
-        public string thumbnail;
-        public string preview;
-        public string download_720;
-        public string download_1080;
-        public List<string> genres;
-        public string imdb_id;
-        public int year;
-        public string certification;
-    }
-
+    public const string UPLOAD_URL = "https://cdn.jexflix.com";
     public static void Parse(string raw) {
         ServerData serverData = JsonConvert.DeserializeObject<ServerData>(raw);
 
@@ -124,19 +110,29 @@ class Program {
 
             Data data = new Data();
             data.title = rootObject.item.title;
-            data.url = rootObject.item.url;
+            data.url = rootObject.item.url.Substring(8);
             data.description = rootObject.item.description;
             data.duration = rootObject.item.duration;
-            data.thumbnail = rootObject.item.images.poster;
-            data.preview = rootObject.item.images.preview_large;
-            data.download_720 = rootObject.item.download.__invalid_name__720;
-            data.download_1080 = rootObject.item.download.__invalid_name__1080;
+            data.thumbnail = UPLOAD_URL + rootObject.item.url + "/thumbnail.jpg";
+            data.preview = UPLOAD_URL + rootObject.item.url + "/preview.jpg";
             data.genres = rootObject.item.genres;
             data.imdb_id = rootObject.item.imdb_id;
             data.year = rootObject.item.year;
             data.certification = rootObject.item.certification;
 
-            Console.WriteLine(JsonConvert.SerializeObject(data));
+            // setup qualities
+            if (rootObject.item.download.download_720 != null) data.qualities.Add(new Qualities {resolution = 720, link = UPLOAD_URL + rootObject.item.url + "/720.mp4"});
+            if (rootObject.item.download.download_1080 != null)  data.qualities.Add(new Qualities {resolution = 1080, link = UPLOAD_URL + rootObject.item.url + "/1080.mp4" });
+
+            // upload info to insert into database
+            web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
+
+            Networking.DownloadFiles(rootObject);
+            Networking.UploadFiles(rootObject);
+            Directory.Delete(rootObject.item.title, true);
+
+            Console.WriteLine("Successfully uploaded: " + data.title);
+
         }
     }
 }
