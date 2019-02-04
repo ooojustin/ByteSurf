@@ -21,9 +21,9 @@ namespace JexFlix_Scraper.Classes {
 
     public class Download {
         [JsonProperty("720")]
-        public string __invalid_name__720 { get; set; }
+        public string download_720 { get; set; }
         [JsonProperty("1080")]
-        public string __invalid_name__1080 { get; set; }
+        public string download_1080 { get; set; }
     }
 
     public class Eng {
@@ -46,7 +46,7 @@ namespace JexFlix_Scraper.Classes {
         public int duration { get; set; }
         public int year { get; set; }
         public DateTime released { get; set; }
-        public int released_sec_ago { get; set; }
+        public long released_sec_ago { get; set; }
         public string lang { get; set; }
         public string certification { get; set; }
         public List<object> keywords { get; set; }
@@ -73,5 +73,24 @@ namespace JexFlix_Scraper.Classes {
 
     public class RootObject {
         public UrlItems item { get; set; }
+    }
+
+    public class Data {
+        public string title;
+        public string url;
+        public string description;
+        public long duration;
+        public string thumbnail;
+        public string preview;
+        public List<Qualities> qualities = new List<Qualities>();
+        public List<string> genres;
+        public string imdb_id;
+        public int year;
+        public string certification;
+    }
+
+    public class Qualities {
+        public int resolution;
+        public string link;
     }
 }
