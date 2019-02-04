@@ -24,40 +24,49 @@ namespace JexFlix_Scraper {
         public static void DownloadFiles(RootObject data) {
             CookieAwareWebClient web = new CookieAwareWebClient();
             // create directory to download the files to, we will delete this later.
-            string directory = data.item.title;
+            string directory = SanatizePathName(data.item.title);
             if(!Directory.Exists(directory)) Directory.CreateDirectory(directory);
 
             string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
             string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
 
+            Console.WriteLine("Downloading " + data.item.title + " preview...");
             web.DownloadFile(preview_url, directory + "/preview.jpg");
+            Console.WriteLine("Completed.");
+            Console.WriteLine("Downloading " + data.item.title + " thumbnail...");
             web.DownloadFile(thumbnail_url, directory + "/thumbnail.jpg");
+            Console.WriteLine("Completed.");
 
-            if (data.item.download.download_720 != null) web.DownloadFile(BASE_URL + data.item.download.download_720, directory + "/720.mp4");
-            if (data.item.download.download_1080 != null) web.DownloadFile(BASE_URL + data.item.download.download_1080, directory + "/1080.mp4");
+            if (data.item.download.download_720 != null) {
+                Console.WriteLine("Downloading " + data.item.title + " in 720p...");
+                web.DownloadFile(BASE_URL + data.item.download.download_720, directory + "/720.mp4");
+                Console.WriteLine("Completed.");
+            }
+            if (data.item.download.download_1080 != null) {
+                Console.WriteLine("Downloading " + data.item.title + " in 1080p...");
+                web.DownloadFile(BASE_URL + data.item.download.download_1080, directory + "/1080.mp4");
+                Console.WriteLine("Completed.");
+            }
         }
 
 
         public static void UploadFiles(RootObject data) {
-
             DirectoryInfo d = new DirectoryInfo(data.item.title);
             FileInfo[] files = d.GetFiles();
             string directory = data.item.url;
+            NetworkCredential credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
+
+            try {
+                FtpWebRequest create = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory);
+                create.Method = WebRequestMethods.Ftp.MakeDirectory;
+                create.Credentials = credentials;
+                create.Proxy = new WebProxy();
+                FtpWebResponse create_response = (FtpWebResponse)create.GetResponse();
+            } catch (Exception ex) {
+                if (ex.Message.Contains("directory already exists")) Console.WriteLine("Directory exists");
+            }
 
             foreach (FileInfo file in files) {
-                NetworkCredential credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
-
-                try {
-                    FtpWebRequest create = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory);
-                    create.Method = WebRequestMethods.Ftp.MakeDirectory;
-                    create.Credentials = credentials;
-                    create.Proxy = new WebProxy();
-                    FtpWebResponse create_response = (FtpWebResponse)create.GetResponse();
-                } catch (Exception ex) {
-                    if (ex.Message.Contains("directory already exists")) Console.WriteLine("Directory exists");
-                }
-
-
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory + "/" + file.Name);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = credentials;
@@ -72,9 +81,10 @@ namespace JexFlix_Scraper {
                         ftpStream.Write(buffer, 0, readBytesCount);
                         totalReadBytesCount += readBytesCount;
                         Double progress = totalReadBytesCount * 100.0 / fileStream.Length;
-                        Console.WriteLine("\r Upload progress: " + progress);
+                        Console.Write("\rUploading {0}. {1}%   ", file.Name, (int)progress);
                     }
                 }
+                Console.WriteLine("Successfully uploaded: " + file.Name);
             }
         }
 
@@ -88,6 +98,15 @@ namespace JexFlix_Scraper {
             values["title"] = title;
 
             return safeRequest.Request("https://scraper.jexflix.com/movie_exists.php", values);
+        }
+         
+        public static string SanatizePathName(string path) {
+            string invalid = new string(Path.GetInvalidFileNameChars()) + new string(Path.GetInvalidPathChars());
+
+            foreach (char c in invalid) {
+                path = path.Replace(c.ToString(), "");
+            }
+            return path;
         }
     }
 }

@@ -131,7 +131,7 @@ class Program {
             Networking.UploadFiles(rootObject);
             Directory.Delete(rootObject.item.title, true);
 
-            Console.WriteLine("Successfully uploaded: " + data.title);
+            Console.WriteLine("Successfully uploaded all data for: " + data.title + Environment.NewLine);
 
         }
     }
