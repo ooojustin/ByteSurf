@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Flixify {
 
-    public class MovieData {
+    public class GenreData {
         public List<Movie> items { get; set; }
         public int total { get; set; }
         public int page { get; set; }

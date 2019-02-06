@@ -6,11 +6,6 @@ class Program {
 
     static void Main(string[] args) {
 
-        foreach (char c in Path.GetInvalidPathChars()) {
-            Console.WriteLine(c);
-        }
-        Console.ReadKey();
-
         Flixify.Run();
 
         Console.ReadKey();

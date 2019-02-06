@@ -12,6 +12,17 @@ namespace JexFlix_Scraper {
     public static class Networking {
 
         /// <summary>
+        /// Public link to access files uploaded to the JexFlix FTP/CDN server.
+        /// </summary>
+        public const string CDN_URL = "https://cdn.jexflix.com";
+
+        /// <summary>
+        /// Credentials to CDN hosting FTP server.
+        /// Used to upload movies and whatnot owo.
+        /// </summary>
+        private static NetworkCredential FTP_CREDENTIALS = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
+
+        /// <summary>
         /// Encryption key used to protect data transferred between scraper and scraper.jexflix.com server.
         /// </summary>
         private const string ENCRYPTION_KEY = "jexflix";
@@ -31,56 +42,73 @@ namespace JexFlix_Scraper {
         /// Bypass CloudFlare on a specified domain.
         /// https://github.com/elcattivo/CloudFlareUtilities
         /// </summary>
-        public static void BypassCloudFlare(string domain) {
+        public static void BypassCloudFlare(string domain, out CookieContainer cookies) {
             ClearanceHandler handler = new ClearanceHandler();
             HttpClient client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
             client.GetStringAsync(domain);
+            cookies = ClearanceHandler._cookies;
         }
 
+        public static void ReuploadRemoteFile(string url, string directory, string file, WebClient web = null) {
 
-        public static void UploadFiles(RootObject data) {
-            string directory = data.item.url;
-            DirectoryInfo d = new DirectoryInfo(data.item.title.Sanitized());
-            FileInfo[] files = d.GetFiles();
-            NetworkCredential credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
+            // initialize webclient if we weren't provided with one
+            if (web == null) {
+                web = new WebClient();
+                web.Headers.Add(HttpRequestHeader.UserAgent, USER_AGENT);
+            }
+
+            // download the original file
+            string localPath = Path.GetTempFileName();
+            web.DownloadFile(url, localPath);
+
+            // reupload file to server
+            UploadFile(localPath, directory, file);
+
+        }
+
+        public static void UploadFile(string localPath, string directory, string file) {
 
             try {
-                FtpWebRequest create = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory);
-                create.Method = WebRequestMethods.Ftp.MakeDirectory;
-                create.Credentials = credentials;
-                create.Proxy = new WebProxy();
-                FtpWebResponse create_response = (FtpWebResponse)create.GetResponse();
+                FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com/" + directory, WebRequestMethods.Ftp.MakeDirectory);
+                FtpWebResponse response = (FtpWebResponse)mkdir.GetResponse();
             } catch (Exception ex) {
                 if (ex.Message.Contains("directory already exists")) Console.WriteLine("Directory exists" + Environment.NewLine);
             }
 
-            foreach (FileInfo file in files) {
-                FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://storage.bunnycdn.com" + directory + "/" + file.Name);
-                request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.Credentials = credentials;
-                request.Proxy = new WebProxy();
+            // create request to upload file
+            string createURI = string.Format("ftp://storage.bunnycdn.com/{0}/{1}", directory, file);
+            FtpWebRequest request = GetFTPRequest(createURI, WebRequestMethods.Ftp.UploadFile);
 
-                using (Stream fileStream = File.OpenRead(Directory.GetCurrentDirectory() + "\\" + data.item.title.Sanitized() + "\\" + file.Name))
+            using (Stream fileStream = File.OpenRead(localPath)) {
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
-                    int totalReadBytesCount = 0;
+                    // int totalReadBytesCount = 0;
                     int readBytesCount;
                     while ((readBytesCount = fileStream.Read(buffer, 0, buffer.Length)) > 0) {
                         ftpStream.Write(buffer, 0, readBytesCount);
-                        totalReadBytesCount += readBytesCount;
+                        /*totalReadBytesCount += readBytesCount;
                         double progress = totalReadBytesCount * 100.0 / fileStream.Length;
-                        Console.Write("\rUploading {0}: {1}%   ", file.Name, (int)progress);
+                        Console.Write("\rUploading {0}: {1}%   ", file, (int)progress);*/
                     }
                 }
-                Console.WriteLine("Successfully uploaded: " + file.Name);
+                Console.WriteLine("Successfully uploaded: " + file);
             }
+
+        }
+
+        public static FtpWebRequest GetFTPRequest(string uri, string method) {
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(uri);
+            request.Method = method;
+            request.Credentials = FTP_CREDENTIALS;
+            request.Proxy = new WebProxy();
+            return request;
         }
 
         public static bool FileExists(string title) {
-            SAFE_REQUEST.UserAgent = "JexFlix-Scraper";
+            SAFE_REQUEST.UserAgent = "jexflix-client";
             NameValueCollection values = new NameValueCollection();
-            values["title"] = title;
+            values["url"] = title;
             Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
             bool exists = response.GetData<bool>("exists");
             return exists;

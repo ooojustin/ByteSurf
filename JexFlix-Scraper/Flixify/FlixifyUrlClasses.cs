@@ -71,7 +71,7 @@ namespace JexFlix_Scraper.Flixify {
         public string preview_list { get; set; }
     }
 
-    public class RootObject {
+    public class MovieData {
         public UrlItems item { get; set; }
     }
 
@@ -82,14 +82,14 @@ namespace JexFlix_Scraper.Flixify {
         public long duration;
         public string thumbnail;
         public string preview;
-        public List<Qualities> qualities = new List<Qualities>();
+        public List<Quality> qualities = new List<Quality>();
         public List<string> genres;
         public string imdb_id;
         public int year;
         public string certification;
     }
 
-    public class Qualities {
+    public class Quality {
         public int resolution;
         public string link;
     }
