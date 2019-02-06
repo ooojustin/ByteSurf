@@ -38,7 +38,7 @@ namespace JexFlix_Scraper.Classes {
     }
 
     public class UrlItems {
-        public string id { get; set; }
+        public string id { get; set; }  
         public string type { get; set; }
         public string url { get; set; }
         public string title { get; set; }

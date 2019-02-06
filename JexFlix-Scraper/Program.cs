@@ -13,72 +13,48 @@ using System.Collections.Generic;
 using JexFlix_Scraper.Classes;
 
 class Program {
-    // uwu
-    public static CookieAwareWebClient web = new CookieAwareWebClient();
-    public const string BASE_URL = "https://flixify.com/";
-    public const string MOVIES_URL = "https://flixify.com/movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
-    public const string MOVIES_URL_FOR_DOWNLOAD = "https://flixify.com/{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
 
+    private static CookieAwareWebClient Web = new CookieAwareWebClient();
+    private const string FLIXIFY = "https://flixify.com/";
+    private const string MOVIES_URL = FLIXIFY + "movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
+    private const string MOVIES_URL_FOR_DOWNLOAD = FLIXIFY + "{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
+    private const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36";
 
     static void Main(string[] args) {
-        ClearanceHandler handler = new ClearanceHandler();
-        HttpClient client = new HttpClient(handler);
 
-        // set useragent and some headers, must be these
-        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-        web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-        web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-        web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+        // bypass cloudflare so we can login to and access the website
+        BypassCloudFlare(FLIXIFY + "/login");
 
-        // any kind of request using our cloudflare bypass will set cookies for later use in the webclient
-        string content = client.GetStringAsync(BASE_URL + "/login").Result;
-
-        NameValueCollection values = new NameValueCollection();
-        values["ref"] = "";
-        values["email"] = "nex@weebware.net";
-        values["password"] = "fuckniggers69";
-
-        web.UploadValues(BASE_URL + "/login", values);
+        // send login request to flixify
+        using (Web) {
+            SetHeaders();
+            NameValueCollection values = new NameValueCollection();
+            values["ref"] = "";
+            values["email"] = "nex@weebware.net";
+            values["password"] = "fuckniggers69";
+            Web.UploadValues(FLIXIFY + "/login", values);
+        }
 
         InitializeScraper();
+
         Console.ReadKey();
 
     }
-
-    public static string[] genres = {
-            "animation",
-            "documentary",
-            "fantasy",
-            "music",
-            "science-fiction",
-            "western",
-            "action",
-            "comedy",
-            "drama",
-            "history",
-            "mystery",
-            "thriller",
-            "adventure",
-            "crime",
-            "family",
-            "horror",
-            "romance",
-            "war"
-            };
 
     public static byte[] response;
     public static void InitializeScraper() {
         foreach (string genre in genres) {
             for (int page = 1; page <= 100; page++) {
-                Networking.SetHeaders(web);
+                Networking.SetHeaders(Web);
                 string url = string.Format(MOVIES_URL, genre, page);
 
                 // check if the page returns a 404 to move onto the next genre
                 try {
-                    response = web.DownloadData(url);
+                    response = Web.DownloadData(url);
                 } catch (WebException ex) {
                     HttpWebResponse webResponse = ex.Response as HttpWebResponse;
-                    if (webResponse.StatusCode == HttpStatusCode.NotFound) break;
+                    if (webResponse.StatusCode == HttpStatusCode.NotFound)
+                        break;
                 }
 
                 byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
@@ -88,6 +64,27 @@ class Program {
                 Thread.Sleep(1000);
             }
         }
+    }
+
+    /// <summary>
+    /// Bypass CloudFlare on a specified domain.
+    /// https://github.com/elcattivo/CloudFlareUtilities
+    /// </summary>
+    static void BypassCloudFlare(string domain) {
+        ClearanceHandler handler = new ClearanceHandler();
+        HttpClient client = new HttpClient(handler);
+        client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
+        client.GetStringAsync(domain);
+    }
+
+    /// <summary>
+    /// Sets headers in static WebClient class.
+    /// Headers are disposed after each "using" block.
+    /// </summary>
+    static void SetHeaders() {
+        Web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+        Web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+        Web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
     }
 
     public const string UPLOAD_URL = "https://cdn.jexflix.com";
@@ -100,9 +97,9 @@ class Program {
             // if it already exists on the server, go to next movie
             if (safeResponse.GetData<bool>("exists")) continue;
 
-            Networking.SetHeaders(web);
+            Networking.SetHeaders(Web);
 
-            byte[] response = web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, x.url));
+            byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, x.url));
             byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
             string new_raw = Encoding.Default.GetString(response_decompressed);
 
@@ -125,7 +122,7 @@ class Program {
             if (rootObject.item.download.download_1080 != null)  data.qualities.Add(new Qualities {resolution = 1080, link = UPLOAD_URL + rootObject.item.url + "/1080.mp4" });
 
             // upload info to insert into database
-            web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
+            Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
             Networking.DownloadFiles(rootObject);
             Networking.UploadFiles(rootObject);
@@ -134,5 +131,28 @@ class Program {
             Console.WriteLine("Successfully uploaded all data for: " + data.title + Environment.NewLine);
 
         }
+
     }
+
+    private static string[] genres = {
+            "animation",
+            "documentary",
+            "fantasy",
+            "music",
+            "science-fiction",
+            "western",
+            "action",
+            "comedy",
+            "drama",
+            "history",
+            "mystery",
+            "thriller",
+            "adventure",
+            "crime",
+            "family",
+            "horror",
+            "romance",
+            "war"
+            };
+
 }
