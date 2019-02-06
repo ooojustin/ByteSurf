@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Flixify {
 
-    public class ServerData {
-        public List<Item> items { get; set; }
+    public class MovieData {
+        public List<Movie> items { get; set; }
         public int total { get; set; }
         public int page { get; set; }
         public int items_per_page { get; set; }
@@ -21,7 +21,7 @@ namespace JexFlix_Scraper.Flixify {
         public string preview_grid { get; set; }
     }
 
-    public class Item {
+    public class Movie {
         public string id { get; set; }
         public string type { get; set; }
         public string url { get; set; }

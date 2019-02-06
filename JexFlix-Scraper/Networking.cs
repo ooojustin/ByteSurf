@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using JexFlix_Scraper.Flixify;
 using SafeRequest;
 using System;
 using System.Collections.Specialized;
@@ -9,6 +10,16 @@ using System.Net.Http;
 namespace JexFlix_Scraper {
 
     public static class Networking {
+
+        /// <summary>
+        /// Encryption key used to protect data transferred between scraper and scraper.jexflix.com server.
+        /// </summary>
+        private const string ENCRYPTION_KEY = "jexflix";
+
+        /// <summary>
+        /// SafeRequest class, operates as a constant - should not be modified.
+        /// </summary>
+        public static SafeRequest.SafeRequest SAFE_REQUEST = new SafeRequest.SafeRequest(ENCRYPTION_KEY);
 
         /// <summary>
         /// Common User-Agent accepted by all websites.
@@ -27,40 +38,10 @@ namespace JexFlix_Scraper {
             client.GetStringAsync(domain);
         }
 
-        public const string BASE_IMAGES_URL = "https://a.flixify.com";
-        public const string BASE_URL = "https://flixify.com";
-        public static void DownloadFiles(RootObject data) {
-            CookieAwareWebClient web = new CookieAwareWebClient();
-            // create directory to download the files to, we will delete this later.
-            string directory = SanatizePathName(data.item.title);
-            if(!Directory.Exists(directory)) Directory.CreateDirectory(directory);
-
-            string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
-            string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
-
-            Console.WriteLine("Downloading " + data.item.title + " preview...");
-            if (!File.Exists(directory + "/preview.jpg")) web.DownloadFile(preview_url, directory + "/preview.jpg");
-            Console.WriteLine("Completed.");
-            Console.WriteLine("Downloading " + data.item.title + " thumbnail...");
-            if (!File.Exists(directory + "/thumbnail.jpg")) web.DownloadFile(thumbnail_url, directory + "/thumbnail.jpg");
-            Console.WriteLine("Completed.");
-
-            if (data.item.download.download_720 != null) {
-                Console.WriteLine("Downloading " + data.item.title + " in 720p...");
-                if (!File.Exists(directory + "/720.mp4")) web.DownloadFile(BASE_URL + data.item.download.download_720, directory + "/720.mp4");
-                Console.WriteLine("Completed.");
-            }
-            if (data.item.download.download_1080 != null) {
-                Console.WriteLine("Downloading " + data.item.title + " in 1080p...");
-                if (!File.Exists(directory + "/1080.mp4")) web.DownloadFile(BASE_URL + data.item.download.download_1080, directory + "/1080.mp4");
-                Console.WriteLine("Completed.");
-            }
-        }
-
 
         public static void UploadFiles(RootObject data) {
             string directory = data.item.url;
-            DirectoryInfo d = new DirectoryInfo(SanatizePathName(data.item.title));
+            DirectoryInfo d = new DirectoryInfo(data.item.title.Sanitized());
             FileInfo[] files = d.GetFiles();
             NetworkCredential credentials = new NetworkCredential("jexflix", "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03");
 
@@ -80,7 +61,7 @@ namespace JexFlix_Scraper {
                 request.Credentials = credentials;
                 request.Proxy = new WebProxy();
 
-                using (Stream fileStream = File.OpenRead(Directory.GetCurrentDirectory() + "\\" + SanatizePathName(data.item.title) + "\\" + file.Name))
+                using (Stream fileStream = File.OpenRead(Directory.GetCurrentDirectory() + "\\" + data.item.title.Sanitized() + "\\" + file.Name))
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
                     int totalReadBytesCount = 0;
@@ -88,7 +69,7 @@ namespace JexFlix_Scraper {
                     while ((readBytesCount = fileStream.Read(buffer, 0, buffer.Length)) > 0) {
                         ftpStream.Write(buffer, 0, readBytesCount);
                         totalReadBytesCount += readBytesCount;
-                        Double progress = totalReadBytesCount * 100.0 / fileStream.Length;
+                        double progress = totalReadBytesCount * 100.0 / fileStream.Length;
                         Console.Write("\rUploading {0}: {1}%   ", file.Name, (int)progress);
                     }
                 }
@@ -96,25 +77,22 @@ namespace JexFlix_Scraper {
             }
         }
 
-        public static string ENCRYPTION_KEY = "jexflix";
-        public static SafeRequest.SafeRequest safeRequest = new SafeRequest.SafeRequest(ENCRYPTION_KEY);
-
-        public static Response CheckFileExists(string title) {
-            safeRequest.UserAgent = "jexflix-client";
-
+        public static bool FileExists(string title) {
+            SAFE_REQUEST.UserAgent = "JexFlix-Scraper";
             NameValueCollection values = new NameValueCollection();
             values["title"] = title;
-
-            return safeRequest.Request("https://scraper.jexflix.com/movie_exists.php", values);
+            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+            bool exists = response.GetData<bool>("exists");
+            return exists;
         }
          
-        public static string SanatizePathName(string path) {
+        public static string Sanitized(this string path) {
             string invalid = "|:@";
-
-            foreach (char c in invalid) {
+            foreach (char c in invalid)
                 path = path.Replace(c.ToString(), "");
-            }
             return path;
         }
+
     }
+
 }

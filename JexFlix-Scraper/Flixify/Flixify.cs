@@ -21,67 +21,74 @@ namespace JexFlix_Scraper.Flixify {
             // bypass cloudflare so we can login to and access the website
             Networking.BypassCloudFlare(FLIXIFY + "/login");
 
-            // send login request to flixify
-            using (Web) {
+            // initialize request headers
+            Web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+            Web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            Web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
 
-                // initialize request headers
-                Web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-                Web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-                Web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+            // establish post data
+            NameValueCollection values = new NameValueCollection();
+            values["ref"] = "";
+            values["email"] = "nex@weebware.net";
+            values["password"] = "fuckniggers69";
 
-                // establish post data
-                NameValueCollection values = new NameValueCollection();
-                values["ref"] = "";
-                values["email"] = "nex@weebware.net";
-                values["password"] = "fuckniggers69";
-
-                // send request to store cookies from valid login
-                Web.UploadValues(FLIXIFY + "/login", values);
-
-            }
+            // send request to store cookies from valid login
+            Web.UploadValues(FLIXIFY + "/login", values);
 
             InitializeScraper();
 
         }
 
-        public static byte[] response;
         public static void InitializeScraper() {
-            foreach (string genre in genres) {
-                for (int page = 1; page <= 100; page++) {
-                    Web.FlixifyHeaders();
-                    string url = string.Format(MOVIES_URL, genre, page);
 
-                    // check if the page returns a 404 to move onto the next genre
+            foreach (string genre in genres) {
+
+                for (int page = 1; page <= 100; page++) {
+
+                    // apply headers to web request
+                    Web.FlixifyHeaders();
+                    byte[] response = null;
+
                     try {
+                        string url = string.Format(MOVIES_URL, genre, page);
                         response = Web.DownloadData(url);
                     } catch (WebException ex) {
+                        // catch NotFound exception
+                        // continue to next genre (out of videos)
                         HttpWebResponse webResponse = ex.Response as HttpWebResponse;
                         if (webResponse.StatusCode == HttpStatusCode.NotFound)
                             break;
                     }
 
-                    byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
-                    string raw_data = Encoding.Default.GetString(response_decompressed);
+                    // decompress and establish response from server
+                    byte[] decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
+                    string raw = Encoding.Default.GetString(decompressed);
 
-                    Parse(raw_data);
+                    // parse video list
+                    ParseMovies(raw);
+
                     Thread.Sleep(1000);
+
                 }
+
             }
+
         }
 
         public const string UPLOAD_URL = "https://cdn.jexflix.com";
-        public static void Parse(string raw) {
-            ServerData serverData = JsonConvert.DeserializeObject<ServerData>(raw);
+        public static void ParseMovies(string raw) {
 
-            foreach (Item x in serverData.items) {
-                SafeRequest.Response safeResponse = Networking.CheckFileExists(x.title);
+            MovieData serverData = JsonConvert.DeserializeObject<MovieData>(raw);
+
+            foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (safeResponse.GetData<bool>("exists")) continue;
+                if (Networking.FileExists(movie.title))
+                    continue;
 
                 Web.FlixifyHeaders();
 
-                byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, x.url));
+                byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
                 byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
                 string new_raw = Encoding.Default.GetString(response_decompressed);
 
@@ -106,9 +113,9 @@ namespace JexFlix_Scraper.Flixify {
                 // upload info to insert into database
                 Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
-                Networking.DownloadFiles(rootObject);
-                Networking.UploadFiles(rootObject);
-                Directory.Delete(rootObject.item.title, true);
+                DownloadFiles(rootObject);
+                //Networking.UploadFiles(rootObject);
+                Directory.Delete(rootObject.item.title.Sanitized(), true);
 
                 Console.WriteLine("Successfully uploaded all data for: " + data.title + Environment.NewLine);
 
@@ -116,11 +123,41 @@ namespace JexFlix_Scraper.Flixify {
 
         }
 
+        public const string BASE_IMAGES_URL = "https://a.flixify.com";
+        public const string BASE_URL = "https://flixify.com";
+        public static void DownloadFiles(RootObject data) {
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            // create directory to download the files to, we will delete this later.
+            string directory = data.item.title.Sanitized();
+            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+
+            string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
+            string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
+
+            Console.WriteLine("Downloading " + data.item.title + " preview...");
+            if (!File.Exists(directory + "/preview.jpg")) web.DownloadFile(preview_url, directory + "/preview.jpg");
+            Console.WriteLine("Completed.");
+            Console.WriteLine("Downloading " + data.item.title + " thumbnail...");
+            if (!File.Exists(directory + "/thumbnail.jpg")) web.DownloadFile(thumbnail_url, directory + "/thumbnail.jpg");
+            Console.WriteLine("Completed.");
+
+            if (data.item.download.download_720 != null) {
+                Console.WriteLine("Downloading " + data.item.title + " in 720p...");
+                if (!File.Exists(directory + "/720.mp4")) web.DownloadFile(BASE_URL + data.item.download.download_720, directory + "/720.mp4");
+                Console.WriteLine("Completed.");
+            }
+            if (data.item.download.download_1080 != null) {
+                Console.WriteLine("Downloading " + data.item.title + " in 1080p...");
+                if (!File.Exists(directory + "/1080.mp4")) web.DownloadFile(BASE_URL + data.item.download.download_1080, directory + "/1080.mp4");
+                Console.WriteLine("Completed.");
+            }
+        }
+
         public static void FlixifyHeaders(this CookieAwareWebClient web) {
             web.Headers.Clear(); // clear any existing headers
             web.Headers.Add("Host", "flixify.com");
             web.Headers.Add("Accept", "application/json");
-            web.Headers.Add("User-Agent", Program.USER_AGENT);
+            web.Headers.Add("User-Agent", Networking.USER_AGENT);
             web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
         }
 
