@@ -65,34 +65,38 @@ namespace JexFlix_Scraper {
             // reupload file to server
             UploadFile(localPath, directory, file);
 
+            // delete the file that was stored locally
+            File.Delete(localPath);
+
         }
 
         public static void UploadFile(string localPath, string directory, string file) {
 
             try {
-                FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com/" + directory, WebRequestMethods.Ftp.MakeDirectory);
+                FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
                 FtpWebResponse response = (FtpWebResponse)mkdir.GetResponse();
             } catch (Exception ex) {
-                if (ex.Message.Contains("directory already exists")) Console.WriteLine("Directory exists" + Environment.NewLine);
+                if (!ex.Message.Contains("directory already exists"))
+                    return;
             }
 
             // create request to upload file
-            string createURI = string.Format("ftp://storage.bunnycdn.com/{0}/{1}", directory, file);
+            string createURI = string.Format("ftp://storage.bunnycdn.com{0}/{1}", directory, file);
             FtpWebRequest request = GetFTPRequest(createURI, WebRequestMethods.Ftp.UploadFile);
 
             using (Stream fileStream = File.OpenRead(localPath)) {
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
-                    // int totalReadBytesCount = 0;
+                    double totalReadBytesCount = 0;
                     int readBytesCount;
                     while ((readBytesCount = fileStream.Read(buffer, 0, buffer.Length)) > 0) {
                         ftpStream.Write(buffer, 0, readBytesCount);
-                        /*totalReadBytesCount += readBytesCount;
-                        double progress = totalReadBytesCount * 100.0 / fileStream.Length;
-                        Console.Write("\rUploading {0}: {1}%   ", file, (int)progress);*/
+                        totalReadBytesCount += readBytesCount;
+                        double progress = (totalReadBytesCount / fileStream.Length) * 100.0;
+                        Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
                     }
                 }
-                Console.WriteLine("Successfully uploaded: " + file);
+                Console.WriteLine("\rSuccessfully uploaded: " + file);
             }
 
         }

@@ -85,8 +85,10 @@ namespace JexFlix_Scraper.Flixify {
             foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (Networking.FileExists(movie.title))
+                if (Networking.FileExists(movie.url.Substring(8)))
                     continue;
+
+                Console.WriteLine(movie.title + " is a shitty movie");
 
                 Web.FlixifyHeaders();
 
@@ -116,11 +118,9 @@ namespace JexFlix_Scraper.Flixify {
                     data.qualities.Add(new Quality { resolution = 1080, link = Networking.CDN_URL + rootObject.item.url + "/1080.mp4" });
 
                 // upload info to insert into database
-                Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
-                DownloadFiles(rootObject);
-                //Networking.UploadFiles(rootObject);
-                Directory.Delete(rootObject.item.title.Sanitized(), true);
+                ReuploadFiles(rootObject);
+                Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
                 Console.WriteLine("Successfully uploaded all data for: " + data.title + Environment.NewLine);
 
@@ -131,14 +131,13 @@ namespace JexFlix_Scraper.Flixify {
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
         public const string BASE_URL = "https://flixify.com";
 
-        public static void DownloadFiles(MovieData data) {
+        public static void ReuploadFiles(MovieData data) {
 
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = CloudFlareCookies;
-            
+
             // create directory to download the files to, we will delete this later.
-            string directory = data.item.title.Sanitized();
-            if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
+            string directory = data.item.url;
 
             string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
             string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
