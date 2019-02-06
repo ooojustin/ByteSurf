@@ -1,22 +1,30 @@
-﻿using JexFlix_Scraper.Classes;
+﻿using CloudFlareUtilities;
 using SafeRequest;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace JexFlix_Scraper {
+
     public static class Networking {
 
-        public static void SetHeaders(CookieAwareWebClient web) {
-            web.Headers.Add("Host", "flixify.com");
-            web.Headers.Add("Accept", "application/json");
-            web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-            web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
+        /// <summary>
+        /// Common User-Agent accepted by all websites.
+        /// Must be added to some web requests to prevent them from being blocked.
+        /// </summary>
+        public const string USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36";
+
+        /// <summary>
+        /// Bypass CloudFlare on a specified domain.
+        /// https://github.com/elcattivo/CloudFlareUtilities
+        /// </summary>
+        public static void BypassCloudFlare(string domain) {
+            ClearanceHandler handler = new ClearanceHandler();
+            HttpClient client = new HttpClient(handler);
+            client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
+            client.GetStringAsync(domain);
         }
 
         public const string BASE_IMAGES_URL = "https://a.flixify.com";

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JexFlix_Scraper.Classes {
+namespace JexFlix_Scraper.Flixify {
 
-    public class Images {
+    public class MovieImages1 {
         public string preview { get; set; }
         public string poster { get; set; }
         public string preview_large { get; set; }
@@ -54,7 +54,7 @@ namespace JexFlix_Scraper.Classes {
         public double rating { get; set; }
         public string imdb_id { get; set; }
         public object blocked_by { get; set; }
-        public Images images { get; set; }
+        public MovieImages1 images { get; set; }
         public Media media { get; set; }
         public string media_id { get; set; }
         public string file_id { get; set; }

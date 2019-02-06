@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JexFlix_Scraper {
+namespace JexFlix_Scraper.Flixify {
 
     public class ServerData {
         public List<Item> items { get; set; }
@@ -37,5 +37,7 @@ namespace JexFlix_Scraper {
         public DateTime? released { get; set; }
         public long released_sec_ago { get; set; }
         public Images images { get; set; }
+
     }
+
 }
