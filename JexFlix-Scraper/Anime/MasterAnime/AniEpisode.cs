@@ -44,13 +44,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
             // Captcha occurances only appear here so everytime we load this we can run the captcha bypass.
             if (CaptchaBypass.IsCaptchaPage(raw)) {
                 if (CaptchaBypass.is_solving == false) {
-                    Thread t = new Thread(() => {
                         CaptchaBypass.RunCaptchaBypass();
-                    });
-                    t.IsBackground = true;
-                    t.Start();
                 }
-
                 goto Captcha_check;
             }
 
