@@ -39,6 +39,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
                 }
             }
 
+            Captcha_check:
+     
             // Captcha occurances only appear here so everytime we load this we can run the captcha bypass.
             if (CaptchaBypass.IsCaptchaPage(raw)) {
                 if (CaptchaBypass.is_solving == false) {
@@ -48,6 +50,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
                     t.IsBackground = true;
                     t.Start();
                 }
+
+                goto Captcha_check;
             }
 
             Regex regex = new Regex(VIDEO_MIRRIORS_EXPRESSION, RegexOptions.Singleline);
