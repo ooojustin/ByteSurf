@@ -57,13 +57,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Flixify\Flixify.cs" />
-    <Compile Include="Flixify\FlixifyUrlClasses.cs" />
-    <Compile Include="CookieAwareWebClient.cs">
+    <Compile Include="Movies\Flixify.cs" />
+    <Compile Include="Movies\FlixifyUrlClasses.cs" />
+    <Compile Include="Networking\CookieAwareWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Flixify\FlixifyMainClasses.cs" />
-    <Compile Include="Networking.cs" />
+    <Compile Include="Movies\FlixifyMainClasses.cs" />
+    <Compile Include="Networking\Networking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
