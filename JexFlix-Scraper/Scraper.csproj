@@ -66,9 +66,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Anime\Anime.cs" />
     <Compile Include="Anime\MasterAnime\AniEpisode.cs" />
     <Compile Include="Anime\MasterAnime\AniExtensions.cs" />
-    <Compile Include="Anime\MasterAnime\Anime.cs" />
+    <Compile Include="Anime\MasterAnime\AniInfo.cs" />
     <Compile Include="Anime\MasterAnime\AniSearch.cs" />
     <Compile Include="Anime\MasterAnime\Scraper\MirrorParser.cs" />
     <Compile Include="Anime\MasterAnime\Scraper\ScriptEngine.cs" />
