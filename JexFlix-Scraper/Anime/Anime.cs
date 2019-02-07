@@ -1,4 +1,5 @@
 ﻿using JexFlix_Scraper.Anime.MasterAnime;
+using JexFlix_Scraper.Anime.MasterAnime.Scraper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 namespace JexFlix_Scraper.Anime {
 
     public static class Anime {
+
 
         /// <summary>
         /// Main function for executing code for the anime scraper.
@@ -22,38 +24,183 @@ namespace JexFlix_Scraper.Anime {
 
             Console.WriteLine("There are: " + InitialAnime.last_page + " pages");
 
-            for (int i = 2; i <= InitialAnime.last_page; i++) {
+           // for (int i = 2; i <= InitialAnime.last_page; i++) {
 
-                Console.WriteLine("On " + i + " page");
+            //    Console.WriteLine("On " + i + " page");
 
-                AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
+            //    AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
 
-                AllAnime.Add(CurrentAnime);
-            }
+            //    AllAnime.Add(CurrentAnime);
+          //  }
+
 
 
             // Dumps out all the anime that exists.
-            using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
+            // using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
 
-                foreach (AniSearch animeFound in AllAnime) {
+            foreach (AniSearch animeFound in AllAnime) {
 
-                    foreach (AniSearch.Show i in animeFound.data) {
+                foreach (AniSearch.Show anime in animeFound.data) {
 
-                        // i.GetAnime();
+                    AniUpload UploadData = new AniUpload();
 
-                        Console.WriteLine(i.title);
+                    Console.WriteLine(anime.title);
 
-                        file.WriteLine(i.title);
+                    if (anime.title == "Fullmetal Alchemist: Brotherhood")
+                        continue;
 
+                    UploadData.title = anime.title;
 
+                    UploadData.url = Slugify(UploadData.title);
+
+                    AniInfo AnimeInfo = anime.GetAnime();
+
+                    if (AnimeInfo.info.synopsis != null)
+                        UploadData.synopsis = AnimeInfo.info.synopsis;
+
+                    UploadData.thumbnail = anime.GetThumbnail();
+
+                    UploadData.preview = AnimeInfo.GetWallpaper();
+
+                    foreach (AniInfo.Genre genre in AnimeInfo.genres)
+
+                        if (genre.name != null)
+                        UploadData.genres.Add(genre.name);
+
+                    Console.WriteLine("Stage 1");
+
+                    foreach (AniInfo.EpisodeData EpisodeInfo in AnimeInfo.episodes) {
+
+                        EpisodeData EpData = new EpisodeData();
+                        EpData.description = EpisodeInfo.info.description;                   
+                        EpData.thumbnail = AnimeInfo.GetThumbnail(Convert.ToInt32(EpisodeInfo.info.episode) - 1);
+                        EpData.duration = EpisodeInfo.info.duration;
+                        EpData.episode = EpisodeInfo.info.episode;
+
+                        // Fill the mirrors
+
+                        AniEpisode episode = AnimeInfo.GetEpisode(EpisodeInfo);
+
+                        if (episode == null)
+                            return;
+
+                        bool UltraHd = false;
+                        bool Hd = false;
+                        bool Standard = false;
+
+                        foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
+
+                            Console.WriteLine("Looking for mirrors");
+
+                            if (MirrorParser.IsSupported(mirror)) {
+
+                                if (mirror.quality == 1080 && !UltraHd) {
+
+                                    Console.WriteLine("A Mirror is found");
+
+                                    Action<string> callback = (s) => {
+                                        Console.WriteLine("Found THE URL");
+
+                                        Quality quality = new Quality();
+
+                                        quality.resolution = 1080;
+                                        quality.link = mirror.GetURL();
+                                        EpData.qualities.Add(quality);
+                                        UltraHd = true;
+                                    };
+
+                                    new MirrorParser(mirror, callback).Run();
+                                }
+
+                                if (mirror.quality == 720 && !Hd) {
+
+                                    Console.WriteLine("A Mirror is found");
+
+                                    Action<string> callback = (s) => {
+                                        Console.WriteLine("Found THE URL");
+
+                                        Quality quality = new Quality();
+                                        quality.resolution = 720;
+                                        quality.link = mirror.GetURL();
+                                        EpData.qualities.Add(quality);
+                                        Hd = true;
+                                    };
+
+                                    new MirrorParser(mirror, callback).Run();
+                                }
+
+                                if (mirror.quality == 480 && !Standard) {
+
+                                    Console.WriteLine("A Mirror is found");
+
+                                    Action<string> callback = (s) => {
+                                        Console.WriteLine("Found THE URL");
+
+                                        Quality quality = new Quality();
+                                        quality.resolution = 480;
+                                        quality.link = mirror.GetURL();
+                                        EpData.qualities.Add(quality);
+                                        Standard = true;
+                                    };
+
+                                    new MirrorParser(mirror, callback).Run();
+                                }
+
+                            }
+
+                        }
+
+                        UploadData.episodeData.Add(EpData);
                     }
+
+                    Console.WriteLine(UploadData.title);
+                    Console.WriteLine(UploadData.synopsis);
+                    Console.WriteLine(UploadData.preview);
+                    Console.WriteLine(UploadData.thumbnail);
+                    Console.WriteLine(UploadData.url);
+
+                    foreach (var genre in UploadData.genres) {
+                        Console.WriteLine(genre);
+                    }
+
+                    foreach (var ed in UploadData.episodeData) {
+
+                        Console.WriteLine(ed.episode);
+                        Console.WriteLine(ed.description);
+                        Console.WriteLine(ed.thumbnail);
+                        Console.WriteLine(ed.duration);
+
+                        foreach (var q in ed.qualities) {
+                            Console.WriteLine(q.link);
+                            Console.WriteLine(q.resolution);
+                        }
+                    }
+
                 }
             }
 
-           //  Console.ReadKey();
 
         }
 
+
+        /// <summary>
+        /// Fast Paste https://stackoverflow.com/questions/3275242/how-do-you-remove-invalid-characters-when-creating-a-friendly-url-ie-how-do-you
+        /// </summary>
+        public static string RemoveAccent(this string txt) {
+            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+            return System.Text.Encoding.ASCII.GetString(bytes);
+        }
+
+        /// <summary>
+        /// Fast Paste https://stackoverflow.com/questions/3275242/how-do-you-remove-invalid-characters-when-creating-a-friendly-url-ie-how-do-you
+        /// </summary>
+        public static string Slugify(this string phrase) {
+            string str = phrase.RemoveAccent().ToLower();
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
+            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
+            return str;
+        }
 
     }
 

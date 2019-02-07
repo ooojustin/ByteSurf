@@ -46,6 +46,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
                 return string.Format(THUMBNAIL_URL, poster.path.TrimEnd('/'), sizeIndex, poster.file);
             }
 
+
+
             /// <summary>
             /// Returns an anime object for the current show.
             /// </summary>

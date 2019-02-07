@@ -22,7 +22,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
 
         public void Run() {
 
-            Thread thread = new Thread(() => {
+           //  Thread thread = new Thread(() => {
                 switch (mirror.host.name) {
                     case "Streamango":
                         RunBrowser(StreamangoLoaded);
@@ -38,11 +38,11 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
                         break;
                     default:
                         throw new NotImplementedException("Unsupported host: " + mirror.host.name);
-                }
-            });
+                // }
+            }// );
 
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+           // thread.SetApartmentState(ApartmentState.STA);
+           // thread.Start();
 
         }
 

@@ -16,6 +16,13 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
         /// </summary>
         private const string DETAIL_URL = "https://www.masterani.me/api/anime/{0}/detailed";
         private const string THUMBNAIL_URL = "https://cdn.masterani.me/episodes/{0}";
+        private const string WALLPAPER_URL = "https://cdn.masterani.me/wallpaper/1/{0}";
+
+        public string GetWallpaper() {
+            if (wallpapers.Any())
+                return string.Format(WALLPAPER_URL, wallpapers[0].file);
+            else return string.Empty;
+        }
 
         /// <summary>
         /// Gets an object representing a specified anime from a unique ID.
@@ -112,6 +119,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
 
             public EpisodeInfo info;
             public string thumbnail;
+
+         
 
         }
 
