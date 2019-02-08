@@ -50,7 +50,7 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
         }
 
-        public static void ReuploadRemoteFile(string url, string directory, string file, WebClient web = null) {
+        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
 
             // initialize webclient if we weren't provided with one
             if (web == null) {
@@ -58,19 +58,23 @@ namespace JexFlix_Scraper {
                 web.Headers.Add(HttpRequestHeader.UserAgent, USER_AGENT);
             }
 
-            // download the original file
+            // get temp path to download file to
             string localPath = Path.GetTempFileName();
-            web.DownloadFile(url, localPath);
+
+            // download the original file
+            try { web.DownloadFile(url, localPath); }
+            catch (WebException wex) { ErrorLogging(wex, null, title); }
 
             // reupload file to server
-            UploadFile(localPath, directory, file);
-
+            try { UploadFile(localPath, directory, file, title); }
+            catch (Exception ex) { ErrorLogging(null, ex, title); }
+            
             // delete the file that was stored locally
             File.Delete(localPath);
 
         }
 
-        public static void UploadFile(string localPath, string directory, string file) {
+        public static void UploadFile(string localPath, string directory, string file, string title) {
 
             try {
                 FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
@@ -83,7 +87,7 @@ namespace JexFlix_Scraper {
             // create request to upload file
             string createURI = string.Format("ftp://storage.bunnycdn.com{0}/{1}", directory, file);
             FtpWebRequest request = GetFTPRequest(createURI, WebRequestMethods.Ftp.UploadFile);
-
+            Console.WriteLine("[" + title + "] " + "Uploading: " + file);
             using (Stream fileStream = File.OpenRead(localPath)) {
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
@@ -93,10 +97,10 @@ namespace JexFlix_Scraper {
                         ftpStream.Write(buffer, 0, readBytesCount);
                         totalReadBytesCount += readBytesCount;
                         double progress = (totalReadBytesCount / fileStream.Length) * 100.0;
-                        Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
+                    //    Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
                     }
                 }
-                Console.WriteLine("\rSuccessfully uploaded: " + file);
+                Console.WriteLine("[" + title + "] " + "Successfully uploaded: " + file);
             }
 
         }
@@ -124,6 +128,20 @@ namespace JexFlix_Scraper {
                 path = path.Replace(c.ToString(), "");
             return path;
         }
+
+        public static void ErrorLogging(WebException wex, Exception ex, string title) {
+            string exception = string.Empty;
+
+            if (wex != null) exception = wex.Message;
+            if (ex != null) exception = ex.Message;
+
+            using (StreamWriter sw = File.AppendText("error.log")) {
+                sw.WriteLine("----------------------------------------");
+                sw.WriteLine("[" + title + "] " + exception);
+                sw.WriteLine("----------------------------------------");
+            }
+        }
+
 
     }
 

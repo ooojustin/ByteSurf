@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace JexFlix_Scraper.Anime {
 
@@ -41,31 +42,25 @@ namespace JexFlix_Scraper.Anime {
             foreach (AniSearch animeFound in AllAnime) {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
+                    AniInfo AnimeInfo = anime.GetAnime();
+
 
                     AniUpload UploadData = new AniUpload();
 
                     UploadData.title = anime.title;
-
                     UploadData.url = Slugify(UploadData.title);
-
-                    AniInfo AnimeInfo = anime.GetAnime();
-
-                    if (AnimeInfo.info.synopsis != null)
-                        UploadData.synopsis = AnimeInfo.info.synopsis;
-
+                    if (AnimeInfo.info.synopsis != null) UploadData.synopsis = AnimeInfo.info.synopsis;
                     UploadData.thumbnail = anime.GetThumbnail();
-
                     UploadData.preview = AnimeInfo.GetWallpaper();
+                    UploadData.episode_length = AnimeInfo.info.episode_length;
 
-                    foreach (AniInfo.Genre genre in AnimeInfo.genres)
+                    foreach (AniInfo.Genre genre in AnimeInfo.genres) {
+                        if (genre.name != null) UploadData.genres.Add(genre.name);
+                    }
 
-                        if (genre.name != null)
-                            UploadData.genres.Add(genre.name);
-
-                    //    Console.WriteLine("Stage 1");
 
                     foreach (AniInfo.EpisodeData EpisodeInfo in AnimeInfo.episodes) {
-                        Console.WriteLine(EpisodeInfo.info.title);
+                        Console.WriteLine("title: " + EpisodeInfo.info.title);
                         EpisodeData EpData = new EpisodeData();
                         EpData.description = EpisodeInfo.info.description;
                         EpData.thumbnail = AnimeInfo.GetThumbnail(Convert.ToInt32(EpisodeInfo.info.episode) - 1);
@@ -85,52 +80,32 @@ namespace JexFlix_Scraper.Anime {
 
                         foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
-                            //    Console.WriteLine("Looking for mirrors");
-
                             if (MirrorParser.IsSupported(mirror)) {
 
                                 if (mirror.quality == 1080 && !UltraHd) {
-
-                                    //    Console.WriteLine("A Mirror is found");
-
                                     Action<string> callback = (s) => {
-                                        //     Console.WriteLine("Found THE URL");
-
                                         Quality quality = new Quality();
-
                                         quality.resolution = 1080;
                                         quality.link = s;
                                         EpData.qualities.Add(quality);
                                         UltraHd = true;
                                     };
-
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
                                 if (mirror.quality == 720 && !Hd) {
-
-                                    //  Console.WriteLine("A Mirror is found");
-
                                     Action<string> callback = (s) => {
-                                        //    Console.WriteLine("Found THE URL");
-
                                         Quality quality = new Quality();
                                         quality.resolution = 720;
                                         quality.link = s;
                                         EpData.qualities.Add(quality);
                                         Hd = true;
                                     };
-
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
                                 if (mirror.quality == 480 && !Standard) {
-
-                                    //  Console.WriteLine("A Mirror is found");
-
                                     Action<string> callback = (s) => {
-                                        //    Console.WriteLine("Found THE URL");
-
                                         Quality quality = new Quality();
                                         quality.resolution = 480;
                                         quality.link = s;
@@ -144,7 +119,6 @@ namespace JexFlix_Scraper.Anime {
                             }
 
                         }
-
                         UploadData.episodeData.Add(EpData);
                     }
 
@@ -163,13 +137,15 @@ namespace JexFlix_Scraper.Anime {
                         Console.WriteLine("Episode: " + ed.episode);
                         Console.WriteLine("Episode description: " + ed.description);
                         Console.WriteLine("Episode thumbnail: " + ed.thumbnail);
-                        Console.WriteLine("Episode duration: " + ed.duration);
+                        Console.WriteLine("Episode duration: " + AnimeInfo.info.episode_length);
 
                         foreach (var q in ed.qualities) {
                             Console.WriteLine("Episode link: " + q.link);
                             Console.WriteLine("Episode resolution: " + q.resolution);
                         }
                     }
+
+                    Console.WriteLine(JsonConvert.SerializeObject(UploadData));
                 }
             }
 

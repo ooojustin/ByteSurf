@@ -76,6 +76,7 @@
     <Compile Include="Anime\MasterAnime\Scraper\ScriptEngine.cs" />
     <Compile Include="Anime\Misc\CaptchaBypass.cs" />
     <Compile Include="Anime\Misc\General.cs" />
+    <Compile Include="MessageHandler.cs" />
     <Compile Include="Movies\Flixify.cs" />
     <Compile Include="Movies\FlixifyUrlClasses.cs" />
     <Compile Include="Networking\CookieAwareWebClient.cs">

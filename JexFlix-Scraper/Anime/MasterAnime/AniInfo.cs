@@ -116,12 +116,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
         }
 
         public class EpisodeData {
-
             public EpisodeInfo info;
             public string thumbnail;
-
-         
-
         }
 
         public class EpisodeInfo {
