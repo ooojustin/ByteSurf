@@ -12,13 +12,12 @@ namespace JexFlix_Scraper {
 
         private static List<Message> MessageQueue = new List<Message>();
 
-        public static void Add(string pre_message, string message, ConsoleColor pre_message_color, ConsoleColor message_color, string tag) {
+        public static void Add(string pre_message, string message, ConsoleColor pre_message_color, ConsoleColor message_color) {
             Message m = new Message();
             m.pre_message = pre_message;
             m.message = message;
             m.pre_message_color = pre_message_color;
             m.message_color = message_color;
-            m.tag = tag;
             MessageQueue.Add(m);
         }
 
@@ -31,7 +30,9 @@ namespace JexFlix_Scraper {
         private static bool FirstMessage = true;
 
         private static void Queue() {
+
             while (true) {
+
                 List<Message> list = MessageQueue.ToList();
                 foreach (Message m in list) {
 
@@ -40,7 +41,7 @@ namespace JexFlix_Scraper {
                     else FirstMessage = false;
 
                     Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.Write(" [" + DateTime.Now.ToShortTimeString() + " - " + m.tag + "]");
+                    Console.Write(" [" + DateTime.Now.ToShortTimeString() + "]");
                     Console.ForegroundColor = m.pre_message_color;
                     Console.Write(" [" + m.pre_message + "] ");
                     Console.ForegroundColor = m.message_color;
@@ -48,8 +49,10 @@ namespace JexFlix_Scraper {
                     MessageQueue.Remove(m);
 
                 }
+
                 Thread.Sleep(500);
             }
+
         }
 
     }
@@ -59,6 +62,6 @@ namespace JexFlix_Scraper {
         public string message;
         public ConsoleColor pre_message_color;
         public ConsoleColor message_color;
-        public string tag;
     }
+
 }
