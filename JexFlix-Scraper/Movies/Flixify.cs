@@ -56,9 +56,19 @@ namespace JexFlix_Scraper.Flixify {
 
         }
 
-        public static void Run(int genre_index) {
+        public static void Run() {
 
-            InitializeScraper(CreateClient(), genre_index);
+            // note to self
+            // improve this stuff, lol
+
+            Thread t1 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 0));
+            t1.Start();
+
+            Thread t2 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 8));
+            t2.Start();
+
+            Thread t3 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 7));
+            t3.Start();
 
         }
 

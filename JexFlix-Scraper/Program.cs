@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using JexFlix_Scraper;
 using JexFlix_Scraper.Anime;
-using JexFlix_Scraper.Flixify;
+using JexFlix_Scraper.Flixify;  
 
 class Program {
 
