@@ -58,13 +58,17 @@ namespace JexFlix_Scraper {
                 web.Headers.Add(HttpRequestHeader.UserAgent, USER_AGENT);
             }
 
-            // download the original file
+            // get temp path to download file to
             string localPath = Path.GetTempFileName();
-            web.DownloadFile(url, localPath);
+
+            // download the original file
+            try { web.DownloadFile(url, localPath); }
+            catch (WebException wex) { ErrorLogging(wex, null, title); }
 
             // reupload file to server
-            UploadFile(localPath, directory, file, title);
-
+            try { UploadFile(localPath, directory, file, title); }
+            catch (Exception ex) { ErrorLogging(null, ex, title); }
+            
             // delete the file that was stored locally
             File.Delete(localPath);
 
@@ -124,6 +128,20 @@ namespace JexFlix_Scraper {
                 path = path.Replace(c.ToString(), "");
             return path;
         }
+
+        public static void ErrorLogging(WebException wex, Exception ex, string title) {
+            string exception = string.Empty;
+
+            if (wex != null) exception = wex.Message;
+            if (ex != null) exception = ex.Message;
+
+            using (StreamWriter sw = File.AppendText("error.log")) {
+                sw.WriteLine("----------------------------------------");
+                sw.WriteLine("[" + title + "] " + exception);
+                sw.WriteLine("----------------------------------------");
+            }
+        }
+
 
     }
 

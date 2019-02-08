@@ -147,9 +147,12 @@ namespace JexFlix_Scraper.Flixify {
             string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
             string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
 
-            Networking.ReuploadRemoteFile(preview_url, directory, "preview.jpg", data.item.title, web);
-            Networking.ReuploadRemoteFile(thumbnail_url, directory, "thumbnail.jpg", data.item.title, web);
 
+            // make sure we dont try downloading files that dont exist
+            if (data.item.images.preview_large != null)
+                Networking.ReuploadRemoteFile(FixExtension(preview_url), directory, "preview.jpg", data.item.title, web);
+            if (data.item.images.poster != null)
+                Networking.ReuploadRemoteFile(FixExtension(thumbnail_url), directory, "thumbnail.jpg", data.item.title, web);
             if (data.item.download.download_720 != null)
                 Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_720, directory, "720.mp4", data.item.title, web);
             if (data.item.download.download_1080 != null)
@@ -166,6 +169,14 @@ namespace JexFlix_Scraper.Flixify {
             web.Headers.Add("Accept", "application/json");
             web.Headers.Add("User-Agent", Networking.USER_AGENT);
             web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
+        }
+
+        /// <summary>
+        /// Changes a string to fix the file extension because flixify is braindead
+        /// </summary>
+        public static string FixExtension(string parse) {
+            if (parse.Contains("jpg")) return parse;
+            return parse.Replace("jpeg", "jpg");
         }
 
         /// <summary>
