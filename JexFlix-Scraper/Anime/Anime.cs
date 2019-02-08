@@ -99,7 +99,7 @@ namespace JexFlix_Scraper.Anime {
                                         Quality quality = new Quality();
 
                                         quality.resolution = 1080;
-                                        quality.link = mirror.GetURL();
+                                        quality.link = s;
                                         EpData.qualities.Add(quality);
                                         UltraHd = true;
                                     };
@@ -116,7 +116,7 @@ namespace JexFlix_Scraper.Anime {
 
                                         Quality quality = new Quality();
                                         quality.resolution = 720;
-                                        quality.link = mirror.GetURL();
+                                        quality.link = s;
                                         EpData.qualities.Add(quality);
                                         Hd = true;
                                     };
@@ -133,7 +133,7 @@ namespace JexFlix_Scraper.Anime {
 
                                         Quality quality = new Quality();
                                         quality.resolution = 480;
-                                        quality.link = mirror.GetURL();
+                                        quality.link = s;
                                         EpData.qualities.Add(quality);
                                         Standard = true;
                                     };
