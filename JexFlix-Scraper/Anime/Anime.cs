@@ -11,7 +11,6 @@ namespace JexFlix_Scraper.Anime {
 
     public static class Anime {
 
-
         /// <summary>
         /// Main function for executing code for the anime scraper.
         /// </summary>
@@ -76,7 +75,7 @@ namespace JexFlix_Scraper.Anime {
 
                         bool UltraHd = false;
                         bool Hd = false;
-                        bool Standard = false;
+                       // bool Standard = false;
 
                         foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
@@ -86,9 +85,10 @@ namespace JexFlix_Scraper.Anime {
                                     Action<string> callback = (s) => {
                                         Quality quality = new Quality();
                                         quality.resolution = 1080;
-                                        quality.link = s;
+                                        quality.link = "";
                                         EpData.qualities.Add(quality);
                                         UltraHd = true;
+                                        Networking.ReuploadRemoteFile(quality.link, )
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
@@ -104,17 +104,17 @@ namespace JexFlix_Scraper.Anime {
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
-                                if (mirror.quality == 480 && !Standard) {
-                                    Action<string> callback = (s) => {
-                                        Quality quality = new Quality();
-                                        quality.resolution = 480;
-                                        quality.link = s;
-                                        EpData.qualities.Add(quality);
-                                        Standard = true;
-                                    };
+                                //if (mirror.quality == 480 && !Standard) {
+                                //    Action<string> callback = (s) => {
+                                //        Quality quality = new Quality();
+                                //        quality.resolution = 480;
+                                //        quality.link = s;
+                                //        EpData.qualities.Add(quality);
+                                //        Standard = true;
+                                //    };
 
-                                    new MirrorParser(mirror, callback).Run();
-                                }
+                                //   new MirrorParser(mirror, callback).Run();
+                                //}
 
                             }
 
