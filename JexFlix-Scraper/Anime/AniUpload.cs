@@ -12,6 +12,7 @@ namespace JexFlix_Scraper.Anime {
         public string preview;
         public string thumbnail;
         public string url;
+        public int episode_length;
         public List<string> genres = new List<string>();
         public List<EpisodeData> episodeData = new List<EpisodeData>();
     }
