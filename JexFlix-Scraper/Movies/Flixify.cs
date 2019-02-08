@@ -12,37 +12,53 @@ namespace JexFlix_Scraper.Flixify {
 
     public static class Flixify {
 
-        //private static CookieAwareWebClient Web = new CookieAwareWebClient();
-        private static CookieContainer CloudFlareCookies = null;
+        private static CookieContainer Cookies = null;
 
         private const string FLIXIFY = "https://flixify.com/";
         private const string MOVIES_URL = FLIXIFY + "movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
         private const string MOVIES_URL_FOR_DOWNLOAD = FLIXIFY + "{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
 
+        static CookieAwareWebClient CreateClient() {
+
+            CookieAwareWebClient web = new CookieAwareWebClient();
+
+            if (Cookies == null) {
+
+                // bypass cloudflare so we can login to and access the website
+                Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
+
+
+                // initialize request headers
+                web.Cookies = Cookies;
+                web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+                web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+
+                // establish post data
+                NameValueCollection values = new NameValueCollection();
+                values["ref"] = "";
+                values["email"] = "nex@weebware.net";
+                values["password"] = "fuckniggers69";
+
+                // send request to store cookies from valid login
+                web.UploadValues(FLIXIFY + "/login", values);
+
+            } else {
+
+                web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+                web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+                web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+
+            }
+
+            web.Cookies = Cookies;
+            return web;
+
+        }
+
         public static void Run(int genre_index) {
 
-            CookieAwareWebClient Web = new CookieAwareWebClient();
-            CookieContainer CloudFlareCookies = null;
-
-            // bypass cloudflare so we can login to and access the website
-            Networking.BypassCloudFlare(FLIXIFY + "/login", out CloudFlareCookies);
-
-            // initialize request headers
-            Web.Cookies = CloudFlareCookies;
-            Web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-            Web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            Web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
-
-            // establish post data
-            NameValueCollection values = new NameValueCollection();
-            values["ref"] = "";
-            values["email"] = "nex@weebware.net";
-            values["password"] = "fuckniggers69";
-
-            // send request to store cookies from valid login
-            Web.UploadValues(FLIXIFY + "/login", values);
-
-            InitializeScraper(Web, genre_index);
+            InitializeScraper(CreateClient(), genre_index);
 
         }
 
@@ -139,7 +155,7 @@ namespace JexFlix_Scraper.Flixify {
         public static void ReuploadFiles(MovieData data) {
 
             CookieAwareWebClient web = new CookieAwareWebClient();
-            web.Cookies = CloudFlareCookies;
+            web.Cookies = Cookies;
 
             // create directory to download the files to, we will delete this later.
             string directory = data.item.url;

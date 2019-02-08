@@ -88,7 +88,7 @@ namespace JexFlix_Scraper.Anime {
                                         quality.link = "";
                                         EpData.qualities.Add(quality);
                                         UltraHd = true;
-                                        Networking.ReuploadRemoteFile(quality.link, )
+                                        // Networking.ReuploadRemoteFile(quality.link, )
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
