@@ -207,10 +207,14 @@ namespace JexFlix_Scraper.Anime.Misc {
 
                 string callback_method = driver.FindElementByClassName("g-recaptcha").GetAttribute("data-callback");
 
-                // submit form
-                if (callback_method.Contains("()")) e.ExecuteScript(callback_method);      // execute callback method through javascript
 
-                else e.ExecuteScript(string.Format("{0}();", callback_method));
+                try {
+                    // submit form
+                    if (callback_method.Contains("()")) e.ExecuteScript(callback_method);      // execute callback method through javascript
+                    else e.ExecuteScript(string.Format("{0}();", callback_method));
+                } catch {
+
+                }
 
                 Console.WriteLine("Submitted Captcha");
             }

@@ -24,14 +24,14 @@ namespace JexFlix_Scraper.Anime {
 
             Console.WriteLine("There are: " + InitialAnime.last_page + " pages");
 
-           // for (int i = 2; i <= InitialAnime.last_page; i++) {
+            // for (int i = 2; i <= InitialAnime.last_page; i++) {
 
             //    Console.WriteLine("On " + i + " page");
 
             //    AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
 
             //    AllAnime.Add(CurrentAnime);
-          //  }
+            //  }
 
 
 
@@ -43,11 +43,6 @@ namespace JexFlix_Scraper.Anime {
                 foreach (AniSearch.Show anime in animeFound.data) {
 
                     AniUpload UploadData = new AniUpload();
-
-                    Console.WriteLine(anime.title);
-
-                    if (anime.title == "Fullmetal Alchemist: Brotherhood")
-                        continue;
 
                     UploadData.title = anime.title;
 
@@ -65,14 +60,14 @@ namespace JexFlix_Scraper.Anime {
                     foreach (AniInfo.Genre genre in AnimeInfo.genres)
 
                         if (genre.name != null)
-                        UploadData.genres.Add(genre.name);
+                            UploadData.genres.Add(genre.name);
 
-                    Console.WriteLine("Stage 1");
+                    //    Console.WriteLine("Stage 1");
 
                     foreach (AniInfo.EpisodeData EpisodeInfo in AnimeInfo.episodes) {
-
+                        Console.WriteLine(EpisodeInfo.info.title);
                         EpisodeData EpData = new EpisodeData();
-                        EpData.description = EpisodeInfo.info.description;                   
+                        EpData.description = EpisodeInfo.info.description;
                         EpData.thumbnail = AnimeInfo.GetThumbnail(Convert.ToInt32(EpisodeInfo.info.episode) - 1);
                         EpData.duration = EpisodeInfo.info.duration;
                         EpData.episode = EpisodeInfo.info.episode;
@@ -90,16 +85,16 @@ namespace JexFlix_Scraper.Anime {
 
                         foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
-                            Console.WriteLine("Looking for mirrors");
+                            //    Console.WriteLine("Looking for mirrors");
 
                             if (MirrorParser.IsSupported(mirror)) {
 
                                 if (mirror.quality == 1080 && !UltraHd) {
 
-                                    Console.WriteLine("A Mirror is found");
+                                    //    Console.WriteLine("A Mirror is found");
 
                                     Action<string> callback = (s) => {
-                                        Console.WriteLine("Found THE URL");
+                                        //     Console.WriteLine("Found THE URL");
 
                                         Quality quality = new Quality();
 
@@ -114,10 +109,10 @@ namespace JexFlix_Scraper.Anime {
 
                                 if (mirror.quality == 720 && !Hd) {
 
-                                    Console.WriteLine("A Mirror is found");
+                                    //  Console.WriteLine("A Mirror is found");
 
                                     Action<string> callback = (s) => {
-                                        Console.WriteLine("Found THE URL");
+                                        //    Console.WriteLine("Found THE URL");
 
                                         Quality quality = new Quality();
                                         quality.resolution = 720;
@@ -131,10 +126,10 @@ namespace JexFlix_Scraper.Anime {
 
                                 if (mirror.quality == 480 && !Standard) {
 
-                                    Console.WriteLine("A Mirror is found");
+                                    //  Console.WriteLine("A Mirror is found");
 
                                     Action<string> callback = (s) => {
-                                        Console.WriteLine("Found THE URL");
+                                        //    Console.WriteLine("Found THE URL");
 
                                         Quality quality = new Quality();
                                         quality.resolution = 480;
@@ -153,11 +148,11 @@ namespace JexFlix_Scraper.Anime {
                         UploadData.episodeData.Add(EpData);
                     }
 
-                    Console.WriteLine(UploadData.title);
-                    Console.WriteLine(UploadData.synopsis);
-                    Console.WriteLine(UploadData.preview);
-                    Console.WriteLine(UploadData.thumbnail);
-                    Console.WriteLine(UploadData.url);
+                    Console.WriteLine("Title: " + UploadData.title);
+                    Console.WriteLine("Description: " + UploadData.synopsis);
+                    Console.WriteLine("Preview: " + UploadData.preview);
+                    Console.WriteLine("Thumbnail: " + UploadData.thumbnail);
+                    Console.WriteLine("URL: " + UploadData.url);
 
                     foreach (var genre in UploadData.genres) {
                         Console.WriteLine(genre);
@@ -165,17 +160,16 @@ namespace JexFlix_Scraper.Anime {
 
                     foreach (var ed in UploadData.episodeData) {
 
-                        Console.WriteLine(ed.episode);
-                        Console.WriteLine(ed.description);
-                        Console.WriteLine(ed.thumbnail);
-                        Console.WriteLine(ed.duration);
+                        Console.WriteLine("Episode: " + ed.episode);
+                        Console.WriteLine("Episode description: " + ed.description);
+                        Console.WriteLine("Episode thumbnail: " + ed.thumbnail);
+                        Console.WriteLine("Episode duration: " + ed.duration);
 
                         foreach (var q in ed.qualities) {
-                            Console.WriteLine(q.link);
-                            Console.WriteLine(q.resolution);
+                            Console.WriteLine("Episode link: " + q.link);
+                            Console.WriteLine("Episode resolution: " + q.resolution);
                         }
                     }
-
                 }
             }
 

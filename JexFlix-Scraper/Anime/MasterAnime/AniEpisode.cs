@@ -29,6 +29,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
 
             string url = string.Format(EPISODE_URL, anime.info.slug, data.info.episode);
 
+            Captcha_check:
+
             string raw = string.Empty;
 
             using (WebClient cWebClient = General.GetWebClient()) {
@@ -39,7 +41,6 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
                 }
             }
 
-            Captcha_check:
      
             // Captcha occurances only appear here so everytime we load this we can run the captcha bypass.
             if (CaptchaBypass.IsCaptchaPage(raw)) {
