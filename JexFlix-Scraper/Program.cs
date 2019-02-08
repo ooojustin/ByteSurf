@@ -10,15 +10,9 @@ class Program {
     static void Main(string[] args) {
 
         MessageHandler.Start();
-        
-        //Anime.Run();
 
-        Thread t1 = new Thread(() => Flixify.Run(0));
-        t1.Start();
-        Thread t2 = new Thread(() => Flixify.Run(8));
-        t2.Start();
-        Thread t3 = new Thread(() => Flixify.Run(7));
-        t3.Start();
+        //Anime.Run();
+        Flixify.Run();
 
         Console.ReadKey();
 

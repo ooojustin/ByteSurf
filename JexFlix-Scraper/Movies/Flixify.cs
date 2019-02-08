@@ -118,7 +118,8 @@ namespace JexFlix_Scraper.Flixify {
                 if (Networking.FileExists(movie.url.Substring(8)))
                     continue;
 
-                Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
+                MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                //Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
                 Web.FlixifyHeaders();
 
@@ -152,8 +153,7 @@ namespace JexFlix_Scraper.Flixify {
                 ReuploadFiles(rootObject);
                 Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
-
-                Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
+                MessageHandler.Add(movie.title, "Completed reupload process", ConsoleColor.White, ConsoleColor.Yellow);
 
             }
 
