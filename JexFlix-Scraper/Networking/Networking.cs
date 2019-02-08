@@ -50,7 +50,7 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
         }
 
-        public static void ReuploadRemoteFile(string url, string directory, string file, WebClient web = null) {
+        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
 
             // initialize webclient if we weren't provided with one
             if (web == null) {
@@ -63,14 +63,14 @@ namespace JexFlix_Scraper {
             web.DownloadFile(url, localPath);
 
             // reupload file to server
-            UploadFile(localPath, directory, file);
+            UploadFile(localPath, directory, file, title);
 
             // delete the file that was stored locally
             File.Delete(localPath);
 
         }
 
-        public static void UploadFile(string localPath, string directory, string file) {
+        public static void UploadFile(string localPath, string directory, string file, string title) {
 
             try {
                 FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
@@ -83,7 +83,7 @@ namespace JexFlix_Scraper {
             // create request to upload file
             string createURI = string.Format("ftp://storage.bunnycdn.com{0}/{1}", directory, file);
             FtpWebRequest request = GetFTPRequest(createURI, WebRequestMethods.Ftp.UploadFile);
-
+            Console.WriteLine("[" + title + "] " + "Uploading: " + file);
             using (Stream fileStream = File.OpenRead(localPath)) {
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
@@ -93,10 +93,10 @@ namespace JexFlix_Scraper {
                         ftpStream.Write(buffer, 0, readBytesCount);
                         totalReadBytesCount += readBytesCount;
                         double progress = (totalReadBytesCount / fileStream.Length) * 100.0;
-                        Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
+                    //    Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
                     }
                 }
-                Console.WriteLine("\rSuccessfully uploaded: " + file);
+                Console.WriteLine("[" + title + "] " + "Successfully uploaded: " + file);
             }
 
         }

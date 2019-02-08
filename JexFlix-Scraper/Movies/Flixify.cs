@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -11,14 +12,17 @@ namespace JexFlix_Scraper.Flixify {
 
     public static class Flixify {
 
-        private static CookieAwareWebClient Web = new CookieAwareWebClient();
-        private static CookieContainer CloudFlareCookies = null;
+        //private static CookieAwareWebClient Web = new CookieAwareWebClient();
+        //private static CookieContainer CloudFlareCookies = null;
 
         private const string FLIXIFY = "https://flixify.com/";
         private const string MOVIES_URL = FLIXIFY + "movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
         private const string MOVIES_URL_FOR_DOWNLOAD = FLIXIFY + "{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
 
-        public static void Run() {
+        public static void Run(int genre_index) {
+
+            CookieAwareWebClient Web = new CookieAwareWebClient();
+            CookieContainer CloudFlareCookies = null;
 
             // bypass cloudflare so we can login to and access the website
             Networking.BypassCloudFlare(FLIXIFY + "/login", out CloudFlareCookies);
@@ -38,13 +42,13 @@ namespace JexFlix_Scraper.Flixify {
             // send request to store cookies from valid login
             Web.UploadValues(FLIXIFY + "/login", values);
 
-            InitializeScraper();
+            InitializeScraper(Web, CloudFlareCookies, genre_index);
 
         }
 
-        public static void InitializeScraper() {
+        public static void InitializeScraper(CookieAwareWebClient Web, CookieContainer CloudFlareCookies, int genre_index) {
 
-            foreach (string genre in genres) {
+            foreach (string genre in genres.Skip(genre_index)) {
 
                 for (int page = 1; page <= 100; page++) {
 
@@ -68,7 +72,7 @@ namespace JexFlix_Scraper.Flixify {
                     string raw = Encoding.Default.GetString(response);
 
                     // parse video list
-                    ParseMovies(raw);
+                    ParseMovies(raw, Web, CloudFlareCookies);
 
                     Thread.Sleep(1000);
 
@@ -78,7 +82,7 @@ namespace JexFlix_Scraper.Flixify {
 
         }
 
-        public static void ParseMovies(string raw) {
+        public static void ParseMovies(string raw, CookieAwareWebClient Web, CookieContainer CloudFlareCookies) {
 
             GenreData serverData = JsonConvert.DeserializeObject<GenreData>(raw);
 
@@ -88,7 +92,7 @@ namespace JexFlix_Scraper.Flixify {
                 if (Networking.FileExists(movie.url.Substring(8)))
                     continue;
 
-                Console.WriteLine(movie.title + " is a shitty movie");
+                Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
                 Web.FlixifyHeaders();
 
@@ -119,10 +123,11 @@ namespace JexFlix_Scraper.Flixify {
 
                 // upload info to insert into database
 
-                ReuploadFiles(rootObject);
+                ReuploadFiles(rootObject, CloudFlareCookies);
                 Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
-                Console.WriteLine("Successfully uploaded all data for: " + data.title + Environment.NewLine);
+
+                Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
 
             }
 
@@ -131,7 +136,7 @@ namespace JexFlix_Scraper.Flixify {
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
         public const string BASE_URL = "https://flixify.com";
 
-        public static void ReuploadFiles(MovieData data) {
+        public static void ReuploadFiles(MovieData data, CookieContainer CloudFlareCookies) {
 
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = CloudFlareCookies;
@@ -142,13 +147,13 @@ namespace JexFlix_Scraper.Flixify {
             string preview_url = BASE_IMAGES_URL + data.item.images.preview_large;
             string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
 
-            Networking.ReuploadRemoteFile(preview_url, directory, "preview.jpg", web);
-            Networking.ReuploadRemoteFile(thumbnail_url, directory, "thumbnail.jpg", web);
+            Networking.ReuploadRemoteFile(preview_url, directory, "preview.jpg", data.item.title, web);
+            Networking.ReuploadRemoteFile(thumbnail_url, directory, "thumbnail.jpg", data.item.title, web);
 
             if (data.item.download.download_720 != null)
-                Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_720, directory, "720.mp4", web);
+                Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_720, directory, "720.mp4", data.item.title, web);
             if (data.item.download.download_1080 != null)
-                Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_1080, directory, "1080.mp4", web);
+                Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_1080, directory, "1080.mp4", data.item.title, web);
 
         }
 
