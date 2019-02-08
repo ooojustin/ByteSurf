@@ -98,7 +98,7 @@ namespace JexFlix_Scraper {
                         ftpStream.Write(buffer, 0, readBytesCount);
                         totalReadBytesCount += readBytesCount;
                         double progress = (totalReadBytesCount / fileStream.Length) * 100.0;
-                    //    Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
+                        // Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
                     }
                 }
                 // Console.WriteLine("[" + title + "] " + "Successfully uploaded: " + file);

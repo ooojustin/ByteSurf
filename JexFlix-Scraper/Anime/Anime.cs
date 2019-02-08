@@ -75,7 +75,7 @@ namespace JexFlix_Scraper.Anime {
 
                         bool UltraHd = false;
                         bool Hd = false;
-                       // bool Standard = false;
+                        // bool Standard = false;
 
                         foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
@@ -88,7 +88,6 @@ namespace JexFlix_Scraper.Anime {
                                         quality.link = "";
                                         EpData.qualities.Add(quality);
                                         UltraHd = true;
-                                        // Networking.ReuploadRemoteFile(quality.link, )
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
@@ -104,24 +103,29 @@ namespace JexFlix_Scraper.Anime {
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
-                                //if (mirror.quality == 480 && !Standard) {
-                                //    Action<string> callback = (s) => {
-                                //        Quality quality = new Quality();
-                                //        quality.resolution = 480;
-                                //        quality.link = s;
-                                //        EpData.qualities.Add(quality);
-                                //        Standard = true;
-                                //    };
+#if false
+                                if (mirror.quality == 480 && !Standard) {
+                                   Action<string> callback = (s) => {
+                                       Quality quality = new Quality();
+                                       quality.resolution = 480;
+                                       quality.link = s;
+                                       EpData.qualities.Add(quality);
+                                       Standard = true;
+                                   };
 
-                                //   new MirrorParser(mirror, callback).Run();
-                                //}
+                                  new MirrorParser(mirror, callback).Run();
+                               }
+#endif
 
                             }
 
                         }
                         UploadData.episodeData.Add(EpData);
+
+
                     }
 
+#if false
                     Console.WriteLine("Title: " + UploadData.title);
                     Console.WriteLine("Description: " + UploadData.synopsis);
                     Console.WriteLine("Preview: " + UploadData.preview);
@@ -144,8 +148,13 @@ namespace JexFlix_Scraper.Anime {
                             Console.WriteLine("Episode resolution: " + q.resolution);
                         }
                     }
+#endif
 
-                    Console.WriteLine(JsonConvert.SerializeObject(UploadData));
+                    string jsonData = JsonConvert.SerializeObject(UploadData);
+
+                    // public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null)
+                    Networking.ReuploadRemoteFile(UploadData.link, )
+
                 }
             }
 
