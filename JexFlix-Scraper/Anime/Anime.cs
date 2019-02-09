@@ -40,8 +40,29 @@ namespace JexFlix_Scraper.Anime {
             foreach (AniSearch animeFound in AllAnime) {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
+
                     AniInfo AnimeInfo = anime.GetAnime();
 
+                    // Check if we have the anime already...
+                    string JsonResponse = Networking.JsonData(anime.title);
+
+                    if (!string.IsNullOrEmpty(JsonResponse)) {
+                        // If we have some content. Visit the link and get the json response
+
+                        using (WebClient Web = General.GetWebClient()) {
+
+                            string raw_json = Web.DownloadString(JsonResponse);
+
+                            // Deseralise it to the json class.
+                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json);
+
+                            // Check if we have all the episodes
+                            if (AnimeInfo.episodes.Count() <= AniUploadData.episodeData.Count()) {
+                                continue;
+                            }
+                        }
+
+                    }
 
                     AniUpload UploadData = new AniUpload();
 
