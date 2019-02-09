@@ -24,6 +24,7 @@ namespace JexFlix_Scraper.Anime {
 
     public class EpisodeData {
         public int episode;
+        public string title;
         public string description = string.Empty;
         public string thumbnail;
         public int duration;
