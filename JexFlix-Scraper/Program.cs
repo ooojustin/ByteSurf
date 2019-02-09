@@ -11,9 +11,9 @@ class Program {
 
         MessageHandler.Start();
 
-        //Anime.Run();
-        // Flixify.Run();
-
+       Anime.Run();
+#if false
+        Flixify.Run();
         Thread t1 = new Thread(() => Flixify.Run(0));
         t1.Start();
         Thread t2 = new Thread(() => Flixify.Run(8));
@@ -22,7 +22,7 @@ class Program {
         t3.Start();
         Thread t4 = new Thread(() => Flixify.Run(3));
         t4.Start();
-
+#endif
         Console.ReadKey();
 
     }
