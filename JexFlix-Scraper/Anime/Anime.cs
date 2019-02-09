@@ -37,6 +37,8 @@ namespace JexFlix_Scraper.Anime {
             // Dumps out all the anime that exists.
             // using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
 
+            AniUpload UploadData = new AniUpload();
+
             foreach (AniSearch animeFound in AllAnime) {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
@@ -65,13 +67,14 @@ namespace JexFlix_Scraper.Anime {
                             }
 
                             // Well if we haven't skipped.
-                            if (AniUploadData.episodeData.Count >= 1) // Check if we have at least 1 episode.
+                            if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
                                 latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
+                                UploadData = AniUploadData;
+                            }
                         }
 
                     }
 
-                    AniUpload UploadData = new AniUpload();
 
                     UploadData.title = anime.title;
 
@@ -101,6 +104,8 @@ namespace JexFlix_Scraper.Anime {
 
                         if (Convert.ToInt32(EpisodeInfo.info.episode) <= latest_episode)
                             continue;
+
+                        MessageHandler.Add(UploadData.title, "Episode: " + EpisodeInfo.info.episode, ConsoleColor.White, ConsoleColor.Yellow);
 
                         // Get the anime title and send a request to the database to check if it already exists.
                         // If the anime title exists then we will continue to the next anime. repeat untill we dont have an anime and continue
