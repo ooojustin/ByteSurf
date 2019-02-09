@@ -46,6 +46,8 @@ namespace JexFlix_Scraper.Anime {
                     // Check if we have the anime already...
                     string JsonResponse = Networking.JsonData(anime.title);
 
+                    int latest_episode = 0;
+
                     if (!string.IsNullOrEmpty(JsonResponse)) {
                         // If we have some content. Visit the link and get the json response
 
@@ -56,10 +58,14 @@ namespace JexFlix_Scraper.Anime {
                             // Deseralise it to the json class.
                             AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json);
 
-                            // Check if we have all the episodes
+                            // If what server has is greater than what we have, we need to upload the new episodes...
+                            // We also need to skip every episode we have already...
                             if (AnimeInfo.episodes.Count() <= AniUploadData.episodeData.Count()) {
                                 continue;
                             }
+
+                            // Well if we haven't skipped.
+                            latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
                         }
 
                     }
@@ -91,6 +97,9 @@ namespace JexFlix_Scraper.Anime {
 
 
                     foreach (AniInfo.EpisodeData EpisodeInfo in AnimeInfo.episodes) {
+
+                        if (Convert.ToInt32(EpisodeInfo.info.episode) <= latest_episode)
+                            continue;
 
                         // Get the anime title and send a request to the database to check if it already exists.
                         // If the anime title exists then we will continue to the next anime. repeat untill we dont have an anime and continue
