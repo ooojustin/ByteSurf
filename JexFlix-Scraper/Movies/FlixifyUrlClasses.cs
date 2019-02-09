@@ -43,15 +43,15 @@ namespace JexFlix_Scraper.Flixify {
         public string url { get; set; }
         public string title { get; set; }
         public string description { get; set; }
-        public int duration { get; set; }
-        public int year { get; set; }
-        public DateTime released { get; set; }
+        public int? duration { get; set; }
+        public int? year { get; set; }
+        public DateTime? released { get; set; }
         public long released_sec_ago { get; set; }
         public string lang { get; set; }
         public string certification { get; set; }
         public List<object> keywords { get; set; }
         public List<string> genres { get; set; }
-        public double rating { get; set; }
+        public double? rating { get; set; }
         public string imdb_id { get; set; }
         public object blocked_by { get; set; }
         public MovieImages1 images { get; set; }
@@ -78,15 +78,15 @@ namespace JexFlix_Scraper.Flixify {
     public class Data {
         public string title;
         public string url;
-        public string description;
-        public long duration;
-        public string thumbnail;
-        public string preview;
+        public string description = string.Empty;
+        public int? duration = 0;
+        public string thumbnail = string.Empty;
+        public string preview = string.Empty;
         public List<Quality> qualities = new List<Quality>();
         public List<string> genres;
-        public string imdb_id;
-        public int year;
-        public string certification;
+        public string imdb_id = string.Empty;
+        public int? year = 0;
+        public string certification = string.Empty;
     }
 
     public class Quality {

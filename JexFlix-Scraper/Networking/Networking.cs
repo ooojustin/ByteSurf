@@ -87,8 +87,8 @@ namespace JexFlix_Scraper {
             // create request to upload file
             string createURI = string.Format("ftp://storage.bunnycdn.com{0}/{1}", directory, file);
             FtpWebRequest request = GetFTPRequest(createURI, WebRequestMethods.Ftp.UploadFile);
-            //Console.WriteLine("[" + title + "] " + "Uploading: " + file);
-            MessageHandler.Add(title, "Uploading: " + file, ConsoleColor.White, ConsoleColor.Yellow);
+            Console.WriteLine("[" + title + "] " + "Uploading: " + file);
+            //MessageHandler.Add(title, "Uploading: " + file, ConsoleColor.White, ConsoleColor.Yellow);
             using (Stream fileStream = File.OpenRead(localPath)) {
                 using (Stream ftpStream = request.GetRequestStream()) {
                     byte[] buffer = new byte[1024 * 1024];
@@ -101,8 +101,8 @@ namespace JexFlix_Scraper {
                         // Console.Write("\rUploading {0}: {1}%   ", file, progress.ToString("F"));
                     }
                 }
-                // Console.WriteLine("[" + title + "] " + "Successfully uploaded: " + file);
-                MessageHandler.Add(title, "Successfully uploaded: " + file, ConsoleColor.White, ConsoleColor.Yellow);
+                Console.WriteLine("[" + title + "] " + "Successfully uploaded: " + file);
+                //MessageHandler.Add(title, "Successfully uploaded: " + file, ConsoleColor.White, ConsoleColor.Yellow);
             }
 
         }

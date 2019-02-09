@@ -18,58 +18,34 @@ namespace JexFlix_Scraper.Flixify {
         private const string MOVIES_URL = FLIXIFY + "movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
         private const string MOVIES_URL_FOR_DOWNLOAD = FLIXIFY + "{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
 
-        static CookieAwareWebClient CreateClient() {
 
-            CookieAwareWebClient web = new CookieAwareWebClient();
-
-            if (Cookies == null) {
-
-                // bypass cloudflare so we can login to and access the website
-                Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
-
-
-                // initialize request headers
-                web.Cookies = Cookies;
-                web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-                web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-                web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
-
-                // establish post data
-                NameValueCollection values = new NameValueCollection();
-                values["ref"] = "";
-                values["email"] = "nex@weebware.net";
-                values["password"] = "fuckniggers69";
-
-                // send request to store cookies from valid login
-                web.UploadValues(FLIXIFY + "/login", values);
-
-            } else {
-
-                web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-                web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-                web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
-
-            }
-
-            web.Cookies = Cookies;
-            return web;
-
-        }
-
-        public static void Run() {
+        public static void Run(int genre_index) {
 
             // note to self
             // improve this stuff, lol
+            CookieAwareWebClient web = new CookieAwareWebClient();
 
-            Thread t1 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 0));
-            t1.Start();
 
-            Thread t2 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 8));
-            t2.Start();
+            // bypass cloudflare so we can login to and access the website
+            Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
 
-            Thread t3 = new Thread(() => Flixify.InitializeScraper(CreateClient(), 7));
-            t3.Start();
 
+            // initialize request headers
+            web.Cookies = Cookies;
+            web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+            web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+
+            // establish post data
+            NameValueCollection values = new NameValueCollection();
+            values["ref"] = "";
+            values["email"] = "nex@weebware.net";
+            values["password"] = "fuckniggers69";
+
+            // send request to store cookies from valid login
+            web.UploadValues(FLIXIFY + "/login", values);
+
+            InitializeScraper(web, genre_index);
         }
 
         public static void InitializeScraper(CookieAwareWebClient Web, int genre_index) {
@@ -118,8 +94,8 @@ namespace JexFlix_Scraper.Flixify {
                 if (Networking.FileExists(movie.url.Substring(8)))
                     continue;
 
-                MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
-                //Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
+                // MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
                 Web.FlixifyHeaders();
 
@@ -132,14 +108,29 @@ namespace JexFlix_Scraper.Flixify {
                 Data data = new Data();
                 data.title = rootObject.item.title;
                 data.url = rootObject.item.url.Substring(8);
-                data.description = rootObject.item.description;
-                data.duration = rootObject.item.duration;
-                data.thumbnail = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
-                data.preview = Networking.CDN_URL + rootObject.item.url + "/preview.jpg";
-                data.genres = rootObject.item.genres;
-                data.imdb_id = rootObject.item.imdb_id;
-                data.year = rootObject.item.year;
-                data.certification = rootObject.item.certification;
+
+                // these can all be returned as null at times, so lets check so it doesnt fuck the sql query
+                if (rootObject.item.description != null)
+                    data.description = rootObject.item.description;
+
+                if (rootObject.item.url != null) {
+                    data.preview = Networking.CDN_URL + rootObject.item.url + "/preview.jpg";
+                    data.thumbnail = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
+                }
+                if (rootObject.item.duration != null)
+                    data.duration = rootObject.item.duration;
+
+                if (rootObject.item.genres != null)
+                    data.genres = rootObject.item.genres;
+
+                if (rootObject.item.year != null)
+                    data.year = rootObject.item.year;
+
+                if (rootObject.item.imdb_id != null)
+                    data.imdb_id = rootObject.item.imdb_id;
+
+                if (rootObject.item.certification != null)
+                    data.certification = rootObject.item.certification;
 
                 // setup qualities
                 if (rootObject.item.download.download_720 != null)
@@ -151,16 +142,18 @@ namespace JexFlix_Scraper.Flixify {
                 // upload info to insert into database
 
                 ReuploadFiles(rootObject);
+                Console.WriteLine(JsonConvert.SerializeObject(data));
                 Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
-                MessageHandler.Add(movie.title, "Completed reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+
+                //MessageHandler.Add(movie.title, "Completed reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
 
             }
 
         }
 
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
-
         public const string BASE_URL = "https://flixify.com";
 
         public static void ReuploadFiles(MovieData data) {
