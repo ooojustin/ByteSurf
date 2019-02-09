@@ -99,7 +99,16 @@ namespace JexFlix_Scraper.Anime {
 
                         bool UltraHd = false;
                         bool Hd = false;
-                        // bool Standard = false;
+                        bool Standard = false;
+
+                        bool HasHDQualities = false;
+
+                        foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
+
+                            if (mirror.quality == 1080 || mirror.quality == 720)
+                                HasHDQualities = true;
+                        }
+
 
                         foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
@@ -140,8 +149,8 @@ namespace JexFlix_Scraper.Anime {
                                         Networking.ReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient());
 
                                         // Now update the link
-                                        quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "720.mp4";          
-                                      
+                                        quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "720.mp4";
+
                                         EpData.qualities.Add(quality);
 
                                         Hd = true;
@@ -149,6 +158,28 @@ namespace JexFlix_Scraper.Anime {
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
+                                if (!HasHDQualities) {
+
+                                    if (mirror.quality == 480 && !Standard) {
+                                        Action<string> callback = (s) => {
+                                            Quality quality = new Quality();
+                                            quality.resolution = 480;
+
+                                            // Upload to CDN then delete.
+                                            Networking.ReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient());
+
+                                            // Now update the link
+                                            quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "480.mp4";
+
+                                            EpData.qualities.Add(quality);
+
+                                            Standard = true;
+                                        };
+                                        new MirrorParser(mirror, callback).Run();
+                                    }
+
+
+                                }
 #if false
                                 if (mirror.quality == 480 && !Standard) {
                                    Action<string> callback = (s) => {
@@ -167,10 +198,8 @@ namespace JexFlix_Scraper.Anime {
 
                         }
 
-                        UploadData.episodeData.Add(EpData);
 
-                        // After each episode is updated -> Upload to the CDN
-                        string jsonData = JsonConvert.SerializeObject(UploadData);
+                        UploadData.episodeData.Add(EpData);
 
                         string localPath = Path.GetTempFileName();
 
@@ -179,7 +208,7 @@ namespace JexFlix_Scraper.Anime {
 
                             JsonSerializer serializer = new JsonSerializer();
                             //serialize object directly into file stream
-                            serializer.Serialize(file, jsonData);
+                            serializer.Serialize(file, UploadData);
                         }
 
                         // Upload the file to the CDN
@@ -199,7 +228,7 @@ namespace JexFlix_Scraper.Anime {
 
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {
-                            Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(dbinfo));
+                            Web.UploadString("https://scraper.jexflix.com/add_anime.php", JsonConvert.SerializeObject(dbinfo));
                         }
 
                     }
@@ -261,4 +290,3 @@ namespace JexFlix_Scraper.Anime {
 
 
 }
- 
