@@ -65,7 +65,8 @@ namespace JexFlix_Scraper.Anime {
                             }
 
                             // Well if we haven't skipped.
-                            latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
+                            if (AniUploadData.episodeData.Count >= 1) // Check if we have at least 1 episode.
+                                latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
                         }
 
                     }
@@ -105,9 +106,11 @@ namespace JexFlix_Scraper.Anime {
                         // If the anime title exists then we will continue to the next anime. repeat untill we dont have an anime and continue
                         // The upload from there
 
-                        Console.WriteLine("title: " + EpisodeInfo.info.title);
+                        // Console.WriteLine("title: " + EpisodeInfo.info.title);
 
                         EpisodeData EpData = new EpisodeData();
+
+                        EpData.title = EpisodeInfo.info.title;
 
                         EpData.episode = Convert.ToInt32(EpisodeInfo.info.episode);
 
