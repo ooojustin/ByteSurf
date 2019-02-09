@@ -39,7 +39,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
                     default:
                         throw new NotImplementedException("Unsupported host: " + mirror.host.name);
                 // }
-            }// );
+            }   // );
 
            // thread.SetApartmentState(ApartmentState.STA);
            // thread.Start();

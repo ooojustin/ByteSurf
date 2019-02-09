@@ -23,13 +23,16 @@ namespace JexFlix_Scraper.Anime {
     }
 
     public class EpisodeData {
-        public string episode;
+        public int episode;
         public string description = string.Empty;
         public string thumbnail;
         public int duration;
         public List<Quality> qualities = new List<Quality>();
     }
 
-
+    public class AniDb {
+        public string name;
+        public string episode_data;
+    }
 
 }

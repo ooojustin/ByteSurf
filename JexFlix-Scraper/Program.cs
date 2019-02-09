@@ -11,8 +11,8 @@ class Program {
 
         MessageHandler.Start();
 
-        //Anime.Run();
-        Flixify.Run();
+        Anime.Run();
+        // Flixify.Run();
 
         Console.ReadKey();
 

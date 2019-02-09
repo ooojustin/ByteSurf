@@ -160,6 +160,7 @@ namespace JexFlix_Scraper.Flixify {
         }
 
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
+
         public const string BASE_URL = "https://flixify.com";
 
         public static void ReuploadFiles(MovieData data) {
