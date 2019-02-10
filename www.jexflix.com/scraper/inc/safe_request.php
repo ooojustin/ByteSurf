@@ -18,17 +18,21 @@
             $this->enc = new Encryption($key);
             if ($iv !== null)
                 if (count($iv) == 16)
-                    $this->enc->SetIV($iv);
-            $_POST = $this->getPOST();
-            $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
+                    $this->enc->SetIV($iv);         
+            if ($_POST = $this->getPOST())
+                $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
         }
         
         // Decrypts POST data from SafeRequest client.
         // Example: $_POST = GetPost('secret_key');
         function getPOST() {
             $data = file_get_contents('php://input');
-            $data = $this->enc->DecryptString($data);
-            return json_decode($data, true);
+            if (strlen($data) > 0) {
+                $data = $this->enc->DecryptString($data);
+                return json_decode($data, true);
+            } else {
+                return false;
+            }
         }
         
         // Returns encrypted JSON information to SafeRequest client.
