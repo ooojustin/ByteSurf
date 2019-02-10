@@ -115,6 +115,8 @@ namespace JexFlix_Scraper.Anime {
 
                         EpisodeData EpData = new EpisodeData();
 
+                        EpData.qualities = new List<Quality>();
+
                         EpData.title = EpisodeInfo.info.title;
 
                         EpData.episode = Convert.ToInt32(EpisodeInfo.info.episode);
