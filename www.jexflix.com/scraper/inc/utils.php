@@ -3,9 +3,12 @@
 	// utils.php
 	// Functions used generally in other parts of the website.
 
-	// TODO:
-	// - login(email, password)
-	// - create_account(email, password)
-	// ...
-	
+	function login($email, $password) {
+
+	}
+
+	function create_account($email, $password) {
+
+	}
+
 ?>
