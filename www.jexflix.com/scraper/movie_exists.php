@@ -1,5 +1,6 @@
 <?php
 
+    require 'inc/safe_request.php';
     require 'inc/server.php';
     global $db, $sr;
 
@@ -9,7 +10,6 @@
     $data['exists'] = boolval(videoLinkExists($_POST['url'])); 
     $sr->output(true, 'evaluated successfully.', $data);
 
-
     function videoLinkExists($url) {
         global $db;
         $get_video = $db->prepare('SELECT * FROM movies WHERE url=:url');
@@ -17,5 +17,6 @@
         $get_video->execute();
         return $get_video->fetch();
     }
+
 ?>
 

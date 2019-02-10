@@ -1,5 +1,6 @@
 <?php
 
+	require 'inc/safe_request.php';
 	require 'inc/server.php';
 	global $db, $sr;
 

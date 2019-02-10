@@ -1,5 +1,5 @@
 <?php
-    require 'inc/safe_request.php';
+
     require 'inc/server.php';
     
     $post_body = file_get_contents('php://input');

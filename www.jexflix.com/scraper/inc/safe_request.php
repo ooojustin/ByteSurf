@@ -1,4 +1,9 @@
 <?php
+
+    // Initialize SafeRequest class. ($sr)
+    define('ENCRYPTION_KEY', 'justPorn');
+    $GLOBALS['sr'] = new SafeRequest(ENCRYPTION_KEY);
+
     /*
     
         === SafeRequest ===
@@ -18,21 +23,17 @@
             $this->enc = new Encryption($key);
             if ($iv !== null)
                 if (count($iv) == 16)
-                    $this->enc->SetIV($iv);         
-            if ($_POST = $this->getPOST())
-                $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
+                    $this->enc->SetIV($iv);
+            $_POST = $this->getPOST();
+            $this->auth = $this->enc->DecryptString($_POST['authentication_key']);   
         }
         
         // Decrypts POST data from SafeRequest client.
         // Example: $_POST = GetPost('secret_key');
         function getPOST() {
             $data = file_get_contents('php://input');
-            if (strlen($data) > 0) {
-                $data = $this->enc->DecryptString($data);
-                return json_decode($data, true);
-            } else {
-                return false;
-            }
+            $data = $this->enc->DecryptString($data);
+            return json_decode($data, true);
         }
         
         // Returns encrypted JSON information to SafeRequest client.
@@ -46,7 +47,9 @@
             $data = $this->enc->EncryptString($data);
             die($data);
         }
+
     }
+
     
     /* Encryption class to safely communicate with SafeRequest client.
        Example:
@@ -76,14 +79,17 @@
         function SetIV($iv) {
             $this->_iv = $this->bytes_to_string($iv);
         }
+
         function bytes_to_string($bytes) {
             return implode(array_map("chr", $bytes));
         }
     
     }
+
     // Combines 2 arrays. ($arr2 gets added to the end of $arr1)
     function array_fuse(&$arr1, $arr2) {
         foreach ($arr2 as $key => $value)
             $arr1[$key] = $value;
     }
+
 ?>
