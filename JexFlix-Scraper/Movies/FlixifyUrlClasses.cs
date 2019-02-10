@@ -20,6 +20,8 @@ namespace JexFlix_Scraper.Flixify {
     }
 
     public class Download {
+        [JsonProperty("480")]
+        public string download_480 { get; set; }
         [JsonProperty("720")]
         public string download_720 { get; set; }
         [JsonProperty("1080")]

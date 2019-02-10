@@ -25,10 +25,8 @@ namespace JexFlix_Scraper.Flixify {
             // improve this stuff, lol
             CookieAwareWebClient web = new CookieAwareWebClient();
 
-
             // bypass cloudflare so we can login to and access the website
             Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
-
 
             // initialize request headers
             web.Cookies = Cookies;
@@ -138,6 +136,9 @@ namespace JexFlix_Scraper.Flixify {
 
                 if (rootObject.item.download.download_1080 != null)
                     data.qualities.Add(new Quality { resolution = 1080, link = Networking.CDN_URL + rootObject.item.url + "/1080.mp4" });
+
+                if (rootObject.item.download.download_720 == null && rootObject.item.download.download_1080 == null)
+                    data.qualities.Add(new Quality { resolution = 480, link = Networking.CDN_URL + rootObject.item.url + "/480.mp4" });
 
                 // upload info to insert into database
 
