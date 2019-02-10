@@ -37,6 +37,8 @@ namespace JexFlix_Scraper.Anime {
             // Dumps out all the anime that exists.
             // using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
 
+            AniUpload UploadData = new AniUpload();
+
             foreach (AniSearch animeFound in AllAnime) {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
@@ -56,7 +58,7 @@ namespace JexFlix_Scraper.Anime {
                             string raw_json = Web.DownloadString(JsonResponse);
 
                             // Deseralise it to the json class.
-                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json);
+                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
 
                             // If what server has is greater than what we have, we need to upload the new episodes...
                             // We also need to skip every episode we have already...
@@ -65,13 +67,14 @@ namespace JexFlix_Scraper.Anime {
                             }
 
                             // Well if we haven't skipped.
-                            if (AniUploadData.episodeData.Count >= 1) // Check if we have at least 1 episode.
+                            if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
                                 latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
+                                UploadData = AniUploadData;
+                            }
                         }
 
                     }
 
-                    AniUpload UploadData = new AniUpload();
 
                     UploadData.title = anime.title;
 
@@ -101,6 +104,8 @@ namespace JexFlix_Scraper.Anime {
 
                         if (Convert.ToInt32(EpisodeInfo.info.episode) <= latest_episode)
                             continue;
+
+                        MessageHandler.Add(UploadData.title, "Episode: " + EpisodeInfo.info.episode + "\n", ConsoleColor.White, ConsoleColor.Yellow);
 
                         // Get the anime title and send a request to the database to check if it already exists.
                         // If the anime title exists then we will continue to the next anime. repeat untill we dont have an anime and continue
@@ -142,8 +147,12 @@ namespace JexFlix_Scraper.Anime {
                                 HasHDQualities = true;
                         }
 
+                        var embed_copy = episode.EmbedList;
 
-                        foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
+                        // Reverse to use all other cdns thats not mp4upload first.
+                        embed_copy.Reverse();
+
+                        foreach (AniEpisode.Mirror mirror in embed_copy) {
 
                             if (MirrorParser.IsSupported(mirror)) {
 

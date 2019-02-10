@@ -7,33 +7,33 @@ using System.Threading.Tasks;
 namespace JexFlix_Scraper.Anime {
 
     public class AniUpload {
-        public string title;
-        public string synopsis;
-        public string preview;
-        public string thumbnail;
-        public string url;
-        public int episode_length;
-        public List<string> genres = new List<string>();
-        public List<EpisodeData> episodeData = new List<EpisodeData>();
+        public string title { get; set; }
+        public string synopsis { get; set; }
+        public string preview { get; set; }
+        public string thumbnail { get; set; }
+        public string url { get; set; }
+        public int episode_length { get; set; }
+        public List<string> genres { get; set; }
+        public List<EpisodeData> episodeData { get; set; }
     }
 
     public class Quality {
-        public int resolution;
-        public string link;
+        public int resolution { get; set; }
+        public string link { get; set; }
     }
 
     public class EpisodeData {
-        public int episode;
-        public string title;
-        public string description = string.Empty;
-        public string thumbnail;
-        public int duration;
-        public List<Quality> qualities = new List<Quality>();
+        public int episode { get; set; }
+        public string title { get; set; }
+        public string description { get; set; }
+        public string thumbnail { get; set; }
+        public int duration { get; set; }
+        public List<Quality> qualities { get; set; }
     }
 
     public class AniDb {
-        public string name;
-        public string episode_data;
+        public string name { get; set; }
+        public string episode_data { get; set; }
     }
 
 }
