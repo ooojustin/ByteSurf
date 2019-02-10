@@ -1,11 +1,7 @@
 <?php
 
-    require 'inc/safe_request.php';
     require 'inc/server.php';
-    global $db;
-    
-    define('ENCRYPTION_KEY', 'jexflix');
-    $sr = new SafeRequest(ENCRYPTION_KEY);
+    global $db, $sr;
 
     if ($_SERVER['HTTP_USER_AGENT'] != 'jexflix-client')
         $sr->output(false, 'invalid request agent.');
