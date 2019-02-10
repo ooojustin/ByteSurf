@@ -1,9 +1,6 @@
 <?php
-    require 'inc/safe_request.php';
-    require 'inc/server.php';
 
-    define('ENCRYPTION_KEY', 'jexflix');
-    $sr = new SafeRequest(ENCRYPTION_KEY);
+    require 'inc/server.php';
     
     $post_body = file_get_contents('php://input');
     $data = json_decode($post_body, true);
@@ -11,17 +8,15 @@
     $title = $data['name'];
     $ep_data = $data['episode_data'];
 
-    $checkAnime = $db->prepare("SELECT * FROM anime WHERE title=:title");
-    $checkAnime->bindValue(':title', $title);
-    $checkAnime->execute();
-    if ($checkAnime->rowCount() > 0) {
+    $get_anime = $db->prepare("SELECT * FROM anime WHERE title=:title");
+    $get_anime->bindValue(':title', $title);
+    $get_anime->execute();
+    if ($get_anime->fetch())
         die();
-    }
 
-    $updateTable = $db->prepare('INSERT INTO anime (title, data) VALUES (:title, :data);');
-    $updateTable->bindValue(':title', $title);
-    $updateTable->bindValue(':data', $ep_data);
-
-    $updateTable->execute();
+    $add_anime = $db->prepare('INSERT INTO anime (title, data) VALUES (:title, :data);');
+    $add_anime->bindValue(':title', $title);
+    $add_anime->bindValue(':data', $ep_data);
+    $add_anime->execute();
 
 ?>
