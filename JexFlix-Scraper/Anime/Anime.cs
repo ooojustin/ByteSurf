@@ -154,12 +154,7 @@ namespace JexFlix_Scraper.Anime {
                                 HasHDQualities = true;
                         }
 
-                        var embed_copy = episode.EmbedList;
-
-                        // Reverse to use all other cdns thats not mp4upload first.
-                        embed_copy.Reverse();
-
-                        foreach (AniEpisode.Mirror mirror in embed_copy) {
+                        foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
                             if (MirrorParser.IsSupported(mirror)) {
 
