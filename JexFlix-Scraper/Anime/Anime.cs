@@ -166,17 +166,26 @@ namespace JexFlix_Scraper.Anime {
 
                                 if (mirror.quality == 1080 && !UltraHd) {
                                     Action<string> callback = (s) => {
+
                                         Quality quality = new Quality();
+
                                         quality.resolution = 1080;
 
-                                        // Upload to CDN then delete.
-                                        Networking.ReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient());
+                                        MessageHandler.Add(UploadData.title, "1080p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
 
-                                        // Now update the link
-                                        quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "1080.mp4";
 
-                                        EpData.qualities.Add(quality);
-                                        UltraHd = true;
+                                            if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient())) {
+
+                                                // Now update the link
+                                                quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "1080.mp4";
+
+                                                EpData.qualities.Add(quality);
+
+                                                UltraHd = true;
+                                            }
+
+                                   
+
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
@@ -188,16 +197,19 @@ namespace JexFlix_Scraper.Anime {
                                     Action<string> callback = (s) => {
                                         Quality quality = new Quality();
                                         quality.resolution = 720;
+                                        MessageHandler.Add(UploadData.title, "720p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
 
                                         // Upload to CDN then delete.
-                                        Networking.ReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient());
+                                        if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient())) {
 
-                                        // Now update the link
-                                        quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "720.mp4";
+                                            // Now update the link
+                                            quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "720.mp4";
 
-                                        EpData.qualities.Add(quality);
+                                            EpData.qualities.Add(quality);
 
-                                        Hd = true;
+                                            Hd = true;
+                                        }
+
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
@@ -209,15 +221,19 @@ namespace JexFlix_Scraper.Anime {
                                             Quality quality = new Quality();
                                             quality.resolution = 480;
 
+                                                MessageHandler.Add(UploadData.title, "480p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
+
                                             // Upload to CDN then delete.
-                                            Networking.ReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient());
+                                            if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient())) {
 
-                                            // Now update the link
-                                            quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "480.mp4";
+                                                // Now update the link
+                                                quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "480.mp4";
 
-                                            EpData.qualities.Add(quality);
+                                                EpData.qualities.Add(quality);
 
-                                            Standard = true;
+                                                Standard = true;
+                                            }
+
                                         };
                                         new MirrorParser(mirror, callback).Run();
                                     }
@@ -327,6 +343,43 @@ namespace JexFlix_Scraper.Anime {
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
             return str;
+        }
+
+
+        /// <summary>
+        /// Modified Function that handles exceptions
+        /// </summary>
+        public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
+
+            // initialize webclient if we weren't provided with one
+            if (web == null) {
+                web = new WebClient();
+                web.Headers.Add(HttpRequestHeader.UserAgent, Networking.USER_AGENT);
+            }
+
+            // get temp path to download file to
+            string localPath = Path.GetTempFileName();
+
+            bool success = true;
+
+            // download the original file
+            try { web.DownloadFile(url, localPath); } catch (WebException wex) {
+
+                Networking.ErrorLogging(wex, null, title);
+
+                success = false;
+            }
+
+            // reupload file to server
+            if (success) {
+                try { Networking.UploadFile(localPath, directory, file, title); } catch (Exception ex) { Networking.ErrorLogging(null, ex, title); }
+            }
+
+            // delete the file that was stored locally
+            File.Delete(localPath);
+
+            return success;
+
         }
 
     }
