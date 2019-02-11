@@ -28,7 +28,7 @@ namespace JexFlix_Scraper.Anime {
         public string description { get; set; }
         public string thumbnail { get; set; }
         public int duration { get; set; }
-        public List<Quality> qualities { get; set; } 
+        public List<Quality> qualities { get; set; }
     }
 
     public class AniDb {
