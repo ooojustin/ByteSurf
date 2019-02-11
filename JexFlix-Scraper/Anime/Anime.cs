@@ -171,33 +171,28 @@ namespace JexFlix_Scraper.Anime {
 
                                         quality.resolution = 1080;
 
-                                        MessageHandler.Add(UploadData.title, "1080p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
+
+                                        if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient())) {
+
+                                            // Now update the link
+                                            quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "1080.mp4";
+
+                                            EpData.qualities.Add(quality);
+
+                                            UltraHd = true;
+                                        }
 
 
-                                            if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient())) {
-
-                                                // Now update the link
-                                                quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "1080.mp4";
-
-                                                EpData.qualities.Add(quality);
-
-                                                UltraHd = true;
-                                            }
-
-                                   
 
                                     };
                                     new MirrorParser(mirror, callback).Run();
                                 }
 
 
-                                // cdn.jexflix.com/anime/anime-name-here/1/720.mp4
-
                                 if (mirror.quality == 720 && !Hd) {
                                     Action<string> callback = (s) => {
                                         Quality quality = new Quality();
                                         quality.resolution = 720;
-                                        MessageHandler.Add(UploadData.title, "720p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
 
                                         // Upload to CDN then delete.
                                         if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient())) {
@@ -220,8 +215,6 @@ namespace JexFlix_Scraper.Anime {
                                         Action<string> callback = (s) => {
                                             Quality quality = new Quality();
                                             quality.resolution = 480;
-
-                                                MessageHandler.Add(UploadData.title, "480p : " + s, ConsoleColor.White, ConsoleColor.Yellow);
 
                                             // Upload to CDN then delete.
                                             if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient())) {
