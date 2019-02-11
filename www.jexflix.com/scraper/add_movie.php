@@ -1,9 +1,6 @@
 <?php
-    require 'inc/safe_request.php';
-    require 'inc/server.php';
 
-    define('ENCRYPTION_KEY', 'jexflix');
-    $sr = new SafeRequest(ENCRYPTION_KEY);
+    require 'inc/server.php';
     
     $post_body = file_get_contents('php://input');
     $data = json_decode($post_body, true);

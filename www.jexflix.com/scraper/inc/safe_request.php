@@ -1,4 +1,9 @@
 <?php
+
+    // Initialize SafeRequest class. ($sr)
+    define('ENCRYPTION_KEY', 'justPorn');
+    $GLOBALS['sr'] = new SafeRequest(ENCRYPTION_KEY);
+
     /*
     
         === SafeRequest ===
@@ -42,7 +47,9 @@
             $data = $this->enc->EncryptString($data);
             die($data);
         }
+
     }
+
     
     /* Encryption class to safely communicate with SafeRequest client.
        Example:
@@ -72,14 +79,17 @@
         function SetIV($iv) {
             $this->_iv = $this->bytes_to_string($iv);
         }
+
         function bytes_to_string($bytes) {
             return implode(array_map("chr", $bytes));
         }
     
     }
+
     // Combines 2 arrays. ($arr2 gets added to the end of $arr1)
     function array_fuse(&$arr1, $arr2) {
         foreach ($arr2 as $key => $value)
             $arr1[$key] = $value;
     }
+
 ?>
