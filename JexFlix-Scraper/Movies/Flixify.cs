@@ -84,15 +84,44 @@ namespace JexFlix_Scraper.Flixify {
 
         public static void ParseMovies(string raw, CookieAwareWebClient Web) {
 
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            web.Cookies = Cookies;
+
             GenreData serverData = JsonConvert.DeserializeObject<GenreData>(raw);
 
             foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (Networking.FileExists(movie.url.Substring(8)))
-                    continue;
+                if (Networking.FileExists(movie.url.Substring(8))) continue;
 
-                // MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                // stuff starts here to delete
+
+                //Web.FlixifyHeaders();
+                //byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
+                //string new_raw = Encoding.Default.GetString(response);
+                //MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
+
+
+                //string url_on_cdn = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
+                //string thumbnail_url = BASE_IMAGES_URL + rootObject.item.images.poster;
+                //string directory = rootObject.item.url;
+
+                //using (StreamWriter sw = File.AppendText("purgelist2k19.txt")) {
+                //    sw.WriteLine(url_on_cdn);
+                //}
+
+
+                //if (rootObject.item.images.poster != null)
+                //    Networking.ReuploadRemoteFile(FixExtension(FixThumbnailRes(thumbnail_url)), directory, "thumbnail.jpg", rootObject.item.title, web);
+
+                //NameValueCollection values = new NameValueCollection();
+                //values["preview"] = url_on_cdn;
+
+                //Console.WriteLine("kappa");
+
+                // stuff ends here to delete
+
+                MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
                 Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
                 Web.FlixifyHeaders();
@@ -172,7 +201,7 @@ namespace JexFlix_Scraper.Flixify {
             if (data.item.images.preview_large != null)
                 Networking.ReuploadRemoteFile(FixExtension(preview_url), directory, "preview.jpg", data.item.title, web);
             if (data.item.images.poster != null)
-                Networking.ReuploadRemoteFile(FixExtension(thumbnail_url), directory, "thumbnail.jpg", data.item.title, web);
+                Networking.ReuploadRemoteFile(FixExtension(FixThumbnailRes(thumbnail_url)), directory, "thumbnail.jpg", data.item.title, web);
             if (data.item.download.download_720 != null)
                 Networking.ReuploadRemoteFile(BASE_URL + data.item.download.download_720, directory, "720.mp4", data.item.title, web);
             if (data.item.download.download_1080 != null)
@@ -196,6 +225,10 @@ namespace JexFlix_Scraper.Flixify {
         public static string FixExtension(string parse) {
             if (parse.Contains("jpg")) return parse;
             return parse.Replace("jpeg", "jpg");
+        }
+
+        public static string FixThumbnailRes(string url) {
+            return url.Replace("172x255", "370x549");
         }
 
         /// <summary>

@@ -142,7 +142,7 @@ namespace JexFlix_Scraper.Anime {
                         AniEpisode episode = AnimeInfo.GetEpisode(EpisodeInfo);
 
                         if (episode == null)
-                            return;
+                            continue;
 
                         bool UltraHd = false;
                         bool Hd = false;
