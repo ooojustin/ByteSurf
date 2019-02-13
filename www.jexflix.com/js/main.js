@@ -482,3 +482,40 @@ $(document).ready(function () {
 	}
 	$(window).on('load', initializeThirdSlider());
 });
+
+
+
+/*====================================details3.html============================================*/
+
+
+$('.owl-carousel').owlCarousel({
+    mouseDrag: true,
+    touchDrag: true,
+    dots: true,
+    loop: true,
+    autoplay: false,
+    smartSpeed: 600,
+    margin: 30,
+    responsive : {
+        0 : {
+            items: 2,
+        },
+        576 : {
+            items: 2,
+        },
+        768 : {
+            items: 3,
+        },
+        992 : {
+            items: 4,
+        },
+        1200 : {
+            items: 4,
+            margin: 50
+        },
+        1440 : {
+            items: 5,
+            //margin: 50
+        },
+    }
+});

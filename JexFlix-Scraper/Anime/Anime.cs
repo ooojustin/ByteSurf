@@ -48,6 +48,8 @@ namespace JexFlix_Scraper.Anime {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
 
+                    if (anime.title.Contains("Fullmetal")) continue;
+
                     AniInfo AnimeInfo = anime.GetAnime();
 
                     // Check if we have the anime already...
@@ -343,6 +345,8 @@ namespace JexFlix_Scraper.Anime {
         /// Modified Function that handles exceptions
         /// </summary>
         public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
+
+            Console.WriteLine(url);
 
             // initialize webclient if we weren't provided with one
             if (web == null) {
