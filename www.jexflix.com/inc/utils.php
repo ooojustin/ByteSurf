@@ -29,6 +29,16 @@
     	$get_data->bindValue(':url', $url);
     	$get_data->execute();
    		return $get_data->fetch();
+	function get_imdb_rating($url) {
+		$movie_data = get_movie_data($url);
+		$imdb_url = 'https://www.imdb.com/title/' . $movie_data['imdb_id'];
+		$imdb_raw = file_get_contents($imdb_url);
+		$regex = '/<span class="rating">.*<span class="ofTen">\/10<\/span><\/span>/m';
+		if (!preg_match($regex, $imdb_raw, $matches))
+			return doubleval(-1);
+		// forgive me lord for i have sinned:
+		return doubleval(explode('<', explode('>', $matches[0])[1])[0]);
+	}
 
 	}
 
