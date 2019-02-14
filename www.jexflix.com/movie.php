@@ -15,6 +15,8 @@
     $duration = intval($data['duration'] / 60);
 
     $video_data = json_decode($get_data['qualities']);
+    foreach ($video_data as $key => $quality)
+        $video_data[$key] = authenticate_cdn_url($quality['link']);
 
 ?>
 

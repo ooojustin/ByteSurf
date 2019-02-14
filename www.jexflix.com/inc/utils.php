@@ -28,4 +28,32 @@
    		return $get_data->fetch();
 	}
 
+	function authenticate_cdn_url($url) {
+
+		// important vars
+		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
+		$base_url = 'https://cdn.jexflix.com';
+
+		// determine the path of the file (remove base url)
+		$path = str_replace('https://cdn.jexflix.com', '', $url);
+
+		// Set the time of expiry to one day from now
+		$expires = time() + (60 * 60 * 24); 
+
+		// establish token data
+		$hash_me = $securityKey.$path.$expires;
+
+		// to enable ip validation:
+		// $hash_me .= "146.14.19.7";
+
+		$token = md5($hash_me, true);
+		$token = base64_encode($token);
+		$token = strtr($token, '+/', '-_');
+		$token = str_replace('=', '', $token);  
+
+		// generate new url
+		$url = "{$base_url}{$path}?token={$token}&expires={$expires}";
+
+	}
+
 ?>
