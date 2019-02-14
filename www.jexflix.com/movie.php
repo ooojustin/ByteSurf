@@ -8,8 +8,8 @@
 
     $title = $data['title'];
     $description = $data['description'];
-    $thumbnail = $data['thumbnail'];
-    $preview = $data['preview'];
+    $thumbnail = authenticate_cdn_url($data['thumbnail']);
+    $preview = authenticate_cdn_url($data['preview']);
     $year = $data['year'];
     $certification = $data['certification'];
     $duration = intval($data['duration'] / 60);
