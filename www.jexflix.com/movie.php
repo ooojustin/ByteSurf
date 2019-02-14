@@ -1,25 +1,23 @@
 <?php
-require 'inc/server.php';
+    
+    require 'inc/server.php';
 
-$url = $_GET["t"];
+    $get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
+    $get_data->bindValue(':url', $_GET["t"]);
+    $get_data->execute();
+    $data = $get_data->fetch();
+    if (!$data)
+        die('Movie not found.'); // make a 404 page or smth
 
+    $title = $data['title'];
+    $description = $data['description'];
+    $thumbnail = $data['thumbnail'];
+    $preview = $data['preview'];
+    $year = $data['year'];
+    $certification = $data['certification'];
+    $duration = intval($data['duration'] / 60);
 
-$get_data_query = $db->prepare('SELECT * FROM movies WHERE url=:url');
-$get_data_query->bindValue(':url', $url);
-$get_data_query->execute();
-$get_data = $get_data_query->fetch();
-
-$title = $get_data['title'];
-$description = $get_data['description'];
-$thumbnail = $get_data['thumbnail'];
-$preview = $get_data['preview'];
-$year = $get_data['year'];
-$certification = $get_data['certification'];
-$duration = intval($get_data['duration'] / 60);
-
-
-$video_data = json_decode($get_data['qualities']);
-// $video_data[0]->resolution
+    $video_data = json_decode($get_data['qualities']);
 
 ?>
 
