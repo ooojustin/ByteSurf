@@ -62,7 +62,10 @@ namespace JexFlix_Scraper.Anime {
 
                         using (WebClient Web = General.GetWebClient()) {
 
-                            string raw_json = Web.DownloadString(JsonResponse);
+                            string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
+
+                            //  string raw_json = Web.DownloadString(JsonResponse);
+                            string raw_json = Networking.DownloadString(ftp_response);
 
                             // Deseralise it to the json class.
                             AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
