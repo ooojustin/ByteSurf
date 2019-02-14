@@ -40,17 +40,14 @@
     <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="icon/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-touch-icon-144x144.png">
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32">
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="Dmitry Volkov">
-    <title>jexflix</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">A
+	<meta name="author" content="Anthony Almond">
+	<title>jexflix</title>
 
 </head>
 <body class="body">
