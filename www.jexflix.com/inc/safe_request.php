@@ -1,7 +1,7 @@
 <?php
 
     // Initialize SafeRequest class. ($sr)
-    define('ENCRYPTION_KEY', 'justPorn');
+    define('ENCRYPTION_KEY', 'jexflix');
     $GLOBALS['sr'] = new SafeRequest(ENCRYPTION_KEY);
 
     /*
