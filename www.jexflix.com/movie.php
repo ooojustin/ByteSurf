@@ -1,3 +1,29 @@
+<?php
+require 'inc/server.php';
+
+$url = $_GET["t"];
+
+
+$get_data_query = $db->prepare('SELECT * FROM movies WHERE url=:url');
+$get_data_query->bindValue(':url', $url);
+$get_data_query->execute();
+$get_data = $get_data_query->fetch();
+
+$title = $get_data['title'];
+$description = $get_data['description'];
+$thumbnail = $get_data['thumbnail'];
+$preview = $get_data['preview'];
+$year = $get_data['year'];
+$certification = $get_data['certification'];
+$duration = intval($get_data['duration'] / 60);
+
+
+$video_data = json_decode($get_data['qualities']);
+// $video_data[0]->resolution
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +43,7 @@
     <link rel="stylesheet" href="css/plyr.css">
     <link rel="stylesheet" href="css/photoswipe.css">
     <link rel="stylesheet" href="css/default-skin.css">
+    <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 
     <!-- Favicons -->
@@ -29,7 +56,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="author" content="Dmitry Volkov">
-    <title>FlixGo – Online Movies, TV Shows & Cinema HTML Template</title>
+    <title>jexflix</title>
 
 </head>
 <body class="body">
@@ -158,26 +185,27 @@
     <!-- details background -->
     <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
     <!-- end details background -->
-
-    <!-- player -->
-    <div class="col-12">
-        <video controls crossorigin playsinline poster="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.jpg" id="player">
+<div class="container">
+    <div class="row">
+        <!-- player -->
+        <div class="col-12">
+        <video controls crossorigin playsinline poster=<?=$preview?> id="player">
             <!-- Video files -->
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" type="video/mp4">
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-720p.mp4" type="video/mp4">
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1080p.mp4" type="video/mp4">
-            <source src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-1440p.mp4" type="video/mp4">
+            <source src=<?=$video_data[0]->link?> type="video/mp4">>
 
-            <!-- Caption files -->
-            <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
-                   default>
-            <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+                <!-- Caption files -->
+                <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
+                       default>
+                <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
 
-            <!-- Fallback for browsers that don't support the <video> element -->
-            <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
-        </video>
+                <!-- Fallback for browsers that don't support the <video> element -->
+                <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
+            </video>
+        </div>
+        <!-- end player -->
     </div>
-    <!-- end player -->
+</div>
+
 
 
 
@@ -189,13 +217,12 @@
     <!-- details content -->
     <div class="container">
 
-        <h5 class="section-movie-title text-center">About The Movie</h5>
         <div class="row">
             <div class="col-12 col-lg-6 ">
                 <div class="movie-disc">
                     <div class="movie-cover-img">
                         <div class="card__cover cover-avatar-img">
-                            <img src="img/covers/cover.jpg" alt="">
+                            <img src=<?=$thumbnail?> alt="">
                         </div>
                     </div>
                 </div>
@@ -204,16 +231,16 @@
             <div class="col-12 col-lg-6 ">
                 <div class="card__content">
                     <div class="content-heading">
-                        <h2 class="details__title">I Dream in Another Language</h2>
+                        <h2 class="details__title"><?=$title?></h2>
                     </div>
                     <div class="card__wrap">
                         <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
 
                         <ul class="card__list">
                             <li>HD</li>
-                            <li>16+</li>
-                            <li>2017</li>
-                            <li>144min</li>
+                            <li><?=$certification?></li>
+                            <li><?=$year?></li>
+                            <li><?=$duration?>min</li>
                         </ul>
                     </div>
 
@@ -227,23 +254,11 @@
 
                     <div class="card__description card__description--details">
                         <p>
-                            It is a long established fact that a reader will be distracted by the readable content of a page
-                            when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-                            distribution of letters, as opposed to using 'Content here, content here', making it look like
-                            readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as
-                            their
-                            default model text, and a search for 'lorem ipsum' will uncover many web sites still in their
-                            infancy.
+                            <?=$description?>
                         </p>
 
                     </div>
                 </div>
-
-                    <div class="start-button">
-                        <span class="button-text">Start Wacthing</span>
-                        <a href="#" class="round-button"><i class="fa fa-play fa-2x "></i></a href="#">
-                    </div>
-
             </div>
 
         </div>

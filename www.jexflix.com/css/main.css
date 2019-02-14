@@ -4056,8 +4056,8 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 .round-button {
   box-sizing: border-box;
   display:block;
-  width:80px;
-  height:80px;
+  width:74px;
+  height:74px;
   padding-top: 14px;
   padding-left: 8px;
   line-height: 20px;
@@ -4072,6 +4072,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 .round-button:hover {
   background-color: #ff586c;
+  color: #aa4475;
   opacity: 1;
   box-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
   text-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
@@ -4143,7 +4144,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 .button-text{
   position: absolute;
-  left: 38%;
+  left: 35%;
   bottom: 32px;
   color: white;
 }
@@ -4154,11 +4155,73 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   }
   .movie-cover-img{
     max-width:100%;
+    height: 428px;
   }
   .cover-avatar-img{
     max-width: 100%;
   }
   .start-button{
     max-width: 100%;
+  }
+  .card__list {
+    display: block;
+    color: rgba(255,255,255,0.7);
+  }
+  .card__list li{
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 5px 5px 4px;
+    line-height: 100%;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    padding: 8px;
+  }
+  .card__description {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    overflow: scroll;
+
+  }
+  .card__meta {
+    display: block;
+    padding-bottom: 20px;
+  }
+  .card__meta li{
+    border: 1px solid rgba(255,255,255,0.1);
+    /*padding: 5px 5px 4px;*/
+    line-height: 100%;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.65);
+    padding: 8px;
+  }
+  .card__meta li a{
+    color: #ff5775;
+  }
+  .card__rate{
+    padding-bottom:10px;
+  }
+  .start-button{
+    height: 68px;
+  }
+  .round-button{
+    width: 58px;
+    height: 58px;
+  }
+  .round-button i.startplay{
+    margin: 0;
+    font-size: 30px;
+  }
+  .button-text{
+    bottom: 20px;
+  }
+  .content{
+    padding-bottom: 50px;
   }
 }
