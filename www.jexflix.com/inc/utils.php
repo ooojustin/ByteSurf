@@ -20,4 +20,12 @@
 		$create_account->execute();
 	}
 
+	function get_movie_data($url) {
+		global $db;
+		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
+    	$get_data->bindValue(':url', $url);
+    	$get_data->execute();
+   		return $get_data->fetch();
+	}
+
 ?>

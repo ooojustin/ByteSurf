@@ -2,10 +2,7 @@
     
     require 'inc/server.php';
 
-    $get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
-    $get_data->bindValue(':url', $_GET["t"]);
-    $get_data->execute();
-    $data = $get_data->fetch();
+    $data = get_movie_data($_GET["t"]);
     if (!$data)
         die('Movie not found.'); // make a 404 page or smth
 
