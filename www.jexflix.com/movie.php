@@ -180,24 +180,34 @@
     <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
     <!-- end details background -->
 <div class="container">
+
     <div class="row">
+
         <!-- player -->
         <div class="col-12">
         <video controls crossorigin playsinline poster=<?=$preview?> id="player">
+
             <!-- Video files -->
-            <source src=<?= '"' . $qualities[0]->link . '"' ?> type="video/mp4">
+            <? foreach ($qualities as $quality) { ?>
+            <source 
+                src=<?= '"' . $quality->link . '"' ?> 
+                type="video/mp4" 
+                size=<?= '"' . $quality->resolution . '"' ?>
+            />
+            <? } ?>
 
-                <!-- Caption files -->
-                <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
-                       default>
-                <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+            <!-- Caption files -->
+            <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default>
+            <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
 
-                <!-- Fallback for browsers that don't support the <video> element -->
-                <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
-            </video>
+            <!-- Fallback for browsers that don't support the <video> element -->
+            <a href=<?= '"' . $qualities[0]->link . '"' ?> download>Download</a>
+        </video>
+
         </div>
         <!-- end player -->
     </div>
+
 </div>
 
 
