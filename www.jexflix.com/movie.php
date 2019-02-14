@@ -2,7 +2,9 @@
     
     require 'inc/server.php';
 
-    $data = get_movie_data($_GET["t"]);
+    update_imdb_rating($_GET['t']);
+    
+    $data = get_movie_data($_GET['t']);
     if (!$data)
         die('Movie not found.'); // make a 404 page or smth
 
