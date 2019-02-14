@@ -1,4 +1,16 @@
 <!DOCTYPE html>
+
+<?
+    require('utils.php');
+
+    $genre = "Action";
+    $res = 1080;
+
+    if (!empty($_POST['genre'])) $genre = $_POST['genre'];
+    if (!empty($_POST['quality'])) $res = $_POST['quality'];
+
+?>
+
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -21,15 +33,12 @@
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
-	<link rel="apple-touch-icon" href="../icon/favicon-32x32.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="../icon/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="../icon/apple-touch-icon-114x114.png">
-	<link rel="apple-touch-icon" sizes="144x144" href="../icon/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<meta name="author" content="Dmitry Volkov">
-	<title>FlixGo – Online Movies, TV Shows & Cinema HTML Template</title>
+	<meta name="keywords" content="">A
+	<meta name="author" content="Anthony Almond">
+	<title>jexflix</title>
 
 </head>
 <body class="body">
@@ -42,7 +51,7 @@
 					<div class="col-12">
 						<div class="header__content">
 							<!-- header logo -->
-							<a href="../index.html" class="header__logo">
+							<a href="../home" class="header__logo">
 								<img src="../img/logo.svg" alt="">
 							</a>
 							<!-- end header logo -->
@@ -51,34 +60,22 @@
 							<ul class="header__nav">
 								<!-- dropdown -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Home</a>
-
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuHome">
-										<li><a href="../index.html">Home slideshow bg</a></li>
-										<li><a href="../index2.html">Home static bg</a></li>
-									</ul>
+									<a href="../home" class="header__nav-link">Home</a>
 								</li>
 								<!-- end dropdown -->
 
-								<!-- dropdown -->
+								<!-- catalog -->
 								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Catalog</a>
-
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
-										<li><a href="catalog1.html">Catalog Grid</a></li>
-										<li><a href="catalog2.html">Catalog List</a></li>
-										<li><a href="details1.html">Details Movie</a></li>
-										<li><a href="details2.html">Details TV Series</a></li>
-									</ul>
+									<a href="../catalog" class="header__nav-link">Catalog</a>
 								</li>
-								<!-- end dropdown -->
+								<!-- catalog -->
 
 								<li class="header__nav-item">
-									<a href="pricing.html" class="header__nav-link">Pricing Plan</a>
+									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
 								</li>
 
 								<li class="header__nav-item">
-									<a href="faq.html" class="header__nav-link">Help</a>
+									<a href="../faq" class="header__nav-link">Help</a>
 								</li>
 
 								<!-- dropdown -->
@@ -86,11 +83,11 @@
 									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="about.html">About</a></li>
-										<li><a href="profile.html">Profile</a></li>
-										<li><a href="signin.html">Sign In</a></li>
-										<li><a href="signup.html">Sign Up</a></li>
-										<li><a href="404.html">404 Page</a></li>
+										<li><a href="../about">About</a></li>
+										<li><a href="../profile">Profile</a></li>
+										<li><a href="../signin">Sign In</a></li>
+										<li><a href="../signup">Sign Up</a></li>
+										<li><a href="../404">404 Page</a></li>
 									</ul>
 								</li>
 								<!-- end dropdown -->
@@ -181,53 +178,36 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
+					<!-- form method post -->
+					<form action="" method="post">
 					<div class="filter__content">
 						<div class="filter__items">
 							<!-- filter item -->
 							<div class="filter__item" id="filter__genre">
 								<span class="filter__item-label">GENRE:</span>
-
 								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<input type="button" value="Action/Adventure">
+									<input type="button" value=<?=$genre?>>
+									<input type="hidden" name="genre" value="Action"/>
 									<span></span>
 								</div>
-
 								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
-									<li>Action/Adventure</li>
-									<li>Animals</li>
+									<li>Action</li>
+									<li>Adventure</li>
 									<li>Animation</li>
-									<li>Biography</li>
 									<li>Comedy</li>
-									<li>Cooking</li>
-									<li>Dance</li>
+									<li>Crime</li>
 									<li>Documentary</li>
 									<li>Drama</li>
-									<li>Education</li>
-									<li>Entertainment</li>
 									<li>Family</li>
 									<li>Fantasy</li>
 									<li>History</li>
 									<li>Horror</li>
-									<li>Independent</li>
-									<li>International</li>
-									<li>Kids</li>
-									<li>Kids & Family</li>
-									<li>Medical</li>
-									<li>Military/War</li>
 									<li>Music</li>
-									<li>Musical</li>
-									<li>Mystery/Crime</li>
-									<li>Nature</li>
-									<li>Paranormal</li>
-									<li>Politics</li>
-									<li>Racing</li>
+									<li>Mystery</li>
 									<li>Romance</li>
-									<li>Sci-Fi/Horror</li>
-									<li>Science</li>
-									<li>Science Fiction</li>
-									<li>Science/Nature</li>
-									<li>Spanish</li>
-									<li>Travel</li>
+									<li>Science-Fiction</li>
+									<li>Thriller</li>
+									<li>War</li>
 									<li>Western</li>
 								</ul>
 							</div>
@@ -238,22 +218,21 @@
 								<span class="filter__item-label">QUALITY:</span>
 
 								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-quality" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<input type="button" value="HD 1080">
+									<input type="button" value="1080">
+									<input type="hidden" name="quality" value="1080"/>
 									<span></span>
 								</div>
 
 								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-quality">
-									<li>HD 1080</li>
-									<li>HD 720</li>
-									<li>DVD</li>
-									<li>TS</li>
+									<li>1080</li>
+									<li>720</li>
 								</ul>
 							</div>
 							<!-- end filter item -->
 
 							<!-- filter item -->
 							<div class="filter__item" id="filter__rate">
-								<span class="filter__item-label">IMBd:</span>
+								<span class="filter__item-label">IMDB:</span>
 
 								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-rate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<div class="filter__range">
@@ -275,7 +254,8 @@
 
 								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-year" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<div class="filter__range">
-										<div id="filter__years-start"></div>
+										<div id="filter__years-start">
+										</div>
 										<div id="filter__years-end"></div>
 									</div>
 									<span></span>
@@ -289,9 +269,11 @@
 						</div>
 						
 						<!-- filter btn -->
-						<button class="filter__btn" type="button">apply filter</button>
+						<button class="filter__btn" type="submit">apply filter</button>
+
 						<!-- end filter btn -->
 					</div>
+					</form>
 				</div>
 			</div>
 		</div>
