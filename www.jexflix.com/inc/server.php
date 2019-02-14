@@ -3,7 +3,7 @@
 	// server.php
 	// Initialize database connection and acquire utility functions.
 	
-	define("SERVER", "mysql3.blazingfast.io");
+	define("SERVER", "localhost");
 	require dirname(__FILE__) . "/utils.php";
 
 	$db_username = "jexflixc_admin";

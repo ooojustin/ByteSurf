@@ -13,10 +13,7 @@
     $year = $data['year'];
     $certification = $data['certification'];
     $duration = intval($data['duration'] / 60);
-
-    $video_data = json_decode($get_data['qualities']);
-    foreach ($video_data as $key => $quality)
-        $video_data[$key] = authenticate_cdn_url($quality['link']);
+    $qualities = authenticated_movie_links($data);
 
 ?>
 
@@ -188,7 +185,7 @@
         <div class="col-12">
         <video controls crossorigin playsinline poster=<?=$preview?> id="player">
             <!-- Video files -->
-            <source src=<?=$video_data[0]->link?> type="video/mp4">>
+            <source src=<?= '"' . $qualities[0]->link . '"' ?> type="video/mp4">
 
                 <!-- Caption files -->
                 <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"

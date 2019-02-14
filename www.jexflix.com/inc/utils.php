@@ -29,11 +29,20 @@
     	$get_data->bindValue(':url', $url);
     	$get_data->execute();
    		return $get_data->fetch();
+
+	}
+
+	function authenticated_movie_links($data) {
+   		$qualities = json_decode($data['qualities']);
+    	foreach ($qualities as $quality)
+        	$quality->link = authenticate_cdn_url($quality->link);
+      	return $qualities;
 	}
 
 	function authenticate_cdn_url($url) {
 
 		// important vars
+		global $ip;
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
 		$base_url = 'https://cdn.jexflix.com';
 
@@ -44,18 +53,20 @@
 		$expires = time() + (60 * 60 * 24); 
 
 		// establish token data
-		$hash_me = $securityKey.$path.$expires;
+		$hash_me = $key.$path.$expires.$ip;
 
-		// to enable ip validation:
-		// $hash_me .= "146.14.19.7";
-
+		// hash data and generate token
 		$token = md5($hash_me, true);
 		$token = base64_encode($token);
 		$token = strtr($token, '+/', '-_');
-		$token = str_replace('=', '', $token);  
+		$token = str_replace('=', '', $token);
 
 		// generate new url
-		$url = "{$base_url}{$path}?token={$token}&expires={$expires}";
+		$url = "{$base_url}{$path}?token={$token}&expires={$expires}&ip={$ip}";
+		return $url;
+
+	}
+
 
 	// https://www.virendrachandak.com/techtalk/getting-real-client-ip-address-in-php-2/
 	function get_ip() {
