@@ -82,6 +82,7 @@ namespace JexFlix_Scraper.Flixify {
         public string url;
         public string description = string.Empty;
         public int? duration = 0;
+        public double? rating = 0.0;
         public string thumbnail = string.Empty;
         public string preview = string.Empty;
         public List<Quality> qualities = new List<Quality>();

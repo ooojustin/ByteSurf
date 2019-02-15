@@ -16,8 +16,9 @@
     $imdb_id = $data['imdb_id'];
     $year = $data['year'];
     $certification = $data['certification'];
+    $rating = $data['rating'];
 
-    $updateTable = $db->prepare("INSERT INTO movies (title, url, description, duration, thumbnail, preview, qualities, genres, imdb_id, year, certification) VALUES (:title, :url, :description, :duration, :thumbnail, :preview, :qualities, :genres, :imdb_id, :year, :certification);");
+    $updateTable = $db->prepare("INSERT INTO movies (title, url, description, duration, thumbnail, preview, qualities, genres, imdb_id, rating, year, certification) VALUES (:title, :url, :description, :duration, :thumbnail, :preview, :qualities, :genres, :imdb_id, :rating, :year, :certification);");
     $updateTable->bindValue(':title', $title);
     $updateTable->bindValue(':url', $url);
     $updateTable->bindValue(':description', $description);
@@ -29,6 +30,7 @@
     $updateTable->bindValue(':imdb_id', $imdb_id);
     $updateTable->bindValue(':year', $year);
     $updateTable->bindValue(':certification', $certification);
+    $updateTable->bindValue(':rating', $rating);
     $updateTable->execute();
 
 ?>

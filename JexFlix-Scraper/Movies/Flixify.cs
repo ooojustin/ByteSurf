@@ -92,92 +92,104 @@ namespace JexFlix_Scraper.Flixify {
             foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (Networking.FileExists(movie.url.Substring(8))) continue;
+                if (!Networking.FileExists(movie.url.Substring(8))) {
+                    Console.WriteLine("Doesnt exist");
+                    continue;
+                }
 
                 // stuff starts here to delete
 
-                //Web.FlixifyHeaders();
-                //byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
-                //string new_raw = Encoding.Default.GetString(response);
-                //MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
+                Web.FlixifyHeaders();
+                byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
+                string new_raw = Encoding.Default.GetString(response);
+                MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
+
+                string thumbnail_url = BASE_IMAGES_URL + rootObject.item.images.poster;
+                string url_on_cdn = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
+                double? rating = rootObject.item.rating;
+                string directory = rootObject.item.url;
+
+                using (StreamWriter sw = File.AppendText("purgelist2k19.txt")) {
+                    sw.WriteLine(url_on_cdn);
+                }
 
 
-                //string url_on_cdn = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
-                //string thumbnail_url = BASE_IMAGES_URL + rootObject.item.images.poster;
-                //string directory = rootObject.item.url;
+                if (rootObject.item.images.poster != null)
+                    Networking.ReuploadRemoteFile(FixExtension(FixThumbnailRes(thumbnail_url)), directory, "thumbnail.jpg", rootObject.item.title, web);
 
-                //using (StreamWriter sw = File.AppendText("purgelist2k19.txt")) {
-                //    sw.WriteLine(url_on_cdn);
-                //}
+                Console.WriteLine(Convert.ToString(rating));
 
+                NameValueCollection values = new NameValueCollection();
+                values["rating"] = Convert.ToString(rating);
+                values["url"] = rootObject.item.url.Substring(8);
 
-                //if (rootObject.item.images.poster != null)
-                //    Networking.ReuploadRemoteFile(FixExtension(FixThumbnailRes(thumbnail_url)), directory, "thumbnail.jpg", rootObject.item.title, web);
+                web.UploadValues("https://scraper.jexflix.com/add_rating.php", values);
 
-                //NameValueCollection values = new NameValueCollection();
-                //values["preview"] = url_on_cdn;
-
-                //Console.WriteLine("kappa");
+                Console.WriteLine("Rating added to " + rootObject.item.title);
 
                 // stuff ends here to delete
 
-                MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
-                Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
+                //MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                //Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
-                Web.FlixifyHeaders();
+                //Web.FlixifyHeaders();
 
-                byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
-                // byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
-                string new_raw = Encoding.Default.GetString(response);
+                //byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
+                //// byte[] response_decompressed = Brotli.DecompressBuffer(response, 0, response.Length);
+                //string new_raw = Encoding.Default.GetString(response);
 
-                MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
+                //MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
 
-                Data data = new Data();
-                data.title = rootObject.item.title;
-                data.url = rootObject.item.url.Substring(8);
+                //Data data = new Data();
+                //data.title = rootObject.item.title;
+                //data.url = rootObject.item.url.Substring(8);
 
-                // these can all be returned as null at times, so lets check so it doesnt fuck the sql query
-                if (rootObject.item.description != null)
-                    data.description = rootObject.item.description;
+                //// these can all be returned as null at times, so lets check so it doesnt fuck the sql query
+                //if (rootObject.item.description != null)
+                //    data.description = rootObject.item.description;
 
-                if (rootObject.item.url != null) {
-                    data.preview = Networking.CDN_URL + rootObject.item.url + "/preview.jpg";
-                    data.thumbnail = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
-                }
-                if (rootObject.item.duration != null)
-                    data.duration = rootObject.item.duration;
+                //if (rootObject.item.url != null) {
+                //    data.preview = Networking.CDN_URL + rootObject.item.url + "/preview.jpg";
+                //    data.thumbnail = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
+                //}
 
-                if (rootObject.item.genres != null)
-                    data.genres = rootObject.item.genres;
+                //if (rootObject.item.duration != null)
+                //    data.duration = rootObject.item.duration;
 
-                if (rootObject.item.year != null)
-                    data.year = rootObject.item.year;
+                //if (rootObject.item.rating != null)
+                //    data.rating = rootObject.item.rating;
 
-                if (rootObject.item.imdb_id != null)
-                    data.imdb_id = rootObject.item.imdb_id;
+                //if (rootObject.item.genres != null)
+                //    data.genres = rootObject.item.genres;
 
-                if (rootObject.item.certification != null)
-                    data.certification = rootObject.item.certification;
+                //if (rootObject.item.year != null)
+                //    data.year = rootObject.item.year;
 
-                // setup qualities
-                if (rootObject.item.download.download_720 != null)
-                    data.qualities.Add(new Quality { resolution = 720, link = Networking.CDN_URL + rootObject.item.url + "/720.mp4" });
+                //if (rootObject.item.imdb_id != null)
+                //    data.imdb_id = rootObject.item.imdb_id;
 
-                if (rootObject.item.download.download_1080 != null)
-                    data.qualities.Add(new Quality { resolution = 1080, link = Networking.CDN_URL + rootObject.item.url + "/1080.mp4" });
+                //if (rootObject.item.certification != null)
+                //    data.certification = rootObject.item.certification;
 
-                if (rootObject.item.download.download_720 == null && rootObject.item.download.download_1080 == null)
-                    data.qualities.Add(new Quality { resolution = 480, link = Networking.CDN_URL + rootObject.item.url + "/480.mp4" });
+                //// setup qualities
+                //if (rootObject.item.download.download_720 != null)
+                //    data.qualities.Add(new Quality { resolution = 720, link = Networking.CDN_URL + rootObject.item.url + "/720.mp4" });
 
-                // upload info to insert into database
+                //if (rootObject.item.download.download_1080 != null)
+                //    data.qualities.Add(new Quality { resolution = 1080, link = Networking.CDN_URL + rootObject.item.url + "/1080.mp4" });
 
-                ReuploadFiles(rootObject);
-                Console.WriteLine(JsonConvert.SerializeObject(data));
-                Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
+                //if (rootObject.item.download.download_720 == null && rootObject.item.download.download_1080 == null)
+                //    data.qualities.Add(new Quality { resolution = 480, link = Networking.CDN_URL + rootObject.item.url + "/480.mp4" });
+
+                //// upload info to insert into database
+
+                //ReuploadFiles(rootObject);
+                //Console.WriteLine(JsonConvert.SerializeObject(data));
+                //Web.UploadString("https://scraper.jexflix.com/add_movie.php", JsonConvert.SerializeObject(data));
 
 
-                //MessageHandler.Add(movie.title, "Completed reupload process", ConsoleColor.White, ConsoleColor.Yellow);
-                Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
+                ////MessageHandler.Add(movie.title, "Completed reupload process", ConsoleColor.White, ConsoleColor.Yellow);
+                //Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
 
             }
 
