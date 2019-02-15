@@ -15,12 +15,31 @@
 		return $user && password_verify($password, $user['password']);
 	}
 
-	function create_account($email, $password) {
+	function create_account($username, $email, $password) {
 		global $db;
-		$create_account = $db->prepare('INSERT INTO users (email, password) VALUES (:email, :password)');
+		$create_account = $db->prepare('INSERT INTO users (email, username, password) VALUES (:email, :username, :password)');
 		$create_account->bindValue(':email', $email);
+		$create_account->bindValue(':username', $username);
 		$create_account->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
 		$create_account->execute();
+	}
+	
+	function check_user_exists($username) {
+	    global $db;
+	    $check_user = $db->prepare('SELECT * FROM users WHERE username=:username');
+	    $check_user->bindValue(':username', $username);
+	    $check_user->execute();
+	    
+	    return $check_user->rowCount() > 0;
+	}
+	
+	function check_email_exists($email) {
+	    global $db;
+	    $check_email = $db->prepare('SELECT * FROM users WHERE email=:email');
+	    $check_email->bindValue(':email', $email);
+	    $check_email->execute();
+	    
+	    return $check_email->rowCount() > 0;
 	}
 
 	function get_movie_data($url) {
