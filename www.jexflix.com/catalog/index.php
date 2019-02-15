@@ -234,10 +234,13 @@
 							<div class="filter__item" id="filter__rate">
 								<span class="filter__item-label">IMDB:</span>
 
+
 								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-rate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<div class="filter__range">
-										<div id="filter__imbd-start"></div>
-										<div id="filter__imbd-end"></div>
+										<div id="filter__imbd-start" contenteditable="true"></div>
+										<div id="filter__imbd-end" contenteditable="true"></div>
+										<input type="hidden" id="hidden" name="imdb_min">
+										<input type="hidden" id="hidden-two" name="imdb_max">
 									</div>
 									<span></span>
 								</div>
@@ -254,9 +257,10 @@
 
 								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-year" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<div class="filter__range">
-										<div id="filter__years-start">
-										</div>
+										<div id="filter__years-start"></div>
 										<div id="filter__years-end"></div>
+										<input type="hidden" id="year-hidden" name="years_min">
+										<input type="hidden" id="year-end-hidden" name="years_max">
 									</div>
 									<span></span>
 								</div>
@@ -269,7 +273,7 @@
 						</div>
 						
 						<!-- filter btn -->
-						<button class="filter__btn" type="submit">apply filter</button>
+						<button class="filter__btn" id ="catalog-submit" type="submit">apply filter</button>
 
 						<!-- end filter btn -->
 					</div>
@@ -704,7 +708,7 @@
 				</div>
 				<!-- end card -->
 
-				<!-- card -->
+								<!-- card -->
 								<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">
@@ -725,7 +729,7 @@
 				</div>
 				<!-- end card -->
 
-				<!-- card -->
+								<!-- card -->
 								<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">
@@ -746,7 +750,7 @@
 				</div>
 				<!-- end card -->
 
-				<!-- card -->
+								<!-- card -->
 								<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">
@@ -767,7 +771,7 @@
 				</div>
 				<!-- end card -->
 
-				<!-- card -->
+								<!-- card -->
 								<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">

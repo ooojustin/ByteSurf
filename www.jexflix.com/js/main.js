@@ -139,6 +139,8 @@ $(document).ready(function () {
 		$('#'+id).find('.filter__item-btn input').val(text);
 	});
 
+
+
 	/*==============================
 	Scroll bar
 	==============================*/
@@ -481,41 +483,57 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializeThirdSlider());
-});
+
+    /*====================================details3.html============================================*/
 
 
+    $('.owl-carousel').owlCarousel({
+        mouseDrag: true,
+        touchDrag: true,
+        dots: true,
+        loop: true,
+        autoplay: false,
+        smartSpeed: 600,
+        margin: 30,
+        responsive : {
+            0 : {
+                items: 2,
+            },
+            576 : {
+                items: 2,
+            },
+            768 : {
+                items: 3,
+            },
+            992 : {
+                items: 4,
+            },
+            1200 : {
+                items: 4,
+                margin: 50
+            },
+            1440 : {
+                items: 5,
+                //margin: 50
+            },
+        }
+    });
 
-/*====================================details3.html============================================*/
 
-
-$('.owl-carousel').owlCarousel({
-    mouseDrag: true,
-    touchDrag: true,
-    dots: true,
-    loop: true,
-    autoplay: false,
-    smartSpeed: 600,
-    margin: 30,
-    responsive : {
-        0 : {
-            items: 2,
-        },
-        576 : {
-            items: 2,
-        },
-        768 : {
-            items: 3,
-        },
-        992 : {
-            items: 4,
-        },
-        1200 : {
-            items: 4,
-            margin: 50
-        },
-        1440 : {
-            items: 5,
-            //margin: 50
-        },
+    function process() {
+        document.getElementById("hidden").value = document.getElementById("filter__imbd-start").innerHTML;
+        document.getElementById("hidden-two").value = document.getElementById("filter__imbd-end").innerHTML;
+        document.getElementById("year-hidden").value = document.getElementById("filter__years-start").innerHTML;
+        document.getElementById("year-end-hidden").value = document.getElementById("filter__years-end").innerHTML;
+        return true;
     }
+    document.getElementById("catalog-submit").addEventListener("click", function (){
+		process();
+		console.log(process());
+    })
+
 });
+
+
+
+
