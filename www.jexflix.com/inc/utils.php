@@ -6,10 +6,10 @@
 	$GLOBALS['ip'] = get_ip();
 	// $GLOBALS['ip_info'] = get_ip_info();
 
-	function login($email, $password) {
+	function login($username, $password) {
 		global $db;
-		$check_login = $db->prepare('SELECT * FROM users WHERE email=:email');
-		$check_login->bindValue(':email', $email);
+		$check_login = $db->prepare('SELECT * FROM users WHERE username=:username');
+		$check_login->bindValue(':username', $username);
 		$check_login->execute();
 		$user = $check_login->fetch();
 		return $user && password_verify($password, $user['password']);
