@@ -519,17 +519,11 @@ $(document).ready(function () {
         }
     });
 
-
-    function process() {
-        document.getElementById("hidden").value = document.getElementById("filter__imbd-start").innerHTML;
-        document.getElementById("hidden-two").value = document.getElementById("filter__imbd-end").innerHTML;
-        document.getElementById("year-hidden").value = document.getElementById("filter__years-start").innerHTML;
-        document.getElementById("year-end-hidden").value = document.getElementById("filter__years-end").innerHTML;
-        return true;
-    }
     document.getElementById("catalog-submit").addEventListener("click", function (){
-		process();
-		console.log(process());
+		document.getElementById("imdb_min").value = document.getElementById("filter__imbd-start").innerHTML;
+        document.getElementById("imdb_max").value = document.getElementById("filter__imbd-end").innerHTML;
+        document.getElementById("year_min").value = document.getElementById("filter__years-start").innerHTML;
+        document.getElementById("year_max").value = document.getElementById("filter__years-end").innerHTML;
     })
 
 });

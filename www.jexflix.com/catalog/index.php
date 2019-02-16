@@ -9,8 +9,8 @@
     	'quality' => 1080, 
     	'imdb_min' => 0.1,
     	'imdb_max' => 10.0, 
-    	'years_min' => 2000,
-    	'years_max' => 2019
+    	'year_min' => 2000,
+    	'year_max' => 2019
     );
 
     // vars that are checked via 'LIKE' selection in sql query
@@ -19,8 +19,8 @@
     	'quality'
     );
 
-    //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :years_min AND `year` <= :years_max LIMIT 10');
-    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :years_min AND `year` <= :years_max LIMIT 24';
+    //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
+    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 24';
 
     foreach ($vars as $var => $default) {
 
@@ -282,8 +282,8 @@
 									<div class="filter__range">
 										<div id="filter__imbd-start" contenteditable="true"></div>
 										<div id="filter__imbd-end" contenteditable="true"></div>
-										<input type="hidden" id="hidden" name="imdb_min">
-										<input type="hidden" id="hidden-two" name="imdb_max">
+										<input type="hidden" id="imdb_min" name="imdb_min">
+										<input type="hidden" id="imdb_max" name="imdb_max">
 									</div>
 									<span></span>
 								</div>
@@ -302,8 +302,8 @@
 									<div class="filter__range">
 										<div id="filter__years-start"></div>
 										<div id="filter__years-end"></div>
-										<input type="hidden" id="year-hidden" name="years_min">
-										<input type="hidden" id="year-end-hidden" name="years_max">
+										<input type="hidden" id="year_min" name="year_min">
+										<input type="hidden" id="year_max" name="year_max">
 									</div>
 									<span></span>
 								</div>
@@ -347,7 +347,7 @@
 						<div class="card__content">
 							<h3 class="card__title"><a href=<?= '"' . $url . '"' ?>><?= $movie['title'] ?></a></h3>
 							<span class="card__category">
-								<a href=<?= '"https://jexflix.com/catalog/?years_min=' . $movie['year'] . '&years_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year'] 	?></a>
+								<a href=<?= '"https://jexflix.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year'] 	?></a>
 							</span>
 							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
 						</div>
