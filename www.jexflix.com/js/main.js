@@ -139,6 +139,8 @@ $(document).ready(function () {
 		$('#'+id).find('.filter__item-btn input').val(text);
 	});
 
+
+
 	/*==============================
 	Scroll bar
 	==============================*/
@@ -392,12 +394,12 @@ $(document).ready(function () {
 			var firstSlider = document.getElementById('filter__years');
 			noUiSlider.create(firstSlider, {
 				range: {
-					'min': 2000,
-					'max': 2018
+					'min': 1900,
+					'max': 2019
 				},
 				step: 1,
 				connect: true,
-				start: [2005, 2015],
+				start: [2000, 2019],
 				format: wNumb({
 					decimals: 0,
 				})
@@ -427,7 +429,7 @@ $(document).ready(function () {
 				},
 				step: 0.1,
 				connect: true,
-				start: [2.5, 8.6],
+				start: [0.1, 10.0],
 				format: wNumb({
 					decimals: 1,
 				})
@@ -481,41 +483,51 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializeThirdSlider());
+
+    /*====================================details3.html============================================*/
+
+
+    $('.owl-carousel').owlCarousel({
+        mouseDrag: true,
+        touchDrag: true,
+        dots: true,
+        loop: true,
+        autoplay: false,
+        smartSpeed: 600,
+        margin: 30,
+        responsive : {
+            0 : {
+                items: 2,
+            },
+            576 : {
+                items: 2,
+            },
+            768 : {
+                items: 3,
+            },
+            992 : {
+                items: 4,
+            },
+            1200 : {
+                items: 4,
+                margin: 50
+            },
+            1440 : {
+                items: 5,
+                //margin: 50
+            },
+        }
+    });
+
+    document.getElementById("catalog-submit").addEventListener("click", function (){
+		document.getElementById("imdb_min").value = document.getElementById("filter__imbd-start").innerHTML;
+        document.getElementById("imdb_max").value = document.getElementById("filter__imbd-end").innerHTML;
+        document.getElementById("year_min").value = document.getElementById("filter__years-start").innerHTML;
+        document.getElementById("year_max").value = document.getElementById("filter__years-end").innerHTML;
+    })
+
 });
 
 
 
-/*====================================details3.html============================================*/
 
-
-$('.owl-carousel').owlCarousel({
-    mouseDrag: true,
-    touchDrag: true,
-    dots: true,
-    loop: true,
-    autoplay: false,
-    smartSpeed: 600,
-    margin: 30,
-    responsive : {
-        0 : {
-            items: 2,
-        },
-        576 : {
-            items: 2,
-        },
-        768 : {
-            items: 3,
-        },
-        992 : {
-            items: 4,
-        },
-        1200 : {
-            items: 4,
-            margin: 50
-        },
-        1440 : {
-            items: 5,
-            //margin: 50
-        },
-    }
-});

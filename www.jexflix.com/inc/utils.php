@@ -6,21 +6,40 @@
 	$GLOBALS['ip'] = get_ip();
 	// $GLOBALS['ip_info'] = get_ip_info();
 
-	function login($email, $password) {
+	function login($username, $password) {
 		global $db;
-		$check_login = $db->prepare('SELECT * FROM users WHERE email=:email');
-		$check_login->bindValue(':email', $email);
+		$check_login = $db->prepare('SELECT * FROM users WHERE username=:username');
+		$check_login->bindValue(':username', $username);
 		$check_login->execute();
 		$user = $check_login->fetch();
 		return $user && password_verify($password, $user['password']);
 	}
 
-	function create_account($email, $password) {
+	function create_account($username, $email, $password) {
 		global $db;
-		$create_account = $db->prepare('INSERT INTO users (email, password) VALUES (:email, :password)');
+		$create_account = $db->prepare('INSERT INTO users (email, username, password) VALUES (:email, :username, :password)');
 		$create_account->bindValue(':email', $email);
+		$create_account->bindValue(':username', $username);
 		$create_account->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
 		$create_account->execute();
+	}
+	
+	function check_user_exists($username) {
+	    global $db;
+	    $check_user = $db->prepare('SELECT * FROM users WHERE username=:username');
+	    $check_user->bindValue(':username', $username);
+	    $check_user->execute();
+	    
+	    return $check_user->rowCount() > 0;
+	}
+	
+	function check_email_exists($email) {
+	    global $db;
+	    $check_email = $db->prepare('SELECT * FROM users WHERE email=:email');
+	    $check_email->bindValue(':email', $email);
+	    $check_email->execute();
+	    
+	    return $check_email->rowCount() > 0;
 	}
 
 	function get_movie_data($url) {
@@ -29,7 +48,47 @@
     	$get_data->bindValue(':url', $url);
     	$get_data->execute();
    		return $get_data->fetch();
+	}
 
+	function get_imdb_rating($url) {
+		$movie_data = get_movie_data($url);
+		$imdb_url = 'https://www.imdb.com/title/' . $movie_data['imdb_id'];
+		$imdb_raw = file_get_contents($imdb_url);
+		$regex = '/<span class="rating">.*<span class="ofTen">\/10<\/span><\/span>/m';
+		if (!preg_match($regex, $imdb_raw, $matches))
+			return doubleval(-1);
+		// forgive me lord for i have sinned:
+		return doubleval(explode('<', explode('>', $matches[0])[1])[0]);
+	}
+
+	function update_imdb_rating($url) {
+		global $db;
+		if (needs_imdb_update($url)) {
+			// get current rating from imdb
+			$rating = get_imdb_rating($url);
+			// store updated rating
+			$update_imdb_rating = $db->prepare('UPDATE movies SET rating=:rating WHERE url=:url');
+			$update_imdb_rating->bindValue(':rating', $rating);
+			$update_imdb_rating->bindValue(':url', $url);
+			$update_imdb_rating->execute();
+			// log update
+			$log_imdb_update = $db->prepare('INSERT INTO imdb_updates (url, timestamp) VALUES (:url, :timestamp)');
+			$log_imdb_update->bindValue(':url', $url);
+			$log_imdb_update->bindValue(':timestamp', time());
+			$log_imdb_update->execute();
+		}
+	}
+
+	function needs_imdb_update($url) {
+		global $db;
+		$get_last_update = $db->prepare('SELECT * FROM imdb_updates WHERE url=:url ORDER BY id DESC LIMIT 1');
+		$get_last_update->bindValue(':url', $url);
+		$get_last_update->execute();
+		$last_update = $get_last_update->fetch();	
+		if (!$last_update)
+			return true;
+		$day_ago = time() - (60 * 60 * 24); // timestamp 1 day ago
+		return $last_update['timestamp'] < $day_ago; // return true if last update was over a day ago
 	}
 
 	function authenticated_movie_links($data) {

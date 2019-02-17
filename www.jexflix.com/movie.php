@@ -2,14 +2,16 @@
     
     require 'inc/server.php';
 
-    $data = get_movie_data($_GET["t"]);
+    update_imdb_rating($_GET['t']);
+    
+    $data = get_movie_data($_GET['t']);
     if (!$data)
         die('Movie not found.'); // make a 404 page or smth
 
     $title = $data['title'];
     $description = $data['description'];
-    $thumbnail = $data['thumbnail'];
-    $preview = $data['preview'];
+    $thumbnail = authenticate_cdn_url($data['thumbnail']);
+    $preview = authenticate_cdn_url($data['preview']);
     $year = $data['year'];
     $certification = $data['certification'];
     $duration = intval($data['duration'] / 60);
@@ -40,17 +42,14 @@
     <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="icon/favicon-32x32.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="icon/favicon-32x32.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icon/apple-touch-icon-144x144.png">
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
+	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="author" content="Dmitry Volkov">
-    <title>jexflix</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">A
+	<meta name="author" content="Anthony Almond">
+	<title>jexflix</title>
 
 </head>
 <body class="body">
@@ -68,55 +67,43 @@
                         </a>
                         <!-- end header logo -->
 
-                        <!-- header nav -->
-                        <ul class="header__nav">
-                            <!-- dropdown -->
-                            <li class="header__nav-item">
-                                <a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Home</a>
+							<!-- header nav -->
+							<ul class="header__nav">
+								<!-- dropdown -->
+								<li class="header__nav-item">
+									<a href="../home" class="header__nav-link">Home</a>
+								</li>
+								<!-- end dropdown -->
 
-                                <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuHome">
-                                    <li><a href="index.html">Home slideshow bg</a></li>
-                                    <li><a href="index2.html">Home static bg</a></li>
-                                </ul>
-                            </li>
-                            <!-- end dropdown -->
+								<!-- catalog -->
+								<li class="header__nav-item">
+									<a href="../catalog" class="header__nav-link">Catalog</a>
+								</li>
+								<!-- catalog -->
 
-                            <!-- dropdown -->
-                            <li class="header__nav-item">
-                                <a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuCatalog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Catalog</a>
+								<li class="header__nav-item">
+									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
+								</li>
 
-                                <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuCatalog">
-                                    <li><a href="catalog1.html">Catalog Grid</a></li>
-                                    <li><a href="catalog2.html">Catalog List</a></li>
-                                    <li><a href="details1.html">Details Movie</a></li>
-                                    <li><a href="details2.html">Details TV Series</a></li>
-                                </ul>
-                            </li>
-                            <!-- end dropdown -->
+								<li class="header__nav-item">
+									<a href="../faq" class="header__nav-link">Help</a>
+								</li>
 
-                            <li class="header__nav-item">
-                                <a href="pricing.html" class="header__nav-link">Pricing Plan</a>
-                            </li>
+								<!-- dropdown -->
+								<li class="dropdown header__nav-item">
+									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
-                            <li class="header__nav-item">
-                                <a href="faq.html" class="header__nav-link">Help</a>
-                            </li>
-
-                            <!-- dropdown -->
-                            <li class="dropdown header__nav-item">
-                                <a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
-
-                                <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-                                    <li><a href="about.html">About</a></li>
-                                    <li><a href="profile.html">Profile</a></li>
-                                    <li><a href="signin.html">Sign In</a></li>
-                                    <li><a href="signup.html">Sign Up</a></li>
-                                    <li><a href="404.html">404 Page</a></li>
-                                </ul>
-                            </li>
-                            <!-- end dropdown -->
-                        </ul>
-                        <!-- end header nav -->
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
+										<li><a href="../about">About</a></li>
+										<li><a href="../profile">Profile</a></li>
+										<li><a href="../login">Sign In</a></li>
+										<li><a href="../register">Sign Up</a></li>
+										<li><a href="../404">404 Page</a></li>
+									</ul>
+								</li>
+								<!-- end dropdown -->
+							</ul>
+							<!-- end header nav -->
 
                         <!-- header auth -->
                         <div class="header__auth">
@@ -131,12 +118,11 @@
                                 <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
                                     <li><a href="#">English</a></li>
                                     <li><a href="#">Spanish</a></li>
-                                    <li><a href="#">Russian</a></li>
                                 </ul>
                             </div>
                             <!-- end dropdown -->
 
-                            <a href="signin.html" class="header__sign-in">
+                            <a href="..\login" class="header__sign-in">
                                 <i class="icon ion-ios-log-in"></i>
                                 <span>sign in</span>
                             </a>
@@ -180,24 +166,34 @@
     <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
     <!-- end details background -->
 <div class="container">
+
     <div class="row">
+
         <!-- player -->
         <div class="col-12">
         <video controls crossorigin playsinline poster=<?=$preview?> id="player">
+
             <!-- Video files -->
-            <source src=<?= '"' . $qualities[0]->link . '"' ?> type="video/mp4">
+            <? foreach ($qualities as $quality) { ?>
+            <source 
+                src=<?= '"' . $quality->link . '"' ?> 
+                type="video/mp4" 
+                size=<?= '"' . $quality->resolution . '"' ?>
+            />
+            <? } ?>
 
-                <!-- Caption files -->
-                <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
-                       default>
-                <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+            <!-- Caption files -->
+            <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default>
+            <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
 
-                <!-- Fallback for browsers that don't support the <video> element -->
-                <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
-            </video>
+            <!-- Fallback for browsers that don't support the <video> element -->
+            <a href=<?= '"' . $qualities[0]->link . '"' ?> download>Download</a>
+        </video>
+
         </div>
         <!-- end player -->
     </div>
+
 </div>
 
 
