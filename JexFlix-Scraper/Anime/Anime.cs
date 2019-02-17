@@ -83,6 +83,12 @@ namespace JexFlix_Scraper.Anime {
                             }
                         }
 
+                    } else {
+
+                        foreach (AniInfo.Genre genre in AnimeInfo.genres) {
+                            if (genre.name != null) UploadData.genres.Add(genre.name);
+                        }
+
                     }
 
 
@@ -104,10 +110,6 @@ namespace JexFlix_Scraper.Anime {
 
                     Networking.ReuploadRemoteFile(AnimeInfo.GetWallpaper(), "/anime/" + UploadData.url, "preview.jpg", UploadData.title, General.GetWebClient());
                     UploadData.preview = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + "preview.jpg";
-
-                    foreach (AniInfo.Genre genre in AnimeInfo.genres) {
-                        if (genre.name != null) UploadData.genres.Add(genre.name);
-                    }
 
 
                     foreach (AniInfo.EpisodeData EpisodeInfo in AnimeInfo.episodes) {
