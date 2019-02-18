@@ -37,14 +37,16 @@ namespace JexFlix_Scraper.Anime {
             // Dumps out all the anime that exists.
             // using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
 
-            AniUpload UploadData = new AniUpload();
-
-            UploadData.genres = new List<string>();
-
-            UploadData.episodeData = new List<EpisodeData>();
 
 
             foreach (AniSearch animeFound in AllAnime) {
+
+                AniUpload UploadData = new AniUpload();
+
+                UploadData.genres = new List<string>();
+
+                UploadData.episodeData = new List<EpisodeData>();
+
 
                 foreach (AniSearch.Show anime in animeFound.data) {
 
