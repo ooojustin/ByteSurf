@@ -41,6 +41,25 @@
 	    
 	    return $check_email->rowCount() > 0;
 	}
+	
+	function get_id_from_user($username) {
+	    global $db;
+	    $get_user = $db->prepare('SELECT * FROM users WHERE username=:username');
+	    $get_user->bindValue(':username', $username);
+	    $get_user->execute();
+	    $user = $get_user->fetch();
+	    
+	    return $user['id'];
+	}
+	
+	function get_user_data($username) {
+		global $db;
+		$get_data = $db->prepare('SELECT * FROM users WHERE username=:username');
+    	$get_data->bindValue(':username', $username);
+    	$get_data->execute();
+    	
+   		return $get_data->fetch(); 
+	}
 
 	function get_movie_data($url) {
 		global $db;

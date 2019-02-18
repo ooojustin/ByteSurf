@@ -1,3 +1,22 @@
+<?php
+    // faq page
+    session_start();
+    
+    if (!isset($_SESSION['id'])) {
+        header("location: /login");
+        die();
+    }
+    
+   if (isset($_GET['logout'])) {
+  	    session_destroy();
+        unset($_SESSION['id']);
+    	header("location: ../login");
+    	die();
+   }
+  
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,8 +59,8 @@
 					<div class="col-12">
 						<div class="header__content">
 							<!-- header logo -->
-							<a href="index.html" class="header__logo">
-								<img src="../img/logo.svg" alt="">
+							<a href="../home" class="header__logo">
+								<img src="../img/logo.png" alt="">
 							</a>
 							<!-- end header logo -->
 
@@ -74,9 +93,6 @@
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
 										<li><a href="../about">About</a></li>
 										<li><a href="../profile">Profile</a></li>
-										<li><a href="../signin">Sign In</a></li>
-										<li><a href="../signup">Sign Up</a></li>
-										<li><a href="../404">404 Page</a></li>
 									</ul>
 								</li>
 								<!-- end dropdown -->
@@ -100,9 +116,9 @@
 								</div>
 								<!-- end dropdown -->
 
-								<a href="../signin" class="header__sign-in">
+								<a href="index.php?logout=1" class="header__sign-in">
 									<i class="icon ion-ios-log-in"></i>
-									<span>sign in</span>
+									<span>Sign Out</span>
 								</a>
 							</div>
 							<!-- end header auth -->
@@ -139,7 +155,7 @@
 	<!-- end header -->
 
 	<!-- page title -->
-	<section class="section section--first section--bg" data-bg="../img/section/section.jpg">
+	<section class="section section--first section--bg" data-bg="img/section/section.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
@@ -229,22 +245,12 @@
 		<div class="container">
 			<div class="row">
 				<!-- footer list -->
-				<div class="col-12 col-md-3">
-					<h6 class="footer__title">Download Our App</h6>
-					<ul class="footer__app">
-						<li><a href="#"><img src="../img/Download_on_the_App_Store_Badge.svg" alt=""></a></li>
-						<li><a href="#"><img src="../img/google-play-badge.png" alt=""></a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer list -->
 				<div class="col-6 col-sm-4 col-md-3">
 					<h6 class="footer__title">Resources</h6>
 					<ul class="footer__list">
-						<li><a href="#">About Us</a></li>
-						<li><a href="#">Pricing Plan</a></li>
-						<li><a href="#">Help</a></li>
+						<li><a href="../about">About Us</a></li>
+						<li><a href="../pricing">Pricing Plan</a></li>
+						<li><a href="../faq">Help</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -253,9 +259,8 @@
 				<div class="col-6 col-sm-4 col-md-3">
 					<h6 class="footer__title">Legal</h6>
 					<ul class="footer__list">
-						<li><a href="#">Terms of Use</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-						<li><a href="#">Security</a></li>
+						<li><a href="../tos">Terms of Use</a></li>
+						<li><a href="../privacy">Privacy Policy</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -264,14 +269,8 @@
 				<div class="col-12 col-sm-4 col-md-3">
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
-						<li><a href="tel:+18002345678">+1 (800) 234-5678</a></li>
-						<li><a href="mailto:support@moviego.com">support@flixgo.com</a></li>
-					</ul>
-					<ul class="footer__social">
-						<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
-						<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
-						<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
-						<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
+					    <li><a href="../discord">Discord</a></li>
+						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -279,11 +278,11 @@
 				<!-- footer copyright -->
 				<div class="col-12">
 					<div class="footer__copyright">
-						<small>© 2018 FlixGo. Create by <a href="https://themeforest.net/user/dmitryvolkov/portfolio?ref=DmitryVolkov" target="_blank">Dmitry Volkov</a></small>
+						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
 
 						<ul>
-							<li><a href="#">Terms of Use</a></li>
-							<li><a href="#">Privacy Policy</a></li>
+							<li><a href="../tos">Terms of Use</a></li>
+							<li><a href="../privacy">Privacy Policy</a></li>
 						</ul>
 					</div>
 				</div>
@@ -292,7 +291,7 @@
 		</div>
 	</footer>
 	<!-- end footer -->
-
+	
 	<!-- JS -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
 	<script src="../js/bootstrap.bundle.min.js"></script>
