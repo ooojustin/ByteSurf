@@ -1,3 +1,30 @@
+<?php
+    // profile page
+    session_start();
+    
+    if (!isset($_SESSION['username'])) {
+        header("location: /login");
+        die();
+    }
+    
+   if (isset($_GET['logout'])) {
+  	   session_destroy();
+  	   unset($_SESSION['username']);
+       header("location: ../login");
+       die();
+   }
+   
+   require('../inc/server.php');
+   
+   $data = get_user_data($_SESSION['username']);
+   
+   $username = $data['username'];
+   $user_id = $data['id'];
+   $email = $data['email'];
+   
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,12 +66,12 @@
 					<div class="col-12">
 						<div class="header__content">
 							<!-- header logo -->
-							<a href="index.html" class="header__logo">
-								<img src="../img/logo.svg" alt="">
+							<a href="../home" class="header__logo">
+								<img src="../img/logo.png" alt="">
 							</a>
 							<!-- end header logo -->
 
-															<!-- header nav -->
+								<!-- header nav -->
 							<ul class="header__nav">
 								<!-- dropdown -->
 								<li class="header__nav-item">
@@ -73,9 +100,6 @@
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
 										<li><a href="../about">About</a></li>
 										<li><a href="../profile">Profile</a></li>
-										<li><a href="../signin">Sign In</a></li>
-										<li><a href="../signup">Sign Up</a></li>
-										<li><a href="../404">404 Page</a></li>
 									</ul>
 								</li>
 								<!-- end dropdown -->
@@ -95,14 +119,13 @@
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
 										<li><a href="#">English</a></li>
 										<li><a href="#">Spanish</a></li>
-										<li><a href="#">Russian</a></li>
 									</ul>
 								</div>
 								<!-- end dropdown -->
 
-								<a href="profile.html" class="header__sign-in">
-									<i class="icon ion-ios-contact"></i>
-									<span>Username</span>
+								<a href="index.php?logout=1" class="header__sign-in">
+									<i class="icon ion-ios-log-in"></i>
+									<span>Sign Out</span>
 								</a>
 							</div>
 							<!-- end header auth -->
@@ -139,18 +162,18 @@
 	<!-- end header -->
 
 	<!-- page title -->
-	<section class="section section--first section--bg" data-bg="../img/section/section.jpg">
+	<section class="section section--first section--bg">
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
 					<div class="section__wrap">
 						<!-- section title -->
-						<h2 class="section__title">My FlixGo</h2>
+						<h2 class="section__title">Profile</h2>
 						<!-- end section title -->
 
 						<!-- breadcrumb -->
 						<ul class="breadcrumb">
-							<li class="breadcrumb__item"><a href="#">Home</a></li>
+							<li class="breadcrumb__item"><a href="../home">Home</a></li>
 							<li class="breadcrumb__item breadcrumb__item--active">Profile</li>
 						</ul>
 						<!-- end breadcrumb -->
@@ -174,8 +197,8 @@
 									<img src="../img/user.png" alt="">
 								</div>
 								<div class="profile__meta">
-									<h3>Username</h3>
-									<span>FlixGo ID: 23562</span>
+									<h3><?=$username?></h3>
+									<span>UserID: <?=$user_id?></span>
 								</div>
 							</div>
 
@@ -208,10 +231,6 @@
 							</div>
 							<!-- end content mobile tabs nav -->
 
-							<button class="profile__logout" type="button">
-								<i class="icon ion-ios-log-out"></i>
-								<span>Logout</span>
-							</button>
 						</div>
 					</div>
 				</div>
@@ -235,14 +254,14 @@
 									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 										<div class="profile__group">
 											<label class="profile__label" for="username">Username</label>
-											<input id="username" type="text" name="username" class="profile__input" placeholder="User 123">
+											<input id="username" type="text" name="username" class="profile__input" disabled value="<?=$username?>">
 										</div>
 									</div>
 
 									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 										<div class="profile__group">
 											<label class="profile__label" for="email">Email</label>
-											<input id="email" type="text" name="email" class="profile__input" placeholder="email@email.com">
+											<input id="email" type="text" name="email" class="profile__input" disabled value="<?=$email?>">
 										</div>
 									</div>
 
@@ -363,22 +382,12 @@
 		<div class="container">
 			<div class="row">
 				<!-- footer list -->
-				<div class="col-12 col-md-3">
-					<h6 class="footer__title">Download Our App</h6>
-					<ul class="footer__app">
-						<li><a href="#"><img src="../img/Download_on_the_App_Store_Badge.svg" alt=""></a></li>
-						<li><a href="#"><img src="../img/google-play-badge.png" alt=""></a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer list -->
 				<div class="col-6 col-sm-4 col-md-3">
 					<h6 class="footer__title">Resources</h6>
 					<ul class="footer__list">
 						<li><a href="#">About Us</a></li>
-						<li><a href="#">Pricing Plan</a></li>
-						<li><a href="#">Help</a></li>
+						<li><a href="../pricing">Pricing Plan</a></li>
+						<li><a href="../faq">Help</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -387,9 +396,8 @@
 				<div class="col-6 col-sm-4 col-md-3">
 					<h6 class="footer__title">Legal</h6>
 					<ul class="footer__list">
-						<li><a href="#">Terms of Use</a></li>
-						<li><a href="#">Privacy Policy</a></li>
-						<li><a href="#">Security</a></li>
+						<li><a href="../tos">Terms of Use</a></li>
+						<li><a href="../privacy">Privacy Policy</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -398,14 +406,8 @@
 				<div class="col-12 col-sm-4 col-md-3">
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
-						<li><a href="tel:+18002345678">+1 (800) 234-5678</a></li>
-						<li><a href="mailto:support@moviego.com">support@flixgo.com</a></li>
-					</ul>
-					<ul class="footer__social">
-						<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
-						<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
-						<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
-						<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
+					    <li><a href="../discord">Discord</a></li>
+						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -413,11 +415,11 @@
 				<!-- footer copyright -->
 				<div class="col-12">
 					<div class="footer__copyright">
-						<small>© 2018 FlixGo. Create by <a href="https://themeforest.net/user/dmitryvolkov/portfolio?ref=DmitryVolkov" target="_blank">Dmitry Volkov</a></small>
+						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
 
 						<ul>
-							<li><a href="#">Terms of Use</a></li>
-							<li><a href="#">Privacy Policy</a></li>
+							<li><a href="../tos">Terms of Use</a></li>
+							<li><a href="../privacy">Privacy Policy</a></li>
 						</ul>
 					</div>
 				</div>
