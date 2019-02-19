@@ -27,16 +27,11 @@ namespace JexFlix_Scraper.Anime {
 
             Console.WriteLine("There are: " + InitialAnime.last_page + " pages");
 
-            // for (int i = 2; i <= InitialAnime.last_page; i++) {
-            //    Console.WriteLine("On " + i + " page");
-            //    AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
-            //    AllAnime.Add(CurrentAnime);
-            //  }
-
-
-            // Dumps out all the anime that exists.
-            // using (System.IO.StreamWriter file = new System.IO.StreamWriter("AnimeFound.txt", true)) {
-
+            //for (int i = 2; i <= InitialAnime.last_page; i++) {
+            // Console.WriteLine("On " + i + " page");
+            //   AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
+            //   AllAnime.Add(CurrentAnime);
+            // }
 
 
             foreach (AniSearch animeFound in AllAnime) {
@@ -50,14 +45,18 @@ namespace JexFlix_Scraper.Anime {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
 
-                    if (anime.title.Contains("Fullmetal")) continue;
-
                     AniInfo AnimeInfo = anime.GetAnime();
 
-                    // Check if we have the anime already...
-                    string JsonResponse = Networking.JsonData(anime.title);
-
                     int latest_episode = 0;
+
+                    // Check if we have the anime already...
+                    string JsonResponse = Networking.JsonData(anime.slug);
+
+                    // If we don't have the anime in the correct format
+                    if (string.IsNullOrEmpty(JsonResponse)) {
+                         JsonResponse = Networking.JsonData(Slugify(anime.title));
+                    }
+
 
                     if (!string.IsNullOrEmpty(JsonResponse)) {
                         // If we have some content. Visit the link and get the json response
@@ -91,12 +90,13 @@ namespace JexFlix_Scraper.Anime {
                             if (genre.name != null) UploadData.genres.Add(genre.name);
                         }
 
+                        // Don't update existing slug anymore
+                        UploadData.url = anime.slug;
+
                     }
 
 
                     UploadData.title = anime.title;
-
-                    UploadData.url = Slugify(UploadData.title);
 
                     if (AnimeInfo.info.synopsis != null)
                         UploadData.synopsis = AnimeInfo.info.synopsis;
@@ -285,7 +285,7 @@ namespace JexFlix_Scraper.Anime {
 
                         AniDb dbinfo = new AniDb();
 
-                        dbinfo.name = UploadData.title;
+                        dbinfo.name = UploadData.url;
                         dbinfo.episode_data = CDNLink;
 
                         // Update the database.
@@ -295,7 +295,6 @@ namespace JexFlix_Scraper.Anime {
 
                     }
 
-#if false
                     Console.WriteLine("Title: " + UploadData.title);
                     Console.WriteLine("Description: " + UploadData.synopsis);
                     Console.WriteLine("Preview: " + UploadData.preview);
@@ -318,7 +317,6 @@ namespace JexFlix_Scraper.Anime {
                             Console.WriteLine("Episode resolution: " + q.resolution);
                         }
                     }
-#endif
                     // Move on and repeat to the text episode / anime
 
                 }
@@ -336,9 +334,6 @@ namespace JexFlix_Scraper.Anime {
             return System.Text.Encoding.ASCII.GetString(bytes);
         }
 
-        /// <summary>
-        /// Fast Paste https://stackoverflow.com/questions/3275242/how-do-you-remove-invalid-characters-when-creating-a-friendly-url-ie-how-do-you
-        /// </summary>
         public static string Slugify(this string phrase) {
             string str = phrase.RemoveAccent().ToLower();
             str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
@@ -346,7 +341,6 @@ namespace JexFlix_Scraper.Anime {
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
             return str;
         }
-
 
         /// <summary>
         /// Modified Function that handles exceptions
