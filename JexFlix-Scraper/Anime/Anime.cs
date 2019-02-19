@@ -53,9 +53,9 @@ namespace JexFlix_Scraper.Anime {
                     string JsonResponse = Networking.JsonData(anime.slug);
 
                     // If we don't have the anime in the correct format
-                    if (string.IsNullOrEmpty(JsonResponse)) {
-                         JsonResponse = Networking.JsonData(Slugify(anime.title));
-                    }
+                    //if (string.IsNullOrEmpty(JsonResponse)) {
+                    //     JsonResponse = Networking.JsonData(Slugify(anime.title));
+                    //}
 
 
                     if (!string.IsNullOrEmpty(JsonResponse)) {
@@ -295,6 +295,7 @@ namespace JexFlix_Scraper.Anime {
 
                     }
 
+#if false
                     Console.WriteLine("Title: " + UploadData.title);
                     Console.WriteLine("Description: " + UploadData.synopsis);
                     Console.WriteLine("Preview: " + UploadData.preview);
@@ -318,7 +319,7 @@ namespace JexFlix_Scraper.Anime {
                         }
                     }
                     // Move on and repeat to the text episode / anime
-
+#endif
                 }
             }
 
