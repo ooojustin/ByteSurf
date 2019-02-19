@@ -1,49 +1,27 @@
 <?php
-    // login page so i dont forget..
+
     require('../inc/server.php');
 
-    $errors = 0;
-    
     session_start();
-    if (!empty( $_POST)) {
-        $_SESSION["POST"] = $_POST;
-        if (!headers_sent()) {
-            $location = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-            header("location: " . $location);
-            die();
-        }
-    }    
-    
-    if (isset($_SESSION["POST"])) {
-        $_POST = $_SESSION["POST"];
-        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+    if (empty($_POST['username']) || empty($_POST['password'])) {
+    	$issue = 'Please enter username/password.';
+    } else {
+    	if (login($_POST['username'], $_POST['password'])) {
+       		$_SESSION['username'] = $_POST['username'];
+       		header("location: ..\home");
+       		die();
+    	} else
+    		$issue = 'Incorrect username / password.';
     }
 
-    if (empty($_POST['username'])) {
-        $errors++;
-        $error_message = "Please enter a username";
-    }
-    
+    // if $_POST['username'] isn't set, they didnt post data from form
+    if (!isset($_POST['username']))
+    	unset($issue);
 
-    if (empty($_POST['password'])) {
-        $errors++;
-        $error_message = "Please enter a password";
-    }
-    
-    // we need to make a banner to display $error_message at some point..
-    
-    
-    if ($errors < 1) {
-        if (login($_POST['username'], $_POST['password'])) {
-            header("location: ..\home");
-            $_SESSION['username'] = $_POST['username'];
-            unset($_SESSION["POST"]);
-            die();
-        }
-    }
-    
-    $error_message = "Invalid username or password";
-    unset($_SESSION["POST"]);
+    $redirect = '';
+    if (isset($_GET['r']))
+    	$redirect = '../' . $_GET['r'];
 
 ?>
 
@@ -86,10 +64,18 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
-						<form action="" method="post" class="sign__form">
-							<a href="index.html" class="sign__logo">
-								<img src="../img/logo.svg" alt="">
+						<form action=<?='"'.$redirect.'"'?> method="post" class="sign__form">
+
+							<a href="#" class="sign__logo">
+								<img src="../img/logo.png" alt="">
 							</a>
+
+							<!-- trevor put ur silly banner here thx -->
+							<? if (isset($issue)) { ?>
+							<div class="register-error">
+							    <span class="signin-error-text"><?= $issue ?></span>
+							</div>
+							<? } ?>
 
 							<div class="sign__group">
 								<input type="text" class="sign__input" id="username" name="username" placeholder="Username">
@@ -106,9 +92,10 @@
 							
 							<button class="sign__btn" type="submit">Sign in</button>
 
-							<span class="sign__text">Don't have an account? <a href="signup.html">Sign up!</a></span>
+							<span class="sign__text">Don't have an account? <a href="../register">Sign up!</a></span>
 
 							<span class="sign__text"><a href="#">Forgot password?</a></span>
+							
 						</form>
 						<!-- end authorization form -->
 					</div>
