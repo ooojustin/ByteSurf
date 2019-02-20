@@ -22,6 +22,14 @@
    $user_id = $data['id'];
    $email = $data['email'];
    
+   // update password stuff
+   
+   if(isset($_POST['oldpass']) && isset($_POST['newpass']) && isset($_POST['confirmpass'])) {
+       if (!$_POST['newpass'] == $_POST['confirmpass']) return;
+       
+       update_password($username, $_POST['oldpass'], $_POST['newpass']);
+   }
+   
 ?>
 
 
@@ -289,7 +297,7 @@
 
 						<!-- password form -->
 						<div class="col-12 col-lg-6">
-							<form action="#" class="profile__form">
+							<form action="" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
 										<h4 class="profile__title">Change password</h4>
@@ -317,7 +325,7 @@
 									</div>
 
 									<div class="col-12">
-										<button class="profile__btn" type="button">Change</button>
+										<button class="profile__btn" type="submit">Change</button>
 									</div>
 								</div>
 							</form>

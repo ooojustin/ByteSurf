@@ -18,6 +18,7 @@
 	require '../inc/server.php';
 
     // all variables and their default values
+    $page = 1; // page #
     $vars = array(
     	'genre' => "Action", 
     	'quality' => 1080, 
@@ -35,6 +36,9 @@
 
     //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
     $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 24';
+
+    if (isset($_GET['page']))
+    	$page = intval($_GET['page']);
 
     foreach ($vars as $var => $default) {
 
@@ -371,10 +375,33 @@
 						<li class="paginator__item paginator__item--prev">
 							<a href="#"><i class="icon ion-ios-arrow-back"></i></a>
 						</li>
+
+						<?
+							$is_first_page = $page == 1;
+							$is_last_page = false; // CHANGE THIS
+							// this can probably be done better but im keeping it this way until the backend code is done
+							if ($is_first_page) { ?>
+							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
+							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
+							<li class="paginator__item"><a href="#"><?= $page + 2 ?></a></li>
+							<? } else if ($is_last_page) { ?>
+							<li class="paginator__item"><a href="#"><?= $page - 2 ?></a></li>
+							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
+							<? } else { ?>
+							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item paginator__item--active"><a href="#"><?= $page  ?></a></li>
+							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
+							<? }
+						?>
+
+						<!--
+						old stuff before making this functional
 						<li class="paginator__item"><a href="#">1</a></li>
 						<li class="paginator__item paginator__item--active"><a href="#">2</a></li>
 						<li class="paginator__item"><a href="#">3</a></li>
-						<li class="paginator__item"><a href="#">4</a></li>
+						-->
+
 						<li class="paginator__item paginator__item--next">
 							<a href="#"><i class="icon ion-ios-arrow-forward"></i></a>
 						</li>

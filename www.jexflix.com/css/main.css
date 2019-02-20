@@ -2587,7 +2587,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 @media (min-width: 360px) {
   .paginator {
-    width: 300px;
+    width: 245px;
   }
 }
 @media (min-width: 768px) {
@@ -4224,4 +4224,27 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   .content{
     padding-bottom: 50px;
   }
+}
+
+
+.register-error{
+  background: #ff586a; 
+  background: -webkit-linear-gradient(to right, #ff56a1, #ff586a); 
+  background: linear-gradient(to right, #ff56a1, #ff586a);
+  color: #decfd4;
+  position: relative;
+  margin-bottom: 35px;
+  border-radius: 3px;
+  width:250px;
+  text-align: center;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+@media (min-width: 360px){
+  .register-error {
+    width: 280px;
 }

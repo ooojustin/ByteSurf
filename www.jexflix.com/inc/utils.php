@@ -42,15 +42,20 @@
 	    return $check_email->rowCount() > 0;
 	}
 	
-	function get_id_from_user($username) {
+	function update_password($username, $old_password, $new_password) {
 	    global $db;
-	    $get_user = $db->prepare('SELECT * FROM users WHERE username=:username');
-	    $get_user->bindValue(':username', $username);
-	    $get_user->execute();
-	    $user = $get_user->fetch();
 	    
-	    return $user['id'];
+	    // check password is correct with login function
+	    if (!login($username, $old_password)) return false;
+	    
+	    // update if it passes check
+	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
+	    $update_password->bindValue(':username', $username);
+	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
+	    $update_password->execute();
+	    return true;
 	}
+	
 	
 	function get_user_data($username) {
 		global $db;
