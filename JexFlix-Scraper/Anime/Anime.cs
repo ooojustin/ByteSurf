@@ -288,12 +288,20 @@ namespace JexFlix_Scraper.Anime {
                         dbinfo.name = UploadData.url;
                         dbinfo.episode_data = CDNLink;
 
+  
+                        
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {
-                            Web.UploadString("https://scraper.jexflix.com/add_anime.php", JsonConvert.SerializeObject(dbinfo));
-                        }
 
-                    }
+                            try {
+                                Web.UploadString("https://scraper.jexflix.com/add_anime.php", JsonConvert.SerializeObject(dbinfo));
+                            } catch (Exception ex) {
+                                Networking.ErrorLogging(null, ex, dbinfo.name, "Error Updating Database");
+                            }
+
+                            }
+
+                        }
 
 #if false
                     Console.WriteLine("Title: " + UploadData.title);
@@ -320,69 +328,69 @@ namespace JexFlix_Scraper.Anime {
                     }
                     // Move on and repeat to the text episode / anime
 #endif
+                    }
                 }
+
+
             }
 
+
+            /// <summary>
+            /// Fast Paste https://stackoverflow.com/questions/3275242/how-do-you-remove-invalid-characters-when-creating-a-friendly-url-ie-how-do-you
+            /// </summary>
+            public static string RemoveAccent(this string txt) {
+                byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
+                return System.Text.Encoding.ASCII.GetString(bytes);
+            }
+
+            public static string Slugify(this string phrase) {
+                string str = phrase.RemoveAccent().ToLower();
+                str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
+                str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
+                str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
+                return str;
+            }
+
+            /// <summary>
+            /// Modified Function that handles exceptions
+            /// </summary>
+            public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
+
+                Console.WriteLine(url);
+
+                // initialize webclient if we weren't provided with one
+                if (web == null) {
+                    web = new WebClient();
+                    web.Headers.Add(HttpRequestHeader.UserAgent, Networking.USER_AGENT);
+                }
+
+                // get temp path to download file to
+                string localPath = Path.GetTempFileName();
+
+                bool success = true;
+
+                // download the original file
+                try { web.DownloadFile(url, localPath); } catch (WebException wex) {
+
+                    Networking.ErrorLogging(wex, null, title);
+
+                    success = false;
+                }
+
+                // reupload file to server
+                if (success) {
+                    try { Networking.UploadFile(localPath, directory, file, title); } catch (Exception ex) { Networking.ErrorLogging(null, ex, title); }
+                }
+
+                // delete the file that was stored locally
+                File.Delete(localPath);
+
+                return success;
+
+            }
 
         }
 
 
-        /// <summary>
-        /// Fast Paste https://stackoverflow.com/questions/3275242/how-do-you-remove-invalid-characters-when-creating-a-friendly-url-ie-how-do-you
-        /// </summary>
-        public static string RemoveAccent(this string txt) {
-            byte[] bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
-            return System.Text.Encoding.ASCII.GetString(bytes);
-        }
-
-        public static string Slugify(this string phrase) {
-            string str = phrase.RemoveAccent().ToLower();
-            str = System.Text.RegularExpressions.Regex.Replace(str, @"[^a-z0-9\s-]", ""); // Remove all non valid chars          
-            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s+", " ").Trim(); // convert multiple spaces into one space  
-            str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
-            return str;
-        }
-
-        /// <summary>
-        /// Modified Function that handles exceptions
-        /// </summary>
-        public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
-
-            Console.WriteLine(url);
-
-            // initialize webclient if we weren't provided with one
-            if (web == null) {
-                web = new WebClient();
-                web.Headers.Add(HttpRequestHeader.UserAgent, Networking.USER_AGENT);
-            }
-
-            // get temp path to download file to
-            string localPath = Path.GetTempFileName();
-
-            bool success = true;
-
-            // download the original file
-            try { web.DownloadFile(url, localPath); } catch (WebException wex) {
-
-                Networking.ErrorLogging(wex, null, title);
-
-                success = false;
-            }
-
-            // reupload file to server
-            if (success) {
-                try { Networking.UploadFile(localPath, directory, file, title); } catch (Exception ex) { Networking.ErrorLogging(null, ex, title); }
-            }
-
-            // delete the file that was stored locally
-            File.Delete(localPath);
-
-            return success;
-
-        }
 
     }
-
-
-
-}

@@ -63,11 +63,11 @@ namespace JexFlix_Scraper {
 
             // download the original file
             try { web.DownloadFile(url, localPath); }
-            catch (WebException wex) { ErrorLogging(wex, null, title); }
+            catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
 
             // reupload file to server
             try { UploadFile(localPath, directory, file, title); }
-            catch (Exception ex) { ErrorLogging(null, ex, title); }
+            catch (Exception ex) { ErrorLogging(null, ex, title, "Upload Error: " + file); }
             
             // delete the file that was stored locally
             File.Delete(localPath);
@@ -149,7 +149,7 @@ namespace JexFlix_Scraper {
             return path;
         }
 
-        public static void ErrorLogging(WebException wex, Exception ex, string title) {
+        public static void ErrorLogging(WebException wex, Exception ex, string title, string extra = "") {
             string exception = string.Empty;
 
             if (wex != null) exception = wex.Message;
@@ -157,7 +157,7 @@ namespace JexFlix_Scraper {
 
             using (StreamWriter sw = File.AppendText("error.log")) {
                 sw.WriteLine("----------------------------------------");
-                sw.WriteLine("[" + title + "] " + exception);
+                sw.WriteLine("[" + title + "] " + exception + " " + extra);
                 sw.WriteLine("----------------------------------------");
             }
         }
