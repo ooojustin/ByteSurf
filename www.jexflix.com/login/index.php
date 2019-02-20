@@ -8,11 +8,11 @@
     	$issue = 'Please enter username/password.';
     } else {
     	if (login($_POST['username'], $_POST['password'])) {
-       		$_SESSION['username'] = $_POST['username'];
+       		$_SESSION['id'] = get_user_data($_POST['username'])['id'];
        		header("location: ..\home");
        		die();
     	} else
-    		$issue = 'Incorrect username / password.';
+    		$issue = 'Incorrect username/password.';
     }
 
     // if $_POST['username'] isn't set, they didnt post data from form

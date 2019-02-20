@@ -2587,7 +2587,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 }
 @media (min-width: 360px) {
   .paginator {
-    width: 300px;
+    width: 245px;
   }
 }
 @media (min-width: 768px) {
