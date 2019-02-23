@@ -69,18 +69,22 @@ namespace JexFlix_Scraper.Anime {
                             string raw_json = Networking.DownloadString(ftp_response);
 
                             // Deseralise it to the json class.
-                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
+                            try {
+                                AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
 
-                            // If what server has is greater than what we have, we need to upload the new episodes...
-                            // We also need to skip every episode we have already...
-                            if (AnimeInfo.episodes.Count() <= AniUploadData.episodeData.Count()) {
-                                continue;
-                            }
+                                // If what server has is greater than what we have, we need to upload the new episodes...
+                                // We also need to skip every episode we have already...
+                                if (AnimeInfo.episodes.Count() <= AniUploadData.episodeData.Count()) {
+                                    continue;
+                                }
 
-                            // Well if we haven't skipped.
-                            if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
-                                latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
-                                UploadData = AniUploadData;
+                                // Well if we haven't skipped.
+                                if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
+                                    latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
+                                    UploadData = AniUploadData;
+                                }
+                            } catch (Exception ex) {
+                                Networking.ErrorLogging(null, ex, anime.slug, "Error Converting JSON data from CDN");
                             }
                         }
 
@@ -267,10 +271,13 @@ namespace JexFlix_Scraper.Anime {
 
                         //open file stream
                         using (StreamWriter file = File.CreateText(localPath)) {
-
-                            JsonSerializer serializer = new JsonSerializer();
-                            //serialize object directly into file stream
-                            serializer.Serialize(file, UploadData);
+                            try {
+                                JsonSerializer serializer = new JsonSerializer();
+                                //serialize object directly into file stream
+                                serializer.Serialize(file, UploadData);
+                            } catch (Exception ex) {
+                                Networking.ErrorLogging(null, ex, UploadData.url, "Error Serialising Data");
+                            }
                         }
 
                         // Upload the file to the CDN
