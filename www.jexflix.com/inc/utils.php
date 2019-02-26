@@ -2,6 +2,10 @@
 	
 	// utils.php
 	// Functions used generally in other parts of the website.
+	
+	// https://stackoverflow.com/a/6768831/5699643
+	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	echo $GLOBALS['current_url'];
 
 	$GLOBALS['ip'] = get_ip();
 	// $GLOBALS['ip_info'] = get_ip_info();
@@ -178,6 +182,10 @@
 		$url = sprintf('http://pro.ip-api.com/json/%s?key=%s&fields=%s', getIP(), $access_key, $fields);
 		$json = file_get_contents($url);
 		return json_decode($json, true);
+	}
+
+	function contains($needle, $haystack)	{
+    	return strpos($haystack, $needle) !== false;
 	}
 
 ?>
