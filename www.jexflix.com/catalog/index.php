@@ -14,11 +14,10 @@
    	    die();
    }
 
-
 	require '../inc/server.php';
 
     // all variables and their default values
-    $page = 1; // page #
+    $GLOBALS['page'] = 1; // page #
     $vars = array(
     	'genre' => "Action", 
     	'quality' => 1080, 
@@ -35,10 +34,10 @@
     );
 
     //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
-    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 24';
+    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT 24';
 
     if (isset($_GET['page']))
-    	$page = intval($_GET['page']);
+    	$GLOBALS['page'] = intval($_GET['page']);
 
     foreach ($vars as $var => $default) {
 
@@ -68,7 +67,19 @@
     $get_movies = $db->prepare($querystr);
     $get_movies->execute();
 
-   //echo $get_movies->rowCount() . PHP_EOL;
+  	//echo $get_movies->rowCount() . PHP_EOL;
+    function generate_page_url($new_page) {
+    	global $current_url, $page;
+    	$page_str = 'page=' . $page;
+    	$page_str_new = 'page=' . $new_page;
+    	if (contains($page_str, $current_url))
+    		return str_replace($page_str, $page_str_new, $current_url);
+    	else if (count($_GET) == 0)
+    		return $current_url . '?' . $page_str_new;
+    	else
+    		return $current_url . '&' . $page_str_new;
+    }
+
 
 ?>
 <!DOCTYPE html>
@@ -373,25 +384,26 @@
 				<div class="col-12">
 					<ul class="paginator">
 						<li class="paginator__item paginator__item--prev">
-							<a href="#"><i class="icon ion-ios-arrow-back"></i></a>
+							<a id="page-prev" href="#"><i class="icon ion-ios-arrow-back"></i></a>
 						</li>
 
 						<?
+							global $page;
 							$is_first_page = $page == 1;
 							$is_last_page = false; // CHANGE THIS
 							// this can probably be done better but im keeping it this way until the backend code is done
 							if ($is_first_page) { ?>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 2 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 2) . '"' ?>><?= $page + 2 ?></a></li>
 							<? } else if ($is_last_page) { ?>
-							<li class="paginator__item"><a href="#"><?= $page - 2 ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 2) . '"' ?>><?= $page - 2 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
 							<? } else { ?>
-							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page  ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
 							<? }
 						?>
 
@@ -403,9 +415,17 @@
 						-->
 
 						<li class="paginator__item paginator__item--next">
-							<a href="#"><i class="icon ion-ios-arrow-forward"></i></a>
+							<a id="page-next" href="#"><i class="icon ion-ios-arrow-forward"></i></a>
 						</li>
 					</ul>
+					<script>
+						// update the front/back urls if necessary
+						var paginators = document.getElementsByClassName('paginator__item');
+						var prev = document.getElementById("page-prev");
+						var next = document.getElementById("page-next");
+						prev.href = (paginators[1]).children[0].href;
+						next.href = (paginators[3]).children[0].href;
+					</script>
 				</div>
 				<!-- end paginator -->
 
