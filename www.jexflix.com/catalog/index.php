@@ -15,6 +15,7 @@
    }
 
 	require '../inc/server.php';
+	define('VIDEOS_PER_PAGE', 24);
 
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
@@ -33,39 +34,55 @@
     	'quality'
     );
 
-    //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
-    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT 24';
+    foreach ($vars as $var => $default) {
+
+    	if (isset($_GET[$var])) 
+    		$vars[$var] = $_GET[$var];
+
+    	if (in_array($var, $vars_containify))
+    		$vars[$var] = '"%' . strtolower($vars[$var]) . '%"';
+
+    }
 
     if (isset($_GET['page']))
     	$GLOBALS['page'] = intval($_GET['page']);
 
-    foreach ($vars as $var => $default) {
+    $genre = $vars['genre'];
+    if (isset($_GET['genre']))
+    	$genre = $_GET['genre'];
 
-    	// $var = the variable name
-    	// $$var = the variable value
+    $movies = get_movies($vars, $page);
 
-    	if (isset($_GET[$var])) 
-    		$$var = $_GET[$var];
-     	else
-     		$$var = $default;
+    function get_movies($vars, $page) {
 
-     	$binder = ':' . $var;
-     	if (in_array($var, $vars_containify)) {
-     		//$get_movies->bindValue($binder, '"%' . strtolower($$var) . '%"');
-     		$querystr = str_replace($binder, '"%' . strtolower($$var) . '%"', $querystr);
-     		//echo $binder . ' = %' . $$var . '%'; 
-     	} else {
+    	global $db;
+
+    	//$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
+    	$querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC';
+
+    	foreach ($vars as $var => $default) {
+
+    		// $var = the variable name
+    		// $$var = the variable value
+
+     		$binder = ':' . $var;
      		//$get_movies->bindValue($binder, $$var);
-     		$querystr = str_replace($binder, $$var, $querystr);
+     		$querystr = str_replace($binder, $vars[$var], $querystr);	
      		//echo $binder . ' = ' . $$var;
+
      	}
-     	//echo PHP_EOL;
+
+    	//echo PHP_EOL . $querystr . PHP_EOL;
+    	$get_movies = $db->prepare($querystr);
+    	
+    	if($get_movies->execute()) {
+    		$movies = $get_movies->fetchAll(); // list of all movies fitting parameters
+    		$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
+    		$movies = array_slice($movies, $movie_offset, VIDEOS_PER_PAGE);
+    		return $movies;
+    	} else return false;
 
     }
-
-    //echo PHP_EOL . $querystr . PHP_EOL;
-    $get_movies = $db->prepare($querystr);
-    $get_movies->execute();
 
   	//echo $get_movies->rowCount() . PHP_EOL;
     function generate_page_url($new_page) {
@@ -372,7 +389,7 @@
 			<div class="row">
 				
 				<?
-					while ($movie = $get_movies->fetch()) { 
+					foreach ($movies as $movie) { 
 						$url = 'https://jexflix.com/movie.php?t=' . $movie['url'];
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
@@ -412,9 +429,9 @@
 						</li>
 
 						<?
-							global $page;
 							$is_first_page = $page == 1;
-							$is_last_page = false; // CHANGE THIS
+							$is_last_page = count(get_movies($vars, $page + 1)) == 0;
+							// it's probably the last page if the number of videos on the next page is 0
 							// this can probably be done better but im keeping it this way until the backend code is done
 							if ($is_first_page) { ?>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
