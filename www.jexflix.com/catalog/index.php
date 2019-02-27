@@ -52,6 +52,11 @@
     	$genre = $_GET['genre'];
 
     $movies = get_movies($vars, $page);
+    if ($page < 1 || count($movies) == 0) {
+    	// PAGE NUMBER IS INVALID
+    	// somebody feel free to change how this is handled (@trevor)
+    	die('Invalid page number.');
+    }
 
     function get_movies($vars, $page) {
 
