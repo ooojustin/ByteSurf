@@ -4,6 +4,13 @@
     $errors = 0;
     
     session_start();
+    
+    
+    if (isset($_SESSION['id'])) {
+        header("location: /home");
+        die();
+    }
+
     if (!empty( $_POST)) {
         $_SESSION["POST"] = $_POST;
         if (!headers_sent()) {
@@ -88,15 +95,15 @@
 </head>
 <body class="body">
 
-	<div class="sign section--bg" data-bg="img/section/section.jpg">
+	<div class="sign section--bg" data-bg="../img/section/section.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- registration form -->
 						<form action="" method="post" class="sign__form">
-							<a href="../home" class="sign__logo">
-								<img src="../img/logo.svg" alt="">
+							<a href="#" class="sign__logo">
+								<img src="../img/logo.png" alt="">
 							</a>
 
 							<div class="sign__group">

@@ -14,11 +14,11 @@
    	    die();
    }
 
-
 	require '../inc/server.php';
+	define('VIDEOS_PER_PAGE', 24);
 
     // all variables and their default values
-    $page = 1; // page #
+    $GLOBALS['page'] = 1; // page #
     $vars = array(
     	'genre' => "Action", 
     	'quality' => 1080, 
@@ -34,41 +34,74 @@
     	'quality'
     );
 
-    //$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
-    $querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 24';
-
-    if (isset($_GET['page']))
-    	$page = intval($_GET['page']);
-
     foreach ($vars as $var => $default) {
 
-    	// $var = the variable name
-    	// $$var = the variable value
-
     	if (isset($_GET[$var])) 
-    		$$var = $_GET[$var];
-     	else
-     		$$var = $default;
+    		$vars[$var] = $_GET[$var];
 
-     	$binder = ':' . $var;
-     	if (in_array($var, $vars_containify)) {
-     		//$get_movies->bindValue($binder, '"%' . strtolower($$var) . '%"');
-     		$querystr = str_replace($binder, '"%' . strtolower($$var) . '%"', $querystr);
-     		//echo $binder . ' = %' . $$var . '%'; 
-     	} else {
-     		//$get_movies->bindValue($binder, $$var);
-     		$querystr = str_replace($binder, $$var, $querystr);
-     		//echo $binder . ' = ' . $$var;
-     	}
-     	//echo PHP_EOL;
+    	if (in_array($var, $vars_containify))
+    		$vars[$var] = '"%' . strtolower($vars[$var]) . '%"';
 
     }
 
-    //echo PHP_EOL . $querystr . PHP_EOL;
-    $get_movies = $db->prepare($querystr);
-    $get_movies->execute();
+    if (isset($_GET['page']))
+    	$GLOBALS['page'] = intval($_GET['page']);
 
-   //echo $get_movies->rowCount() . PHP_EOL;
+    $genre = $vars['genre'];
+    if (isset($_GET['genre']))
+    	$genre = $_GET['genre'];
+
+    $movies = get_movies($vars, $page);
+    if ($page < 1 || count($movies) == 0) {
+    	// PAGE NUMBER IS INVALID
+    	// somebody feel free to change how this is handled (@trevor)
+    	die('Invalid page number.');
+    }
+
+    function get_movies($vars, $page) {
+
+    	global $db;
+
+    	//$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
+    	$querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC';
+
+    	foreach ($vars as $var => $default) {
+
+    		// $var = the variable name
+    		// $$var = the variable value
+
+     		$binder = ':' . $var;
+     		//$get_movies->bindValue($binder, $$var);
+     		$querystr = str_replace($binder, $vars[$var], $querystr);	
+     		//echo $binder . ' = ' . $$var;
+
+     	}
+
+    	//echo PHP_EOL . $querystr . PHP_EOL;
+    	$get_movies = $db->prepare($querystr);
+    	
+    	if($get_movies->execute()) {
+    		$movies = $get_movies->fetchAll(); // list of all movies fitting parameters
+    		$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
+    		$movies = array_slice($movies, $movie_offset, VIDEOS_PER_PAGE);
+    		return $movies;
+    	} else return false;
+
+    }
+
+  	//echo $get_movies->rowCount() . PHP_EOL;
+    function generate_page_url($new_page) {
+    	global $current_url, $page;
+    	$page_str = 'page=' . $page;
+    	$page_str_new = 'page=' . $new_page;
+    	if (contains($page_str, $current_url))
+    		return str_replace($page_str, $page_str_new, $current_url);
+    	else if (count($_GET) == 0)
+    		return $current_url . '?' . $page_str_new;
+    	else
+    		return $current_url . '&' . $page_str_new;
+    }
+
 
 ?>
 <!DOCTYPE html>
@@ -100,6 +133,20 @@
 	<meta name="keywords" content="">A
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
+
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
 
 </head>
 <body class="body">
@@ -347,7 +394,7 @@
 			<div class="row">
 				
 				<?
-					while ($movie = $get_movies->fetch()) { 
+					foreach ($movies as $movie) { 
 						$url = 'https://jexflix.com/movie.php?t=' . $movie['url'];
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
@@ -370,28 +417,42 @@
 				<? } ?>
 
 				<!-- paginator -->
+				<script>
+					// updates the front/back urls
+					function paginate(p1, p2) {
+						var paginators = document.getElementsByClassName('paginator__item');
+						var prev = document.getElementById("page-prev");
+						var next = document.getElementById("page-next");
+						prev.href = (paginators[p1]).children[0].href;
+						next.href = (paginators[p2]).children[0].href;
+					}
+				</script>
 				<div class="col-12">
 					<ul class="paginator">
 						<li class="paginator__item paginator__item--prev">
-							<a href="#"><i class="icon ion-ios-arrow-back"></i></a>
+							<a id="page-prev" href="#"><i class="icon ion-ios-arrow-back"></i></a>
 						</li>
 
 						<?
 							$is_first_page = $page == 1;
-							$is_last_page = false; // CHANGE THIS
+							$is_last_page = count(get_movies($vars, $page + 1)) == 0;
+							// it's probably the last page if the number of videos on the next page is 0
 							// this can probably be done better but im keeping it this way until the backend code is done
 							if ($is_first_page) { ?>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 2 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 2) . '"' ?>><?= $page + 2 ?></a></li>
+							<script>$(function () { paginate(1, 2) });</script>
 							<? } else if ($is_last_page) { ?>
-							<li class="paginator__item"><a href="#"><?= $page - 2 ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 2) . '"' ?>><?= $page - 2 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
+							<script>$(function () { paginate(2, 3) });</script>
 							<? } else { ?>
-							<li class="paginator__item"><a href="#"><?= $page - 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page  ?></a></li>
-							<li class="paginator__item"><a href="#"><?= $page + 1 ?></a></li>
+							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
+							<script>$(function () { paginate(1, 3) });</script>
 							<? }
 						?>
 
@@ -403,7 +464,7 @@
 						-->
 
 						<li class="paginator__item paginator__item--next">
-							<a href="#"><i class="icon ion-ios-arrow-forward"></i></a>
+							<a id="page-next" href="#"><i class="icon ion-ios-arrow-forward"></i></a>
 						</li>
 					</ul>
 				</div>
@@ -467,18 +528,5 @@
 	</footer>
 	<!-- end footer -->
 
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>

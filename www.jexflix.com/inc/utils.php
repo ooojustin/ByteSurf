@@ -2,6 +2,9 @@
 	
 	// utils.php
 	// Functions used generally in other parts of the website.
+	
+	// https://stackoverflow.com/a/6768831/5699643
+	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 	$GLOBALS['ip'] = get_ip();
 	// $GLOBALS['ip_info'] = get_ip_info();
@@ -108,7 +111,7 @@
 		$get_last_update = $db->prepare('SELECT * FROM imdb_updates WHERE url=:url ORDER BY id DESC LIMIT 1');
 		$get_last_update->bindValue(':url', $url);
 		$get_last_update->execute();
-		$last_update = $get_last_update->fetch();	
+		$last_update = $get_last_update->fetch();
 		if (!$last_update)
 			return true;
 		$day_ago = time() - (60 * 60 * 24); // timestamp 1 day ago
@@ -122,10 +125,10 @@
       	return $qualities;
 	}
 
-	function authenticate_cdn_url($url) {
+	function authenticate_cdn_url($url, $is_server_request = false) {
 
 		// important vars
-		global $ip;
+		$ip = $is_server_request ? $_SERVER['SERVER_ADDR'] : $GLOBALS['ip'];
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
 		$base_url = 'https://cdn.jexflix.com';
 
@@ -149,7 +152,6 @@
 		return $url;
 
 	}
-
 
 	// https://www.virendrachandak.com/techtalk/getting-real-client-ip-address-in-php-2/
 	function get_ip() {
@@ -178,6 +180,10 @@
 		$url = sprintf('http://pro.ip-api.com/json/%s?key=%s&fields=%s', getIP(), $access_key, $fields);
 		$json = file_get_contents($url);
 		return json_decode($json, true);
+	}
+
+	function contains($needle, $haystack)	{
+    	return strpos($haystack, $needle) !== false;
 	}
 
 ?>
