@@ -5,7 +5,6 @@
 	
 	// https://stackoverflow.com/a/6768831/5699643
 	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-	echo $GLOBALS['current_url'];
 
 	$GLOBALS['ip'] = get_ip();
 	// $GLOBALS['ip_info'] = get_ip_info();
@@ -126,7 +125,7 @@
       	return $qualities;
 	}
 
-	function authenticate_cdn_url($url) {
+	function authenticate_cdn_url($url, $is_server_request = false) {
 
 		// important vars
 		global $ip;
@@ -149,11 +148,12 @@
 		$token = str_replace('=', '', $token);
 
 		// generate new url
-		$url = "{$base_url}{$path}?token={$token}&expires={$expires}&ip={$ip}";
+		$url = "{$base_url}{$path}?token={$token}&expires={$expires}&ip=";
+		$url .= $is_server_request ? $_SERVER['SERVER_ADDR'] : $ip;
+
 		return $url;
 
 	}
-
 
 	// https://www.virendrachandak.com/techtalk/getting-real-client-ip-address-in-php-2/
 	function get_ip() {
