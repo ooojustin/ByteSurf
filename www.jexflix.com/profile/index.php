@@ -2,21 +2,22 @@
     // profile page
     session_start();
     
-    if (!isset($_SESSION['username'])) {
+    if (!isset($_SESSION['id'])) {
         header("location: /login");
         die();
     }
     
    if (isset($_GET['logout'])) {
   	   session_destroy();
-  	   unset($_SESSION['username']);
+  	   unset($_SESSION['id']);
        header("location: ../login");
        die();
    }
    
    require('../inc/server.php');
    
-   $data = get_user_data($_SESSION['username']);
+   $user = get_username($_SESSION['id']);
+   $data = get_user_data($user);
    
    $username = $data['username'];
    $user_id = $data['id'];
@@ -28,6 +29,10 @@
        if (!$_POST['newpass'] == $_POST['confirmpass']) return;
        
        update_password($username, $_POST['oldpass'], $_POST['newpass']);
+   }
+   
+   if (isset($_POST['pfp'])) {
+        update_picture($username, $_POST['pfp']);
    }
    
 ?>
@@ -202,11 +207,13 @@
 						<div class="profile__content">
 							<div class="profile__user">
 								<div class="profile__avatar">
-									<img src="../img/user.png" alt="">
+								    <? if (isset($data['pfp'])) { ?>
+									<img src=<?=$data['pfp']?> alt="">
+									<? } ?>
 								</div>
 								<div class="profile__meta">
 									<h3><?=$username?></h3>
-									<span>UserID: <?=$user_id?></span>
+									<span>User ID: <?=$user_id?></span>
 								</div>
 							</div>
 
@@ -253,7 +260,7 @@
 					<div class="row">
 						<!-- details form -->
 						<div class="col-12 col-lg-6">
-							<form action="#" class="profile__form">
+							<form action="" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
 										<h4 class="profile__title">Profile details</h4>
@@ -275,20 +282,13 @@
 
 									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 										<div class="profile__group">
-											<label class="profile__label" for="firstname">First Name</label>
-											<input id="firstname" type="text" name="firstname" class="profile__input" placeholder="John">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="lastname">Last Name</label>
-											<input id="lastname" type="text" name="lastname" class="profile__input" placeholder="Doe">
+											<label class="profile__label" for="pfp">Profile Picture</label>
+											<input id="pfp" type="text" name="pfp" class="profile__input" placeholder="Enter Image URL">
 										</div>
 									</div>
 
 									<div class="col-12">
-										<button class="profile__btn" type="button">Save</button>
+										<button class="profile__btn" type="submit">Save</button>
 									</div>
 								</div>
 							</form>
