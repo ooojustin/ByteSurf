@@ -36,14 +36,13 @@ namespace JexFlix_Scraper.Anime {
 
             foreach (AniSearch animeFound in AllAnime) {
 
-                AniUpload UploadData = new AniUpload();
-
-                UploadData.genres = new List<string>();
-
-                UploadData.episodeData = new List<EpisodeData>();
-
-
                 foreach (AniSearch.Show anime in animeFound.data) {
+
+                    AniUpload UploadData = new AniUpload();
+
+                    UploadData.genres = new List<string>();
+
+                    UploadData.episodeData = new List<EpisodeData>();
 
                     AniInfo AnimeInfo = anime.GetAnime();
 
