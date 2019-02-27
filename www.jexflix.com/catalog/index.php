@@ -112,6 +112,20 @@
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
+
 </head>
 <body class="body">
 	
@@ -381,6 +395,16 @@
 				<? } ?>
 
 				<!-- paginator -->
+				<script>
+					// updates the front/back urls
+					function paginate(p1, p2) {
+						var paginators = document.getElementsByClassName('paginator__item');
+						var prev = document.getElementById("page-prev");
+						var next = document.getElementById("page-next");
+						prev.href = (paginators[p1]).children[0].href;
+						next.href = (paginators[p2]).children[0].href;
+					}
+				</script>
 				<div class="col-12">
 					<ul class="paginator">
 						<li class="paginator__item paginator__item--prev">
@@ -396,14 +420,17 @@
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 2) . '"' ?>><?= $page + 2 ?></a></li>
+							<script>$(function () { paginate(1, 2) });</script>
 							<? } else if ($is_last_page) { ?>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 2) . '"' ?>><?= $page - 2 ?></a></li>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
+							<script>$(function () { paginate(2, 3) });</script>
 							<? } else { ?>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?= $page  ?></a></li>
 							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
+							<script>$(function () { paginate(1, 3) });</script>
 							<? }
 						?>
 
@@ -418,14 +445,6 @@
 							<a id="page-next" href="#"><i class="icon ion-ios-arrow-forward"></i></a>
 						</li>
 					</ul>
-					<script>
-						// update the front/back urls if necessary
-						var paginators = document.getElementsByClassName('paginator__item');
-						var prev = document.getElementById("page-prev");
-						var next = document.getElementById("page-next");
-						prev.href = (paginators[1]).children[0].href;
-						next.href = (paginators[3]).children[0].href;
-					</script>
 				</div>
 				<!-- end paginator -->
 
@@ -487,18 +506,5 @@
 	</footer>
 	<!-- end footer -->
 
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>
