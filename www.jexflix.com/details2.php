@@ -7,68 +7,35 @@
         die();
     }
     
-   if (isset($_GET['logout'])) {
-  	    session_destroy();
+   	if (isset($_GET['logout'])) {
+  		session_destroy();
         unset($_SESSION['id']);
     	header("location: ../login");
     	die();
-   }
-   
+   	}   
 
-    require 'inc/server.php';
-    
-    echo "</br>";
+	require 'inc/server.php';
+   	
+    if (!isset($_GET['title']))
+    	die('No anime selected');
 
-    $anime_title = $_GET['title'];
-    
-    if (!$anime_title)
-        die('No anime selected');
-        
-    if (!db)
-        die('Could not connect to the database');
-        
     $get_anime = $db->prepare('SELECT * FROM anime WHERE title=:title');
-    
-    $get_anime->bindValue(':title', $anime_title);
-    
-    $get_anime->execute();
-    
+    $get_anime->bindValue(':title', $_GET['title']);   
+    $get_anime->execute();   
     $anime = $get_anime->fetch();
 
-    if (!$anime) 
-        die('The anime was not found');
+    if (!$anime)
+        die('No anime found with that title.');
 
-    $anime_link = $anime['data'];
-        
-    $url = authenticate_cdn_url_server($anime_link); 
+    $url = authenticate_cdn_url($anime['data'], true);  
+    $data_raw = file_get_contents($url);
+    $json_data = json_decode($data_raw, true);
 
-    function curl_get_contents($url)
-    {
-        $ch = curl_init($url);
-    
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        
-        $data = curl_exec($ch);
-        
-        curl_close($ch);
-    
-        return $data;
-    }
-    
-    echo($url);
-    
-    $data_raw = curl_get_contents($url);
-
-    echo $data_raw;
-
-    $json_data = json_decode($data_raw);
-
+    // comment out these 2 lines and access all of the data from the $json_data variable
+    echo json_encode($json_data, JSON_PRETTY_PRINT);
     die();
+    
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,6 +65,20 @@
 	<meta name="keywords" content="">A
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
+
+	<!-- JS -->
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/jquery.mousewheel.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="js/wNumb.js"></script>
+	<script src="js/nouislider.min.js"></script>
+	<script src="js/plyr.min.js"></script>
+	<script src="js/jquery.morelines.min.js"></script>
+	<script src="js/photoswipe.min.js"></script>
+	<script src="js/photoswipe-ui-default.min.js"></script>
+	<script src="js/main.js"></script>
 
 </head>
 
@@ -609,19 +590,5 @@
 			</div>
 		</div>
 	</div>
-
-	<!-- JS -->
-	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.mousewheel.min.js"></script>
-	<script src="js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="js/wNumb.js"></script>
-	<script src="js/nouislider.min.js"></script>
-	<script src="js/plyr.min.js"></script>
-	<script src="js/jquery.morelines.min.js"></script>
-	<script src="js/photoswipe.min.js"></script>
-	<script src="js/photoswipe-ui-default.min.js"></script>
-	<script src="js/main.js"></script>
 </body>
 </html>
