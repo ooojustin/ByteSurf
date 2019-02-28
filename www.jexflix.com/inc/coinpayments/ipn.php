@@ -1,5 +1,8 @@
 <?php
 	
+	// DOCUMENTATION: https://www.coinpayments.net/merchant-tools-ipn
+	// Some IPN vars: https://pastebin.com/6YWVBaQV
+
 	define('MERCHANT_ID', 'e9e52a8f8fc84397ff3a71c06301d352');
 	define('SECRET', 'tkpVkHD3l0eAedf');
 
@@ -21,6 +24,26 @@
 	if ($hmac != $_SERVER['HTTP_HMAC'])
   		die("HMAC signature does not match");
 
-  	
+  	require dirname(__FILE__) . '/utils.php';
+
+	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
+		// payment completed
+		// ...
+		update_order($_POST['invoice'], 'completed');
+		die();
+	}
+
+	switch ($_POST['status']) {
+		case -2: // paypal refund/reversal
+			break;
+		case -1: // cancelled / timed out
+			break;
+		case 0: // waiting for funds
+			break;
+		case 1: // coin reception confirmed
+			break;
+		case 3:
+			break; // paypal transaction pending (eChecks and stuff)
+	}
 
 ?>

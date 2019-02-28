@@ -22,8 +22,8 @@ require('CoinpaymentsCurlRequest.php');
  */
 class CoinpaymentsAPI
 {
-    private $private_key = 'dB05204b1023751C8EC41eBB04b0efE255359b849fA9578e21259Bc66eDe7668';
-    private $public_key = '34d1d824c6fcd47436863b34beaa7487d29a39f40af249eb115719c97607d6f2';
+    private $private_key = '';
+    private $public_key = '';
     private $request_handler;
     private $format;
 
