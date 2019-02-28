@@ -24,59 +24,49 @@
 		$create_account->bindValue(':email', $email);
 		$create_account->bindValue(':username', $username);
 		$create_account->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
-		$create_account->execute();
+		return $create_account->execute();
 	}
-	
-	function check_user_exists($username) {
-	    global $db;
-	    $check_user = $db->prepare('SELECT * FROM users WHERE username=:username');
-	    $check_user->bindValue(':username', $username);
-	    $check_user->execute();
-	    
-	    return $check_user->rowCount() > 0;
-	}
-	
-	function check_email_exists($email) {
-	    global $db;
-	    $check_email = $db->prepare('SELECT * FROM users WHERE email=:email');
-	    $check_email->bindValue(':email', $email);
-	    $check_email->execute();
-	    
-	    return $check_email->rowCount() > 0;
-	}
-	
+
 	function update_password($username, $old_password, $new_password) {
+
 	    global $db;
 	    
 	    // check password is correct with login function
-	    if (!login($username, $old_password)) return false;
+	    if (!login($username, $old_password)) 
+	    	return false;
 	    
 	    // update if it passes check
 	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
 	    $update_password->bindValue(':username', $username);
 	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
-	    $update_password->execute();
-	    return true;
+	    return $update_password->execute();
+
 	}
 	
 	
-	function get_user_data($username) {
+	function get_user($username) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM users WHERE username=:username');
-    	$get_data->bindValue(':username', $username);
-    	$get_data->execute();
-    	
-   		return $get_data->fetch(); 
+		$get_data->bindValue(':username', $username);
+		$get_data->execute();
+		return $get_data->fetch(); 
 	}
 	
 	
-	function get_id_data($id) {
+	function get_user_by_id($id) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM users WHERE id=:id');
-    	$get_data->bindValue(':id', $id);
-    	$get_data->execute();
-    	
-   		return $get_data->fetch(); 
+		$get_data->bindValue(':id', $id);
+		$get_data->execute(); 	
+		return $get_data->fetch(); 
+	}
+
+	function get_user_by_email($email) {
+		global $db;
+		$check_email = $db->prepare('SELECT * FROM users WHERE email=:email');
+		$check_email->bindValue(':email', $email);
+	    $check_email->execute();
+	    return $check_email->fetch();
 	}
 
 	function get_movie_data($url) {

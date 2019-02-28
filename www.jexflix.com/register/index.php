@@ -1,66 +1,36 @@
 <?php
     require('../inc/server.php');
     
-    $errors = 0;
-    
-    session_start();
-    
+    session_start();   
     
     if (isset($_SESSION['id'])) {
-        header("location: /home");
+        header("location: ../home");
         die();
     }
 
-    if (!empty( $_POST)) {
-        $_SESSION["POST"] = $_POST;
-        if (!headers_sent()) {
-            $location = "https://" . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-            header("location: " . $location);
-            die();
-        }
-    }    
-    
-    if (isset($_SESSION["POST"])) {
-        $_POST = $_SESSION["POST"];
-        $_SERVER['REQUEST_METHOD'] = 'POST';
-    }
+    // if username isn't set, they probably didn't submit the form yet
+    if (!isset($_POST['username']))
+    	goto show_html;
 
-    if (empty($_POST['username'])) {
-        $errors++;
-        $error_message = "Please enter a username";
-    }
-    
-    if (empty($_POST['email'])) {
-        $errors++;
-        $error_message = "Please enter an email";
-    }
-    
-    if (empty($_POST['password'])) {
-        $errors++;
-        $error_message = "Please enter a password";
-    }
-    
-    if (check_user_exists($_POST['username'])) {
-        $errors++;
-        $error_message = "Username already exists";
-    }
-    
-    if (check_email_exists($_POST['email'])) {
-        $errors++;
-        $error_message = "Email already exists";
-    }
-    
-    // we need to make a banner to display $error_message at some point..
-    
-    
-    if ($errors < 1) {
+    if (empty($_POST['username']))
+    	$issue = '';
+    if (!isset($_POST['email']) || empty($_POST['email']))
+    	$issue = 'Please enter an email address.';
+    else if (!isset($_POST['password']) || empty($_POST['password']))
+    	$issue = 'Please enter a password.'
+    else if (get_user($_POST['username']))
+        $issue = 'That username is not available.';  
+    else if (get_user_by_email($_POST['email']))
+    	$issue = 'Account already exists with that email address.';
+
+    if (!isset($issue)) {
         create_account($_POST['username'], $_POST['email'], $_POST['password']);
-        header("location: ..\home");
-        unset($_SESSION["POST"]);
+        header("location: ../home");
         die();
     }
-    
-    unset($_SESSION["POST"]);
+
+    show_html:
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
