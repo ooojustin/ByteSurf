@@ -213,12 +213,13 @@
 				<!-- title -->
 				<div class="col-12">
 					<h1 class="details__title"><?php echo $json_data['title']; ?></h1>
+					<h1 class="details__title"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
 				</div>
 				<!-- end title -->
 
 				<!-- player -->
 				<div class="col-12 col-xl-6">
-					<video controls crossorigin playsinline poster="<?php authenticate_cdn_url($episode_info['thumbnail']); ?>" id="player">
+					<video controls crossorigin playsinline poster="<?php echo authenticate_cdn_url($episode_info['thumbnail']); ?>" id="player">
 
 						<!-- Video files -->
 						<?php
@@ -247,9 +248,10 @@
 										<tbody>
 										    <?php 
                                                 foreach($json_data['episodeData'] as $episode) {
-                                                    echo '<tr>';
+													echo '<tr>';
                                                     echo '<th>'.$episode['episode'].'</td>';
-                                                    echo '<td>'.$episode['title'].'</td>';
+													echo '<td> <a style="text-decoration:none" href="https://jexflix.com/anime.php?title='. $_GET['title'] . '&ep=' . $episode['episode'] . '">' . $episode['title']. '</a></td>';
+													echo '</a>';
                                                     echo '</tr>';
                                                 }
 										    ?>
