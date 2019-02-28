@@ -28,12 +28,19 @@
         die('No anime found with that title.');
 
     $url = authenticate_cdn_url($anime['data'], true);  
+    
     $data_raw = file_get_contents($url);
+    
     $json_data = json_decode($data_raw, true);
 
     // comment out these 2 lines and access all of the data from the $json_data variable
-    echo json_encode($json_data, JSON_PRETTY_PRINT);
-    die();
+    // $json_encode($json_data, JSON_PRETTY_PRINT);
+    
+    //foreach($json_data['episodeData'] as $episode) {
+     //   echo $episode['title'];
+    //}
+    
+    //die();
     
 ?>
 <!DOCTYPE html>
@@ -229,7 +236,7 @@
 							<div class="card-header" id="headingOne">
 								<button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
 									<span>Season: 1</span>
-									<span>22 Episodes from Nov, 2004 until May, 2005</span>
+									<!--<span>22 Episodes from Nov, 2004 until May, 2005</span>-->
 								</button>
 							</div>
 
@@ -240,214 +247,25 @@
 											<tr>
 												<th>#</th>
 												<th>Title</th>
-												<th>Air Date</th>
 											</tr>
 										</thead>
 
 										<tbody>
-											<tr>
-												<th>1</th>
-												<td>Pilot</td>
-												<td>Tuesday, November 16th, 2004</td>
-											</tr>
-											<tr>
-												<th>2</th>
-												<td>Paternity</td>
-												<td>Tuesday, November 23rd, 2004</td>
-											</tr>
-											<tr>
-												<th>3</th>
-												<td>Occam's Razor</td>
-												<td>Tuesday, November 30th, 2004</td>
-											</tr>
-											<tr>
-												<th>4</th>
-												<td>Maternity</td>
-												<td>Tuesday, December 7th, 2004</td>
-											</tr>
-											<tr>
-												<th>5</th>
-												<td>Damned If You Do</td>
-												<td>Tuesday, December 14th, 2004</td>
-											</tr>
-											<tr>
-												<th>6</th>
-												<td>The Socratic Method</td>
-												<td>Tuesday, December 21st, 2004</td>
-											</tr>
+										    <?php 
+                                                    foreach($json_data['episodeData'] as $episode) {
+                                                            echo '<tr>';
+                                                            echo '<th>'.$episode['episode'].'</td>';
+                                                            echo '<td>'.$episode['title'].'</td>';
+                                                            echo '</tr>';
+
+                                                    }
+										    ?>
 										</tbody>
 									</table>
 								</div>
 							</div>
 						</div>
 
-						<div class="accordion__card">
-							<div class="card-header" id="headingTwo">
-								<button class="collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-									<span>Season: 2</span>
-									<span>24 Episodes from Sep, 2005 until May, 2006</span>
-								</button>
-							</div>
-
-							<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-								<div class="card-body">
-									<table class="accordion__list">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>Title</th>
-												<th>Air Date</th>
-											</tr>
-										</thead>
-
-										<tbody>
-											<tr>
-												<th>1</th>
-												<td>Pilot</td>
-												<td>Tuesday, November 16th, 2004</td>
-											</tr>
-											<tr>
-												<th>2</th>
-												<td>Paternity</td>
-												<td>Tuesday, November 23rd, 2004</td>
-											</tr>
-											<tr>
-												<th>3</th>
-												<td>Occam's Razor</td>
-												<td>Tuesday, November 30th, 2004</td>
-											</tr>
-											<tr>
-												<th>4</th>
-												<td>Maternity</td>
-												<td>Tuesday, December 7th, 2004</td>
-											</tr>
-											<tr>
-												<th>5</th>
-												<td>Damned If You Do</td>
-												<td>Tuesday, December 14th, 2004</td>
-											</tr>
-											<tr>
-												<th>6</th>
-												<td>The Socratic Method</td>
-												<td>Tuesday, December 21st, 2004</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-
-						<div class="accordion__card">
-							<div class="card-header" id="headingThree">
-								<button class="collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-									<span>Season: 3</span>
-									<span>24 Episodes from Sep, 2006 until May, 2007</span>
-								</button>
-							</div>
-
-							<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
-								<div class="card-body">
-									<table class="accordion__list">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>Title</th>
-												<th>Air Date</th>
-											</tr>
-										</thead>
-
-										<tbody>
-											<tr>
-												<th>1</th>
-												<td>Pilot</td>
-												<td>Tuesday, November 16th, 2004</td>
-											</tr>
-											<tr>
-												<th>2</th>
-												<td>Paternity</td>
-												<td>Tuesday, November 23rd, 2004</td>
-											</tr>
-											<tr>
-												<th>3</th>
-												<td>Occam's Razor</td>
-												<td>Tuesday, November 30th, 2004</td>
-											</tr>
-											<tr>
-												<th>4</th>
-												<td>Maternity</td>
-												<td>Tuesday, December 7th, 2004</td>
-											</tr>
-											<tr>
-												<th>5</th>
-												<td>Damned If You Do</td>
-												<td>Tuesday, December 14th, 2004</td>
-											</tr>
-											<tr>
-												<th>6</th>
-												<td>The Socratic Method</td>
-												<td>Tuesday, December 21st, 2004</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-
-						<div class="accordion__card">
-							<div class="card-header" id="headingFour">
-								<button class="collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-									<span>Season: 4</span>
-									<span>16 Episodes from Sep, 2007 until May, 2008</span>
-								</button>
-							</div>
-
-							<div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordion">
-								<div class="card-body">
-									<table class="accordion__list">
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>Title</th>
-												<th>Air Date</th>
-											</tr>
-										</thead>
-
-										<tbody>
-											<tr>
-												<th>1</th>
-												<td>Pilot</td>
-												<td>Tuesday, November 16th, 2004</td>
-											</tr>
-											<tr>
-												<th>2</th>
-												<td>Paternity</td>
-												<td>Tuesday, November 23rd, 2004</td>
-											</tr>
-											<tr>
-												<th>3</th>
-												<td>Occam's Razor</td>
-												<td>Tuesday, November 30th, 2004</td>
-											</tr>
-											<tr>
-												<th>4</th>
-												<td>Maternity</td>
-												<td>Tuesday, December 7th, 2004</td>
-											</tr>
-											<tr>
-												<th>5</th>
-												<td>Damned If You Do</td>
-												<td>Tuesday, December 14th, 2004</td>
-											</tr>
-											<tr>
-												<th>6</th>
-												<td>The Socratic Method</td>
-												<td>Tuesday, December 21st, 2004</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
 					</div>
 				</div>
 				<!-- end accordion -->
