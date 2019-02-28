@@ -16,7 +16,7 @@
    
    require('../inc/server.php');
    
-   $data = get_id_data($_SESSION['id']);
+   $data = get_user_by_id($_SESSION['id']);
    
    $username = $data['username'];
    $user_id = $data['id'];
