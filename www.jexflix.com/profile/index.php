@@ -14,10 +14,6 @@
        die();
    }
    
-    if (isset($_POST['search'])) {
-        header("location: https://jexflix.com/catalog/?search=" . $_POST['search']);
-    }
-   
    require('../inc/server.php');
    
    $user = get_username($_SESSION['id']);
@@ -161,7 +157,7 @@
 		</div>
 
         <!-- header search -->
-        <form action="" method="post" class="header__search">
+        <form action="https://jexflix.com/catalog" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
