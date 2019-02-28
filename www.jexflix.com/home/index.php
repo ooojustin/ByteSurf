@@ -7,12 +7,17 @@
         die();
     }
     
-    if (isset($_GET[logout])) {
+    if (isset($_GET['logout'])) {
         session_destroy();
         unset($_SESSION['id']);
         header("location: ../login");
         die();
     }
+    
+    if (isset($_POST['search'])) {
+        header("location: https://jexflix.com/catalog/?search=" . $_POST['search']);
+    }
+
 ?>
 
 
@@ -135,14 +140,14 @@
 		</div>
 
 		<!-- header search -->
-		<form action="#" class="header__search">
+		<form action="" method="post" class="header__search">
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
 						<div class="header__search-content">
-							<input type="text" placeholder="Search for a movie, TV Series that you are looking for">
+							<input type="text" id="search" name='search' placeholder="Search for a movie, TV Series that you are looking for">
 
-							<button type="button">search</button>
+							<button type="submit">search</button>
 						</div>
 					</div>
 				</div>
