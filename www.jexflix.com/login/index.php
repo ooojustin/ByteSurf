@@ -70,7 +70,6 @@
 								<img src="../img/logo.png" alt="">
 							</a>
 
-							<!-- trevor put ur silly banner here thx -->
 							<? if (isset($issue)) { ?>
 							<div class="register-error">
 							    <span class="signin-error-text"><?= $issue ?></span>

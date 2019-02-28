@@ -8,16 +8,12 @@
         die();
     }
 
-    // if username isn't set, they probably didn't submit the form yet
-    if (!isset($_POST['username']))
-    	goto show_html;
-
-    if (empty($_POST['username']))
+    if (!isset($_POST['username']) || empty($_POST['username']))
     	$issue = '';
     if (!isset($_POST['email']) || empty($_POST['email']))
     	$issue = 'Please enter an email address.';
     else if (!isset($_POST['password']) || empty($_POST['password']))
-    	$issue = 'Please enter a password.'
+    	$issue = 'Please enter a password.';
     else if (get_user($_POST['username']))
         $issue = 'That username is not available.';  
     else if (get_user_by_email($_POST['email']))
@@ -29,7 +25,9 @@
         die();
     }
 
-    show_html:
+    // if $_POST['username'] isn't set, they didnt post data from form
+    if (!isset($_POST['username']))
+    	unset($issue);
 
 ?>
 <!DOCTYPE html>
@@ -72,9 +70,16 @@
 					<div class="sign__content">
 						<!-- registration form -->
 						<form action="" method="post" class="sign__form">
+							
 							<a href="#" class="sign__logo">
 								<img src="../img/logo.png" alt="">
 							</a>
+
+							<? if (isset($issue)) { ?>
+							<div class="register-error">
+							    <span class="signin-error-text"><?= $issue ?></span>
+							</div>
+							<? } ?>
 
 							<div class="sign__group">
 								<input type="text" class="sign__input" id="username" name="username" placeholder="Username">
