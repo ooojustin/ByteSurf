@@ -68,6 +68,16 @@
     	
    		return $get_data->fetch(); 
 	}
+	
+	
+	function get_id_data($id) {
+		global $db;
+		$get_data = $db->prepare('SELECT * FROM users WHERE id=:id');
+    	$get_data->bindValue(':id', $id);
+    	$get_data->execute();
+    	
+   		return $get_data->fetch(); 
+	}
 
 	function get_movie_data($url) {
 		global $db;
