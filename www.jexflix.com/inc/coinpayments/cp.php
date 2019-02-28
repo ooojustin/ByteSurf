@@ -1,5 +1,7 @@
 <?php
 
+	// Data received when payment is created successfully: https://pastebin.com/i4TzNPgt
+
 	require dirname(__FILE__) . '/CoinpaymentsAPI.php';
 	require dirname(__FILE__) . '/utils.php';
 
@@ -8,7 +10,7 @@
 	define('PUBLIC_KEY', '34d1d824c6fcd47436863b34beaa7487d29a39f40af249eb115719c97607d6f2');
 
 	// btc address to receive payments
-	define('BTC_ADDRESS', '3GiE1z7zQyvYRcxybcAx4jmsomqqVz3ngu');
+	define('BTC_ADDRESS', '1AnSFnaAgvtrsXZm82ZCqYv7M5c8cLKv64');
 
 	// ipn url (to handle payment status updates)
 	define('IPN_URL', 'https://jexflix.com/inc/coinpayments/ipn.php');
@@ -20,7 +22,11 @@
 
 		global $cp;
 
-		$data = $cp->CreateComplexTransaction(
+		// create order in database and get invoice string
+		$invoice = create_order($name, $amount, 'btc');
+
+		// send payment request to server
+		$payment = $cp->CreateComplexTransaction(
 			$amount, // amount of $ (USD)
 			'USD', // transaction to convert from 
 			'BTC', // transaction to convert to/receive payment in
@@ -29,15 +35,19 @@
 			$name, // buyer full name (or username, i guess)
 			$product_name, // name of product
 			$product_number, // number of product (pass as string)
-			'invoice_string', // invoice # (generated randomly for each payment)
-			'custom_info', // anything (custom information to store)
+			$invoice, // invoice # (generated randomly for each payment)
+			'', // anything (custom information to store)
 			IPN_URL // URL to IPN to update/handle payments
 		);
 
-		// create_order($user, $amount, $method)
-		create_order($name, $amount, 'btc');
+		// handle potential issues
+		if ($payment['error'] != 'ok') {
+			update_order($invoice, 'error');
+			return false;
+		}
 
-		return $data;
+		// return status URL
+		return $payment['result']['status_url'];
 
 	}
 

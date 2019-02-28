@@ -1,6 +1,7 @@
 <?php
 	
 	// DOCUMENTATION: https://www.coinpayments.net/merchant-tools-ipn
+	// Some IPN vars: https://pastebin.com/6YWVBaQV
 
 	define('MERCHANT_ID', 'e9e52a8f8fc84397ff3a71c06301d352');
 	define('SECRET', 'tkpVkHD3l0eAedf');
