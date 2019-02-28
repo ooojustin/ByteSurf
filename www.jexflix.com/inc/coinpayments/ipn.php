@@ -28,6 +28,7 @@
 	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
 		// payment completed
 		// ...
+		update_order($_POST['invoice'], 'completed');
 		die();
 	}
 

@@ -2,6 +2,18 @@
 
     if (!isset($GLOBALS['db']))
         require dirname(__FILE__) . '/../server.php';
+
+    function update_order($invoice, $status) {
+
+        global $db;
+
+        $update_order = $db->prepare('UPDATE orders SET status = :status WHERE invoice = :invoice');
+        $update_order->bindValue(':invoice', $invoice);
+        $update_order->bindValue(':status', $status);
+
+        return $update_order->execute();
+
+    }
     
     function create_order($user, $amount, $method) {
 
