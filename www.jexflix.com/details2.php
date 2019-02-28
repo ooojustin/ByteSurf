@@ -205,7 +205,7 @@
 			<div class="row">
 				<!-- title -->
 				<div class="col-12">
-					<h1 class="details__title">I Dream in Another Language</h1>
+					<h1 class="details__title"><?php echo $json_data['title']; ?></h1>
 				</div>
 				<!-- end title -->
 
@@ -233,14 +233,6 @@
 				<div class="col-12 col-xl-6">
 					<div class="accordion" id="accordion">
 						<div class="accordion__card">
-							<div class="card-header" id="headingOne">
-								<button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-									<span>Season: 1</span>
-									<!--<span>22 Episodes from Nov, 2004 until May, 2005</span>-->
-								</button>
-							</div>
-
-							<div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
 								<div class="card-body">
 									<table class="accordion__list">
 										<thead>
@@ -263,7 +255,6 @@
 										</tbody>
 									</table>
 								</div>
-							</div>
 						</div>
 
 					</div>
