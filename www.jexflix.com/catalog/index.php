@@ -25,67 +25,70 @@
     	'imdb_min' => 0.1,
     	'imdb_max' => 10.0, 
     	'year_min' => 2000,
-    	'year_max' => 2019
+    	'year_max' => 2019,
+    	'query' => '' // search query ($_GET['search'])
     );
 
     // vars that are checked via 'LIKE' selection in sql query
     $vars_containify = array(
     	'genre', 
-    	'quality'
+    	'quality',
+    	'query'
     );
 
+    // set search query, or remove from array
+    if (isset($_GET['search']))
+    	$vars['query'] = $_GET['search'];
+    else
+    	unset($vars['query']);
+
+    // set $genre for use later in html (must be done before containify)
+    $genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
+
+    // set all filtering variables from $_GET and modify accordingly
     foreach ($vars as $var => $default) {
 
     	if (isset($_GET[$var])) 
     		$vars[$var] = $_GET[$var];
 
     	if (in_array($var, $vars_containify))
-    		$vars[$var] = '"%' . strtolower($vars[$var]) . '%"';
+    		$vars[$var] = '%' . strtolower($vars[$var]) . '%';
 
     }
 
+    // update page # if it's set by the user
     if (isset($_GET['page']))
     	$GLOBALS['page'] = intval($_GET['page']);
 
-    $genre = $vars['genre'];
-    if (isset($_GET['genre']))
-    	$genre = $_GET['genre'];
-
+    // get movies and determine if any videos were found correctly
     $movies = get_movies($vars, $page);
     if ($page < 1 || count($movies) == 0) {
-    	// PAGE NUMBER IS INVALID
-    	// somebody feel free to change how this is handled (@trevor)
-    	die('Invalid page number.');
+    	// PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
+    	// somebody handle this with something (@trevor)
+    	die('No videos found.');
     }
 
     function get_movies($vars, $page) {
 
-    	global $db;
+	   	global $db;
 
-    	//$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max LIMIT 10');
-    	$querystr = 'SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC';
+	   	if (isset($vars['query'])) {
+	   		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+	   		$get_movies->bindValue(':query', $vars['query']);
+	   	} else {
+    		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT :offset, :count');
+    		foreach ($vars as $var => $default)
+    			$get_movies->bindValue(':' . $var, $default);
+    	}
 
-    	foreach ($vars as $var => $default) {
+    	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
+    	$get_movies->bindValue(':offset', $movie_offset, PDO::PARAM_INT);
+    	$get_movies->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
 
-    		// $var = the variable name
-    		// $$var = the variable value
-
-     		$binder = ':' . $var;
-     		//$get_movies->bindValue($binder, $$var);
-     		$querystr = str_replace($binder, $vars[$var], $querystr);	
-     		//echo $binder . ' = ' . $$var;
-
-     	}
-
-    	//echo PHP_EOL . $querystr . PHP_EOL;
-    	$get_movies = $db->prepare($querystr);
+    	$get_movies->execute();
+    	$movies = $get_movies->fetchAll();
     	
-    	if($get_movies->execute()) {
-    		$movies = $get_movies->fetchAll(); // list of all movies fitting parameters
-    		$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
-    		$movies = array_slice($movies, $movie_offset, VIDEOS_PER_PAGE);
-    		return $movies;
-    	} else return false;
+    	return $movies;
 
     }
 
