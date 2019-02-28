@@ -8,8 +8,8 @@
     	$issue = 'Please enter username/password.';
     } else {
     	if (login($_POST['username'], $_POST['password'])) {
-       		$_SESSION['id'] = get_user_data($_POST['username'])['id'];
-       		header("location: ..\home");
+       		$_SESSION['id'] = get_user($_POST['username'])['id'];
+       		header("location: ../home");
        		die();
     	} else
     		$issue = 'Incorrect username/password.';
