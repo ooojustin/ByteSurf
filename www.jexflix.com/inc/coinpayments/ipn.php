@@ -24,15 +24,17 @@
 	if ($hmac != $_SERVER['HTTP_HMAC'])
   		die("HMAC signature does not match");
 
-  	require 'utils.php';
+  	require 'utils.php'; // includes main server and utils stuff
   	require '../products.php';
   	global $products;
 
 	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
 
-		// get invoice user
+		// get invoice user & data
 		$invoice = get_order($_POST['invoice']);
 		$username = $invoice['username'];
+		$user = get_user($username);
+		$expires = intval($user['expires']);
 
 		// get invoice product
 		$product_id = intval($_POST['item_number']);
@@ -42,14 +44,12 @@
 		$duration = $product['duration'];
 		if ($duration == -1) {
 			// lifetime, just set expire time to -1
+			update_expires($username, -1);
 		} else {
-			/*
-			if current expiration time > time(), new expiration time = 
-				time() + duration + (old expiration time - time())
-			otherwise, new expiration time =
-				time() + duration
-			*/
-
+			// extend subscription if necessary
+			if ($expires > time())
+				$duration += $expires - time();
+			update_expires($username, time() + $duration);
 		}
 
 		update_order($_POST['invoice'], 'completed');

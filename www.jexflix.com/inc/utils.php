@@ -43,14 +43,19 @@
 	}
 	
 	function update_picture($username, $pfp) {
-
 		global $db;
-
 		$update_picture = $db->prepare('UPDATE users SET pfp=:pfp WHERE username=:username');
 		$update_picture->bindValue(':username', $username);
 		$update_picture->bindValue(':pfp', $pfp);
 		return $update_picture->execute();
+	}
 
+	function update_expires($username, $expires) {
+		global $db;
+		$update_expires = $db->prepare('UPDATE users SET expires=:expires WHERE username=:username');
+		$update_expires->bindValue(':username', $username);
+		$update_expires->bindValue(':expires', $expires);
+		return $update_expires->execute();
 	}
 	
 	function get_user($username) {
