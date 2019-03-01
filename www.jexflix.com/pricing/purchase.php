@@ -2,33 +2,20 @@
 	
 	require '../inc/server.php';
     require '../inc/session.php';
+    require '../inc/products.php';
     require_login();
 
-    // format for plan initialization:
-    // id number, short name, full name, price, duration
-	global $product_id, $products;
-    init_plan(1, '1month', '1 Month Subscription', 8.99, 86400);
-    init_plan(2, '3months', '3 Month Subscription', 19.99, 259200);
-    init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1);
+    // get product 
+    global $product_ids, $products;
 
 	// make sure a valid plan has been found
-	if (!isset($_GET['plan']) || !array_key_exists($_GET['plan'], $product_id)) {
-		//header("location: https://jexflix.com/pricing/");
-        die('error');
+	if (!isset($_GET['plan']) || !array_key_exists($_GET['plan'], $product_ids)) {
+		header("location: https://jexflix.com/pricing/");
+        die();
 	}
 
-	$id = $product_id[$_GET['plan']];
+	$id = $product_ids[$_GET['plan']];
 	$product = $products[$id];
-
-	function init_plan($id, $name_short, $name, $price, $duration) {
-		global $product_id, $products;
-		$product_id[$name_short] = $id;
-		$product['name'] = $name;
-		$product['price'] = $price;
-		$product['duration'] = $duration;
-		$products[$id] = $product;
-	}
-
 
 ?>
 <!DOCTYPE html>
