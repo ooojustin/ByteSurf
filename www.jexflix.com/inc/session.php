@@ -26,7 +26,7 @@
 	function require_subscription() {
 		require_login(); // must be logged in to check subscription
 		global $user;
-		if (time() <= intval($user['expires'])) {
+		if (time() > intval($user['expires'])) {
 			header("location: https://jexflix.com/pricing/");
 			die();
 		}

@@ -35,7 +35,6 @@
 	    if (!login($username, $old_password)) 
 	    	return false;
 	    
-	    // update if it passes check
 	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
 	    $update_password->bindValue(':username', $username);
 	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
@@ -43,6 +42,16 @@
 
 	}
 	
+	function update_picture($username, $pfp) {
+
+		global $db;
+
+		$update_picture = $db->prepare('UPDATE users SET pfp=:pfp WHERE username=:username');
+		$update_picture->bindValue(':username', $username);
+		$update_picture->bindValue(':pfp', $pfp);
+		return $update_picture->execute();
+
+	}
 	
 	function get_user($username) {
 		global $db;

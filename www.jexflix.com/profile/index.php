@@ -1,38 +1,24 @@
 <?php
-    // profile page
-    session_start();
-    
-    if (!isset($_SESSION['id'])) {
-        header("location: /login");
-        die();
-    }
-    
-   if (isset($_GET['logout'])) {
-  	   session_destroy();
-  	   unset($_SESSION['id']);
-       header("location: ../login");
-       die();
-   }
+
+    require '../inc/server.php';
+    require '../inc/session.php';
+    require_subscription();
    
-   require('../inc/server.php');
+	global $user;
    
-   $data = get_user_by_id($_SESSION['id']);
+   	$username = $user['username'];
+   	$user_id = $user['id'];
+   	$email = $user['email'];
    
-   $username = $data['username'];
-   $user_id = $data['id'];
-   $email = $data['email'];
+   	// update password
+   	if(isset($_POST['oldpass']) && isset($_POST['newpass']) && isset($_POST['confirmpass'])) {
+		if ($_POST['newpass'] != $_POST['confirmpass']) return;
+       	update_password($username, $_POST['oldpass'], $_POST['newpass']);
+   	}
    
-   // update password stuff
-   
-   if(isset($_POST['oldpass']) && isset($_POST['newpass']) && isset($_POST['confirmpass'])) {
-       if (!$_POST['newpass'] == $_POST['confirmpass']) return;
-       
-       update_password($username, $_POST['oldpass'], $_POST['newpass']);
-   }
-   
-   if (isset($_POST['pfp'])) {
-        update_picture($username, $_POST['pfp']);
-   }
+   	// update profile pic
+   	if (isset($_POST['pfp']))
+    	update_picture($username, $_POST['pfp']);
    
 ?>
 
@@ -63,7 +49,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
@@ -206,8 +192,8 @@
 						<div class="profile__content">
 							<div class="profile__user">
 								<div class="profile__avatar">
-								    <? if (isset($data['pfp'])) { ?>
-									<img src=<?=$data['pfp']?> alt="">
+								    <? if (isset($user['pfp'])) { ?>
+									<img src=<?= '"' . $user['pfp'] . '"' ?> alt="">
 									<? } ?>
 								</div>
 								<div class="profile__meta">
