@@ -19,7 +19,7 @@
 
         global $db;
 
-        $invoice = generate_invoice_string();
+        $invoice = generate_split_string(5, 4);
 
         $create_order = $db->prepare('INSERT INTO orders (invoice, name, email, username, product, amount, method) VALUES (:invoice, :name, :email, :username, :product, :amount, :method)');
         $create_order->bindValue(':invoice', $invoice);
@@ -47,19 +47,6 @@
 
         return $get_order->fetch();
 
-    }
-
-    function generate_invoice_string() {
-        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $chars_length = strlen($chars);
-        $invoice = '';
-        for ($x = 0; $x < 5; $x++) {
-            for ($y = 0; $y < 4; $y++) {
-                $invoice .= $chars[rand(0, $chars_length - 1)];
-            }
-            $invoice .= '-';
-        }
-        return substr($invoice, 0, -1);
     }
 
 ?>

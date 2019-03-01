@@ -65,6 +65,16 @@
 		update_expires($username, time() + $duration);
 	}
 	
+	function generate_trial_key($username, $duration) {
+		global $db;
+		$trial_key = generate_split_string(5, 4);
+		$generate_trial_key = $db->prepare('INSERT INTO trial_keys (trial_key, owner, duration) VALUES (:trial_key, :owner, :duration)');
+		$generate_trial_key->bindValue(':trial_key', $trial_key);
+		$generate_trial_key->bindValue(':owner', $username);
+		$generate_trial_key->bindValue(':duration', $duration);
+		return $generate_trial_key->execute() ? $trial_key : false;
+	}
+
 	function get_user($username) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM users WHERE username=:username');
@@ -218,5 +228,18 @@
 	function contains($needle, $haystack)	{
     	return strpos($haystack, $needle) !== false;
 	}
+
+	function generate_split_string($xC, $xY) {
+        $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $chars_length = strlen($chars);
+        $invoice = '';
+        for ($x = 0; $x < $xC; $x++) {
+            for ($y = 0; $y < $xY; $y++) {
+                $invoice .= $chars[rand(0, $chars_length - 1)];
+            }
+            $invoice .= '-';
+        }
+        return substr($invoice, 0, -1);
+    }
 
 ?>
