@@ -334,10 +334,15 @@
 										$get_orders->bindValue(':username', $username);
 										$get_orders->bindValue(':status', 'completed');
 										$get_orders->execute();
-										$orders = $get_orders->fetchAll();
-										foreach ($orders as $order) { ?>
-											<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
-									<? } ?>
+										if ($get_orders->rowCount() > 0) {
+											$orders = $get_orders->fetchAll();
+											foreach ($orders as $order) { ?>
+												<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
+											<? } 
+										} else { ?>
+											<label class="profile__label">You do not have any completed orders.</label>
+										<? } 
+									?>
 								</div>
 					
 							</div>
@@ -350,15 +355,35 @@
 							<div class="row">
 
 								<div class="col-12">
-									<h4 class="profile__title">Trial Keys</h4>
+									<h4 class="profile__title" style="margin-bottom: 15px">Trial Keys</h4>
 									<?
 										$get_trials = $db->prepare('SELECT * FROM trial_keys WHERE owner=:username AND user IS NULL');
 										$get_trials->bindValue(':username', $username);
 										$get_trials->execute();
-										$trials = $get_trials->fetchAll();
-										foreach ($trials as $trial) { ?>
-											<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
-									<? } ?>
+										if ($get_trials->rowCount() > 0) {
+											$trials = $get_trials->fetchAll();
+											foreach ($trials as $trial) { ?>
+												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
+											<? }
+										} else { ?>
+											<label class="profile__label">You do not have any unused trial keys.</label>
+										<? } 
+									?>
+									<br><br>
+									<h4 class="profile__title" style="margin-bottom: 15px">Used Trial Keys</h4>
+									<?
+										$get_trials = $db->prepare('SELECT * FROM trial_keys WHERE owner=:username AND user IS NOT NULL');
+										$get_trials->bindValue(':username', $username);
+										$get_trials->execute();
+										if ($get_trials->rowCount() > 0) {
+											$trials = $get_trials->fetchAll();
+											foreach ($trials as $trial) { ?>
+												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days - Used by ' . $trial['user']; ?></label><br>
+											<? }
+										} else { ?>
+											<label class="profile__label">You do not have any used trial keys.</label>
+										<? } 
+									?>
 								</div>
 					
 							</div>
