@@ -57,6 +57,13 @@
 		$update_expires->bindValue(':expires', $expires);
 		return $update_expires->execute();
 	}
+
+	function add_subscription_time($username, $duration) {
+		$expires = intval(get_user($username)['expires']);
+		if ($expires > time())
+			$duration += $expires - time();
+		update_expires($username, time() + $duration);
+	}
 	
 	function get_user($username) {
 		global $db;

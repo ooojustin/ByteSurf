@@ -47,9 +47,7 @@
 			update_expires($username, -1);
 		} else {
 			// extend subscription if necessary
-			if ($expires > time())
-				$duration += $expires - time();
-			update_expires($username, time() + $duration);
+			add_subscription_time($username, $duration);
 		}
 
 		update_order($_POST['invoice'], 'completed');
