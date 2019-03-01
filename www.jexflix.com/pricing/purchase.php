@@ -48,6 +48,20 @@
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
+
 </head>
 <body class="body">
 
@@ -64,7 +78,7 @@
 							</a>
 
                             <label class="profile__label"><?= $product['name'] ?></label>
-                            <label class="profile__label">Price: <?= '$' . $product['price'] ?></label>
+                            <label class="profile__label" id="price_label">Price: <?= '$' . $product['price'] ?></label>
 
 							<? if (isset($issue)) { ?>
 							<div class="register-error">
@@ -93,18 +107,33 @@
 		</div>
 	</div>
 
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
+	<script>
+
+		var price = <?= $product['price'] ?>;
+
+		$('#discount').focusout(function() {
+			var code = $('#discount').val();
+			var url = 'https://jexflix.com/inc/products.php?discount=' + code;
+			get(url, function(off) {
+				if ($.isNumeric(off) && off > 0 && off < 100) {
+					var multiplier = (100 - off) / 100;
+            		var discounted_price = (price * multiplier).toFixed(2);
+            		$('#price_label').text('Price: $' + discounted_price + ' (' + off + '% off)');
+				} else {
+					$('#price_label').text('Price: $' + price);
+				}
+			});
+		});
+
+		function get(url, callback) {
+			$.ajax({
+				'url': url,
+				'type': 'GET',
+				'success': callback
+			});
+		}
+
+	</script>
+
 </body>
 </html>
