@@ -23,7 +23,7 @@
 		global $cp;
 
 		// create order in database and get invoice string
-		$invoice = create_order($name, $email, $username, $amount, 'btc');
+		$invoice = create_order($name, $email, $username, $product_name, $amount, 'btc');
 
 		// send payment request to server
 		$payment = $cp->CreateComplexTransaction(

@@ -15,15 +15,18 @@
 
     }
     
-    function create_order($name, $email, $username, $amount, $method) {
+    function create_order($name, $email, $username, $product, $amount, $method) {
 
         global $db;
 
         $invoice = generate_invoice_string();
 
-        $create_order = $db->prepare('INSERT INTO orders (invoice, username, amount, method) VALUES (:invoice, :username, :amount, :method)');
+        $create_order = $db->prepare('INSERT INTO orders (invoice, name, email, username, product, amount, method) VALUES (:invoice, :name, :email, :username, :product, :amount, :method)');
         $create_order->bindValue(':invoice', $invoice);
+        $create_order->bindValue(':name', $name);
+        $create_order->bindValue(':email', $email);
         $create_order->bindValue(':username', $username);
+        $create_order->bindValue(':product', $product);
         $create_order->bindValue(':amount', $amount);
         $create_order->bindValue(':method', $method);
 

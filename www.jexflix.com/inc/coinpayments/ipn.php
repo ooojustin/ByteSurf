@@ -26,13 +26,35 @@
 
   	require 'utils.php';
   	require '../products.php';
+  	global $products;
 
 	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
+
+		// get invoice user
 		$invoice = get_order($_POST['invoice']);
 		$username = $invoice['username'];
-		
+
+		// get invoice product
+		$product_id = intval($_POST['item_number']);
+		$product = $products[$product_id];
+
+		// apply subscription
+		$duration = $product['duration'];
+		if ($duration == -1) {
+			// lifetime, just set expire time to -1
+		} else {
+			/*
+			if current expiration time > time(), new expiration time = 
+				time() + duration + (old expiration time - time())
+			otherwise, new expiration time =
+				time() + duration
+			*/
+
+		}
+
 		update_order($_POST['invoice'], 'completed');
 		die();
+
 	}
 
 	switch ($_POST['status']) {
