@@ -50,6 +50,10 @@
 			add_subscription_time($username, $duration);
 		}
 
+		// give buyer 1 week trial codes (if applicable)
+		for ($i = 0; $i < $product['trial_keys']; $i++)
+			generate_trial_key($username, SECONDS_PER_DAY * 7);
+
 		update_order($_POST['invoice'], 'completed');
 		die();
 

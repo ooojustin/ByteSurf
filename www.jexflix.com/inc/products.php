@@ -4,10 +4,10 @@
 	define('SECONDS_PER_DAY', 86400);
 
 	// format for plan initialization:
-    // id number, short name, full name, price, duration
+    // id number, short name, full name, price, duration, trial keys (optional)
     init_plan(1, '1month', '1 Month Subscription', 8.99, SECONDS_PER_DAY * 30);
-    init_plan(2, '3months', '3 Month Subscription', 19.99, SECONDS_PER_DAY * 90);
-    init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1);
+    init_plan(2, '3months', '3 Month Subscription', 19.99, SECONDS_PER_DAY * 90, 1);
+    init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1, 3);
 
     // discount codes, % off
 	global $discounts;
@@ -24,12 +24,13 @@
 			die('0');
 	}
 
-    function init_plan($id, $name_short, $name, $price, $duration) {
+    function init_plan($id, $name_short, $name, $price, $duration, $trial_keys = 0) {
 		global $product_ids, $products;
 		$product_ids[$name_short] = $id;
 		$product['name'] = $name;
 		$product['price'] = $price;
 		$product['duration'] = $duration;
+		$product['trial_keys'] = $trial_keys;
 		$products[$id] = $product;
 	}
 
