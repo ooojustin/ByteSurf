@@ -37,9 +37,8 @@
 		else if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
 			$issue = 'The provided email address is invalid.';
 
-		// create_btc_payment($amount, $email, $name, $product_name, $product_number, $custom_info = '')
 		if (!isset($issue)) {
-			$url = create_btc_payment($price, $_POST['email'], $_POST['name'], $product['name'], strval($id), $user['username']);
+			$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
 			header("location: " . $url);
 			die();
 		}

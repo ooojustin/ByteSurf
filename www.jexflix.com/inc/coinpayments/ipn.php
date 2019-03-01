@@ -24,11 +24,13 @@
 	if ($hmac != $_SERVER['HTTP_HMAC'])
   		die("HMAC signature does not match");
 
-  	require dirname(__FILE__) . '/utils.php';
+  	require 'utils.php';
+  	require '../products.php';
 
 	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
-		// payment completed
-		// ...
+		$invoice = get_order($_POST['invoice']);
+		$username = $invoice['username'];
+		
 		update_order($_POST['invoice'], 'completed');
 		die();
 	}

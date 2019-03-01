@@ -18,12 +18,12 @@
 	// initialize CoinpaymentsAPI object
 	$GLOBALS['cp'] = new CoinpaymentsAPI(PRIVATE_KEY, PUBLIC_KEY, 'json');
 
-	function create_btc_payment($amount, $email, $name, $product_name, $product_number, $custom_info = '') {
+	function create_btc_payment($username, $email, $name, $amount, $product_name, $product_number, $custom_info = '') {
 
 		global $cp;
 
 		// create order in database and get invoice string
-		$invoice = create_order($name, $amount, 'btc');
+		$invoice = create_order($name, $email, $username, $amount, 'btc');
 
 		// send payment request to server
 		$payment = $cp->CreateComplexTransaction(
