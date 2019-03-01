@@ -1,19 +1,9 @@
 <?php
-    // faq page
-    session_start();
-    
-    if (!isset($_SESSION['id'])) {
-        header("location: /login");
-        die();
-    }
-    
-   if (isset($_GET['logout'])) {
-  	    session_destroy();
-        unset($_SESSION['id']);
-    	header("location: ../login");
-    	die();
-   }
-   
+
+    require '../inc/server.php';
+    require '../inc/session.php';
+   	require_subscription();
+     
 ?>
 
 

@@ -1,20 +1,10 @@
 <?php
-    // catalog page
-    session_start();
     
-    if (!isset($_SESSION['id'])) {
-        header("location: /login");
-        die();
-    }
-    
-   if (isset($_GET['logout'])) {
-  	    session_destroy();
-  	    unset($_SESSION['id']);
-        header("location: ../login");
-   	    die();
-   }
-   
-	require '../inc/server.php';
+    require '../inc/server.php';
+    require '../inc/session.php';
+    require_subscription();
+
+    // # of videos shown on each page
 	define('VIDEOS_PER_PAGE', 24);
 
     // all variables and their default values
