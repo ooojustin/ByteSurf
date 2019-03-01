@@ -1,11 +1,10 @@
 <?php
-
-    require('../inc/server.php');
-
-    session_start();
+	
+	require '../inc/server.php';
+    require '../inc/session.php';
+    require_login();
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
