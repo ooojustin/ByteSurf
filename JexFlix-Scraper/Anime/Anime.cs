@@ -55,7 +55,7 @@ namespace JexFlix_Scraper.Anime {
                     //if (string.IsNullOrEmpty(JsonResponse)) {
                     //     JsonResponse = Networking.JsonData(Slugify(anime.title));
                     //}
-
+                    Console.WriteLine(JsonResponse);
 
                     if (!string.IsNullOrEmpty(JsonResponse)) {
                         // If we have some content. Visit the link and get the json response
@@ -64,8 +64,10 @@ namespace JexFlix_Scraper.Anime {
 
                             string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
 
+
                             //  string raw_json = Web.DownloadString(JsonResponse);
                             string raw_json = Networking.DownloadString(ftp_response);
+
 
                             // Deseralise it to the json class.
                             try {
@@ -74,6 +76,7 @@ namespace JexFlix_Scraper.Anime {
                                 // If what server has is greater than what we have, we need to upload the new episodes...
                                 // We also need to skip every episode we have already...
                                 if (AnimeInfo.episodes.Count() <= AniUploadData.episodeData.Count()) {
+
                                     continue;
                                 }
 
@@ -88,6 +91,7 @@ namespace JexFlix_Scraper.Anime {
                         }
 
                     } else {
+
 
                         foreach (AniInfo.Genre genre in AnimeInfo.genres) {
                             if (genre.name != null) UploadData.genres.Add(genre.name);
