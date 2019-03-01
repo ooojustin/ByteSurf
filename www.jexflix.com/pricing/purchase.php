@@ -3,10 +3,11 @@
 	require '../inc/server.php';
     require '../inc/session.php';
     require '../inc/products.php';
+    require '../inc/coinpayments/cp.php';
     require_login();
 
-    // get product 
-    global $product_ids, $products;
+    // get user/product/discount info
+    global $user, $product_ids, $products, $discounts;
 
 	// make sure a valid plan has been found
 	if (!isset($_GET['plan']) || !array_key_exists($_GET['plan'], $product_ids)) {
@@ -14,8 +15,36 @@
         die();
 	}
 
+	// determine the current product
+	// $product has keys: name, price, duration
 	$id = $product_ids[$_GET['plan']];
 	$product = $products[$id];
+
+	if (isset($_POST['name']) && isset($_POST['email'])) {
+		
+		$price = $product['price'];
+
+		// handle discount code if provided
+		if (isset($_POST['discount']) && !empty($_POST['discount']))
+			if (array_key_exists($_POST['discount'], $discounts))
+				$price *= (100 - $discounts[$_POST['discount']]) / 100;
+
+		// handle potential issues
+		if (empty($_POST['name']))
+			$issue = 'Please provide your name.';
+		else if (empty($_POST['email']))
+			$issue = 'Please provide your email address.';
+		else if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+			$issue = 'The provided email address is invalid.';
+
+		// create_btc_payment($amount, $email, $name, $product_name, $product_number, $custom_info = '')
+		if (!isset($issue)) {
+			$url = create_btc_payment($price, $_POST['email'], $_POST['name'], $product['name'], strval($id), $user['username']);
+			header("location: " . $url);
+			die();
+		}
+
+	}
 
 ?>
 <!DOCTYPE html>

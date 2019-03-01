@@ -18,7 +18,7 @@
 	// initialize CoinpaymentsAPI object
 	$GLOBALS['cp'] = new CoinpaymentsAPI(PRIVATE_KEY, PUBLIC_KEY, 'json');
 
-	function create_btc_payment($amount, $email, $name, $product_name, $product_number) {
+	function create_btc_payment($amount, $email, $name, $product_name, $product_number, $custom_info = '') {
 
 		global $cp;
 
@@ -36,7 +36,7 @@
 			$product_name, // name of product
 			$product_number, // number of product (pass as string)
 			$invoice, // invoice # (generated randomly for each payment)
-			'', // anything (custom information to store)
+			$custom_info, // anything (custom information to store)
 			IPN_URL // URL to IPN to update/handle payments
 		);
 
