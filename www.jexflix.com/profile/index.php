@@ -248,7 +248,7 @@
 							<form action="" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
-										<h4 class="profile__title">Profile details</h4>
+										<h4 class="profile__title">Profile Details</h4>
 									</div>
 
 									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -285,7 +285,7 @@
 							<form action="" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
-										<h4 class="profile__title">Change password</h4>
+										<h4 class="profile__title">Change Password</h4>
 									</div>
 
 									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
@@ -321,47 +321,49 @@
 
 				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
-						<!-- price -->
-						<div class="col-12 col-md-6 col-lg-4">
-							<div class="price price--profile">
-								<div class="price__item price__item--first"><span>Basic</span> <span>Free</span></div>
-								<div class="price__item"><span>7 days</span></div>
-								<div class="price__item"><span>720p Resolution</span></div>
-								<div class="price__item"><span>Limited Availability</span></div>
-								<div class="price__item"><span>Desktop Only</span></div>
-								<div class="price__item"><span>Limited Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
-							</div>
-						</div>
-						<!-- end price -->
+						<!-- details form -->
+						<div class="col-12 col-lg-6">
 
-						<!-- price -->
-						<div class="col-12 col-md-6 col-lg-4">
-							<div class="price price--profile price--premium">
-								<div class="price__item price__item--first"><span>Premium</span> <span>$19.99</span></div>
-								<div class="price__item"><span>1 Month</span></div>
-								<div class="price__item"><span>Full HD</span></div>
-								<div class="price__item"><span>Lifetime Availability</span></div>
-								<div class="price__item"><span>TV & Desktop</span></div>
-								<div class="price__item"><span>24/7 Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
-							</div>
-						</div>
-						<!-- end price -->
+							<div class="row">
 
-						<!-- price -->
-						<div class="col-12 col-md-6 col-lg-4">
-							<div class="price price--profile">
-								<div class="price__item price__item--first"><span>Cinematic</span> <span>$39.99</span></div>
-								<div class="price__item"><span>2 Months</span></div>
-								<div class="price__item"><span>Ultra HD</span></div>
-								<div class="price__item"><span>Lifetime Availability</span></div>
-								<div class="price__item"><span>Any Device</span></div>
-								<div class="price__item"><span>24/7 Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
+								<div class="col-12">
+									<h4 class="profile__title" style="margin-bottom: 10px">Subscription & Orders</h4>
+									<h4 class="profile__title"><b>Expires:</b> <?= get_subscription_expiration_date(); ?></h4>
+									<?
+										$get_orders = $db->prepare('SELECT * FROM orders WHERE username=:username AND status=:status');
+										$get_orders->bindValue(':username', $username);
+										$get_orders->bindValue(':status', 'completed');
+										$get_orders->execute();
+										$orders = $get_orders->fetchAll();
+										foreach ($orders as $order) { ?>
+											<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
+									<? } ?>
+								</div>
+					
+							</div>
+
+						</div>
+						<!-- end details form -->
+
+						<!-- password form -->
+						<div class="col-12 col-lg-6">
+							<div class="row">
+
+								<div class="col-12">
+									<h4 class="profile__title">Trial Keys</h4>
+									<?
+										$get_trials = $db->prepare('SELECT * FROM trial_keys WHERE owner=:username AND user IS NULL');
+										$get_trials->bindValue(':username', $username);
+										$get_trials->execute();
+										$trials = $get_trials->fetchAll();
+										foreach ($trials as $trial) { ?>
+											<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
+									<? } ?>
+								</div>
+					
 							</div>
 						</div>
-						<!-- end price -->
+						<!-- end password form -->
 					</div>
 				</div>
 			</div>

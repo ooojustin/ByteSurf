@@ -232,14 +232,14 @@
 	function generate_split_string($xC, $xY) {
         $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $chars_length = strlen($chars);
-        $invoice = '';
+        $str = '';
         for ($x = 0; $x < $xC; $x++) {
             for ($y = 0; $y < $xY; $y++) {
-                $invoice .= $chars[rand(0, $chars_length - 1)];
+                $str .= $chars[rand(0, $chars_length - 1)];
             }
-            $invoice .= '-';
+            $str .= '-';
         }
-        return substr($invoice, 0, -1);
+        return substr($str, 0, -1);
     }
 
 ?>
