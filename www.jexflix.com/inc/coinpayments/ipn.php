@@ -59,12 +59,15 @@
 
 	switch ($_POST['status']) {
 		case -2: // paypal refund/reversal
+			update_order($_POST['invoice'], 'refunded');
 			break;
 		case -1: // cancelled / timed out
+			update_order($_POST['invoice'], 'cancelled');
 			break;
 		case 0: // waiting for funds
 			break;
 		case 1: // coin reception confirmed
+			update_order($_POST['invoice'], 'confirming');
 			break;
 		case 3:
 			break; // paypal transaction pending (eChecks and stuff)
