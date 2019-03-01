@@ -1,9 +1,12 @@
 <?php
 	
+	// the # of seconds in a day (used for payment plans)
+	define('SECONDS_PER_DAY', 86400);
+
 	// format for plan initialization:
     // id number, short name, full name, price, duration
-    init_plan(1, '1month', '1 Month Subscription', 8.99, 86400);
-    init_plan(2, '3months', '3 Month Subscription', 19.99, 259200);
+    init_plan(1, '1month', '1 Month Subscription', 8.99, SECONDS_PER_DAY * 30);
+    init_plan(2, '3months', '3 Month Subscription', 19.99, SECONDS_PER_DAY * 90);
     init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1);
 
     // discount codes, % off
