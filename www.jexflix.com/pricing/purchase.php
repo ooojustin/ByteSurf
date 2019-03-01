@@ -4,28 +4,30 @@
     require '../inc/session.php';
     require_login();
 
-    // product id numbers
-	$product_id = array(
-		'1month' => 1, 
-		'3months' => 2, 
-		'lifetime' => 3,
-	);
-
-	// products & information
-	$products = array(
-		1 => array('name' => '1 Month Subscription', 'price' => 8.99, 'duration' => 86400),
-		2 => array('name' => '3 Month Subscription', 'price' => 19.99, 'duration' => 259200),
-		3 => array('name' => 'Lifetime Subscription', 'price' => 49.99, 'duration' => -1),
-	);
+    // format for plan initialization:
+    // id number, short name, full name, price, duration
+	global $product_id, $products;
+    init_plan(1, '1month', '1 Month Subscription', 8.99, 86400);
+    init_plan(2, '3months', '3 Month Subscription', 19.99, 259200);
+    init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1);
 
 	// make sure a valid plan has been found
 	if (!isset($_GET['plan']) || !array_key_exists($_GET['plan'], $product_id)) {
-		header("location: https://jexflix.com/pricing/");
-        die();
+		//header("location: https://jexflix.com/pricing/");
+        die('error');
 	}
 
 	$id = $product_id[$_GET['plan']];
 	$product = $products[$id];
+
+	function init_plan($id, $name_short, $name, $price, $duration) {
+		global $product_id, $products;
+		$product_id[$name_short] = $id;
+		$product['name'] = $name;
+		$product['price'] = $price;
+		$product['duration'] = $duration;
+		$products[$id] = $product;
+	}
 
 
 ?>
