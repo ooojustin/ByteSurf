@@ -33,4 +33,12 @@
 		}
 	}
 
+	// function to get subscription expiration
+	function get_subscription_expiration_date() {
+		require_subscription(); // must have a subscription to determine this
+		global $user, $ip_info; // use ip_info to convert timezone
+		$expires = intval($user['expires']);
+		return ($expires == -1) ? 'Lifetime' : get_time_string($expires);
+	}
+
 ?>
