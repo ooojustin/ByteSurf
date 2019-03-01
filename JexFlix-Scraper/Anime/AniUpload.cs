@@ -33,7 +33,10 @@ namespace JexFlix_Scraper.Anime {
 
     public class AniDb {
         public string name { get; set; }
+        public string url { get; set; }
+        public string thumbnail { get; set; }
         public string episode_data { get; set; }
+        public string synonyms { get; set; }
     }
 
 }
