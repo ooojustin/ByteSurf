@@ -42,13 +42,10 @@
 
 		// apply subscription
 		$duration = $product['duration'];
-		if ($duration == -1) {
-			// lifetime, just set expire time to -1
-			update_expires($username, -1);
-		} else {
-			// extend subscription if necessary
+		if ($duration == -1)
+			update_expires($username, -1); // lifetime
+		else
 			add_subscription_time($username, $duration);
-		}
 
 		// give buyer 1 week trial codes (if applicable)
 		for ($i = 0; $i < $product['trial_keys']; $i++)

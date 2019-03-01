@@ -2,7 +2,40 @@
     
     require '../inc/server.php';
     require '../inc/session.php';
+
     require_login();
+    global $user;
+
+    if (!isset($_POST['code']))
+    	goto skip_redeem;
+
+    $trial_key = $_POST['code'];
+    $trial_key_data = get_trial_key($trial_key);
+
+    if (!$trial_key_data)
+    	die('That trial key does not exist.');
+    else if (!is_null($trial_key_data['user']))
+    	die('That trial key has already been redeemed.');
+    else if ($trial_key_data['owner'] == $user['username'])
+    	die('You can\'t redeem your own trial key.');
+
+    // it exists, it was generated for somebody else, and it hasn't been used
+    // redeem the key and mark it as used
+    $duration = intval($trial_key_data['duration']);
+    if ($duration == -1)
+   		update_expires($user['username'], -1);
+   	else
+   		add_subscription_time($user['username'], $duration);
+
+   	$used_key = $db->prepare('UPDATE trial_keys SET user=:user WHERE trial_key=:trial_key');
+   	$used_key->bindValue(':user', $user['username']);
+   	$used_key->bindValue(':trial_key', $trial_key);
+   	$used_key->execute();
+
+   	$user = get_user($user['username']); // update this data so we have new 'expires'
+   	die('<html>Trial key redeemed successfully!<br><b>Your subscription expires:</b> ' . get_subscription_expiration_date() . '</html>');
+
+    skip_redeem:
     
 ?>
 <!DOCTYPE html>

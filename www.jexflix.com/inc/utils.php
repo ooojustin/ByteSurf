@@ -64,6 +64,14 @@
 			$duration += $expires - time();
 		update_expires($username, time() + $duration);
 	}
+
+	function get_trial_key($trial_key) {
+		global $db;
+		$get_trial_key = $db->prepare('SELECT * FROM trial_keys WHERE trial_key=:trial_key');
+		$get_trial_key->bindValue(':trial_key', $trial_key);
+		$get_trial_key->execute();
+		return $get_trial_key->fetch();
+	}
 	
 	function generate_trial_key($username, $duration) {
 		global $db;
