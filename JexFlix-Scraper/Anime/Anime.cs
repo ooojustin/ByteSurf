@@ -291,11 +291,13 @@ namespace JexFlix_Scraper.Anime {
 
                         AniDb dbinfo = new AniDb();
 
-                        dbinfo.name = UploadData.url;
+                        dbinfo.name = UploadData.title;
+                        dbinfo.url = UploadData.url;
+                        dbinfo.thumbnail = UploadData.thumbnail;
                         dbinfo.episode_data = CDNLink;
+                        dbinfo.synonyms = JsonConvert.SerializeObject(AnimeInfo.synonoms);
 
-  
-                        
+
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {
 
