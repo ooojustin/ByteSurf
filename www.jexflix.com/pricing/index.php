@@ -247,7 +247,7 @@
 								<div class="price__item"><span><del>Trial Code</del></span></div>
 								<div class="price__item"><span>Any Device</span></div>
 								<div class="price__item"><span>24/7 Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
+								<a href="purchase.php?plan=1month" class="price__btn">Choose Plan</a>
 							</div>
 						</div>
 						<!-- end price -->
@@ -261,7 +261,7 @@
 								<div class="price__item"><span>1 Trial Code</span></div>
 								<div class="price__item"><span>Any Device</span></div>
 								<div class="price__item"><span>24/7 Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
+								<a href="purchase.php?plan=3months" class="price__btn">Choose Plan</a>
 							</div>
 						</div>
 						<!-- end price -->
@@ -275,7 +275,7 @@
 								<div class="price__item"><span>3 Trial Codes</span></div>
 								<div class="price__item"><span>Any Device</span></div>
 								<div class="price__item"><span>24/7 Support</span></div>
-								<a href="#" class="price__btn">Choose Plan</a>
+								<a href="purchase.php?plan=lifetime" class="price__btn">Choose Plan</a>
 							</div>
 						</div>
 						<!-- end price -->

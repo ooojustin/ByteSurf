@@ -4,6 +4,30 @@
     require '../inc/session.php';
     require_login();
 
+    // product id numbers
+	$product_id = array(
+		'1month' => 1, 
+		'3months' => 2, 
+		'lifetime' => 3,
+	);
+
+	// products & information
+	$products = array(
+		1 => array('name' => '1 Month Subscription', 'price' => 8.99, 'duration' => 86400),
+		2 => array('name' => '3 Month Subscription', 'price' => 19.99, 'duration' => 259200),
+		3 => array('name' => 'Lifetime Subscription', 'price' => 49.99, 'duration' => -1),
+	);
+
+	// make sure a valid plan has been found
+	if (!isset($_GET['plan']) || !array_key_exists($_GET['plan'], $product_id)) {
+		header("location: https://jexflix.com/pricing/");
+        die();
+	}
+
+	$id = $product_id[$_GET['plan']];
+	$product = $products[$id];
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,8 +73,10 @@
 							<a href="#" class="sign__logo" style="margin-bottom: 15px">
 								<img src="../img/logo.png" alt="">
 							</a>
-                            <label class="profile__label">Put whatever here</label>
-							<!-- trevor put ur silly banner here thx -->
+
+                            <label class="profile__label"><?= $product['name'] ?></label>
+                            <label class="profile__label">Price: <?= '$' . $product['price'] ?></label>
+
 							<? if (isset($issue)) { ?>
 							<div class="register-error">
 							    <span class="signin-error-text"><?= $issue ?></span>

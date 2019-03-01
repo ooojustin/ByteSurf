@@ -9,7 +9,6 @@
 	// handle logout
 	if (isset($_GET['logout'])) {
         session_destroy();
-        unset($_SESSION['id']);
         header("location: https://jexflix.com/login/");
         die();
     }
