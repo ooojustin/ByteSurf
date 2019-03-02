@@ -78,13 +78,13 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
             return episodes.Count();
         }
 
-        public Info info;
-        public List<Synonom> synonoms;
-        public List<Genre> genres;
-        public string poster;
-        public int franchise_count;
-        public List<Wallpaper> wallpapers;
-        public List<EpisodeData> episodes;
+        public Info info { get; set; }
+        public List<Synonyms> synonyms { get; set; }
+        public List<Genre> genres { get; set; }
+        public string poster { get; set; }
+        public int franchise_count { get; set; }
+        public List<Wallpaper> wallpapers { get; set; }
+        public List<EpisodeData> episodes { get; set; }
 
         public class Info {
 
@@ -134,7 +134,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime {
 
         }
 
-        public class Synonom {
+        public class Synonyms {
 
             public string title;
             public int type;
