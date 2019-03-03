@@ -189,10 +189,7 @@
 	<section class="home">
 		<!-- home bg -->
 		<div class="owl-carousel home__bg">
-			<div class="item home__cover" data-bg="../img/home/home__bg.jpg"></div>
-			<div class="item home__cover" data-bg="../img/home/home__bg.jpg"></div>
-			<div class="item home__cover" data-bg="../img/home/home__bg.jpg"></div>
-			<div class="item home__cover" data-bg="../img/home/home__bg.jpg"></div>
+			<div style="color:#221f30"></div>
 		</div>
 		<!-- end home bg -->
 
@@ -375,15 +372,15 @@
 							<div class="card">
 								<div class="card__cover">
 									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
-									<a href="#" class="card__play">
+									<a href="<?=$url?>" class="card__play">
 										<i class="icon ion-ios-play"></i>
 									</a>
 								</div>
 								<div class="card__content">
-									<h3 class="card__title"><a href="#"><?=$data['title']?></a></h3>
+									<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
 									<span class="card__category">
 											<a href="#"><?=ucwords($genres[0])?></a>
-											<a href="#"><?=ucwords($genres[1])?></a>
+											<a href="#"><? if (isset($genres[1])) { echo ucwords($genres[1]); }?></a>
 									</span>
 									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
 								</div>
