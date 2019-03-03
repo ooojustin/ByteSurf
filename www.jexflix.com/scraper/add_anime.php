@@ -3,7 +3,7 @@
     require '../inc/server.php';
     
     $post_body = file_get_contents('php://input');
-    $data = json_decode($post_body, true);
+    $data = json_decode(utf8_encode($post_body), true);
 
     // DB Structure
     // title
@@ -21,11 +21,21 @@
     //    public string synonyms { get; set; }
     // }
 
+
     $title = $data['name'];
     $url = $data['url'];
     $thumbnail = $data['thumbnail'];
     $ep_data = $data['episode_data'];
     $synonyms = $data['synonyms'];
+
+    // Check for existing so we dont have extras
+    $get_anime = $db->prepare("SELECT * FROM anime WHERE url=:url");
+    $get_anime->bindValue(':url', $url);
+    $get_anime->execute();
+    $get_anime->fetch();
+        
+    if ($get_anime->rowCount() > 0)
+        die();
 
     $add_anime = $db->prepare('INSERT INTO anime (title, url, thumbnail, data, synonyms) VALUES (:title, :url, :thumbnail, :data, :synonyms);');
     $add_anime->bindValue(':title', $title);
@@ -33,7 +43,6 @@
     $add_anime->bindValue(':thumbnail', $thumbnail);
     $add_anime->bindValue(':data', $ep_data);
     $add_anime->bindValue(':synonyms', $synonyms);
-
     $add_anime->execute();
 
 ?>

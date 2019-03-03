@@ -4,8 +4,7 @@
     if (!isset($_SESSION['id'])) {
         header("location: /login");
         die();
-    }
-
+	}
 ?>
 
 <!DOCTYPE html>
@@ -45,12 +44,12 @@
 	<div class="page-404 section--bg" data-bg="../img/section/section.jpg">
 		<div class="container">
 			<div class="row">
-				<div class="col-12">
+				<div class="col-12">zend_logo_guid
 					<div class="page-404__wrap">
-						<div class="page-404__content">
-							<h1 class="page-404__title">404</h1>
-							<p class="page-404__text">The page you are looking for not available!</p>
-							<a href="../home" class="page-404__btn">go back</a>
+						<div class="page-404__content">						
+							<h1 class="page-404__title"><?php if (isset($_GET['e'])) { echo 'Error'; } else {echo '404'; } ?></h1>
+							<p class="page-404__text">The <?php if (isset($_GET['e'])) {echo $_GET['e']; } else {echo 'page'; } ?> you are looking for is not available!</p>						
+							<button onclick="history.go(-1);" class="page-404__btn">go back</button>
 						</div>
 					</div>
 				</div>

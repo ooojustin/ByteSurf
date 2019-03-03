@@ -54,7 +54,8 @@
     $movies = get_movies($vars, $page);
     if ($page < 1 || count($movies) == 0) {
     	// PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
-    	// somebody handle this with something (@trevor)
+		// somebody handle this with something (@trevor)
+		header("location: https://jexflix.com/404?e=video");		
     	die('No videos found.');
     }
 
