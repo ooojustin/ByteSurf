@@ -7,6 +7,7 @@ using JexFlix_Scraper.Flixify;
 
 class Program {
 
+    [STAThread]
     static void Main(string[] args) {
 
         MessageHandler.Start();
