@@ -18,6 +18,8 @@
         $issue = 'That username is not available.';  
     else if (get_user_by_email($_POST['email']))
     	$issue = 'Account already exists with that email address.';
+    else if ($_POST['password'] != $_POST['password_confirm'])
+        $issue = 'Passwords do not match';
 
     if (!isset($issue)) {
         create_account($_POST['username'], $_POST['email'], $_POST['password']);
@@ -91,6 +93,10 @@
 
 							<div class="sign__group">
 								<input type="password" class="sign__input" id="password" name="password" placeholder="Password">
+							</div>
+							
+							<div class="sign__group">
+								<input type="password" class="sign__input" id="password_confirm" name="password_confirm" placeholder="Confirm Password">
 							</div>
 
 							<div class="sign__group sign__group--checkbox">
