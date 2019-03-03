@@ -182,12 +182,7 @@ namespace JexFlix_Scraper.Anime {
                             }
 
 
-                            var embed_copy = episode.EmbedList;
-
-                            // Reverse to use all other cdns thats not mp4upload first.
-                            embed_copy.Reverse();
-
-                            foreach (AniEpisode.Mirror mirror in embed_copy) {
+                            foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
                                 if (MirrorParser.IsSupported(mirror)) {
 
@@ -203,8 +198,6 @@ namespace JexFlix_Scraper.Anime {
                                             Quality quality = new Quality();
 
                                             quality.resolution = 1080;
-
-                                            retry:
                                             if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
 
                                                 // Now update the link
@@ -213,17 +206,16 @@ namespace JexFlix_Scraper.Anime {
                                                 EpData.qualities.Add(quality);
 
                                                 UltraHd = true;
-                                            } else {
-
-                                                System.Threading.Thread.Sleep(5000);
-
-                                                goto retry;
                                             }
-
-
-
                                         };
-                                        new MirrorParser(mirror, callback).Run();
+                                        retry:
+                                        try {
+                                            new MirrorParser(mirror, callback).Run();
+                                        } catch (Exception ex) {
+                                            Console.WriteLine(ex.Message);
+                                            System.Threading.Thread.Sleep(5000);
+                                            goto retry;
+                                        }
                                     }
 
 
@@ -232,7 +224,6 @@ namespace JexFlix_Scraper.Anime {
                                             Quality quality = new Quality();
                                             quality.resolution = 720;
 
-                                            retry:
                                             // Upload to CDN then delete.
                                             if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
 
@@ -242,14 +233,17 @@ namespace JexFlix_Scraper.Anime {
                                                 EpData.qualities.Add(quality);
 
                                                 Hd = true;
-                                            } else {
-                                                System.Threading.Thread.Sleep(5000);
-
-                                                goto retry;
                                             }
 
                                         };
-                                        new MirrorParser(mirror, callback).Run();
+                                        retry:
+                                        try {
+                                            new MirrorParser(mirror, callback).Run();
+                                        } catch (Exception ex) {
+                                            Console.WriteLine(ex.Message);
+                                            System.Threading.Thread.Sleep(5000);
+                                            goto retry;
+                                        }
                                     }
 
                                     if (!HasHDQualities) {
@@ -259,7 +253,6 @@ namespace JexFlix_Scraper.Anime {
                                                 Quality quality = new Quality();
                                                 quality.resolution = 480;
 
-                                                retry:
                                                 // Upload to CDN then delete.
                                                 if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
 
@@ -269,18 +262,18 @@ namespace JexFlix_Scraper.Anime {
                                                     EpData.qualities.Add(quality);
 
                                                     Standard = true;
-                                                } else {
-
-                                                    System.Threading.Thread.Sleep(5000);
-
-                                                    goto retry;
                                                 }
 
                                             };
-                                            new MirrorParser(mirror, callback).Run();
+                                            retry:
+                                            try {
+                                                new MirrorParser(mirror, callback).Run();
+                                            } catch (Exception ex) {
+                                                Console.WriteLine(ex.Message);
+                                                System.Threading.Thread.Sleep(5000);
+                                                goto retry;
+                                            }
                                         }
-
-
                                     }
 
 
