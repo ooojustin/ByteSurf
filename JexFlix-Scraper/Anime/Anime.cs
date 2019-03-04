@@ -297,8 +297,17 @@ namespace JexFlix_Scraper.Anime {
                             }
                         }
 
+                        Console.WriteLine("Preparing to upload .json");
                         // Upload the file to the CDN
-                        Networking.UploadFile(localPath, "/anime/" + UploadData.url, UploadData.url + ".json", UploadData.title);
+                        retry_json:
+                        try {
+                            Networking.UploadFile(localPath, "/anime/" + UploadData.url, UploadData.url + ".json", UploadData.title);
+                        } catch (Exception ex) { Networking.ErrorLogging(null, ex, "Json CDN exception");
+                            System.Threading.Thread.Sleep(5000);
+                            goto retry_json;
+                        }
+
+                        Console.WriteLine("Json been uploaded");
 
                         // Now update the link
                         string CDNLink = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + UploadData.url + ".json";
