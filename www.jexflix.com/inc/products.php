@@ -8,6 +8,7 @@
     init_plan(1, '1month', '1 Month Subscription', 8.99, SECONDS_PER_DAY * 30);
     init_plan(2, '3months', '3 Month Subscription', 19.99, SECONDS_PER_DAY * 90, 1);
     init_plan(3, 'lifetime', 'Lifetime Subscription', 49.99, -1, 3);
+    init_plan(4, 'reseller', 'Reseller Deposit', 0, -1);
 
     // discount codes, % off
 	global $discounts;

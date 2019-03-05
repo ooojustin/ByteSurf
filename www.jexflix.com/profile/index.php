@@ -16,6 +16,7 @@
    	if (!$reseller) {
    		$reseller['selly_email'] = '';
    		$reseller['selly_api_key'] = '';
+   		$reseller['balance'] = 0;
    	}
    
    	// update password
@@ -410,7 +411,7 @@
 				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
 					<div class="row">
 
-						<!-- details form -->
+						<!-- selly info form -->
 						<div class="col-12 col-lg-6">
 							<form action="" method="post" class="profile__form">
 								<div class="row">
@@ -438,7 +439,32 @@
 								</div>
 							</form>
 						</div>
-						<!-- end details form -->
+						<!-- end selly form -->
+
+						<!-- reseller balance form -->
+						<div class="col-12 col-lg-6">
+							<form action="https://jexflix.com/pricing/purchase.php" method="get" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Balance: $<?=$reseller['balance']?></h4>
+									</div>
+
+									<input type="hidden" value="reseller" name="plan" />
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">	
+											<label class="profile__label" for="username">Amount</label>
+											<input id="reseller_deposit_amount" type="text" name="amount" class="profile__input" placeholder="Amount (USD)">
+										</div>
+									</div>
+
+									<div class="col-12">
+										<button class="profile__btn" type="submit">Deposit</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- end balance form -->
 
 					</div>
 				</div>
