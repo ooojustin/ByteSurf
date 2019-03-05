@@ -84,57 +84,34 @@
 								<!-- catalog -->
 
 								<li class="header__nav-item">
-									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
+									<a href="../random.php" class="header__nav-link">Random</a>
 								</li>
 
 								<li class="header__nav-item">
-									<a href="../faq" class="header__nav-link">Help</a>
+									<a href="../about" class="header__nav-link">About</a>
 								</li>
 
-								<!-- dropdown -->
-								<li class="dropdown header__nav-item">
-									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="../about">About</a></li>
-										<li><a href="../profile">Profile</a></li>
-									</ul>
-								</li>
-								<!-- end dropdown -->
 							</ul>
 							<!-- end header nav -->
 
 							<!-- header auth -->
 							<div class="header__auth">
+							    
 								<button class="header__search-btn" type="button">
 									<i class="icon ion-ios-search"></i>
 								</button>
 
-								<!-- dropdown -->
 								<div class="dropdown header__lang">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</a>
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-										<li><a href="#">English</a></li>
-										<li><a href="#">Spanish</a></li>
+										<li><a href="../profile">Profile</a></li>
+										<li><a href="index.php?logout=1">Sign Out</a></li>
 									</ul>
 								</div>
-								<!-- end dropdown -->
-
-								<a href="index.php?logout=1" class="header__sign-in">
-									<i class="icon ion-ios-log-in"></i>
-									<span>Sign Out</span>
-								</a>
 							</div>
 							<!-- end header auth -->
-
-							<!-- header menu btn -->
-							<button class="header__btn" type="button">
-								<span></span>
-								<span></span>
-								<span></span>
-							</button>
-							<!-- end header menu btn -->
 						</div>
 					</div>
 				</div>

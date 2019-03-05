@@ -33,7 +33,8 @@
    	$used_key->execute();
 
    	$user = get_user($user['username']); // update this data so we have new 'expires'
-   	die('<html>Trial key redeemed successfully!<br><b>Your subscription expires:</b> ' . get_subscription_expiration_date() . '</html>');
+   //	die('<html>Trial key redeemed successfully!<br><b>Your subscription expires:</b> ' . get_subscription_expiration_date() . '</html>');
+   	header("location: ../home");
 
     skip_redeem:
     
@@ -99,57 +100,34 @@
 								<!-- catalog -->
 
 								<li class="header__nav-item">
-									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
+									<a href="../pricing" class="header__nav-link">Random</a>
 								</li>
 
 								<li class="header__nav-item">
-									<a href="../faq" class="header__nav-link">Help</a>
+									<a href="../about" class="header__nav-link">About</a>
 								</li>
 
-								<!-- dropdown -->
-								<li class="dropdown header__nav-item">
-									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="../about">About</a></li>
-										<li><a href="../profile">Profile</a></li>
-									</ul>
-								</li>
-								<!-- end dropdown -->
 							</ul>
 							<!-- end header nav -->
 
 							<!-- header auth -->
 							<div class="header__auth">
+							    
 								<button class="header__search-btn" type="button">
 									<i class="icon ion-ios-search"></i>
 								</button>
 
-								<!-- dropdown -->
 								<div class="dropdown header__lang">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</a>
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-										<li><a href="#">English</a></li>
-										<li><a href="#">Spanish</a></li>
+										<li><a href="../profile">Profile</a></li>
+										<li><a href="index.php?logout=1">Sign Out</a></li>
 									</ul>
 								</div>
-								<!-- end dropdown -->
-
-								<a href="index.php?logout=1" class="header__sign-in">
-									<i class="icon ion-ios-log-in"></i>
-									<span>Sign Out</span>
-								</a>
 							</div>
 							<!-- end header auth -->
-
-							<!-- header menu btn -->
-							<button class="header__btn" type="button">
-								<span></span>
-								<span></span>
-								<span></span>
-							</button>
-							<!-- end header menu btn -->
 						</div>
 					</div>
 				</div>
@@ -157,7 +135,7 @@
 		</div>
 
         <!-- header search -->
-        <form action="https://jexflix.com/catalog/" method="get" class="header__search">
+        <form action="https://jexflix.com/catalog" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -173,6 +151,7 @@
         <!-- end header search -->
 	</header>
 	<!-- end header -->
+
 
 	<!-- page title -->
 	<section class="section section--first section--bg" data-bg="img/section/section.jpg">
@@ -250,7 +229,7 @@
 			    <div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
 						<!-- details form -->
-						<div class="col-12">
+						<div class="col-6">
 							<form action="" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
