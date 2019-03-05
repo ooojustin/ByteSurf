@@ -1,5 +1,14 @@
 <?php
 
+    define('SELLY_RETURN_URL', '');
+    define('SELLY_WEBHOOK_URL', '');
+
+    function create_paypal_payment($reseller, $title, $gateway, $email, $value) {
+        $selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
+        $payment = $selly->create_payment($title, $gateway, $email, $value, 'USD', SELLY_RETURN_URL, SELLY_WEBHOOK_URL);
+        return $payment['url'];
+    }
+
     class SellyAPI {
         
         static $endpoint = 'https://selly.gg/api/v2';

@@ -69,12 +69,10 @@
 						break;
 					}
 
-					// include selly stuff, create payment
-					require '../inc/selly/selly.php';
-					$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
-					$payment = $selly->create_payment($product['name'], 'PayPal', $_POST['email'], $price, 'USD', 'https://jexflix.com/profile/', '');
-
-					break;
+					// create paypal payment & redirect
+					$url = create_paypal_payment($reseller, $product['name'], 'PayPal', $_POST['email'], $price);
+					header("location: " . $url);
+					die();
 
 			}
 
