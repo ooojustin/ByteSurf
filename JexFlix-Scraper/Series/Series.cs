@@ -8,6 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static JexFlix_Scraper.Series.PageClasses;
+using static JexFlix_Scraper.Series.SeriesClasses;
 
 namespace JexFlix_Scraper.Shows {
     class Series {
@@ -16,6 +17,7 @@ namespace JexFlix_Scraper.Shows {
 
         private const string FLIXIFY = "https://flixify.com/";
         private const string SHOW_URL = FLIXIFY + "/shows?_t=nu7m7a&_u=ji9joxc5ip&add_mroot=1&description=1&o=t&p={0}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=shows";
+        private const string GET_SEASONS = FLIXIFY + "{0}?_t=ijbgom&_u=ji9joxc5ip&add_mroot=1&add_sequels=1&cast=0&crew=0&description=1&episodes_list=0&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1";
 
         public static void Run() {
 
@@ -59,18 +61,34 @@ namespace JexFlix_Scraper.Shows {
                         break;
                 }
                 string raw = Encoding.Default.GetString(response);
-                Console.WriteLine(raw);
+                ParseShows(raw, web);
                 Console.ReadKey();
-                Parse(raw, web);
             }
 
         }
 
-        public static void Parse(string raw, CookieAwareWebClient web) {
-            RootObject pageData = JsonConvert.DeserializeObject<RootObject>(raw);
+        public static void ParseShows(string raw, CookieAwareWebClient web) {
+            PageObjects pageData = JsonConvert.DeserializeObject<PageObjects>(raw);
 
-            foreach (Item item in pageData.items) {
+            foreach (PageItem item in pageData.items) {
                 Console.WriteLine(item.url);
+                ParseSeasons(item.url, web);
+                Console.ReadKey();
+            }
+        }
+
+        public static void ParseSeasons(string series, CookieAwareWebClient web) {
+            string url = string.Format(GET_SEASONS, series);
+            byte[] response = null;
+
+            web.FlixifyHeaders();
+            response = web.DownloadData(url);
+
+            string raw = Encoding.Default.GetString(response);
+            SeasonObject seasonData = JsonConvert.DeserializeObject<SeasonObject>(raw);
+
+            foreach (Season season in seasonData.seasons) {
+                Console.WriteLine(season.url);
             }
         }
 

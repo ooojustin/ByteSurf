@@ -4,6 +4,7 @@ using System.Threading;
 using JexFlix_Scraper;
 using JexFlix_Scraper.Anime;
 using JexFlix_Scraper.Flixify;
+using JexFlix_Scraper.Shows;
 
 class Program {
 
@@ -12,7 +13,7 @@ class Program {
 
         MessageHandler.Start();
 
-         Anime.Run();
+        //  Anime.Run();
 
 
         //Flixify.Run();
@@ -24,7 +25,7 @@ class Program {
         //t3.Start();
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
-
+        Series.Run();
 
         Console.ReadKey();
 
