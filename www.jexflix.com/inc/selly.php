@@ -12,6 +12,11 @@
             $this->api_key = $api_key; 
         }
 
+        function is_valid() {
+            $orders = $this->get_orders();
+            return $orders !== false;
+        }
+
         function get_orders() {
             return $this->get('orders');
         }
