@@ -6,9 +6,17 @@
    
 	global $user;
    
+   	// establish general user details
    	$username = $user['username'];
    	$user_id = $user['id'];
    	$email = $user['email'];
+
+   	// establish reseller details
+   	$reseller = get_reseller($username);
+   	if (!$reseller) {
+   		$reseller['selly_email'] = '';
+   		$reseller['selly_api_key'] = '';
+   	}
    
    	// update password
    	if(isset($_POST['oldpass']) && isset($_POST['newpass']) && isset($_POST['confirmpass'])) {
@@ -19,6 +27,13 @@
    	// update profile pic
    	if (isset($_POST['pfp']))
     	update_picture($username, $_POST['pfp']);
+
+    // update reseller info (NOTE: VALIDATE EMAIL ADDRESS)
+    if (isset($_POST['selly_email']) && isset($_POST['selly_api_key'])) {
+    	update_reseller($username, $_POST['selly_email'], $_POST['selly_api_key']);
+    	$reseller['selly_email'] = $_POST['selly_email'];
+    	$reseller['selly_api_key'] = $_POST['selly_api_key'];
+    }
    
 ?>
 
@@ -52,6 +67,20 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
+
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
 
 </head>
 <body class="body">
@@ -188,6 +217,10 @@
 								<li class="nav-item">
 									<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a>
 								</li>
+
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a>
+								</li>
 							</ul>
 							<!-- end content tabs nav -->
 
@@ -203,6 +236,8 @@
 										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Profile</a></li>
 
 										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a></li>
+
+										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Subscription</a></li>
 									</ul>
 								</div>
 							</div>
@@ -218,6 +253,7 @@
 		<div class="container">
 			<!-- content tabs -->
 			<div class="tab-content" id="myTabContent">
+
 				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
 						<!-- details form -->
@@ -298,7 +334,8 @@
 
 				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
-						<!-- details form -->
+
+						<!-- subscription and orders -->
 						<div class="col-12 col-lg-6">
 
 							<div class="row">
@@ -325,9 +362,9 @@
 							</div>
 
 						</div>
-						<!-- end details form -->
+						<!-- end subscription/orders -->
 
-						<!-- password form -->
+						<!-- trial key stuff -->
 						<div class="col-12 col-lg-6">
 							<div class="row">
 
@@ -365,7 +402,44 @@
 					
 							</div>
 						</div>
-						<!-- end password form -->
+						<!-- end trial keys -->
+
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+					<div class="row">
+
+						<!-- details form -->
+						<div class="col-12 col-lg-6">
+							<form action="" method="post" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Selly Details</h4>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="username">Email</label>
+											<input id="selly_email" type="text" name="selly_email" class="profile__input" placeholder="Selly Email Address" value="<?=$reseller['selly_email']?>">
+										</div>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">
+											<label class="profile__label" for="email">API Key</label>
+											<input id="selly_api_key" type="text" name="selly_api_key" class="profile__input" placeholder="Selly API Key" value="<?=$reseller['selly_api_key']?>">
+										</div>
+									</div>
+
+									<div class="col-12">
+										<button class="profile__btn" type="submit">Save</button>
+									</div>
+								</div>
+							</form>
+						</div>
+						<!-- end details form -->
+
 					</div>
 				</div>
 			</div>
@@ -425,19 +499,5 @@
 		</div>
 	</footer>
 	<!-- end footer -->
-
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>

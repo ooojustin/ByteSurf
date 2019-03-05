@@ -108,6 +108,30 @@
 	    return $check_email->fetch();
 	}
 
+	function get_reseller($username) {
+		global $db;
+		$get_reseller = $db->prepare('SELECT * FROM resellers WHERE username=:username LIMIT 1');
+		$get_reseller->bindValue(':username', $username);
+		$get_reseller->execute();
+		return $get_reseller->fetch();
+	}
+
+	function update_reseller($username, $selly_email, $selly_api_key) {
+		global $db;
+		$query = get_reseller($username) ?
+			"UPDATE resellers SET selly_email=:selly_email, selly_api_key=:selly_api_key WHERE username=:username" : // update query
+			"INSERT INTO resellers (username, selly_email, selly_api_key) VALUES (:username, :selly_email, :selly_api_key)"; // insert query
+		$update_reseller = $db->prepare($query);
+		$update_reseller->bindValue(':username', $username);
+		$update_reseller->bindValue(':selly_email', $selly_email);
+		$update_reseller->bindValue(':selly_api_key', $selly_api_key);
+		return $update_reseller->execute();
+	}
+
+	function add_reseller_balance($username, $amount) {
+
+	}
+
 	function get_movie_data($url) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
