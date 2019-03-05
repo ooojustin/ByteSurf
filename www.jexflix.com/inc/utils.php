@@ -143,18 +143,31 @@
 
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
-		global $db;
-		$resellers = get_reseller_list($price);
-		if (empty($resellers))
+		require dirname(__FILE__) . '/selly.php';
+		$resellers = get_reseller_list();
+		while ($reseller = array_shift($resellers))
+			if (reseller_is_valid($reseller))
+				return $reseller;
+		return false;
+	}
+
+	// confirms resellers selly email & api key (test api call)
+	function reseller_is_valid($reseller) {
+		if (!$reseller)
 			return false;
-		return current($resellers);
+		require dirname(__FILE__) . '/selly.php';
+		$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
+		if ($selly->is_valid()) {
+			update_reseller($reseller['username'], '', '');
+			return false;
+		} else return true;
 	}
 
 	// gets a list of resellers available for an amount (sorted by last_purchase low to high)
 	function get_reseller_list($price) {
 		global $db;
 		$min_balance = $price * 0.75; // minimum reseller balance for this transaction
-		$get_resellers = $db->prepare('SELECT * FROM resellers WHERE balance>=:min_balance ORDER BY last_purchase ASC');
+		$get_resellers = $db->prepare('SELECT * FROM resellers WHERE balance>=:min_balance AND LENGTH(selly_email) > 0 ORDER BY last_purchase ASC');
 		$get_resellers->bindValue(':min_balance', $min_balance);
 		$get_resellers->execute();
 		return $get_resellers->fetchAll();
