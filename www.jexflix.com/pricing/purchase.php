@@ -3,7 +3,6 @@
 	require '../inc/server.php';
     require '../inc/session.php';
     require '../inc/products.php';
-    require '../inc/coinpayments/cp.php';
     require_login();
 
     // get user/product/discount info
@@ -56,18 +55,24 @@
 			switch ($_POST['method']) {
 
 				case 'bitcoin':
+				    require '../inc/coinpayments/cp.php';
 					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
 					header("location: " . $url);
 					die();
 
 				case 'paypal':
 
-					// verify selly api stuff first...
+					// get reseller
 					$reseller = get_next_reseller($price);
 					if (!$reseller) {
 						$issue = 'PayPal is not currently available. Please try again later.';
 						break;
 					}
+
+					// include selly stuff, create payment
+					require '../inc/selly/selly.php';
+					$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
+					$payment = $selly->create_payment($product['name'], 'PayPal', $_POST['email'], $price, 'USD', 'https://jexflix.com/profile/', '');
 
 					break;
 

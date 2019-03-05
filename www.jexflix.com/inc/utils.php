@@ -143,7 +143,6 @@
 
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
-		require dirname(__FILE__) . '/selly.php';
 		$resellers = get_reseller_list();
 		while ($reseller = array_shift($resellers))
 			if (reseller_is_valid($reseller))
@@ -155,9 +154,9 @@
 	function reseller_is_valid($reseller) {
 		if (!$reseller)
 			return false;
-		require dirname(__FILE__) . '/selly.php';
+		require dirname(__FILE__) . '/selly/selly.php';
 		$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
-		if ($selly->is_valid()) {
+		if (!$selly->is_valid()) {
 			update_reseller($reseller['username'], '', '');
 			return false;
 		} else return true;
