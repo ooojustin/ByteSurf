@@ -1,20 +1,10 @@
 <?php
 
-    session_start();
-
-    if (!isset($_SESSION['id'])) {
-        header("location: /login");
-        die();
-    }
-	
-	if (isset($_GET['logout'])) {
-		session_destroy();
-  		unset($_SESSION['id']);
-  		header("location: ../login");
-  		die();
-  	}
-    
     require 'inc/server.php';
+    require 'inc/session.php';
+    require_subscription();
+   
+	global $user;
 
     update_imdb_rating($_GET['t']);
     
@@ -30,6 +20,7 @@
     $certification = $data['certification'];
     $duration = intval($data['duration'] / 60);
     $qualities = authenticated_movie_links($data);
+    $rating = $data['rating'];
 
 ?>
 
@@ -68,18 +59,18 @@
 </head>
 <body class="body">
 
-<!-- header -->
-<header class="header">
-    <div class="header__wrap">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="header__content">
-                        <!-- header logo -->
-                        <a href="../home" class="header__logo">
-                            <img src="img/logo.png" alt="">
-                        </a>
-                        <!-- end header logo -->
+	<!-- header -->
+	<header class="header">
+		<div class="header__wrap">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__content">
+							<!-- header logo -->
+							<a href="../home" class="header__logo">
+								<img src="../img/logo.png" alt="">
+							</a>
+							<!-- end header logo -->
 
 								<!-- header nav -->
 							<ul class="header__nav">
@@ -96,80 +87,57 @@
 								<!-- catalog -->
 
 								<li class="header__nav-item">
-									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
+									<a href="../random.php" class="header__nav-link">Random</a>
 								</li>
 
 								<li class="header__nav-item">
-									<a href="../faq" class="header__nav-link">Help</a>
+									<a href="../about" class="header__nav-link">About</a>
 								</li>
 
-								<!-- dropdown -->
-								<li class="dropdown header__nav-item">
-									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="../about">About</a></li>
-										<li><a href="../profile">Profile</a></li>
-									</ul>
-								</li>
-								<!-- end dropdown -->
 							</ul>
 							<!-- end header nav -->
 
-                        <!-- header auth -->
-                        <div class="header__auth">
-                            <button class="header__search-btn" type="button">
-                                <i class="icon ion-ios-search"></i>
-                            </button>
+							<!-- header auth -->
+							<div class="header__auth">
+							    
+								<button class="header__search-btn" type="button">
+									<i class="icon ion-ios-search"></i>
+								</button>
 
-                            <!-- dropdown -->
-                            <div class="dropdown header__lang">
-                                <a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</a>
+								<div class="dropdown header__lang">
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
 
-                                <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-                                    <li><a href="#">English</a></li>
-                                    <li><a href="#">Spanish</a></li>
-                                </ul>
-                            </div>
-                            <!-- end dropdown -->
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
+										<li><a href="../profile">Profile</a></li>
+										<li><a href="index.php?logout=1">Sign Out</a></li>
+									</ul>
+								</div>
+							</div>
+							<!-- end header auth -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                            <a href="index.php?logout=1" class="header__sign-in">
-                                <i class="icon ion-ios-log-in"></i>
-                                <span>Log Out</span>
-                            </a>
+        <!-- header search -->
+        <form action="https://jexflix.com/catalog" method="get" class="header__search">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="header__search-content">
+                            <input type="text" id="search" name='search' placeholder="Search for a movie, TV Series that you are looking for">
+
+                            <button type="submit">search</button>
                         </div>
-                        <!-- end header auth -->
-
-                        <!-- header menu btn -->
-                        <button class="header__btn" type="button">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                        <!-- end header menu btn -->
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- header search -->
-    <form action="#" class="header__search">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="header__search-content">
-                        <input type="text" placeholder="Search for a movie, TV Series that you are looking for">
-
-                        <button type="button">search</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    <!-- end header search -->
-</header>
-<!-- end header -->
+        </form>
+        <!-- end header search -->
+	</header>
+	<!-- end header -->
 
 <!-- details -->
 <section class="section details">
@@ -235,7 +203,7 @@
                         <h2 class="details__title"><?=$title?></h2>
                     </div>
                     <div class="card__wrap">
-                        <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
+                        <span class="card__rate"><i class="icon ion-ios-star"></i><?=$rating?></span>
 
                         <ul class="card__list">
                             <li>HD</li>

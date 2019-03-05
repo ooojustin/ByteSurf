@@ -16,11 +16,11 @@
 
 	require 'inc/server.php';
    	
-    if (!isset($_GET['title']))
+    if (!isset($_GET['t']))
     	die('No anime selected');
 
-    $get_anime = $db->prepare('SELECT * FROM anime WHERE title=:title');
-    $get_anime->bindValue(':title', $_GET['title']);   
+    $get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
+    $get_anime->bindValue(':url', $_GET['t']);   
     $get_anime->execute();   
     $anime = $get_anime->fetch();
 
@@ -37,17 +37,16 @@
     // $json_encode($json_data, JSON_PRETTY_PRINT);
     
     //foreach($json_data['episodeData'] as $episode) {
-     //   echo $episode['title'];
+    //   echo $episode['title'];
     //}
     
 	//die();
 
-	if (!isset($_GET['ep']))
-		die('No episode selected');
+	if (!isset($_GET['ep'])) {
+	    $_GET['ep'] = 1;
+	} 
 
-	$ep_number = $_GET['ep'] - 1;
-	
-	$episode_info = $json_data['episodeData'][$ep_number]
+	$episode_info = $json_data['episodeData'][$_GET['ep'] - 1];
 
 ?>
 <!DOCTYPE html>
@@ -250,7 +249,7 @@
                                                 foreach($json_data['episodeData'] as $episode) {
 													echo '<tr>';
                                                     echo '<th>'.$episode['episode'].'</td>';
-													echo '<td> <a style="text-decoration:none" href="https://jexflix.com/anime.php?title='. $_GET['title'] . '&ep=' . $episode['episode'] . '">' . $episode['title']. '</a></td>';
+													echo '<td> <a style="text-decoration:none" href="https://jexflix.com/anime.php?t='. $_GET['t'] . '&ep=' . $episode['episode'] . '">' . $episode['title']. '</a></td>';
 													echo '</a>';
                                                     echo '</tr>';
                                                 }
