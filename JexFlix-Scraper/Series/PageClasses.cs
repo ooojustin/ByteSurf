@@ -13,7 +13,7 @@ namespace JexFlix_Scraper.Series {
             public string preview_grid { get; set; }
         }
 
-        public class Item {
+        public class PageItem {
             public string id { get; set; }
             public string type { get; set; }
             public string url { get; set; }
@@ -52,8 +52,8 @@ namespace JexFlix_Scraper.Series {
             public List<Item2> items { get; set; }
         }
 
-        public class RootObject {
-            public List<Item> items { get; set; }
+        public class PageObjects {
+            public List<PageItem> items { get; set; }
             public List<Filter> filters { get; set; }
             public int total { get; set; }
             public int page { get; set; }
