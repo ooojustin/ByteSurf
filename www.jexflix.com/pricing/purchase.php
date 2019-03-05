@@ -26,6 +26,11 @@
 		if (!isset($_GET['amount']) || !is_numeric($_GET['amount']))
 			die('Invalid \'amount\' variable.');
 		$product['price'] = floatval($_GET['amount']);
+	} else if (!isset($_POST['method'])) {
+		// if we're not depositing money, required 'method' var (payment method)
+		// $_POST['method'] must be either 'paypal' or 'bitcoin' 
+		header("location: https://jexflix.com/pricing/");
+        die();
 	}
 
 	if (isset($_POST['name']) && isset($_POST['email'])) {
@@ -46,9 +51,28 @@
 			$issue = 'The provided email address is invalid.';
 
 		if (!isset($issue)) {
-			$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
-			header("location: " . $url);
-			die();
+
+			// there is no issue, create payment based on method
+			switch ($_POST['method']) {
+
+				case 'bitcoin':
+					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
+					header("location: " . $url);
+					die();
+
+				case 'paypal':
+
+					// verify selly api stuff first...
+					$reseller = get_next_reseller($price);
+					if (!$reseller) {
+						$issue = 'PayPal is not currently available. Please try again later.';
+						break;
+					}
+
+					break;
+
+			}
+
 		}
 
 	}
