@@ -128,6 +128,7 @@
 		return $update_reseller->execute();
 	}
 
+	// adds $ to a resellers account
 	function add_reseller_balance($username, $amount) {
 		global $db;
 		$reseller = get_reseller($username);
@@ -138,6 +139,38 @@
 		$update_balance->bindValue(':username', $username);
 		$update_balance->bindValue(':balance', $new_amount);
 		return $update_balance->execute();
+	}
+
+	// gets the next reseller in the priority queue for a specified product price
+	function get_next_reseller($price) {
+		global $db;
+		$resellers = get_reseller_list($price);
+		if (empty($resellers))
+			return false;
+		return current($resellers);
+	}
+
+	// gets a list of resellers available for an amount (sorted by last_purchase low to high)
+	function get_reseller_list($price) {
+		global $db;
+		$min_balance = $price * 0.75; // minimum reseller balance for this transaction
+		$get_resellers = $db->prepare('SELECT * FROM resellers WHERE balance>=:min_balance ORDER BY last_purchase ASC');
+		$get_resellers->bindValue(':min_balance', $min_balance);
+		$get_resellers->execute();
+		return $get_resellers->fetchAll();
+	}
+
+	// gets the priority of a specific reseller at a specified price
+	function get_reseller_priority($username, $price) {
+		$ahead = 0; // number of resellers ahead of current user
+		$resellers = get_reseller_list($price);
+		foreach ($resellers as $reseller) {
+			if ($reseller['username'] == $username)
+				return $ahead + 1;
+			else
+				$ahead++;
+		}
+		return -1; // specified user is invalid
 	}
 
 	function get_movie_data($url) {
