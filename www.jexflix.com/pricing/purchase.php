@@ -20,12 +20,20 @@
 	$id = $product_ids[$_GET['plan']];
 	$product = $products[$id];
 
+	// if we're depositing money, check the amount and whatnot
+	$is_deposit = $_GET['plan'] == 'reseller';
+	if ($is_deposit) {
+		if (!isset($_GET['amount']) || !is_numeric($_GET['amount']))
+			die('Invalid \'amount\' variable.');
+		$product['price'] = floatval($_GET['amount']);
+	}
+
 	if (isset($_POST['name']) && isset($_POST['email'])) {
 		
 		$price = $product['price'];
 
 		// handle discount code if provided
-		if (isset($_POST['discount']) && !empty($_POST['discount']))
+		if (isset($_POST['discount']) && !empty($_POST['discount']) && !$is_deposit)
 			if (array_key_exists($_POST['discount'], $discounts))
 				$price *= (100 - $discounts[$_POST['discount']]) / 100;
 
@@ -122,9 +130,11 @@
 								<input type="text" class="sign__input" id="email" name="email" placeholder="Email">
 							</div>
 							
+							<? if (!$is_deposit) { ?>
 							<div class="sign__group">
 								<input type="text" class="sign__input" id="discount" name="discount" placeholder="Discount Code">
 							</div>
+							<? } ?>
 							
 							<button class="sign__btn" type="submit">Submit</button>
 						</form>

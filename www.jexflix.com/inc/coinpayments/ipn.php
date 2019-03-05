@@ -40,16 +40,25 @@
 		$product_id = intval($_POST['item_number']);
 		$product = $products[$product_id];
 
-		// apply subscription
-		$duration = $product['duration'];
-		if ($duration == -1)
-			update_expires($username, -1); // lifetime
-		else
-			add_subscription_time($username, $duration);
+		if ($product['name_short'] == 'reseller') {
 
-		// give buyer 1 week trial codes (if applicable)
-		for ($i = 0; $i < $product['trial_keys']; $i++)
-			generate_trial_key($username, SECONDS_PER_DAY * 7);
+			// add funds to balance
+			add_reseller_balance($username, $invoice['amount']);
+
+		} else {
+
+			// apply subscription
+			$duration = $product['duration'];
+			if ($duration == -1)
+				update_expires($username, -1); // lifetime
+			else
+				add_subscription_time($username, $duration);
+
+			// give buyer 1 week trial codes (if applicable)
+			for ($i = 0; $i < $product['trial_keys']; $i++)
+				generate_trial_key($username, SECONDS_PER_DAY * 7);
+
+		}
 
 		update_order($_POST['invoice'], 'completed');
 		die();

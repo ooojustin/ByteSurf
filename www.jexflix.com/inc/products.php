@@ -29,6 +29,7 @@
 		global $product_ids, $products;
 		$product_ids[$name_short] = $id;
 		$product['name'] = $name;
+		$product['name_short'] = $name_short;
 		$product['price'] = $price;
 		$product['duration'] = $duration;
 		$product['trial_keys'] = $trial_keys;

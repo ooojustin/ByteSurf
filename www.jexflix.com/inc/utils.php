@@ -129,7 +129,15 @@
 	}
 
 	function add_reseller_balance($username, $amount) {
-
+		global $db;
+		$reseller = get_reseller($username);
+		if (!$reseller)
+			return false;
+		$new_amount = $reseller['balance'] + $amount;
+		$update_balance = $db->prepare('UPDATE resellers SET balance=:balance WHERE username=:username');
+		$update_balance->bindValue(':username', $username);
+		$update_balance->bindValue(':balance', $new_amount);
+		return $update_balance->execute();
 	}
 
 	function get_movie_data($url) {
