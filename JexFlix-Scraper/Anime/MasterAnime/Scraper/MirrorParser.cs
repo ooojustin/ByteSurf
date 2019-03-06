@@ -22,6 +22,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
 
         public void Run() {
 
+            Console.WriteLine("Running host: " + mirror.host.name);
+
            //  Thread thread = new Thread(() => {
                 switch (mirror.host.name) {
                     case "Streamango":

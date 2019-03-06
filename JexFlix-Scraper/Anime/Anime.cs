@@ -217,6 +217,7 @@ namespace JexFlix_Scraper.Anime {
                                         retry:
                                         try {
                                             Console.WriteLine("Running Mirror Parser");
+                                         
                                             new MirrorParser(mirror, callback).Run();
                                             Console.WriteLine("Mirror Parser finished running");
                                         } catch (Exception ex) {
@@ -242,6 +243,7 @@ namespace JexFlix_Scraper.Anime {
                                                 EpData.qualities.Add(quality);
 
                                                 Hd = true;
+                                                Console.WriteLine("End of callback");
                                             }
 
                                         };
@@ -259,7 +261,7 @@ namespace JexFlix_Scraper.Anime {
                                     }
 
                                     if (!HasHDQualities) {
-
+                                        
                                         if (mirror.quality == 480 && !Standard) {
 
                                             Action<string> callback = (s) => {
@@ -276,6 +278,7 @@ namespace JexFlix_Scraper.Anime {
                                                     EpData.qualities.Add(quality);
 
                                                     Standard = true;
+                                                    Console.WriteLine("End of callback");
                                                 }
 
                                             };
