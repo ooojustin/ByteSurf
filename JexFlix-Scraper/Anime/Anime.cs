@@ -27,11 +27,11 @@ namespace JexFlix_Scraper.Anime {
 
             Console.WriteLine("There are: " + InitialAnime.last_page + " pages");
 
-            //for (int i = 2; i <= InitialAnime.last_page; i++) {
-            // Console.WriteLine("On " + i + " page");
-            //   AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
-            //   AllAnime.Add(CurrentAnime);
-            // }
+            for (int i = 2; i <= InitialAnime.last_page; i++) {
+             Console.WriteLine("On " + i + " page");
+               AniSearch CurrentAnime = AniSearch.GetAnime(page: i);
+               AllAnime.Add(CurrentAnime);
+             }
 
 
             foreach (AniSearch animeFound in AllAnime) {
@@ -184,6 +184,8 @@ namespace JexFlix_Scraper.Anime {
 
                             foreach (AniEpisode.Mirror mirror in episode.EmbedList) {
 
+                                Console.WriteLine("Looping through embed list");
+
                                 if (MirrorParser.IsSupported(mirror)) {
 
                                     // Very ghetto fix to get the first mirror of a quality so we dont reupload videos of the same qualities
@@ -193,12 +195,16 @@ namespace JexFlix_Scraper.Anime {
                                     */
 
                                     if (mirror.quality == 1080 && !UltraHd) {
+
                                         Action<string> callback = (s) => {
 
                                             Quality quality = new Quality();
 
                                             quality.resolution = 1080;
+
                                             if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "1080.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
+
+                                                Console.WriteLine("Has Passed RemoteFile Upload");
 
                                                 // Now update the link
                                                 quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "1080.mp4";
@@ -210,10 +216,12 @@ namespace JexFlix_Scraper.Anime {
                                         };
                                         retry:
                                         try {
+                                            Console.WriteLine("Running Mirror Parser");
                                             new MirrorParser(mirror, callback).Run();
+                                            Console.WriteLine("Mirror Parser finished running");
                                         } catch (Exception ex) {
                                             Console.WriteLine(ex.Message);
-                                            System.Threading.Thread.Sleep(5000);
+                                            UltraHd = false;
                                             goto retry;
                                         }
                                     }
@@ -226,6 +234,7 @@ namespace JexFlix_Scraper.Anime {
 
                                             // Upload to CDN then delete.
                                             if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "720.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
+                                                Console.WriteLine("Has Passed RemoteFile Upload");
 
                                                 // Now update the link
                                                 quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "720.mp4";
@@ -237,11 +246,14 @@ namespace JexFlix_Scraper.Anime {
 
                                         };
                                         retry:
+
                                         try {
+                                            Console.WriteLine("Running Mirror Parser");
                                             new MirrorParser(mirror, callback).Run();
+                                            Console.WriteLine("Mirror Parser finished running");
                                         } catch (Exception ex) {
                                             Console.WriteLine(ex.Message);
-                                            System.Threading.Thread.Sleep(5000);
+                                            Hd = false;
                                             goto retry;
                                         }
                                     }
@@ -249,6 +261,7 @@ namespace JexFlix_Scraper.Anime {
                                     if (!HasHDQualities) {
 
                                         if (mirror.quality == 480 && !Standard) {
+
                                             Action<string> callback = (s) => {
                                                 Quality quality = new Quality();
                                                 quality.resolution = 480;
@@ -256,6 +269,7 @@ namespace JexFlix_Scraper.Anime {
                                                 // Upload to CDN then delete.
                                                 if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
 
+                                                    Console.WriteLine("Has Passed RemoteFile Upload");
                                                     // Now update the link
                                                     quality.link = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "480.mp4";
 
@@ -267,12 +281,15 @@ namespace JexFlix_Scraper.Anime {
                                             };
                                             retry:
                                             try {
+                                                Console.WriteLine("Running Mirror Parser");
                                                 new MirrorParser(mirror, callback).Run();
+                                                Console.WriteLine("Mirror Parser finished running");
                                             } catch (Exception ex) {
                                                 Console.WriteLine(ex.Message);
-                                                System.Threading.Thread.Sleep(5000);
+                                                Standard = false;
                                                 goto retry;
                                             }
+
                                         }
                                     }
 
@@ -281,9 +298,9 @@ namespace JexFlix_Scraper.Anime {
 
                             }
                         }
-
+                        Console.WriteLine("Adding EPData");
                         UploadData.episodeData.Add(EpData);
-
+                        Console.WriteLine("Saving to path");
                         string localPath = Path.GetTempFileName();
 
                         //open file stream
@@ -302,8 +319,9 @@ namespace JexFlix_Scraper.Anime {
                         retry_json:
                         try {
                             Networking.UploadFile(localPath, "/anime/" + UploadData.url, UploadData.url + ".json", UploadData.title);
-                        } catch (Exception ex) { Networking.ErrorLogging(null, ex, "Json CDN exception");
-                            System.Threading.Thread.Sleep(5000);
+                        } catch (Exception ex) {
+                            Console.WriteLine(ex.Message + " JSON CDN ERROR");
+                            Networking.ErrorLogging(null, ex, "Json CDN exception");
                             goto retry_json;
                         }
 
@@ -417,16 +435,26 @@ namespace JexFlix_Scraper.Anime {
             try { web.DownloadFile(url, localPath); } catch (WebException wex) {
 
                 Networking.ErrorLogging(wex, null, title, "Download Error: " + url);
-
+                Console.WriteLine("Error downloading original file"); 
                 success = false;
             }
 
             // reupload file to server
             if (success) {
-                try { Networking.UploadFile(localPath, directory, file, title); } catch (Exception ex) { Networking.ErrorLogging(null, ex, title, "Upload Error: " + file); }
+
+                try {
+                    Networking.UploadFile(localPath, directory, file, title);
+                } catch (Exception ex) {
+                    Networking.ErrorLogging(null, ex, title, "Upload Error: " + file);
+                    Console.WriteLine("Error uploading file");
+                    success = false;
+                }
 
                 // delete the file that was stored locally
                 File.Delete(localPath);
+                Console.WriteLine("Deleted local file");
+            } else {
+                Console.WriteLine("No Success");
             }
 
             return success;
