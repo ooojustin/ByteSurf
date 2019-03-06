@@ -13,7 +13,7 @@ class Program {
 
         MessageHandler.Start();
 
-        //  Anime.Run();
+        Anime.Run();
 
 
         //Flixify.Run();
@@ -25,7 +25,7 @@ class Program {
         //t3.Start();
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
-        Series.Run();
+       // Series.Run();
 
         Console.ReadKey();
 

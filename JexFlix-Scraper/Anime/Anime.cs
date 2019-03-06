@@ -269,7 +269,8 @@ namespace JexFlix_Scraper.Anime {
                                                 quality.resolution = 480;
 
                                                 // Upload to CDN then delete.
-                                                if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
+
+                                                    if (BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "480.mp4", UploadData.title, General.GetWebClient(), anime.slug)) {
 
                                                     Console.WriteLine("Has Passed RemoteFile Upload");
                                                     // Now update the link

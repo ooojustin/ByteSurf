@@ -62,6 +62,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
             try {
                 string src = General.RedirectedURL("https:" + information.src);
                 callback(src);
+                Application.Exit();
             } catch (Exception) { }
         }
 
