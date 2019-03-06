@@ -141,10 +141,15 @@
 		return $update_balance->execute();
 	}
 
+	// removes $ from a resellers account (aka add negative balance, lol)
+	function remove_reseller_balance($username, $amount) {
+		$amount = -$amount;
+		return add_reseller_balance($username, $amount);
+	}
+
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
-		require dirname(__FILE__) . '/selly.php';
-		$resellers = get_reseller_list();
+		$resellers = get_reseller_list($price);
 		while ($reseller = array_shift($resellers))
 			if (reseller_is_valid($reseller))
 				return $reseller;
@@ -155,9 +160,9 @@
 	function reseller_is_valid($reseller) {
 		if (!$reseller)
 			return false;
-		require dirname(__FILE__) . '/selly.php';
+		require dirname(__FILE__) . '/selly/selly.php';
 		$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
-		if ($selly->is_valid()) {
+		if (!$selly->is_valid()) {
 			update_reseller($reseller['username'], '', '');
 			return false;
 		} else return true;

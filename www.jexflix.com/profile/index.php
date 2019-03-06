@@ -31,7 +31,7 @@
 
     // update reseller info (NOTE: VALIDATE EMAIL ADDRESS)
     if (isset($_POST['selly_email']) && isset($_POST['selly_api_key'])) {
-    	require '../inc/selly.php';
+    	require '../inc/selly/selly.php';
     	$selly = new SellyAPI($_POST['selly_email'], $_POST['selly_api_key']);
     	if ($selly->is_valid()) {
     		update_reseller($username, $_POST['selly_email'], $_POST['selly_api_key']);

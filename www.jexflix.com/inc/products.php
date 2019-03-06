@@ -14,7 +14,8 @@
 	global $discounts;
 	$discounts = array(
 		'penguware' => 10,
-		'weebware' => 10
+		'weebware' => 10,
+		'testing' => 85
 	);
 
 	// return discount if needed

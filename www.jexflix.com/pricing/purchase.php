@@ -3,7 +3,6 @@
 	require '../inc/server.php';
     require '../inc/session.php';
     require '../inc/products.php';
-    require '../inc/coinpayments/cp.php';
     require_login();
 
     // get user/product/discount info
@@ -26,12 +25,13 @@
 		if (!isset($_GET['amount']) || !is_numeric($_GET['amount']))
 			die('Invalid \'amount\' variable.');
 		$product['price'] = floatval($_GET['amount']);
-	} else if (!isset($_POST['method'])) {
-		// if we're not depositing money, required 'method' var (payment method)
-		// $_POST['method'] must be either 'paypal' or 'bitcoin' 
-		header("location: https://jexflix.com/pricing/");
-        die();
 	}
+
+	// determine $method variable
+	if (isset($_POST['paypal']) && !$is_deposit)
+		$method = 'paypal';
+	else
+		$method = 'bitcoin'; // default
 
 	if (isset($_POST['name']) && isset($_POST['email'])) {
 		
@@ -53,23 +53,30 @@
 		if (!isset($issue)) {
 
 			// there is no issue, create payment based on method
-			switch ($_POST['method']) {
-
-				case 'bitcoin':
-					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
-					header("location: " . $url);
-					die();
+			switch ($method) {
 
 				case 'paypal':
 
-					// verify selly api stuff first...
+					// get reseller
 					$reseller = get_next_reseller($price);
 					if (!$reseller) {
 						$issue = 'PayPal is not currently available. Please try again later.';
 						break;
 					}
 
-					break;
+					// create paypal payment & redirect
+					$url = create_paypal_payment($user['username'], $_POST['email'], $reseller, $product['name'], $id, $price);
+					echo 'reseller: ' . $reseller['username'] . ', url: ' . $url;
+					header("location: " . $url);
+					die();
+
+				default:
+				case 'bitcoin':
+
+				    require '../inc/coinpayments/cp.php';
+					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
+					header("location: " . $url);
+					die();
 
 			}
 
@@ -158,6 +165,16 @@
 							<div class="sign__group">
 								<input type="text" class="sign__input" id="discount" name="discount" placeholder="Discount Code">
 							</div>
+
+							<div class="sign__group sign__group--checkbox">
+								<input id="bitcoin" name="bitcoin" type="checkbox">
+								<label for="bitcoin">BitCoin</label>
+							</div>
+
+							<div class="sign__group sign__group--checkbox">
+								<input id="paypal" name="paypal" type="checkbox">
+								<label for="paypal">PayPal</label>
+							</div>
 							<? } ?>
 							
 							<button class="sign__btn" type="submit">Submit</button>
@@ -171,8 +188,22 @@
 
 	<script>
 
-		var price = <?= $product['price'] ?>;
+		// === HANDLE PAYMENT METHOD ===
+        <? if (!$is_deposit) { ?>
+        set_checked('bitcoin', true);
+        $('#bitcoin').change(function() {
+            set_checked('paypal', !this.checked);
+        });
+        $('#paypal').change(function() {
+            set_checked('bitcoin', !this.checked);
+        });
+        <? } ?>
+        function set_checked(id, checked) {
+            $('#' + id).prop('checked', checked);
+        }
+        // === END PAYMENT METHOD ===
 
+		var price = <?= $product['price'] ?>;
 		$('#discount').focusout(function() {
 			var code = $('#discount').val();
 			var url = 'https://jexflix.com/inc/products.php?discount=' + code;

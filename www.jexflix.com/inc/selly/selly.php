@@ -1,4 +1,22 @@
 <?php
+    
+    require dirname(__FILE__) . '/utils.php';
+
+    define('SELLY_RETURN_URL', 'https://jexflix.com/login/'); // url to return to after completed purchase
+    define('SELLY_WEBHOOK_URL', 'https://jexflix.com/inc/selly/webhook.php?invoice='); // append invoice id to the end of this string
+
+    function create_paypal_payment($username, $email, $reseller, $product_name, $product_number, $amount) {
+        $invoice = create_order_pp($email, $username, $product_name, $product_number, $reseller, $amount);
+        $selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
+        $payment = $selly->create_payment($product_name, 'PayPal', $email, $amount, 'USD', SELLY_RETURN_URL, SELLY_WEBHOOK_URL . $invoice);
+        if ($payment) {
+            // payment created successfully
+            return $payment['url'];
+        } else {
+            // an error occurred
+            // handle here...
+        }
+    }
 
     class SellyAPI {
         
