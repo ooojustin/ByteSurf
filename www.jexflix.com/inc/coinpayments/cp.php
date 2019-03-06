@@ -23,7 +23,7 @@
 		global $cp;
 
 		// create order in database and get invoice string
-		$invoice = create_order($name, $email, $username, $product_name, $amount, 'btc');
+		$invoice = create_order($name, $email, $username, $product_name, $amount);
 
 		// send payment request to server
 		$payment = $cp->CreateComplexTransaction(
@@ -32,7 +32,7 @@
 			'BTC', // transaction to convert to/receive payment in
 			$email, // buyer email address
 			BTC_ADDRESS, // seller btc address
-			$name, // buyer full name (or username, i guess)
+			$name, // buyer full name
 			$product_name, // name of product
 			$product_number, // number of product (pass as string)
 			$invoice, // invoice # (generated randomly for each payment)
@@ -45,6 +45,9 @@
 			update_order($invoice, 'error');
 			return false;
 		}
+
+		// set the transaction amount (btc)
+		set_amount($invoice, $payment['result']['amount']);
 
 		// return status URL
 		return $payment['result']['status_url'];
