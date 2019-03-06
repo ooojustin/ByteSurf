@@ -143,7 +143,7 @@
 
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
-		$resellers = get_reseller_list();
+		$resellers = get_reseller_list($price);
 		while ($reseller = array_shift($resellers))
 			if (reseller_is_valid($reseller))
 				return $reseller;

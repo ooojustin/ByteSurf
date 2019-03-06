@@ -8,7 +8,7 @@
     function create_paypal_payment($username, $email, $reseller, $product_name, $product_number, $amount) {
         $invoice = create_order($email, $username, $product_name, $product_number, $reseller, $amount);
         $selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
-        $payment = $selly->create_payment($title, 'PayPal', $email, $value, 'USD', SELLY_RETURN_URL, SELLY_WEBHOOK_URL . $invoice);
+        $payment = $selly->create_payment($product_name, 'PayPal', $email, $amount, 'USD', SELLY_RETURN_URL, SELLY_WEBHOOK_URL . $invoice);
         if ($payment) {
             // payment created successfully
             return $payment['url'];
