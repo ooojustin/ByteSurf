@@ -27,10 +27,11 @@
 		for ($i = 0; $i < $product['trial_keys']; $i++)
 			generate_trial_key($username, SECONDS_PER_DAY * 7);
 
-		// remove credit from reseller account
+		// remove credit from reseller account, update last_purchase
+		reseller_received_payment($invoice['reseller']);
 		remove_reseller_balance($invoice['reseller'], $invoice['amount'] * 0.75);
 
-		update_order_pp($_POST['invoice'], 'completed');
+		update_order_pp($_GET['invoice'], 'completed');
 		die();
 
 	}
