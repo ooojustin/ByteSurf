@@ -141,6 +141,12 @@
 		return $update_balance->execute();
 	}
 
+	// removes $ from a resellers account (aka add negative balance, lol)
+	function remove_reseller_balance($username, $amount) {
+		$amount = -$amount;
+		return add_reseller_balance($username, $amount);
+	}
+
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
 		$resellers = get_reseller_list($price);

@@ -16,6 +16,7 @@
 
 	if ($data['status'] == 100) {
 
+		// determine duration, update subscription
 		$duration = $product['duration'];
 		if ($duration == -1)
 			update_expires($username, -1); // lifetime
@@ -25,6 +26,9 @@
 		// give buyer 1 week trial codes (if applicable)
 		for ($i = 0; $i < $product['trial_keys']; $i++)
 			generate_trial_key($username, SECONDS_PER_DAY * 7);
+
+		// remove credit from reseller account
+		remove_reseller_balance($invoice['reseller'], $invoice['amount'] * 0.75);
 
 		update_order($_POST['invoice'], 'completed');
 		die();
