@@ -43,7 +43,7 @@
 		if ($product['name_short'] == 'reseller') {
 
 			// add funds to balance
-			add_reseller_balance($username, $invoice['amount']);
+			add_reseller_balance($username, $invoice['amount_usd']);
 
 		} else {
 
