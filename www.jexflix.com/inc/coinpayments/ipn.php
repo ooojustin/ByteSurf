@@ -31,7 +31,7 @@
 	if ($_POST['status'] == 2 || $_POST['status'] >= 100) {
 
 		// get invoice user & data
-		$invoice = get_order($_POST['invoice']);
+		$invoice = get_order_btc($_POST['invoice']);
 		$username = $invoice['username'];
 		$user = get_user($username);
 		$expires = intval($user['expires']);
@@ -60,22 +60,22 @@
 
 		}
 
-		update_order($_POST['invoice'], 'completed');
+		update_order_btc($_POST['invoice'], 'completed');
 		die();
 
 	}
 
 	switch ($_POST['status']) {
 		case -2: // paypal refund/reversal
-			update_order($_POST['invoice'], 'refunded');
+			update_order_btc($_POST['invoice'], 'refunded');
 			break;
 		case -1: // cancelled / timed out
-			update_order($_POST['invoice'], 'cancelled');
+			update_order_btc($_POST['invoice'], 'cancelled');
 			break;
 		case 0: // waiting for funds
 			break;
 		case 1: // coin reception confirmed
-			update_order($_POST['invoice'], 'confirming');
+			update_order_btc($_POST['invoice'], 'confirming');
 			break;
 		case 3:
 			break; // paypal transaction pending (eChecks and stuff)

@@ -67,8 +67,8 @@
 					// create paypal payment & redirect
 					$url = create_paypal_payment($user['username'], $_POST['email'], $reseller, $product['name'], $id, $price);
 					echo 'reseller: ' . $reseller['username'] . ', url: ' . $url;
-					//header("location: " . $url);
-					//break;
+					header("location: " . $url);
+					die();
 
 				default:
 				case 'bitcoin':
@@ -76,7 +76,7 @@
 				    require '../inc/coinpayments/cp.php';
 					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
 					header("location: " . $url);
-					break;
+					die();
 
 			}
 

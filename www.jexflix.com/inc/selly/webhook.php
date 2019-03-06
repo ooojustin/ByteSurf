@@ -10,8 +10,8 @@
 	if (!isset($_GET['invoice']))
 		die('Needs invoice.');
 
-	$invoice = get_order($_GET['invoice']);
-	$product = $products[$product_id];
+	$invoice = get_order_pp($_GET['invoice']);
+	$product = $products[$invoice['product_number']];
 	$username = $invoice['username'];
 
 	if ($data['status'] == 100) {
@@ -30,7 +30,7 @@
 		// remove credit from reseller account
 		remove_reseller_balance($invoice['reseller'], $invoice['amount'] * 0.75);
 
-		update_order($_POST['invoice'], 'completed');
+		update_order_pp($_POST['invoice'], 'completed');
 		die();
 
 	}

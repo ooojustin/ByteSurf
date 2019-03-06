@@ -3,7 +3,7 @@
     if (!isset($GLOBALS['db']))
         require dirname(__FILE__) . '/../server.php';
 
-    function update_order($invoice, $status) {
+    function update_order_btc($invoice, $status) {
 
         global $db;
 
@@ -15,7 +15,7 @@
 
     }
 
-    function set_amount($invoice, $amount_btc) {
+    function set_amount_btc($invoice, $amount_btc) {
 
         global $db;
 
@@ -27,7 +27,7 @@
         
     }
     
-    function create_order($name, $email, $username, $product, $amount_usd) {
+    function create_order_btc($name, $email, $username, $product, $amount_usd) {
 
         global $db;
 
@@ -48,7 +48,7 @@
 
     }
 
-    function get_order($invoice) {
+    function get_order_btc($invoice) {
         
         global $db;
 

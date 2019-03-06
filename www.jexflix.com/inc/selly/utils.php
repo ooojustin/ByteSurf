@@ -3,7 +3,7 @@
 	if (!isset($GLOBALS['db']))
         require dirname(__FILE__) . '/../server.php';
 
-    function update_order($invoice, $status) {
+    function update_order_pp($invoice, $status) {
 
         global $db;
 
@@ -15,7 +15,7 @@
 
     }
     	
-    function create_order($email, $username, $product_name, $product_number, $reseller, $amount) {
+    function create_order_pp($email, $username, $product_name, $product_number, $reseller, $amount) {
 
         global $db;
 
@@ -38,7 +38,7 @@
 
     }
 
-    function get_order($invoice) {
+    function get_order_pp($invoice) {
         
         global $db;
 
