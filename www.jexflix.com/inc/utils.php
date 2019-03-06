@@ -108,6 +108,14 @@
 	    return $check_email->fetch();
 	}
 
+	function reseller_received_payment($username) {
+		global $db;
+		$update_time = $db->prepare('UPDATE resellers SET last_purchase=:last_purchase WHERE username=:username');
+		$update_time->bindValue(':username', $username);
+		$update_time->bindValue(':last_purchase', time());
+		return $update_time->execute();
+	}
+
 	function get_reseller($username) {
 		global $db;
 		$get_reseller = $db->prepare('SELECT * FROM resellers WHERE username=:username LIMIT 1');
