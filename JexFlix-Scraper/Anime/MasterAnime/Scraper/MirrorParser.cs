@@ -59,9 +59,10 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
         private void StreamangoLoaded(object sender, WebBrowserDocumentCompletedEventArgs e) {
             WebBrowser browser = (WebBrowser)sender;
             dynamic information = browser.Document.InvokeScript("eval", new object[] { "srces[0]" });
-            try {
+            try {                                                                                                                                                                           
                 string src = General.RedirectedURL("https:" + information.src);
                 callback(src);
+                // https://stackoverflow.com/questions/23769371/webbrowser-threads-dont-seem-to-be-closing
                 Application.Exit();
             } catch (Exception) { }
         }
