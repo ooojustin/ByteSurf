@@ -24,9 +24,10 @@
 		global $db;
 
 		// execute query
-		$get_sales = $db->prepare('SELECT SUM(amount_usd) FROM orders_btc WHERE timestamp>=:timestamp_min AND timestamp<:timestamp_max AND product != :not_product');
+		$get_sales = $db->prepare('SELECT SUM(amount_usd) FROM orders_btc WHERE timestamp>=:timestamp_min AND timestamp<:timestamp_max AND product != :not_product AND status = :status');
 		apply_day_timestamps($get_sales, $days);
 		$get_sales->bindValue(':not_product', 'Reseller Deposit');
+		$get_sales->bindValue(':status', 'completed');
 		$get_sales->execute();
 
 		$data = $get_sales->fetch();
@@ -42,10 +43,10 @@
 		global $db;
 
 		// execute query
-		$get_deposits = $db->prepare('SELECT SUM(amount_usd) FROM orders_btc WHERE timestamp>=:timestamp_min AND timestamp<:timestamp_max AND product = :is_product');
+		$get_deposits = $db->prepare('SELECT SUM(amount_usd) FROM orders_btc WHERE timestamp>=:timestamp_min AND timestamp<:timestamp_max AND product = :is_product AND status = :status');
 		apply_day_timestamps($get_deposits, $days);
 		$get_deposits->bindValue(':is_product', 'Reseller Deposit');
-		$get_deposits->execute();
+		$get_deposits->execute(':status', 'completed');
 
 		$data = $get_deposits->fetch();
 		$amount = current($data);
