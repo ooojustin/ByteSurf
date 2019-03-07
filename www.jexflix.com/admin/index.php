@@ -151,7 +151,7 @@
 				<div class="col-12">
 					<div class="section__wrap">
 						<!-- section title -->
-						<h2 class="section__title">Profile</h2>
+						<h2 class="section__title">Administration</h2>
 						<!-- end section title -->
 
 						<!-- breadcrumb -->
@@ -249,7 +249,7 @@
 							Chart.defaults.global.defaultFontColor = 'white';
 							Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
 
-							var config = {
+							var incomeChartCFG = {
 								type: 'line',
 								data: {
 									labels: [<? for ($i = $income_days; $i >= 0; $i--) echo "'" . day_desc($i) . "',"; ?>],
@@ -307,8 +307,8 @@
 							};
 
 							window.onload = function() {
-								var ctx = document.getElementById('incomeChart').getContext('2d');
-								window.myLine = new Chart(ctx, config);
+								var incomeChartCTX = document.getElementById('incomeChart').getContext('2d');
+								window.myLine = new Chart(incomeChartCTX, incomeChartCFG);
 							};
 
 						</script>
