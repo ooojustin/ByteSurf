@@ -15,7 +15,7 @@
 
 	// gets total $ (USD) made from x days ago
 	function get_total_days_ago($days) {
-		return get_direct_sales_usd($days) + get_reseller_deposits_usd($days);
+		return get_direct_sales_days_ago($days) + get_reseller_deposits_days_ago($days);
 	}
 
 	// gets amount of $ (USD) x days ago from direct sales
