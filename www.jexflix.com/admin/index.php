@@ -5,6 +5,8 @@
     require_administrator();
    
 	global $user;
+	$username = $user['username'];
+	$role = intval($user['role']);
    
 ?>
 <!DOCTYPE html>
@@ -147,7 +149,8 @@
 						<!-- breadcrumb -->
 						<ul class="breadcrumb">
 							<li class="breadcrumb__item"><a href="../home">Home</a></li>
-							<li class="breadcrumb__item breadcrumb__item--active">Profile</li>
+							<li class="breadcrumb__item"><a href="../profile">Profile</a></li>
+							<li class="breadcrumb__item breadcrumb__item--active">Admin</li>
 						</ul>
 						<!-- end breadcrumb -->
 					</div>
@@ -172,23 +175,19 @@
 									<? } ?>
 								</div>
 								<div class="profile__meta">
-									<h3><?=$username?></h3>
-									<span>User ID: <?=$user_id?></span>
+									<h3><?= $username ?></h3>
+									<span>Role: <?= $role ?></span>
 								</div>
 							</div>
 
 							<!-- content tabs nav -->
 							<ul class="nav nav-tabs content__tabs content__tabs--profile" id="content__tabs" role="tablist">
 								<li class="nav-item">
-									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Profile</a>
+									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Income</a>
 								</li>
 
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a>
-								</li>
-
-								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a>
+									<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Mailer</a>
 								</li>
 							</ul>
 							<!-- end content tabs nav -->
@@ -202,11 +201,9 @@
 
 								<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
 									<ul class="nav nav-tabs" role="tablist">
-										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Profile</a></li>
+										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Income</a></li>
 
-										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a></li>
-
-										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a></li>
+										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Mailer</a></li>
 									</ul>
 								</div>
 							</div>
@@ -225,217 +222,32 @@
 
 				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
+
 						<!-- details form -->
 						<div class="col-12 col-lg-6">
-							<form action="" method="post" class="profile__form">
-								<div class="row">
-									<div class="col-12">
-										<h4 class="profile__title">Profile Details</h4>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="username">Username</label>
-											<input id="username" type="text" name="username" class="profile__input" disabled value="<?=$username?>">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="email">Email</label>
-											<input id="email" type="text" name="email" class="profile__input" disabled value="<?=$email?>">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="pfp">Profile Picture</label>
-											<input id="pfp" type="text" name="pfp" class="profile__input" placeholder="Enter Image URL">
-										</div>
-									</div>
-
-									<div class="col-12">
-										<button class="profile__btn" type="submit">Save</button>
-									</div>
-								</div>
-							</form>
+							
 						</div>
 						<!-- end details form -->
 
 						<!-- password form -->
 						<div class="col-12 col-lg-6">
-							<form action="" method="post" class="profile__form">
-								<div class="row">
-									<div class="col-12">
-										<h4 class="profile__title">Change Password</h4>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="oldpass">Old Password</label>
-											<input id="oldpass" type="password" name="oldpass" class="profile__input">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="newpass">New Password</label>
-											<input id="newpass" type="password" name="newpass" class="profile__input">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="confirmpass">Confirm New Password</label>
-											<input id="confirmpass" type="password" name="confirmpass" class="profile__input">
-										</div>
-									</div>
-
-									<div class="col-12">
-										<button class="profile__btn" type="submit">Change</button>
-									</div>
-								</div>
-							</form>
+							
 						</div>
 						<!-- end password form -->
+
 					</div>
 				</div>
 
+				<!-- Mailer Tab -->
 				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
-
-						<!-- subscription and orders -->
 						<div class="col-12 col-lg-6">
-
-							<div class="row">
-
-								<div class="col-12">
-									<h4 class="profile__title" style="margin-bottom: 10px">Subscription & Orders</h4>
-									<h4 class="profile__title"><b>Expires:</b> <?= get_subscription_expiration_date(); ?></h4>
-									<?
-										$get_orders = $db->prepare('SELECT * FROM orders WHERE username=:username AND status=:status');
-										$get_orders->bindValue(':username', $username);
-										$get_orders->bindValue(':status', 'completed');
-										$get_orders->execute();
-										if ($get_orders->rowCount() > 0) {
-											$orders = $get_orders->fetchAll();
-											foreach ($orders as $order) { ?>
-												<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
-											<? } 
-										} else { ?>
-											<label class="profile__label">You do not have any completed orders.</label>
-										<? } 
-									?>
-								</div>
-					
-							</div>
-
+							
 						</div>
-						<!-- end subscription/orders -->
-
-						<!-- trial key stuff -->
-						<div class="col-12 col-lg-6">
-							<div class="row">
-
-								<div class="col-12">
-									<h4 class="profile__title" style="margin-bottom: 15px">Trial Keys</h4>
-									<?
-										$get_trials = $db->prepare('SELECT * FROM trial_keys WHERE owner=:username AND user IS NULL');
-										$get_trials->bindValue(':username', $username);
-										$get_trials->execute();
-										if ($get_trials->rowCount() > 0) {
-											$trials = $get_trials->fetchAll();
-											foreach ($trials as $trial) { ?>
-												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
-											<? }
-										} else { ?>
-											<label class="profile__label">You do not have any unused trial keys.</label>
-										<? } 
-									?>
-									<br><br>
-									<h4 class="profile__title" style="margin-bottom: 15px">Used Trial Keys</h4>
-									<?
-										$get_trials = $db->prepare('SELECT * FROM trial_keys WHERE owner=:username AND user IS NOT NULL');
-										$get_trials->bindValue(':username', $username);
-										$get_trials->execute();
-										if ($get_trials->rowCount() > 0) {
-											$trials = $get_trials->fetchAll();
-											foreach ($trials as $trial) { ?>
-												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days - Used by ' . $trial['user']; ?></label><br>
-											<? }
-										} else { ?>
-											<label class="profile__label">You do not have any used trial keys.</label>
-										<? } 
-									?>
-								</div>
-					
-							</div>
-						</div>
-						<!-- end trial keys -->
-
 					</div>
 				</div>
+				<!-- End Mailer Tab -->
 
-				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
-					<div class="row">
-
-						<!-- selly info form -->
-						<div class="col-12 col-lg-6">
-							<form action="" method="post" class="profile__form">
-								<div class="row">
-									<div class="col-12">
-										<h4 class="profile__title">Selly Details</h4>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="username">Email</label>
-											<input id="selly_email" type="text" name="selly_email" class="profile__input" placeholder="Selly Email Address" value="<?=$reseller['selly_email']?>">
-										</div>
-									</div>
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">
-											<label class="profile__label" for="email">API Key</label>
-											<input id="selly_api_key" type="text" name="selly_api_key" class="profile__input" placeholder="Selly API Key" value="<?=$reseller['selly_api_key']?>">
-										</div>
-									</div>
-
-									<div class="col-12">
-										<button class="profile__btn" type="submit">Save</button>
-									</div>
-								</div>
-							</form>
-						</div>
-						<!-- end selly form -->
-
-						<!-- reseller balance form -->
-						<div class="col-12 col-lg-6">
-							<form action="https://jexflix.com/pricing/purchase.php" method="get" class="profile__form">
-								<div class="row">
-									<div class="col-12">
-										<h4 class="profile__title">Balance: $<?=$reseller['balance']?></h4>
-									</div>
-
-									<input type="hidden" value="reseller" name="plan" />
-
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
-										<div class="profile__group">	
-											<label class="profile__label" for="username">Amount</label>
-											<input id="reseller_deposit_amount" type="text" name="amount" class="profile__input" placeholder="Amount (USD)">
-										</div>
-									</div>
-
-									<div class="col-12">
-										<button class="profile__btn" type="submit">Deposit</button>
-									</div>
-								</div>
-							</form>
-						</div>
-						<!-- end balance form -->
-
-					</div>
-				</div>
 			</div>
 			<!-- end content tabs -->
 		</div>
