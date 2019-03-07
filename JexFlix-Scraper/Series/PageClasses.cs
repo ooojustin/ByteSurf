@@ -22,10 +22,10 @@ namespace JexFlix_Scraper.Series {
             public string slug { get; set; }
             public string certification { get; set; }
             public int? duration { get; set; }
-            public List<object> genres { get; set; }
+            public List<string> genres { get; set; }
             public double? rating { get; set; }
             public string imdb_id { get; set; }
-            public int year { get; set; }
+            public int? year { get; set; }
             public DateTime released { get; set; }
             public int released_sec_ago { get; set; }
             public int last_seq { get; set; }
@@ -52,7 +52,7 @@ namespace JexFlix_Scraper.Series {
             public List<Item2> items { get; set; }
         }
 
-        public class PageObjects {
+        public class PageObject {
             public List<PageItem> items { get; set; }
             public List<Filter> filters { get; set; }
             public int total { get; set; }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Series {
-    class SeriesClasses {
+    class SeasonClasses {
 
         public class Images {
             public string preview { get; set; }
@@ -20,15 +20,15 @@ namespace JexFlix_Scraper.Series {
             public string url { get; set; }
             public string title { get; set; }
             public string description { get; set; }
-            public int duration { get; set; }
-            public int year { get; set; }
+            public int? duration { get; set; }
+            public int? year { get; set; }
             public DateTime released { get; set; }
-            public int released_sec_ago { get; set; }
+            public int? released_sec_ago { get; set; }
             public string lang { get; set; }
             public string certification { get; set; }
             public List<object> keywords { get; set; }
             public List<string> genres { get; set; }
-            public double rating { get; set; }
+            public double? rating { get; set; }
             public string imdb_id { get; set; }
             public object blocked_by { get; set; }
             public int last_seq { get; set; }
@@ -44,17 +44,17 @@ namespace JexFlix_Scraper.Series {
             public List<object> previews { get; set; }
         }
 
-        public class Season {
+        public class SeasonItem {
             public string id { get; set; }
             public string type { get; set; }
             public string url { get; set; }
             public string title { get; set; }
             public string description { get; set; }
-            public int duration { get; set; }
-            public DateTime released { get; set; }
-            public int released_sec_ago { get; set; }
+            public int? duration { get; set; }
+            public DateTime? released { get; set; }
+            public int? released_sec_ago { get; set; }
             public object year { get; set; }
-            public int seq { get; set; }
+            public int? seq { get; set; }
             public object seq2 { get; set; }
             public Images2 images { get; set; }
             public bool available { get; set; }
@@ -62,7 +62,7 @@ namespace JexFlix_Scraper.Series {
 
         public class SeasonObject {
             public Item item { get; set; }
-            public List<Season> seasons { get; set; }
+            public List<SeasonItem> seasons { get; set; }
         }
     }
 }
