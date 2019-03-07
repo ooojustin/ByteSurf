@@ -33,6 +33,17 @@
 		}
 	}
 
+	// function to require administrator access (role >= 1000)
+	function require_administrator() {
+		require_login();
+		global $user;
+		$role = intval($user['role']);
+		if ($role < 1000) {
+			header("location: https://jexflix.com/home/");
+			die();
+		}
+	}
+
 	// function to get subscription expiration
 	function get_subscription_expiration_date() {
 		require_subscription(); // must have a subscription to determine this

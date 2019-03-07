@@ -2,43 +2,9 @@
 
     require '../inc/server.php';
     require '../inc/session.php';
-    require_subscription();
+    require_administrator();
    
 	global $user;
-   
-   	// establish general user details
-   	$username = $user['username'];
-   	$user_id = $user['id'];
-   	$email = $user['email'];
-
-   	// establish reseller details
-   	$reseller = get_reseller($username);
-   	if (!$reseller) {
-   		$reseller['selly_email'] = '';
-   		$reseller['selly_api_key'] = '';
-   		$reseller['balance'] = 0;
-   	}
-   
-   	// update password
-   	if(isset($_POST['oldpass']) && isset($_POST['newpass']) && isset($_POST['confirmpass'])) {
-		if ($_POST['newpass'] != $_POST['confirmpass']) return;
-       	update_password($username, $_POST['oldpass'], $_POST['newpass']);
-   	}
-   
-   	// update profile pic
-   	if (isset($_POST['pfp']))
-    	update_picture($username, $_POST['pfp']);
-
-    // update reseller info (NOTE: VALIDATE EMAIL ADDRESS)
-    if (isset($_POST['selly_email']) && isset($_POST['selly_api_key'])) {
-    	require '../inc/selly/selly.php';
-    	$selly = new SellyAPI($_POST['selly_email'], $_POST['selly_api_key']);
-    	if ($selly->is_valid()) {
-    		update_reseller($username, $_POST['selly_email'], $_POST['selly_api_key']);
-    		$reseller['selly_email'] = $_POST['selly_email'];
-    		$reseller['selly_api_key'] = $_POST['selly_api_key'];
-    	}
-    }
    
 ?>
 <!DOCTYPE html>
