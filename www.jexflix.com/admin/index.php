@@ -231,7 +231,19 @@
 				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
 
-						<canvas id="incomeChart" width="400" height="150"></canvas>
+
+						<!-- general info -->
+						<div class="col-12 col-lg-6">
+							<div class="row">
+								<div class="col-12">
+									<!---<h4 class="profile__title" style="margin-bottom: 15px">more info here</h4>--->
+								</div>
+							</div>
+						</div>
+						<!-- end general info -->
+
+						<!-- graph code -->
+						<canvas id="incomeChart" width="400" height="150" style="margin-bottom: 30px;"></canvas>
 						<script>
 
 							Chart.defaults.global.defaultFontColor = 'white';
@@ -243,16 +255,22 @@
 									labels: [<? for ($i = $income_days; $i >= 0; $i--) echo "'" . day_desc($i) . "',"; ?>],
 									datasets: [{
 										label: 'Direct Sales',
-										backgroundColor: 'rgb(66, 244, 72)',
-										borderColor: 'rgb(66, 244, 72)',
-										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_direct_sales_usd($i) . ','; ?>],
+										backgroundColor: 'rgb(0, 255, 255)',
+										borderColor: 'rgb(0, 255, 255)',
+										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_direct_sales_days_ago($i) . ','; ?>],
 										fill: false,
 									}, {
 										label: 'Reseller Deposits',
 										fill: false,
 										backgroundColor: 'rgb(239, 45, 220)',
 										borderColor: 'rgb(239, 45, 220)',
-										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_reseller_deposits_usd($i) . ','; ?>],
+										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_reseller_deposits_days_ago($i) . ','; ?>],
+									}, {
+										label: 'Total Income',
+										fill: false,
+										backgroundColor: 'rgb(66, 244, 72)',
+										borderColor: 'rgb(66, 244, 72)',
+										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_total_days_ago($i) . ','; ?>],
 									}]
 								},
 								options: {
@@ -294,18 +312,7 @@
 							};
 
 						</script>
-
-						<!-- details form -->
-						<div class="col-12 col-lg-6">
-							
-						</div>
-						<!-- end details form -->
-
-						<!-- password form -->
-						<div class="col-12 col-lg-6">
-							
-						</div>
-						<!-- end password form -->
+						<!-- end graph code -->
 
 					</div>
 				</div>
