@@ -319,11 +319,50 @@
 
 				<!-- Mailer Tab -->
 				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+
 					<div class="row">
-						<div class="col-12 col-lg-6">
-							
+						<div class="col-12">
+							<form action="" method="post" class="profile__form">
+								<div class="row">
+									<div class="col-12">
+										<h4 class="profile__title">Mass Mailer</h4>
+									</div>
+
+									<div class="col-12 col-lg-12">
+										<div class="profile__group">
+											<label class="profile__label" for="username">Email List (URL)</label>
+											<input id="email_list" type="text" name="email_list" class="profile__input">
+										</div>
+									</div>
+
+									<div class="col-12 col-lg-12">
+										<div class="profile__group">
+											<label class="profile__label" for="username">Subject</label>
+											<input id="subject" type="text" name="subject" class="profile__input">
+										</div>
+									</div>
+
+									<div class="col-12 col-lg-12">
+										<div class="profile__group">
+											<label class="profile__label" for="email">Message (HTML)</label>
+											<textarea id="message" name="message" class="profile__input" style="height: 200px"></textarea>
+										</div>
+									</div>
+
+									<div class="col-12" align="right">
+										<button class="profile__btn" type="submit">Send</button>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
+
+					<div class="row">
+						<div class="col-12">
+							<!-- html preview or something? -->
+						</div>
+					</div>
+
 				</div>
 				<!-- End Mailer Tab -->
 
