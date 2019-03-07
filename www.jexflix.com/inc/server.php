@@ -4,6 +4,9 @@
 	// Initialize database connection and acquire utility functions.
 	
 	define("SERVER", "localhost");
+	define("SENDGRID_API_KEY", ""); // NOTE: SET THIS
+
+	require dirname(__FILE__) . "/sendgrid/sendgrid-php.php";
 	require dirname(__FILE__) . "/utils.php";
 
 	$db_username = "jexflixc_admin";

@@ -262,3 +262,6 @@ __pycache__/
 
 # FontAwesome Icons
 fontawesome-free-5.1.0-web/
+
+# SendGrid API Files
+sendgrid/

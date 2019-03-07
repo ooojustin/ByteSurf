@@ -199,6 +199,16 @@
 		return -1; // specified user is invalid
 	}
 
+	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
+		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
+        $email = new \SendGrid\Mail\Mail(); 
+        $email->setFrom($from_email, $from_name);
+        $email->setSubject($subject);
+        $email->addTo($to_email, $to_name);
+        $email->addContent("text/html", $message);
+        return $sendgrid->send($email);
+	}
+
 	function get_movie_data($url) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
