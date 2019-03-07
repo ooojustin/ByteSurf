@@ -3,11 +3,18 @@
     require '../inc/server.php';
     require '../inc/session.php';
     require_administrator();
+
+    require 'income.php';
    
 	global $user;
 	$username = $user['username'];
 	$role = intval($user['role']);
-   
+
+	// variable determining how many days back to show income (default: 7)
+	$income_days = 7;
+	if (isset($_GET['income_days']) && is_numeric($_GET['income_days']))
+		$income_days = intval($_GET['income_days']);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,6 +59,7 @@
 	<script src="../js/photoswipe.min.js"></script>
 	<script src="../js/photoswipe-ui-default.min.js"></script>
 	<script src="../js/main.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.min.js" integrity="sha256-MZo5XY1Ah7Z2Aui4/alkfeiq3CopMdV/bbkc/Sh41+s=" crossorigin="anonymous"></script>
 
 </head>
 <body class="body">
@@ -222,6 +230,70 @@
 
 				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
+
+						<canvas id="incomeChart" width="400" height="150"></canvas>
+						<script>
+
+							Chart.defaults.global.defaultFontColor = 'white';
+							Chart.defaults.global.defaultFontFamily = "'Ubuntu', sans-serif";
+
+							var config = {
+								type: 'line',
+								data: {
+									labels: [<? for ($i = $income_days; $i >= 0; $i--) echo "'" . day_desc($i) . "',"; ?>],
+									datasets: [{
+										label: 'Direct Sales',
+										backgroundColor: 'rgb(66, 244, 72)',
+										borderColor: 'rgb(66, 244, 72)',
+										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_direct_sales_usd($i) . ','; ?>],
+										fill: false,
+									}, {
+										label: 'Reseller Deposits',
+										fill: false,
+										backgroundColor: 'rgb(239, 45, 220)',
+										borderColor: 'rgb(239, 45, 220)',
+										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_reseller_deposits_usd($i) . ','; ?>],
+									}]
+								},
+								options: {
+									responsive: true,
+									title: {
+										display: true,
+										text: 'Daily Income'
+									},
+									tooltips: {
+										mode: 'index',
+										intersect: false,
+									},
+									hover: {
+										mode: 'nearest',
+										intersect: true
+									},
+									scales: {
+										xAxes: [{
+										display: true,
+										scaleLabel: {
+											display: true,
+											labelString: 'Day of the Month'
+										}
+									}],
+										yAxes: [{
+											display: true,
+											scaleLabel: {
+												display: true,
+												labelString: 'Amount (USD)'
+											}
+										}]
+									}
+								}
+							};
+
+							window.onload = function() {
+								var ctx = document.getElementById('incomeChart').getContext('2d');
+								window.myLine = new Chart(ctx, config);
+							};
+
+						</script>
 
 						<!-- details form -->
 						<div class="col-12 col-lg-6">
