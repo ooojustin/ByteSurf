@@ -139,6 +139,7 @@
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
 										<li><a href="../profile">Profile</a></li>
+										<? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
 										<li><a href="index.php?logout=1">Sign Out</a></li>
 									</ul>
 								</div>

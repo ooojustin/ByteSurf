@@ -1,12 +1,11 @@
 <?php
     require('../inc/server.php');
-    
-    session_start();   
-    
-    if (isset($_SESSION['id'])) {
-        header("location: ../home");
-        die();
-    }
+    require('../inc/session.php');
+
+	if (is_logged_in()) {
+		header("location: https://jexflix.com/home/");
+		die();
+	}
 
     if (!isset($_POST['username']) || empty($_POST['username']))
     	$issue = '';

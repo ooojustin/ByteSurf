@@ -1,8 +1,12 @@
 <?php
 
     require('../inc/server.php');
+    require('../inc/session.php');
 
-    session_start();
+	if (is_logged_in()) {
+		header("location: https://jexflix.com/home/");
+		die();
+	}
 
     if (empty($_POST['username']) || empty($_POST['password'])) {
     	$issue = 'Please enter username/password.';
