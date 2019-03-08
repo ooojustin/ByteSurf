@@ -348,12 +348,8 @@
 									<h4 class="profile__title" style="margin-bottom: 10px">Subscription & Orders</h4>
 									<h4 class="profile__title"><b>Expires:</b> <?= get_subscription_expiration_date(); ?></h4>
 									<?
-										$get_orders = $db->prepare('SELECT * FROM orders WHERE username=:username AND status=:status');
-										$get_orders->bindValue(':username', $username);
-										$get_orders->bindValue(':status', 'completed');
-										$get_orders->execute();
-										if ($get_orders->rowCount() > 0) {
-											$orders = $get_orders->fetchAll();
+										$orders = get_orders($username);
+										if (!empty($orders)) {
 											foreach ($orders as $order) { ?>
 												<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
 											<? } 

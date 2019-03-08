@@ -199,6 +199,34 @@
 		return -1; // specified user is invalid
 	}
 
+	// gets all orders from a specific user w/ data that can be displayed
+	function get_orders($username) {
+
+		global $db;
+		$orders = array();
+
+		// btc orders
+		$get_orders_btc = $db->prepare('SELECT * FROM orders_btc WHERE username=:username AND status=\'completed\'');
+		$get_orders_btc->bindValue(':username', $username);
+		$get_orders_btc->execute();
+		while ($order = $get_orders_btc->fetch()) {
+			$order = array('invoice' => $order['invoice'], 'product' => $order['product'], 'amount' => $order['amount_usd']);
+			array_push($orders, $order);
+		}
+
+		// paypal orders
+		$get_orders_pp = $db->prepare('SELECT * FROM orders_pp WHERE username=:username AND status=\'completed\'');
+		$get_orders_pp->bindValue(':username', $username);
+		$get_orders_pp->execute();
+		while ($order = $get_orders_pp->fetch()) {
+			$order = array('invoice' => $order['invoice'], 'product' => $order['product'], 'amount' => $order['amount']);
+			array_push($orders, $order);
+		}
+
+		return $orders;
+
+	}
+
 	/*function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
 		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
         $email = new \SendGrid\Mail\Mail(); 
