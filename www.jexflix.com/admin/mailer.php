@@ -1,9 +1,22 @@
 <html>
 <?php
 	
+    /*
+    === WILDCARDS ===
+    {TRIAL_KEY:INT} - Generates a trial key. The int value specifies the duration, in seconds.
+    {EMAIL_LOCAL_PART} - Returns the local-part of the current email address. (Preceding @)
+    */
+
+    // don't limit execution time
+    set_time_limit(0);
+
 	require '../inc/server.php';
     require '../inc/session.php';
     require_administrator();
+
+    $index = 0;
+    if (file_exists('index.txt'))
+        $index = intval(file_get_contents('index.txt'));
 
     // check for issues owo
     if (!isset($_POST['email_list']))
@@ -15,10 +28,13 @@
     else if (!isset($_POST['message']))
     	die('Please provide an email message.');
 
+    global $email;
     $email_list = @file_get_contents($_POST['email_list']);
 
     $token = "\r\n"; // token/delim (split by new line)
     $email = strtok($email_list, $token); // init strtok, get first email
+    for ($i = 1; $i <= $index; $i++)
+        $email = strtok($token); // get up to current index
 
     // counters
     $emails_sent = 0;
@@ -33,7 +49,7 @@
     		continue;
     	}
 
-    	/*$response = send_email(
+    	$response = send_email(
     		$_POST['subject'], // email subject
     		fill($_POST['message']),  // email message
     		'mailer@jexflix.com', // email to send from
@@ -47,15 +63,16 @@
     		$emails_sent++;
     		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
   	  	} else $emails_failed++;*/
-    	// Always set content-type when sending HTML email
 
-		$sent = send_email($_POST['subject'], fill($_POST['message']), 'mailer@jexflix.com', $email);
+		/*$sent = send_email($_POST['subject'], fill($_POST['message']), 'mailer@jexflix.com', $email);
 		if ($sent) {
 			$emails_sent++;
     		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
-		} else $emails_failed++;
+		} else $emails_failed++;*/
 
     	// get next email
+        $index++;
+        file_put_contents('index.txt', strval($index));
     	$email = strtok($token);
 
 	}
@@ -78,7 +95,10 @@
 			$message = str_replace_first('{'.$match.'}', $trial_key, $message);
 		}
 
-		// do other stuff...
+		// replace email local-part
+        global $email;
+        $local_part = explode('@', $email)[0];
+        $message = str_replace('{EMAIL_LOCAL_PART}', $local_part, $message);
 
 		return $message;
 

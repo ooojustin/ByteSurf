@@ -46,7 +46,8 @@
 		$get_deposits = $db->prepare('SELECT SUM(amount_usd) FROM orders_btc WHERE timestamp>=:timestamp_min AND timestamp<:timestamp_max AND product = :is_product AND status = :status');
 		apply_day_timestamps($get_deposits, $days);
 		$get_deposits->bindValue(':is_product', 'Reseller Deposit');
-		$get_deposits->execute(':status', 'completed');
+		$get_deposits->bindValue(':status', 'completed');
+		$get_deposits->execute();
 
 		$data = $get_deposits->fetch();
 		$amount = current($data);
