@@ -4,7 +4,7 @@
 	// Initialize database connection and acquire utility functions.
 	
 	define("SERVER", "localhost");
-	define("SENDGRID_API_KEY", "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"); // NOTE: SET THIS
+	define("SENDGRID_API_KEY", "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"); // NOTE: SET THIS
 
 	require dirname(__FILE__) . "/sendgrid/sendgrid-php.php";
 	require dirname(__FILE__) . "/utils.php";

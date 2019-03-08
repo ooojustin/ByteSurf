@@ -322,7 +322,7 @@
 
 					<div class="row">
 						<div class="col-12">
-							<form action="" method="post" class="profile__form">
+							<form action="mailer.php" method="post" class="profile__form">
 								<div class="row">
 									<div class="col-12">
 										<h4 class="profile__title">Mass Mailer</h4>
