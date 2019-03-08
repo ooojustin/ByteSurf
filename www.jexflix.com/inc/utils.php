@@ -199,7 +199,7 @@
 		return -1; // specified user is invalid
 	}
 
-	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
+	/*function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
 		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
         $email = new \SendGrid\Mail\Mail(); 
         $email->setFrom($from_email, $from_name);
@@ -207,6 +207,13 @@
         $email->addTo($to_email, $to_name);
         $email->addContent("text/html", $message);
         return $sendgrid->send($email);
+	}*/
+
+	function send_email($subject, $message, $from_email, $to_email) {
+		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers .= "Content-type: text/html;charset=UTF-8" . "\r\n";
+		$headers .= 'From: <' . $from_email . '>' . "\r\n";
+		return mail($to_email, $subject, $message, $headers);
 	}
 
 	function get_movie_data($url) {

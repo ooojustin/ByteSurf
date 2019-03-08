@@ -49,13 +49,7 @@
   	  	} else $emails_failed++;*/
     	// Always set content-type when sending HTML email
 
-    	// email headers
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type: text/html;charset=UTF-8" . "\r\n";
-		$headers .= 'From: <mailer@jexflix.com>' . "\r\n";
-
-		// send email
-		$sent = mail($email,$_POST['subject'],fill($_POST['message']),$headers);
+		$sent = send_email($_POST['subject'], fill($_POST['message']), 'mailer@jexflix.com', $email);
 		if ($sent) {
 			$emails_sent++;
     		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
