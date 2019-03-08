@@ -26,7 +26,7 @@
     	if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE)
     		continue;
 
-    	$sent = send_email(
+    	$response = send_email(
     		$_POST['subject'], // email subject
     		fill($_POST['message']),  // email message
     		'mailer@jexflix.com', // email to send from
@@ -35,7 +35,8 @@
     		$email // name to send to
     	);
 
-    	if ($sent)
+    	$status = $response->statusCode();
+    	if ($status >= 200 && $status < 300) // HTTP 2xx == SUCCESS
     		$emails_sent++;
 
     	// get next email
