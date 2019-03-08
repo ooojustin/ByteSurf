@@ -19,8 +19,8 @@
 	}
 
 	function create_account($username, $email, $password) {
-		
-		global $db;
+
+		global $db, $ip;
 
 		// create account
 		$create_account = $db->prepare('INSERT INTO users (email, username, password) VALUES (:email, :username, :password)');
@@ -33,10 +33,11 @@
 		$code = generate_split_string(3, 3);
 
 		// log registration
-		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, timestamp) VALUES (:username, :email, :code, :timestamp)');
+		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, ip_address, timestamp) VALUES (:username, :email, :code, :ip_address, :timestamp)');
 		$log_registration->bindValue(':username', $username);
 		$log_registration->bindValue(':email', $email);
 		$log_registration->bindValue(':code', $code);
+		$log_registration->bindValue(':ip_address', $ip);
 		$log_registration->bindValue(':timestamp', time());
 		$log_registration->execute();
 

@@ -12,9 +12,21 @@
     	$issue = 'Please enter username/password.';
     } else {
     	if (login($_POST['username'], $_POST['password'])) {
+
+    		// log login info into database
+    		global $db, $ip;
+    		$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
+    		$log_login->bindValue(':username', $_POST['username']);
+    		$log_login->bindValue(':ip_address', $ip);
+    		$log_login->bindValue(':timestamp', time());
+    		$log_login->execute();
+
+    		// create session, proceed to home page
        		$_SESSION['id'] = get_user($_POST['username'])['id'];
        		header("location: ../home");
+
        		die();
+
     	} else
     		$issue = 'Incorrect username/password.';
     }
