@@ -26,8 +26,15 @@
     	if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE)
     		continue;
 
-    	// send_email($subject, $message, $from_email, $from_name, $to_email, $to_name)
-    	$sent = send_email($_POST['subject'], $_POST['message'], 'mailer@jexflix.com', 'JexFlix', $email, $email);
+    	$sent = send_email(
+    		$_POST['subject'], // email subject
+    		fill($_POST['message']),  // email message
+    		'mailer@jexflix.com', // email to send from
+    		'JexFlix', // name to send from
+    		$email, // email to send to
+    		$email // name to send to
+    	);
+
     	if ($sent)
     		$emails_sent++;
 
@@ -37,5 +44,24 @@
 	}
 
 	die('Sent ' . $emails_sent . ' emails.');
+
+	// replaces all wildcard variables in a message before sending
+	function fill($message) {
+
+		// replace trial keys
+		preg_match_all('{TRIAL_KEY:\d+}', $message, $matches);
+		$matches = current($matches);
+		foreach ($matches as $match) {
+			$info = explode(':', $match);
+			$duration = intval($info[1]);
+			$trial_key = generate_trial_key('mailer', $duration);
+			$message = str_replace_first('{'.$match.'}', $trial_key, $message);
+		}
+
+		// do other stuff...
+
+		return $message;
+
+	}
 
 ?>
