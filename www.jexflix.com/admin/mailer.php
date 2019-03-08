@@ -1,3 +1,4 @@
+<html>
 <?php
 	
 	require '../inc/server.php';
@@ -18,13 +19,19 @@
 
     $token = "\r\n"; // token/delim (split by new line)
     $email = strtok($email_list, $token); // init strtok, get first email
-    $emails_sent = 0; // keep track of number of emails sent
+
+    // counters
+    $emails_sent = 0;
+    $emails_failed = 0;
+    $invalid_emails = 0;
 
 	while ($email !== false) {
 
 		// make sure email address is valid
-    	if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE)
+    	if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
+    		$invalid_emails++;
     		continue;
+    	}
 
     	$response = send_email(
     		$_POST['subject'], // email subject
@@ -36,15 +43,20 @@
     	);
 
     	$status = $response->statusCode();
-    	if ($status >= 200 && $status < 300) // HTTP 2xx == SUCCESS
+    	if ($status >= 200 && $status < 300) { // HTTP 2xx == SUCCESS
     		$emails_sent++;
+    		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
+    	} else $emails_failed++;
 
     	// get next email
     	$email = strtok($token);
 
 	}
 
-	die('Sent ' . $emails_sent . ' emails.');
+	echo '<br>' . PHP_EOL;
+	echo 'Sent <b>' . $emails_sent . '</b> emails successfully.<br>' . PHP_EOL;
+	echo 'Failed to send <b>' . $emails_failed . '</b> emails.<br>' . PHP_EOL;
+	echo 'Found/skipped <b>' . $invalid_emails . '</b> invalid emails.<br>' . PHP_EOL;
 
 	// replaces all wildcard variables in a message before sending
 	function fill($message) {
@@ -66,3 +78,4 @@
 	}
 
 ?>
+</html>
