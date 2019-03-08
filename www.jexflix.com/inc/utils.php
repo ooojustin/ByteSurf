@@ -41,6 +41,18 @@
 	    return $update_password->execute();
 
 	}
+
+
+	function update_password_nocheck($username, $new_password) {
+
+	    global $db;
+	    
+	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
+	    $update_password->bindValue(':username', $username);
+	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
+	    return $update_password->execute();
+
+	}
 	
 	function update_picture($username, $pfp) {
 		global $db;

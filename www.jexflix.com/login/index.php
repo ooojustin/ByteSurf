@@ -28,7 +28,6 @@
     	$redirect = '../' . $_GET['r'];
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +54,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
@@ -97,7 +96,7 @@
 
 							<span class="sign__text">Don't have an account? <a href="../register">Sign up!</a></span>
 
-							<span class="sign__text"><a href="#">Forgot password?</a></span>
+							<span class="sign__text"><a href="reset">Forgot password?</a></span>
 							
 						</form>
 						<!-- end authorization form -->
