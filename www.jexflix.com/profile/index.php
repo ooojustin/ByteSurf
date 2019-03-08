@@ -381,7 +381,11 @@
 										if ($get_trials->rowCount() > 0) {
 											$trials = $get_trials->fetchAll();
 											foreach ($trials as $trial) { ?>
-												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
+												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?
+												if ($trial['duration'] == -1)
+													echo 'Lifetime';
+												else
+													echo ($trial['duration'] / 86400) . ' days'; ?></label><br>
 											<? }
 										} else { ?>
 											<label class="profile__label">You do not have any unused trial keys.</label>
