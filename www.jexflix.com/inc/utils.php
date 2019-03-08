@@ -19,13 +19,32 @@
 	}
 
 	function create_account($username, $email, $password) {
+		
 		global $db;
+
+		// create account
 		$create_account = $db->prepare('INSERT INTO users (email, username, password) VALUES (:email, :username, :password)');
 		$create_account->bindValue(':email', $email);
 		$create_account->bindValue(':username', $username);
 		$create_account->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
-		return $create_account->execute();
+		$create_account->execute();
+
+		// generate registration code
+		$code = generate_split_string(3, 3);
+
+		// log registration
+		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, timestamp) VALUES (:username, :email, :code, :timestamp)');
+		$log_registration->bindValue(':username', $username);
+		$log_registration->bindValue(':email', $email);
+		$log_registration->bindValue(':code', $code);
+		$log_registration->bindValue(':timestamp', time());
+		$log_registration->execute();
+
+		// send verification email
+		// ... TODO ...
+
 	}
+
 
 	function update_password($username, $old_password, $new_password) {
 	    global $db;    
@@ -376,6 +395,7 @@
 	}
 
 	function generate_split_string($xC, $xY) {
+		// length = (x * y) + y - 1
         $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $chars_length = strlen($chars);
         $str = '';
