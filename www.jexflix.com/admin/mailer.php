@@ -33,20 +33,33 @@
     		continue;
     	}
 
-    	$response = send_email(
+    	/*$response = send_email(
     		$_POST['subject'], // email subject
     		fill($_POST['message']),  // email message
     		'mailer@jexflix.com', // email to send from
     		'JexFlix', // name to send from
     		$email, // email to send to
-    		$email // name to send to
+    		'JexFlix Customer' // name to send to
     	);
 
     	$status = $response->statusCode();
     	if ($status >= 200 && $status < 300) { // HTTP 2xx == SUCCESS
     		$emails_sent++;
     		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
-    	} else $emails_failed++;
+  	  	} else $emails_failed++;*/
+    	// Always set content-type when sending HTML email
+
+    	// email headers
+		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers .= "Content-type: text/html;charset=UTF-8" . "\r\n";
+		$headers .= 'From: <mailer@jexflix.com>' . "\r\n";
+
+		// send email
+		$sent = mail($email,$_POST['subject'],fill($_POST['message']),$headers);
+		if ($sent) {
+			$emails_sent++;
+    		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
+		} else $emails_failed++;
 
     	// get next email
     	$email = strtok($token);
