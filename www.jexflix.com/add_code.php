@@ -13,8 +13,12 @@
     $duration = 7; // in days
     if (isset($_GET['duration']))
     	$duration = intval($_GET['duration']);
+
+    // keep it lifetime if it's set to -1
+    if ($duration > -1)
+        $duration *= SECONDS_PER_DAY; // turn into days
     
-    for ($i = 0; $i <= $amount; $i++)
-        generate_trial_key($_GET['user'], SECONDS_PER_DAY * $duration);
+    for ($i = 0; $i < $amount; $i++)
+        generate_trial_key($_GET['user'], $duration);
 
 ?>

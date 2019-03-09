@@ -10,7 +10,7 @@
 	define('PUBLIC_KEY', '34d1d824c6fcd47436863b34beaa7487d29a39f40af249eb115719c97607d6f2');
 
 	// btc address to receive payments
-	define('BTC_ADDRESS', '1AnSFnaAgvtrsXZm82ZCqYv7M5c8cLKv64');
+	define('BTC_ADDRESS', '39pPscFe1e6b9YDtiwLe8E3FzG9UPTz2kg');
 
 	// ipn url (to handle payment status updates)
 	define('IPN_URL', 'https://jexflix.com/inc/coinpayments/ipn.php');

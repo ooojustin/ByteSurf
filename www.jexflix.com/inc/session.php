@@ -1,5 +1,6 @@
 <?php
 	
+	session_set_cookie_params(86400);
 	session_start();
 
 	// establish user data
@@ -15,10 +16,15 @@
 
     // function to require a login
 	function require_login() {
-		if (!isset($_SESSION['id'])) {
+		if (!is_logged_in()) {
 			header("location: https://jexflix.com/login/");
         	die();
        	}
+	}
+
+	// function to check if a user is logged in
+	function is_logged_in() {
+		return isset($_SESSION['id']);
 	}
 
 	// function to require a subscription
@@ -31,6 +37,22 @@
 			header("location: https://jexflix.com/pricing/");
 			die();
 		}
+	}
+
+	// function to require administrator access (role >= 1000)
+	function require_administrator() {
+		if (!is_administrator()) {
+			header("location: https://jexflix.com/home/");
+			die();
+		}
+	}
+
+	// returns whether or not the logged in user is an administrator (role >= 1000)
+	function is_administrator() {
+		require_login();
+		global $user;
+		$role = intval($user['role']);
+		return $role >= 1000;
 	}
 
 	// function to get subscription expiration

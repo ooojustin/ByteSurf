@@ -68,7 +68,7 @@
 					$url = create_paypal_payment($user['username'], $_POST['email'], $reseller, $product['name'], $id, $price);
 					echo 'reseller: ' . $reseller['username'] . ', url: ' . $url;
 					header("location: " . $url);
-					die();
+					break;
 
 				default:
 				case 'bitcoin':
@@ -76,7 +76,7 @@
 				    require '../inc/coinpayments/cp.php';
 					$url = create_btc_payment($user['username'], $_POST['email'], $_POST['name'], $price, $product['name'], strval($id));
 					header("location: " . $url);
-					die();
+					break;
 
 			}
 

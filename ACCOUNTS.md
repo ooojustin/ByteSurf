@@ -1,3 +1,8 @@
+### MEGA.NZ (BACKUPS)
+URL: https://mega.nz/
+Email: anthonyalmond@protonmail.com
+Password: 0j*enDQy5Cww3rL
+
 ### DATABASE ACCOUNT
 Username: jexflixc_admin  
 Password: K+VLZP;x{G%Q

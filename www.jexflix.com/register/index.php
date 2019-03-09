@@ -1,16 +1,20 @@
 <?php
     require('../inc/server.php');
-    
-    session_start();   
-    
-    if (isset($_SESSION['id'])) {
-        header("location: ../home");
-        die();
-    }
+    require('../inc/session.php');
+
+	if (is_logged_in()) {
+		header("location: https://jexflix.com/home/");
+		die();
+	}
+
+	// a list of blacklisted usernames, cuz y not
+	$blacklisted = array('mailer', 'admin', 'penguware', 'weebware');
 
     if (!isset($_POST['username']) || empty($_POST['username']))
-    	$issue = '';
-    if (!isset($_POST['email']) || empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
+    	$issue = 'Please enter a valid username.';
+    else if (in_array($_POST['username'], $blacklisted))
+    	$issue = 'The username you\'ve provided is blacklisted.';
+    else if (!isset($_POST['email']) || empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL))
     	$issue = 'Please enter a valid email address.';
     else if (!isset($_POST['password']) || empty($_POST['password']))
     	$issue = 'Please enter a password.';

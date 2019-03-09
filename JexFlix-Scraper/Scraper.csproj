@@ -87,9 +87,11 @@
     <Compile Include="Networking\Networking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Series\EpisodeClasses.cs" />
     <Compile Include="Series\PageClasses.cs" />
     <Compile Include="Series\Series.cs" />
-    <Compile Include="Series\SeriesClasses.cs" />
+    <Compile Include="Series\SeasonClasses.cs" />
+    <Compile Include="Series\UploadClasses.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

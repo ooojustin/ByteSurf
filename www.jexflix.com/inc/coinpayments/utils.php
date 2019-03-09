@@ -33,13 +33,14 @@
 
         $invoice = generate_split_string(5, 4);
 
-        $create_order = $db->prepare('INSERT INTO orders_btc (invoice, name, email, username, product, amount_usd) VALUES (:invoice, :name, :email, :username, :product, :amount_usd)');
+        $create_order = $db->prepare('INSERT INTO orders_btc (invoice, name, email, username, product, amount_usd, timestamp) VALUES (:invoice, :name, :email, :username, :product, :amount_usd, :timestamp)');
         $create_order->bindValue(':invoice', $invoice);
         $create_order->bindValue(':name', $name);
         $create_order->bindValue(':email', $email);
         $create_order->bindValue(':username', $username);
         $create_order->bindValue(':product', $product);
         $create_order->bindValue(':amount_usd', $amount_usd);
+        $create_order->bindValue(':timestamp', time());
 
         if ($create_order->execute())
             return $invoice;

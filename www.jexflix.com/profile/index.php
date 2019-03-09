@@ -41,8 +41,6 @@
     }
    
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -141,6 +139,7 @@
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
 										<li><a href="../profile">Profile</a></li>
+										<? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
 										<li><a href="index.php?logout=1">Sign Out</a></li>
 									</ul>
 								</div>
@@ -242,7 +241,7 @@
 
 										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a></li>
 
-										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Subscription</a></li>
+										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a></li>
 									</ul>
 								</div>
 							</div>
@@ -349,12 +348,8 @@
 									<h4 class="profile__title" style="margin-bottom: 10px">Subscription & Orders</h4>
 									<h4 class="profile__title"><b>Expires:</b> <?= get_subscription_expiration_date(); ?></h4>
 									<?
-										$get_orders = $db->prepare('SELECT * FROM orders WHERE username=:username AND status=:status');
-										$get_orders->bindValue(':username', $username);
-										$get_orders->bindValue(':status', 'completed');
-										$get_orders->execute();
-										if ($get_orders->rowCount() > 0) {
-											$orders = $get_orders->fetchAll();
+										$orders = get_orders($username);
+										if (!empty($orders)) {
 											foreach ($orders as $order) { ?>
 												<label class="profile__label"><?= '<b>[' . $order['invoice'] . ']</b> ' . $order['product'] . ' - $' . $order['amount'] ?></label><br>
 											<? } 
@@ -382,7 +377,11 @@
 										if ($get_trials->rowCount() > 0) {
 											$trials = $get_trials->fetchAll();
 											foreach ($trials as $trial) { ?>
-												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days'; ?></label><br>
+												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?
+												if ($trial['duration'] == -1)
+													echo 'Lifetime';
+												else
+													echo ($trial['duration'] / 86400) . ' days'; ?></label><br>
 											<? }
 										} else { ?>
 											<label class="profile__label">You do not have any unused trial keys.</label>

@@ -19,27 +19,49 @@
 	}
 
 	function create_account($username, $email, $password) {
-		global $db;
+
+		global $db, $ip;
+
+		// create account
 		$create_account = $db->prepare('INSERT INTO users (email, username, password) VALUES (:email, :username, :password)');
 		$create_account->bindValue(':email', $email);
 		$create_account->bindValue(':username', $username);
 		$create_account->bindValue(':password', password_hash($password, PASSWORD_BCRYPT));
-		return $create_account->execute();
+		$create_account->execute();
+
+		// generate registration code
+		$code = generate_split_string(3, 3);
+
+		// log registration
+		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, ip_address, timestamp) VALUES (:username, :email, :code, :ip_address, :timestamp)');
+		$log_registration->bindValue(':username', $username);
+		$log_registration->bindValue(':email', $email);
+		$log_registration->bindValue(':code', $code);
+		$log_registration->bindValue(':ip_address', $ip);
+		$log_registration->bindValue(':timestamp', time());
+		$log_registration->execute();
+
+		// send verification email
+		// ... TODO ...
+
 	}
 
-	function update_password($username, $old_password, $new_password) {
 
-	    global $db;
-	    
+	function update_password($username, $old_password, $new_password) {
+	    global $db;    
 	    // check password is correct with login function
 	    if (!login($username, $old_password)) 
-	    	return false;
-	    
+	    	return false;    
+	    return update_password_nocheck($username, $new_password);
+	}
+
+
+	function update_password_nocheck($username, $new_password) {
+	    global $db;   
 	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
 	    $update_password->bindValue(':username', $username);
 	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
 	    return $update_password->execute();
-
 	}
 	
 	function update_picture($username, $pfp) {
@@ -199,6 +221,51 @@
 		return -1; // specified user is invalid
 	}
 
+	// gets all orders from a specific user w/ data that can be displayed
+	function get_orders($username) {
+
+		global $db;
+		$orders = array();
+
+		// btc orders
+		$get_orders_btc = $db->prepare('SELECT * FROM orders_btc WHERE username=:username AND status=\'completed\'');
+		$get_orders_btc->bindValue(':username', $username);
+		$get_orders_btc->execute();
+		while ($order = $get_orders_btc->fetch()) {
+			$order = array('invoice' => $order['invoice'], 'product' => $order['product'], 'amount' => $order['amount_usd']);
+			array_push($orders, $order);
+		}
+
+		// paypal orders
+		$get_orders_pp = $db->prepare('SELECT * FROM orders_pp WHERE username=:username AND status=\'completed\'');
+		$get_orders_pp->bindValue(':username', $username);
+		$get_orders_pp->execute();
+		while ($order = $get_orders_pp->fetch()) {
+			$order = array('invoice' => $order['invoice'], 'product' => $order['product'], 'amount' => $order['amount']);
+			array_push($orders, $order);
+		}
+
+		return $orders;
+
+	}
+
+	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
+		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
+        $email = new \SendGrid\Mail\Mail(); 
+        $email->setFrom($from_email, $from_name);
+        $email->setSubject($subject);
+        $email->addTo($to_email, $to_name);
+        $email->addContent("text/html", $message);
+        return $sendgrid->send($email);
+	}
+
+	/*function send_email($subject, $message, $from_email, $to_email) {
+		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers .= "Content-type: text/html;charset=UTF-8" . "\r\n";
+		$headers .= 'From: <' . $from_email . '>' . "\r\n";
+		return mail($to_email, $subject, $message, $headers);
+	}*/
+
 	function get_movie_data($url) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
@@ -329,6 +396,7 @@
 	}
 
 	function generate_split_string($xC, $xY) {
+		// length = (x * y) + y - 1
         $chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $chars_length = strlen($chars);
         $str = '';
@@ -339,6 +407,14 @@
             $str .= '-';
         }
         return substr($str, 0, -1);
+    }
+
+    function str_replace_first($search, $replace, $subject) {
+    	$pos = strpos($subject, $search);
+		if ($pos !== false)
+   			return substr_replace($subject, $replace, $pos, strlen($search));
+   		else
+   			return $subject;
     }
 
 ?>

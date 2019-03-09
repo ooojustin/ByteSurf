@@ -1,16 +1,32 @@
 <?php
 
     require('../inc/server.php');
+    require('../inc/session.php');
 
-    session_start();
+	if (is_logged_in()) {
+		header("location: https://jexflix.com/home/");
+		die();
+	}
 
     if (empty($_POST['username']) || empty($_POST['password'])) {
     	$issue = 'Please enter username/password.';
     } else {
     	if (login($_POST['username'], $_POST['password'])) {
+
+    		// log login info into database
+    		global $db, $ip;
+    		$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
+    		$log_login->bindValue(':username', $_POST['username']);
+    		$log_login->bindValue(':ip_address', $ip);
+    		$log_login->bindValue(':timestamp', time());
+    		$log_login->execute();
+
+    		// create session, proceed to home page
        		$_SESSION['id'] = get_user($_POST['username'])['id'];
        		header("location: ../home");
+
        		die();
+
     	} else
     		$issue = 'Incorrect username/password.';
     }
@@ -24,7 +40,6 @@
     	$redirect = '../' . $_GET['r'];
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +66,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
@@ -93,7 +108,7 @@
 
 							<span class="sign__text">Don't have an account? <a href="../register">Sign up!</a></span>
 
-							<span class="sign__text"><a href="#">Forgot password?</a></span>
+							<span class="sign__text"><a href="reset">Forgot password?</a></span>
 							
 						</form>
 						<!-- end authorization form -->
