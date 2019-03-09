@@ -9,6 +9,14 @@
 	// clients ip address
 	$GLOBALS['ip'] = get_ip();
 
+	function msg($title, $message) {
+		$_SESSION['msg'] = array(
+			'title' => $title,
+			'message' => $message
+		);
+		header('location: https://jexflix.com/msg');
+	}
+
 	function login($username, $password) {
 		global $db;
 		$check_login = $db->prepare('SELECT * FROM users WHERE username=:username');
