@@ -1,4 +1,4 @@
-co<?php
+<?php
     
     require '../inc/server.php';
     require '../inc/session.php';
