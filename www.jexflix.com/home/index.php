@@ -319,7 +319,7 @@
 
 												<ul class="card__list">
 													<li><?=$data['certification']?></li>
-													<li>16+</li>
+													<li><?=$data['year']?></li>
 												</ul>
 											</div>
 
