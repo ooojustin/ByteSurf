@@ -28,7 +28,6 @@ namespace JexFlix_Scraper.Series {
         public class SeasonData {
             public string title = string.Empty;
             public int season = 0;
-            public string data = string.Empty;
             public string description = string.Empty;
             public int? released = 0;
 

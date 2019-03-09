@@ -189,6 +189,7 @@ namespace JexFlix_Scraper.Shows {
             episodeInfo.title = episodeData.episodes[episode].title;
             episodeInfo.episode = (episode + 1);
             episodeInfo.description = episodeData.episodes[episode].description;
+            episodeInfo.released = episodeData.episodes[episode].released_sec_ago;
 
 
             string directory = season_directory + "/" + (episode + 1);
