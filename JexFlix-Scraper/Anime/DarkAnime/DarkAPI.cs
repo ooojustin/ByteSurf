@@ -62,7 +62,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
     /// <summary>
     /// This is the structure of mirror links for the json located in the page source
     /// </summary>
-    public class DarkMirrors {
+    public class DarkMirror {
         public string episode_slug { get; set; }
         public string mirror_name { get; set; }
         public int mirror_number { get; set; }

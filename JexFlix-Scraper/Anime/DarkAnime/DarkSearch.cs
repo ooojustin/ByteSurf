@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Anime.DarkAnime {
@@ -21,25 +22,39 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         /// <summary>
         /// Makes a request to darkanime and fetches the all anime json and converts it to the darkapi
         /// </summary>
-        public static DarkAPI GetDarkAPI(string url = ANIME_API ) {
+        public static DarkAPI GetDarkAPI(string url = ANIME_API) {
             try {
                 string Response = CF_HttpClient.HttpClient_GETAsync(url);
-                DarkAPI des =  JsonConvert.DeserializeObject<DarkAPI>(Response);
-                return des;
+                return JsonConvert.DeserializeObject<DarkAPI>(Response, General.DeserializeSettings);
             } catch (Exception ex) {
                 Console.WriteLine("[DarkAPI] " + ex.Message);
                 return null;
             }
         }
 
+        /// <summary>
+        /// Creates the link to the anime page
+        /// </summary>
         public static string GenerateAnimeLink(string slug) {
             return string.Format(ANIME_LINK, slug);
         }
 
+        /// <summary>
+        /// Creates the direct episode link
+        /// </summary>
         public static string GenerateAnimeEpisode(string slug, int episode) {
             return string.Format(EPISODE_LINK, slug, episode.ToString());
         }
 
+        /// <summary>
+        /// Generates the class of mirrors using regex
+        /// </summary>
+        public static List<DarkMirror> GenerateMirrors(string raw) {
+            Regex regex = new Regex("sources='.*?'>", RegexOptions.Singleline);
+            Match match = regex.Match(raw);
+            if (!match.Success) return null;
+            return JsonConvert.DeserializeObject<List<DarkMirror>>(match.Value.Split('\'')[1], General.DeserializeSettings);
+        }
     }
 
 }

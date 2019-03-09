@@ -17,7 +17,13 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
             CF_HttpClient.SetupClient();
 
-            DarkAPI InitialPage = DarkSearch.GetDarkAPI();
+            DarkAPI InitialPage = null;
+
+            while (InitialPage == null) {
+                InitialPage = DarkSearch.GetDarkAPI();
+                System.Threading.Thread.Sleep(1000);
+            }
+
 
             string queued_page = DarkSearch.ANIME_API;
 
@@ -43,7 +49,21 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                 // Iterating the episodes
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
-                    // sources='[]'> regex this.
+                    Console.WriteLine("Scraping " + data.title_en_jp);
+
+                    for (int ep = 1; ep <= data.episode_count; ep++) {
+                        string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
+                        Console.WriteLine(EpisodeLink);
+                        string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
+                        List<DarkMirror> mirrors = DarkSearch.GenerateMirrors(Raw);
+
+                        if (mirrors != null) {
+                            foreach (DarkMirror mirror in mirrors)
+                                Console.WriteLine(mirror.video_url);
+                        }
+
+                        System.Threading.Thread.Sleep(1000);
+                    }
 
                 }
 
