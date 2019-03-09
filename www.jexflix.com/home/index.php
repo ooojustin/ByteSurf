@@ -1,4 +1,4 @@
-<?php
+co<?php
     
     require '../inc/server.php';
     require '../inc/session.php';
@@ -376,7 +376,7 @@
 				</div>
 
 				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
-				    <h1>Coming soon</h1>
+				    <h1>Coming Soon</h1>
 				    
 				</div>
 			</div>
