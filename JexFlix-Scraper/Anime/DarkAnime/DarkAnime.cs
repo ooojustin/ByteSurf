@@ -23,36 +23,32 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
             // DUMP ANIME LIST
             // using (StreamWriter sw = new StreamWriter("AnimesFound.txt")) {
+            // sw.WriteLine(data.title_en_jp);
+            // }
 
-                for (int i = 0; i < InitialPage.last_page; i++) {
+            for (int i = 0; i < InitialPage.last_page; i++) {
 
-                    RE_SEARCH:
-                    DarkAPI AnimeInfo = DarkSearch.GetDarkAPI(queued_page);
+                RE_SEARCH:
+                System.Threading.Thread.Sleep(1000);
 
-                    if (AnimeInfo != null) {
-                        queued_page = AnimeInfo.next_page_url;
-                    } else {
-                        goto RE_SEARCH;
-                    }
+                DarkAPI AnimeInfo = DarkSearch.GetDarkAPI(queued_page);
 
-                    Console.WriteLine("Page: " + AnimeInfo.current_page);
-
-                     foreach (DarkAPI.Data data in AnimeInfo.data) {
-                        // sw.WriteLine(data.title_en_jp);
-
-                     }
-
-               
-
-
-                    System.Threading.Thread.Sleep(1000);
+                if (AnimeInfo != null) {
+                    queued_page = AnimeInfo.next_page_url;
+                } else {
+                    goto RE_SEARCH;
                 }
 
-             // }
+                Console.WriteLine("Page: " + AnimeInfo.current_page);
 
+                // Iterating the episodes
+                foreach (DarkAPI.Data data in AnimeInfo.data) {
+                    // sources='[]'> regex this.
+
+                }
+
+            }
         }
-
-
     }
 
 }
