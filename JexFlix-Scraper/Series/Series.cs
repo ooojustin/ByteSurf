@@ -146,15 +146,17 @@ namespace JexFlix_Scraper.Shows {
             Networking.UploadFile(path, item_url, "data.json", seasonData.item.title);
             File.Delete(path);
 
+            // reset season number for use again here
+            season_number = 1;
             foreach (SeasonItem season in seasonData.seasons) {
                 int their_current_count = GetTheirEpisodeData(season.url).episodes.Count;
-                int our_current_count = GetOurEpisodeData(season.url).episodeList.Count;
-                Console.WriteLine(our_current_count);
+                int our_current_count = GetOurEpisodeData(season.url).episodes.Count;
 
                 while (our_current_count < their_current_count) {
-                    ReuploadEpisodes(season.url, our_current_count, GetTheirEpisodeData(season.url));
+                    ReuploadEpisodes(series, season_number, our_current_count, GetTheirEpisodeData(season.url));
                     our_current_count++;
                 }
+                season_number++;
             }
 
             Console.WriteLine(JsonConvert.SerializeObject(seriesList));
@@ -163,7 +165,11 @@ namespace JexFlix_Scraper.Shows {
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
         public const string BASE_URL = "https://flixify.com";
 
-        public static void ReuploadEpisodes(string season, int episode, EpisodeObject episodeData) {
+        public static void ReuploadEpisodes(string season, int season_number, int episode, EpisodeObject episodeData) {
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            web.Cookies = Cookies;
+
+            string season_directory = season + "/" + season_number;
 
             EpisodeList series = null;
 
@@ -179,30 +185,44 @@ namespace JexFlix_Scraper.Shows {
             newEpisode.description = episodeData.episodes[episode].description;
             newEpisode.released = episodeData.episodes[episode].released_sec_ago;
 
-            string directory = season + "/" + (episode + 1);
+            EpisodeInfo episodeInfo = new EpisodeInfo();
+            episodeInfo.title = episodeData.episodes[episode].title;
+            episodeInfo.episode = (episode + 1);
+            episodeInfo.description = episodeData.episodes[episode].description;
+
+
+            string directory = season_directory + "/" + (episode + 1);
+
+            if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null) {
+                episodeInfo.qualities.Add(new Qualities { resolution = 480 });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_480, directory, "480.mp4", newEpisode.title, web);
+            }
 
             if (episodeData.episodes[episode].download.download_720 != null) {
-                newEpisode.qualities.Add(new Qualities { resolution = 720, link = Networking.CDN_URL + directory + "/720.mp4" });
-                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_720, directory, "720.mp4", newEpisode.title, null);
+                episodeInfo.qualities.Add(new Qualities { resolution = 720 });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_720, directory, "720.mp4", newEpisode.title, web);
             }
 
             if (episodeData.episodes[episode].download.download_1080 != null) {
-                newEpisode.qualities.Add(new Qualities { resolution = 1080, link = Networking.CDN_URL + directory + "/1080.mp4" });
-                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_1080, directory, "1080.mp4", newEpisode.title, null);
+                episodeInfo.qualities.Add(new Qualities { resolution = 1080 });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_1080, directory, "1080.mp4", newEpisode.title, web);
             }
 
-            if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null) {
-                newEpisode.qualities.Add(new Qualities { resolution = 480, link = Networking.CDN_URL + directory + "/480.mp4" });
-                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_480, directory, "480.mp4", newEpisode.title, null);
-            }
 
-            series.episodeList.Add(newEpisode);
+            series.episodes.Add(newEpisode);
 
             Console.WriteLine(JsonConvert.SerializeObject(series));
 
-            string path = Path.GetTempFileName();
+            string path;
+
+            path = Path.GetTempFileName();
             File.WriteAllText(path, JsonConvert.SerializeObject(series));
-            Networking.UploadFile(path, season, "data.json", "data.json");
+            Networking.UploadFile(path, season_directory, "data.json", "data.json");
+            File.Delete(path);
+
+            path = Path.GetTempFileName();
+            File.WriteAllText(path, JsonConvert.SerializeObject(episodeInfo));
+            Networking.UploadFile(path, directory, "data.json", "data.json");
             File.Delete(path);
 
         }
