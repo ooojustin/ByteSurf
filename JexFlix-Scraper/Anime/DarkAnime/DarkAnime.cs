@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using JexFlix_Scraper.Anime.MasterAnime.Scraper;
 using JexFlix_Scraper.Anime.Misc;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,23 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                 // Iterating the episodes
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
+
+                    // Grab the existing json link from the database
+                    string JsonResponse = Networking.JsonData(data.slug);
+                    // Check and compare the json if we got a link
+                    if (!string.IsNullOrEmpty(JsonResponse)) {
+                        // If we have some content. Visit the link and get the json response
+                        string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
+                        string raw_json = Networking.DownloadStringFTP(ftp_response);
+                        if (!string.IsNullOrEmpty(raw_json)) {
+
+                        } else {
+                            Console.WriteLine("[DarkAPI] " + "Failed to get FTP json");
+                        }
+                    } else {
+                        Console.WriteLine("[DarkAPI] " + "No Database Response");
+                    }
+
                     Console.WriteLine("Scraping " + data.title_en_jp);
 
                     for (int ep = 1; ep <= data.episode_count; ep++) {
@@ -58,8 +76,15 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         List<DarkMirror> mirrors = DarkSearch.GenerateMirrors(Raw);
 
                         if (mirrors != null) {
-                            foreach (DarkMirror mirror in mirrors)
-                                Console.WriteLine(mirror.video_url);
+                            foreach (DarkMirror mirror in mirrors) {
+
+                                // Works pp.
+                                Action<string> callback = (s) => {
+
+                                };
+
+                                new MirrorParser(mirror, callback).Run();
+                            }
                         }
 
                         System.Threading.Thread.Sleep(1000);

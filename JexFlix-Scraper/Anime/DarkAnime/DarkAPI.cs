@@ -70,8 +70,8 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
         private const string MP4UPLOAD_LINK = "https://www.mp4upload.com/{0}.html";
 
-        public static string GetMP4UPloadLink(string embed) {
-            return string.Format(MP4UPLOAD_LINK, embed);
+        public string GetURL() {
+            return string.Format(MP4UPLOAD_LINK, video_url);
         }
     }
 }

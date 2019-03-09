@@ -12,39 +12,45 @@ using System.Windows.Forms;
 namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
 
     public class MirrorParser {
-        private AniEpisode.Mirror mirror;
+        private DarkAnime.DarkMirror mirror;
         private Action<string> callback;
 
-        public MirrorParser(AniEpisode.Mirror mirror, Action<string> callback) {
+        public MirrorParser(DarkAnime.DarkMirror mirror, Action<string> callback) {
             this.mirror = mirror;
             this.callback = callback;
         }
 
         public void Run() {
 
-            Console.WriteLine("Running host: " + mirror.host.name);
+            Console.WriteLine("Running host: " + mirror.mirror_name);
 
-           //  Thread thread = new Thread(() => {
-                switch (mirror.host.name) {
-                    case "Streamango":
-                        RunBrowser(StreamangoLoaded);
-                        break;
-                    case "Stream.moe":
-                        RunStreamMoe();
-                        break;
-                    case "Rapidvideo":
-                        RunRapidVideo();
-                        break;
-                    case "MP4Upload":
-                        RunMP4Upload();
-                        break;
-                    default:
-                        throw new NotImplementedException("Unsupported host: " + mirror.host.name);
-                // }
+            //  Thread thread = new Thread(() => {
+            switch (mirror.mirror_name) {
+                case "Streamango":
+                    RunBrowser(StreamangoLoaded);
+                    break;
+                case "Stream.moe":
+                    RunStreamMoe();
+                    break;
+                case "Rapidvideo":
+                    RunRapidVideo();
+                    break;
+                case "MP4Upload":
+                    RunMP4Upload();
+                    break;
+                case "mp4upload":
+                    RunMP4Upload();
+                    break;
+                case "mp4upload-hd":
+                    RunMP4Upload();
+                    break;
+                default:
+                    throw new NotImplementedException("Unsupported host: " + mirror.mirror_name);
+                    // }
             }   // );
 
-           // thread.SetApartmentState(ApartmentState.STA);
-           // thread.Start();
+            // thread.SetApartmentState(ApartmentState.STA);
+            // thread.Start();
 
         }
 
@@ -59,7 +65,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
         private void StreamangoLoaded(object sender, WebBrowserDocumentCompletedEventArgs e) {
             WebBrowser browser = (WebBrowser)sender;
             dynamic information = browser.Document.InvokeScript("eval", new object[] { "srces[0]" });
-            try {                                                                                                                                                                           
+            try {
                 string src = General.RedirectedURL("https:" + information.src);
                 callback(src);
                 // https://stackoverflow.com/questions/23769371/webbrowser-threads-dont-seem-to-be-closing
@@ -116,6 +122,8 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
                 case "Stream.moe":
                 case "Rapidvideo":
                 case "MP4Upload":
+                case "mp4upload":
+                case "mp4upload-hd":
                     return true;
                 default:
                     return false;
