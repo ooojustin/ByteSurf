@@ -99,17 +99,29 @@ namespace JexFlix_Scraper.Shows {
                 if (item.rating != null)
                     series.rating = item.rating;
 
+                // reupload preview, and thumbnail
+                string preview_url = BASE_IMAGES_URL + item.images.preview;
+                string thumbnail_url = BASE_IMAGES_URL + item.images.poster;
+
+                if (item.images.preview != null)
+                    Networking.ReuploadRemoteFile(FixPosterRes(preview_url), item.url, "preview.jpg", item.title, web);
+                if (item.images.poster != null)
+                    Networking.ReuploadRemoteFile(FixThumbnailRes(thumbnail_url), item.url, "thumbnail.jpg", item.title, web);
+
+                // add the series, checks if exists server sided
                 web.UploadString("https://scraper.jexflix.com/add_series.php", JsonConvert.SerializeObject(series));
 
-                string path = Path.GetTempFileName();
-                File.WriteAllText(path, JsonConvert.SerializeObject(series));
+                string data_url = Networking.JsonData(series.url);
+                string ftp_directory = data_url.Substring(Networking.CDN_URL.Length, data_url.Length - Networking.CDN_URL.Length);
 
-                Networking.UploadFile(path, item.url, "data.json", "data.json");
-                ParseSeasons(item.url);
+                string raw_data_json = Networking.DownloadStringFTP(ftp_directory);
+
+                ParseSeasons(item.url, raw_data_json, item.url);
+
             }
         }
 
-        public static void ParseSeasons(string series) {
+        public static void ParseSeasons(string series, string season_json, string item_url) {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 
@@ -122,12 +134,103 @@ namespace JexFlix_Scraper.Shows {
             string raw = Encoding.Default.GetString(response);
             SeasonObject seasonData = JsonConvert.DeserializeObject<SeasonObject>(raw);
 
+            SeriesList seriesList = new SeriesList();
+
+            int season_number = 1;
             foreach (SeasonItem season in seasonData.seasons) {
-                GetEpisodes(season.url);
+                seriesList.seasons.Add(new SeasonData { title = season.title, season = season_number, description = season.description, released = season.released_sec_ago });
+                season_number++;
             }
+            string path = Path.GetTempFileName();
+            File.WriteAllText(path, JsonConvert.SerializeObject(seriesList));
+            Networking.UploadFile(path, item_url, "data.json", seasonData.item.title);
+            File.Delete(path);
+
+            foreach (SeasonItem season in seasonData.seasons) {
+                int their_current_count = GetTheirEpisodeData(season.url).episodes.Count;
+                int our_current_count = GetOurEpisodeData(season.url).episodeList.Count;
+                Console.WriteLine(our_current_count);
+
+                while (our_current_count < their_current_count) {
+                    ReuploadEpisodes(season.url, our_current_count, GetTheirEpisodeData(season.url));
+                    our_current_count++;
+                }
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(seriesList));
         }
 
-        public static void GetEpisodes(string season) {
+        public const string BASE_IMAGES_URL = "https://a.flixify.com";
+        public const string BASE_URL = "https://flixify.com";
+
+        public static void ReuploadEpisodes(string season, int episode, EpisodeObject episodeData) {
+
+            EpisodeList series = null;
+
+            if (episode > 0) {
+                string ftp_directory = season + "/data.json";
+                string raw = Networking.DownloadStringFTP(ftp_directory);
+                series = JsonConvert.DeserializeObject<EpisodeList>(raw);
+            } else series = new EpisodeList();
+
+            Episode newEpisode = new Episode();
+            newEpisode.title = episodeData.episodes[episode].title;
+            newEpisode.episode = (episode + 1);
+            newEpisode.description = episodeData.episodes[episode].description;
+            newEpisode.released = episodeData.episodes[episode].released_sec_ago;
+
+            string directory = season + "/" + (episode + 1);
+
+            if (episodeData.episodes[episode].download.download_720 != null) {
+                newEpisode.qualities.Add(new Qualities { resolution = 720, link = Networking.CDN_URL + directory + "/720.mp4" });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_720, directory, "720.mp4", newEpisode.title, null);
+            }
+
+            if (episodeData.episodes[episode].download.download_1080 != null) {
+                newEpisode.qualities.Add(new Qualities { resolution = 1080, link = Networking.CDN_URL + directory + "/1080.mp4" });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_1080, directory, "1080.mp4", newEpisode.title, null);
+            }
+
+            if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null) {
+                newEpisode.qualities.Add(new Qualities { resolution = 480, link = Networking.CDN_URL + directory + "/480.mp4" });
+                Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_480, directory, "480.mp4", newEpisode.title, null);
+            }
+
+            series.episodeList.Add(newEpisode);
+
+            Console.WriteLine(JsonConvert.SerializeObject(series));
+
+            string path = Path.GetTempFileName();
+            File.WriteAllText(path, JsonConvert.SerializeObject(series));
+            Networking.UploadFile(path, season, "data.json", "data.json");
+            File.Delete(path);
+
+        }
+
+        public static EpisodeList GetOurEpisodeData(string season) {
+
+            string ftp_directory = Networking.CDN_URL + season + "/data.json";
+            string raw = Networking.DownloadStringFTP(ftp_directory);
+
+            if (raw == string.Empty) {
+                // we are on the first episode of this season, lets create a new object
+                return new EpisodeList();
+            }
+
+            EpisodeList episodes = JsonConvert.DeserializeObject<EpisodeList>(raw);
+            return episodes;
+        }
+
+        public static string FixThumbnailRes(string url) {
+            return url.Replace("172x255", "370x549");
+        }
+
+        public static string FixPosterRes(string url) {
+            return url.Replace("353x208", "10000x10000");
+        }
+
+
+        public static EpisodeObject GetTheirEpisodeData(string season) {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 
@@ -140,10 +243,7 @@ namespace JexFlix_Scraper.Shows {
             string raw = Encoding.Default.GetString(response);
             EpisodeObject episodeData = JsonConvert.DeserializeObject<EpisodeObject>(raw);
 
-            foreach (EpisodeItem episode in episodeData.episodes) {
-                
-            }
-
+            return episodeData;
         }
 
     }
