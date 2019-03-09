@@ -235,6 +235,8 @@
     <!-- end details content -->
 </section>
 <!-- end content -->
+
+<!--
 <section>
     <div class="container-fluid">
         <div class="row>">
@@ -326,7 +328,7 @@
     </div>
 </section>
 
-
+-->
 
 	<!-- footer -->
 	<footer class="footer">
