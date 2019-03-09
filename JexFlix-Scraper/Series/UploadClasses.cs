@@ -34,7 +34,7 @@ namespace JexFlix_Scraper.Series {
         }
         
         public class EpisodeList {
-            public List<Episode> episodeList = new List<Episode>();
+            public List<Episode> episodes = new List<Episode>();
         }
 
         public class Episode {
@@ -42,13 +42,19 @@ namespace JexFlix_Scraper.Series {
             public string title = string.Empty;
             public string description = string.Empty;
             public int released = 0;
-            public List<Qualities> qualities = new List<Qualities>();
 
+        }
+
+        public class EpisodeInfo {
+            public int episode = 0;
+            public string title = string.Empty;
+            public string description = string.Empty;
+            public int released = 0;
+            public List<Qualities> qualities = new List<Qualities>();
         }
 
         public class Qualities {
             public int resolution;
-            public string link;
         }
     }
 }
