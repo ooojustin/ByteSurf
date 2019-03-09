@@ -14,9 +14,15 @@
     require '../inc/session.php';
     require_administrator();
 
-    $index = 0;
-    if (file_exists('index.txt'))
-        $index = intval(file_get_contents('index.txt'));
+    // store post data
+    if (!isset($_GET['post'])) {
+        // if we didn't pass 'post' string in url, store post data
+        $_GET['post'] = generate_split_string(3, 3);
+        $_SESSION['POST_' . $_GET['post']] =  $_POST;
+    } else {
+        // otherwise, retrieve post data from session
+        $_POST = $_SESSION['POST_' . $_GET['post']];
+    }
 
     // check for issues owo
     if (!isset($_POST['email_list']))
@@ -33,15 +39,28 @@
 
     $token = "\r\n"; // token/delim (split by new line)
     $email = strtok($email_list, $token); // init strtok, get first email
-    for ($i = 1; $i <= $index; $i++)
-        $email = strtok($token); // get up to current index
+    $email_list = array();
+    while ($email !== false) {
+        array_push($email_list, $email);
+        $email = strtok($token);
+    }
+
+    // start index
+    $start_index = isset($_GET['index']) ? intval($_GET['index']) : 0;
+
+    // end index
+    $end_index = $start_index + 99;
+    if ($end_index > count($email_list) - 1)
+        $end_index = count($email_list) - 1;
 
     // counters
-    $emails_sent = 0;
-    $emails_failed = 0;
-    $invalid_emails = 0;
+    $emails_sent = isset($_GET['sent']) ? intval($_GET['sent']) : 0;
+    $emails_failed = isset($_GET['failed']) ? intval($_GET['failed']) : 0;
+    $invalid_emails = isset($_GET['invalid']) ? intval($_GET['invalid']) : 0;
 
-	while ($email !== false) {
+    for ($i = $start_index; $i <= $end_index; $i++) {
+
+        $email = $email_list[$i];
 
 		// make sure email address is valid
     	if (filter_var($email, FILTER_VALIDATE_EMAIL) === FALSE) {
@@ -61,8 +80,8 @@
     	$status = $response->statusCode();
     	if ($status >= 200 && $status < 300) { // HTTP 2xx == SUCCESS
     		$emails_sent++;
-    		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
-  	  	} else $emails_failed++;*/
+    		// echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
+  	  	} else $emails_failed++;
 
 		/*$sent = send_email($_POST['subject'], fill($_POST['message']), 'mailer@jexflix.com', $email);
 		if ($sent) {
@@ -71,16 +90,24 @@
 		} else $emails_failed++;*/
 
     	// get next email
-        $index++;
-        file_put_contents('index.txt', strval($index));
     	$email = strtok($token);
 
 	}
 
-	echo '<br>' . PHP_EOL;
-	echo 'Sent <b>' . $emails_sent . '</b> emails successfully.<br>' . PHP_EOL;
-	echo 'Failed to send <b>' . $emails_failed . '</b> emails.<br>' . PHP_EOL;
-	echo 'Found/skipped <b>' . $invalid_emails . '</b> invalid emails.<br>' . PHP_EOL;
+    $done = $end_index == count($email_list) - 1;
+
+    if ($done) {
+        echo 'Sent <b>' . $emails_sent . '</b> emails successfully.<br>' . PHP_EOL;
+        echo 'Failed to send <b>' . $emails_failed . '</b> emails.<br>' . PHP_EOL;
+        echo 'Found/skipped <b>' . $invalid_emails . '</b> invalid emails.<br>' . PHP_EOL;
+        unset($_SESSION['POST_' . $_GET['post']]);
+    } else {
+        $url = sprintf('https://jexflix.com/admin/mailer.php?index=%u&sent=%u&failed=%u&invalid=%u&post=%s', $end_index + 1, $emails_sent, $emails_failed, $invalid_emails, $_GET['post']);
+        echo '<b>Sent range: </b>' . $start_index . ' - ' . $end_index . '<br>' . PHP_EOL;
+        echo '<b>Total handled: </b>' . ($end_index + 1) . '/' . count($email_list) . '<br>' . PHP_EOL;
+        echo 'Continuing in <b>3 seconds...</b>';
+        die(str_replace('{URL}', $url, '<meta http-equiv="refresh" content="3;url={URL}"/>'));
+    }
 
 	// replaces all wildcard variables in a message before sending
 	function fill($message) {
