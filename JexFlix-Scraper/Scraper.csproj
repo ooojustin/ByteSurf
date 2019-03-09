@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Anime\Anime.cs" />
     <Compile Include="Anime\AniUpload.cs" />
+    <Compile Include="Anime\DarkAnime\DarkAPI.cs" />
     <Compile Include="Anime\MasterAnime\AniEpisode.cs" />
     <Compile Include="Anime\MasterAnime\AniExtensions.cs" />
     <Compile Include="Anime\MasterAnime\AniInfo.cs" />
