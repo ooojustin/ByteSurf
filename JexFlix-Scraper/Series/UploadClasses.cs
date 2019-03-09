@@ -21,16 +21,32 @@ namespace JexFlix_Scraper.Series {
             public string certification = string.Empty;
         }
 
-        public class Season {
+        public class SeriesList {
+            public List<SeasonData> seasons = new List<SeasonData>();
+        }
 
+        public class SeasonData {
+            public string title = string.Empty;
+            public int season = 0;
+            public string description = string.Empty;
+            public int? released = 0;
 
+        }
+        
+        public class EpisodeList {
+            public List<Episode> episodeList = new List<Episode>();
         }
 
         public class Episode {
+            public int episode = 0;
+            public string title = string.Empty;
+            public string description = string.Empty;
+            public int released = 0;
+            public List<Qualities> qualities = new List<Qualities>();
 
         }
 
-        public class Quality {
+        public class Qualities {
             public int resolution;
             public string link;
         }

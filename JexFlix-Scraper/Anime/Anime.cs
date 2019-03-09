@@ -64,7 +64,7 @@ namespace JexFlix_Scraper.Anime {
                             string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
 
                             //  string raw_json = Web.DownloadString(JsonResponse);
-                            string raw_json = Networking.DownloadString(ftp_response);
+                            string raw_json = Networking.DownloadStringFTP(ftp_response);
 
                             // Deseralise it to the json class.
                             try {

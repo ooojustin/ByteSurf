@@ -74,7 +74,7 @@ namespace JexFlix_Scraper {
 
         }
 
-        public static string DownloadString(string directory) {
+        public static string DownloadStringFTP(string directory) {
 
             WebClient request = new WebClient();
 
@@ -96,6 +96,7 @@ namespace JexFlix_Scraper {
 
             try {
                 FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
+                Console.WriteLine("url is: ftp://storage.bunnycdn.com" + directory);
                 FtpWebResponse response = (FtpWebResponse)mkdir.GetResponse();
             } catch (Exception ex) {
                 if (!ex.Message.Contains("directory already exists"))
@@ -166,7 +167,7 @@ namespace JexFlix_Scraper {
             SAFE_REQUEST.UserAgent = "jexflix-client";
             NameValueCollection values = new NameValueCollection();
             values["title"] = title;
-            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_anime_json.php", values);
+            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_series_json.php", values);
             string URL = response.GetData<string>("url");
             return URL;
         }
