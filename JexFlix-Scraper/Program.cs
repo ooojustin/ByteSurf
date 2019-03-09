@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using JexFlix_Scraper;
 using JexFlix_Scraper.Anime;
+using JexFlix_Scraper.Anime.DarkAnime;
 using JexFlix_Scraper.Flixify;
 using JexFlix_Scraper.Shows;
 
@@ -11,9 +12,9 @@ class Program {
     [STAThread]
     static void Main(string[] args) {
 
-       // MessageHandler.Start();
+        // MessageHandler.Start();
 
-       // Anime.Run();
+        // Anime.Run();
 
 
         //Flixify.Run();
@@ -25,7 +26,8 @@ class Program {
         //t3.Start();
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
-        Shows.Run();
+        // Shows.Run();
+        DarkAnime.Run();
 
         Console.ReadKey();
 

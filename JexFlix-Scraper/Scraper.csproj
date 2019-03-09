@@ -68,7 +68,9 @@
   <ItemGroup>
     <Compile Include="Anime\Anime.cs" />
     <Compile Include="Anime\AniUpload.cs" />
+    <Compile Include="Anime\DarkAnime\DarkAnime.cs" />
     <Compile Include="Anime\DarkAnime\DarkAPI.cs" />
+    <Compile Include="Anime\DarkAnime\DarkSearch.cs" />
     <Compile Include="Anime\MasterAnime\AniEpisode.cs" />
     <Compile Include="Anime\MasterAnime\AniExtensions.cs" />
     <Compile Include="Anime\MasterAnime\AniInfo.cs" />
@@ -76,6 +78,7 @@
     <Compile Include="Anime\MasterAnime\Scraper\MirrorParser.cs" />
     <Compile Include="Anime\MasterAnime\Scraper\ScriptEngine.cs" />
     <Compile Include="Anime\Misc\CaptchaBypass.cs" />
+    <Compile Include="Anime\Misc\CloudflareHTTPClientWrapper.cs" />
     <Compile Include="Anime\Misc\General.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="Movies\Flixify.cs" />
