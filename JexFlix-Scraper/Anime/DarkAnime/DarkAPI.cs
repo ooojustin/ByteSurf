@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -61,11 +62,29 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
     public class DarkSearch {
 
+        private static CookieContainer Cookies = null;
+
+        private const string DARKSTREAM = "https://darkanime.stream";
+        private const string ANIME_API = "https://darkanime.stream/api/animes";
+
+        /// <summary>
+        /// This bypasses cloudflare and returns a cookie aware client 
+        /// </summary>
+        public CookieAwareWebClient BypassCloudflare(string site) {
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            Networking.BypassCloudFlare(site, out Cookies);
+            web.Cookies = Cookies;
+            web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+            web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
+            web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+            return web;
+        }
+
         /// <summary>
         /// Makes a request to darkanime and fetches the all anime json and converts it to the darkapi
         /// </summary>
-        /// <returns></returns>
         public DarkAPI GetAllAnime() {
+
 
             
         }
