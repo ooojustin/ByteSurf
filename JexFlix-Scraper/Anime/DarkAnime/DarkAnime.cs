@@ -147,6 +147,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                                     Quality quality = new Quality();
 
                                     quality.resolution = mirror.GetResolution();
+                                    Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
 
                                     if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
                                         EpData.qualities.Add(quality);
@@ -155,7 +156,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                                 REUPLOAD:
                                 try {
-                                    Console.WriteLine("[DarkAPI] " + "About to upload");
                                     new MirrorParser(mirror, callback).Run();
                                 } catch (Exception ex) {
                                     Console.WriteLine("[DarkAPI] " + ex.Message);
