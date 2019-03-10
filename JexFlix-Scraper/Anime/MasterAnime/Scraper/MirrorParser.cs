@@ -101,17 +101,25 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
         }
 
         private void RunMP4Upload() {
-            using (WebClient web = General.GetWebClient()) {
-                string page = web.DownloadString(mirror.GetURL());
-                Regex regex = new Regex("function\\(p.*?\\)\\)", RegexOptions.Singleline);
-                Match match = regex.Match(page);
-                if (match.Success) {
-                    regex = new Regex("\"file\":\".*?\"", RegexOptions.Singleline);
-                    string evaluated_js = ScriptEngine.Eval("jscript", match.Value).ToString();
-                    Match match_deobf = regex.Match(evaluated_js);
-                    if (match_deobf.Success) {
-                        callback(match_deobf.Value.Split('"')[3]);
+            try {
+                using (WebClient web = General.GetWebClient()) {
+
+                    string page = web.DownloadString(mirror.GetURL());
+                    Regex regex = new Regex("function\\(p.*?\\)\\)", RegexOptions.Singleline);
+                    Match match = regex.Match(page);
+                    if (match.Success) {
+                        regex = new Regex("\"file\":\".*?\"", RegexOptions.Singleline);
+                        string evaluated_js = ScriptEngine.Eval("jscript", match.Value).ToString();
+                        Match match_deobf = regex.Match(evaluated_js);
+                        if (match_deobf.Success) {
+                            callback(match_deobf.Value.Split('"')[3]);
+                        }
                     }
+                }
+            } catch (WebException ex) {
+                HttpWebResponse webResponse = ex.Response as HttpWebResponse;
+                if (webResponse.StatusCode == HttpStatusCode.NotFound) {
+                    callback("");
                 }
             }
         }

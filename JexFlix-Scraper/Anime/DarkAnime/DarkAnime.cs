@@ -70,7 +70,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                                 // We also need to skip every episode we have already...
                                 if (AniUploadData.episodeData.Count() >= data.episode_count) {
                                     Console.WriteLine("Skiping " + AniUploadData.url);
-                                    continue;
+                                   // continue;
                                 }
 
                                 // Well if we haven't skipped.
@@ -114,8 +114,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                         // check if the list has the current episode
                         foreach (EpisodeData ep_data in UploadData.episodeData) {
-
-                            if (ep_data.episode == ep) {
+                            if (ep_data.episode == ep && ep_data.qualities.Count() >= 1) {
                                 need_skip = true;
                                 break;
                             }
@@ -143,14 +142,14 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                                 // Works pp.
                                 Action<string> callback = (s) => {
-                                    // determine whether 1080 or 720
-                                    Quality quality = new Quality();
-
-                                    quality.resolution = mirror.GetResolution();
-                                    Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
-
-                                    if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
-                                        EpData.qualities.Add(quality);
+                                    // empty string indicate 404
+                                    if (!string.IsNullOrEmpty(s)) {
+                                        Quality quality = new Quality();
+                                        quality.resolution = mirror.GetResolution();
+                                        Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
+                                        if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
+                                            EpData.qualities.Add(quality);
+                                        }
                                     }
                                 };
 
