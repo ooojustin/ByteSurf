@@ -1,6 +1,7 @@
 ﻿using CloudFlareUtilities;
 using JexFlix_Scraper.Anime.MasterAnime.Scraper;
 using JexFlix_Scraper.Anime.Misc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -51,6 +52,10 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                 // Iterating the episodes
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
 
+                    JexUpload UploadData = new JexUpload();
+                    UploadData.genres = new List<string>();
+                    UploadData.episodeData = new List<EpisodeData>();
+
                     // Grab the existing json link from the database
                     string JsonResponse = Networking.JsonData(data.slug);
                     // Check and compare the json if we got a link
@@ -59,7 +64,24 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
                         string raw_json = Networking.DownloadStringFTP(ftp_response);
                         if (!string.IsNullOrEmpty(raw_json)) {
+                            try {
 
+                                JexUpload AniUploadData = JsonConvert.DeserializeObject<JexUpload>(raw_json, General.DeserializeSettings);
+
+                                // We also need to skip every episode we have already...
+                                if (AniUploadData.episodeData.Count() >= data.episode_count) {
+                                    Console.WriteLine("Skiping " + AniUploadData.url);
+                                    continue;
+                                }
+
+                                // Well if we haven't skipped.
+                                if (AniUploadData.episodeData.Count >= 1) {
+                                    UploadData = AniUploadData;
+                                }
+
+                            } catch (Exception ex) {
+                                Console.WriteLine("[DarkAPI] " + ex.Message);
+                            }
                         } else {
                             Console.WriteLine("[DarkAPI] " + "Failed to get FTP json");
                         }

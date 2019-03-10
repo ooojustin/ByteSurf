@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Anime {
 
-    public class AniUpload {
+    public class JexUpload {
         public string title { get; set; }
         public string synopsis { get; set; }
         public string preview { get; set; }

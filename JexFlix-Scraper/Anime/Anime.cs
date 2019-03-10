@@ -38,7 +38,7 @@ namespace JexFlix_Scraper.Anime {
 
                 foreach (AniSearch.Show anime in animeFound.data) {
 
-                    AniUpload UploadData = new AniUpload();
+                    JexUpload UploadData = new JexUpload();
 
                     UploadData.genres = new List<string>();
 
@@ -66,7 +66,7 @@ namespace JexFlix_Scraper.Anime {
                         // Deseralise it to the json class.
                         try {
 
-                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
+                            JexUpload AniUploadData = JsonConvert.DeserializeObject<JexUpload>(raw_json, General.DeserializeSettings);
 
                             // If what server has is greater than what we have, we need to upload the new episodes...
                             // We also need to skip every episode we have already...
