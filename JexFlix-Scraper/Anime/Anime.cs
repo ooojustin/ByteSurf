@@ -353,7 +353,7 @@ namespace JexFlix_Scraper.Anime {
                         foreach (AniInfo.Synonyms syn in AnimeInfo.synonyms) {
                             synlist.Add(syn.title);
                         }
-                        dbinfo.synonyms = JsonConvert.SerializeObject(synlist);
+                       //  dbinfo.synonyms = JsonConvert.SerializeObject(synlist);
 
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {

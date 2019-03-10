@@ -116,6 +116,8 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                             continue;
                         }
 
+                        MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
+
                         EpisodeData EpData = new EpisodeData();
                         EpData.episode = ep;
                         string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
@@ -129,7 +131,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                                 // Works pp.
                                 Action<string> callback = (s) => {
-
                                     // determine whether 1080 or 720
                                     Quality quality = new Quality();
 
@@ -139,7 +140,15 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                                         EpData.qualities.Add(quality);
                                     }
                                 };
-                                new MirrorParser(mirror, callback).Run();
+
+                                REUPLOAD:
+                                try {
+                                    new MirrorParser(mirror, callback).Run();
+                                } catch (Exception ex) {
+                                    Console.WriteLine("[DarkAPI] " + ex.Message);
+                                    goto REUPLOAD;
+                                }
+
                             }
                         }
 

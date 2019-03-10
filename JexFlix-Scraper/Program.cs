@@ -12,7 +12,7 @@ class Program {
     [STAThread]
     static void Main(string[] args) {
 
-        // MessageHandler.Start();
+        MessageHandler.Start();
 
         // Anime.Run();
 
