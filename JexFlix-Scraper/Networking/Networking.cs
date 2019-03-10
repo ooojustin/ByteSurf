@@ -1,4 +1,5 @@
 ﻿using CloudFlareUtilities;
+using JexFlix_Scraper.Anime.Misc;
 using JexFlix_Scraper.Flixify;
 using SafeRequest;
 using System;
@@ -50,7 +51,7 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
         }
 
-        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
+        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null, bool cf_bypass = false) {
 
             // initialize webclient if we weren't provided with one
             if (web == null) {
@@ -62,7 +63,12 @@ namespace JexFlix_Scraper {
             string localPath = Path.GetTempFileName();
 
             // download the original file
-            try { web.DownloadFile(url, localPath); }
+            try {
+                if (!cf_bypass)
+                    web.DownloadFile(url, localPath);
+                else
+                    CF_HttpClient.HttpClient_DOWNLOAD(url, localPath);
+            }
             catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
 
             // reupload file to server
@@ -184,7 +190,7 @@ namespace JexFlix_Scraper {
         /// <summary>
         /// Modified Function that handles exceptions
         /// </summary>
-        public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null, string slug = "") {
+        public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null, string slug = "", bool cf_bypass = false) {
 
             Console.WriteLine("ReUploading: " + slug + " url: " + url);
 
@@ -200,8 +206,16 @@ namespace JexFlix_Scraper {
             bool success = true;
 
 
+
+
             // download the original file
-            try { web.DownloadFile(url, localPath); } catch (WebException wex) {
+            try {
+                if (!cf_bypass) {
+                    web.DownloadFile(url, localPath);
+                } else {
+                    CF_HttpClient.HttpClient_DOWNLOAD(url, localPath);
+                }
+            } catch (WebException wex) {
 
                 Networking.ErrorLogging(wex, null, title, "Download Error: " + url);
                 Console.WriteLine("Error downloading original file");

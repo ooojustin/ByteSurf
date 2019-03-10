@@ -94,8 +94,18 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                     // Fill in upload data values
                     UploadData.title = data.title_en_jp;
                     UploadData.synopsis = data.synopsis;
-                    UploadData.poster = data.poster_image_medium;
                     UploadData.episode_length = data.episode_length;
+
+                    try {
+                        Networking.ReuploadRemoteFile(data.poster_image_medium, "/anime/" + UploadData.url, "poster.jpg", UploadData.title, General.GetWebClient(), true);
+                    } catch (Exception ex) {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                    UploadData.poster = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + "poster.jpg";
+
+                    // EpData.thumbnail = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "thumbnail.jpg";
+                    // EpData.duration = AnimeInfo.info.episode_length;
 
                     // Iterate each episode
                     for (int ep = 1; ep <= data.episode_count; ep++) {
@@ -119,7 +129,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
 
                         EpisodeData EpData = new EpisodeData();
+                        EpData.qualities = new List<Quality>();
                         EpData.episode = ep;
+
                         string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
                         Console.WriteLine(EpisodeLink);
                         string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
@@ -143,6 +155,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                                 REUPLOAD:
                                 try {
+                                    Console.WriteLine("[DarkAPI] " + "About to upload");
                                     new MirrorParser(mirror, callback).Run();
                                 } catch (Exception ex) {
                                     Console.WriteLine("[DarkAPI] " + ex.Message);
@@ -190,7 +203,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         AniDb dbinfo = new AniDb();
                         dbinfo.name = UploadData.title;
                         dbinfo.url = UploadData.url;
-                        dbinfo.thumbnail = data.poster_image_medium;
+                        dbinfo.thumbnail = UploadData.poster;
                         dbinfo.episode_data = CDNLink;
 
                    
