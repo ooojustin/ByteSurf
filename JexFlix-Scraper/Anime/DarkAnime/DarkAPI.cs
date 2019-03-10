@@ -73,5 +73,16 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         public string GetURL() {
             return string.Format(MP4UPLOAD_LINK, video_url);
         }
+
+        public int GetResolution() {
+            switch (mirror_name) {
+                case "mp4upload":
+                    return 720;
+                case "mp4upload-hd":
+                    return 1080;
+                default:
+                    return 0;
+            }
+        }
     }
 }

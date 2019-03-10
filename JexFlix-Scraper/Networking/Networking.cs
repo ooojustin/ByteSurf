@@ -172,6 +172,55 @@ namespace JexFlix_Scraper {
             return URL;
         }
 
+        /// <summary>
+        /// Modified Function that handles exceptions
+        /// </summary>
+        public static bool BReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null, string slug = "") {
+
+            Console.WriteLine("ReUploading: " + slug + " url: " + url);
+
+            // initialize webclient if we weren't provided with one
+            if (web == null) {
+                web = new WebClient();
+                web.Headers.Add(HttpRequestHeader.UserAgent, Networking.USER_AGENT);
+            }
+
+            // get temp path to download file to
+            string localPath = Path.GetTempFileName();
+
+            bool success = true;
+
+
+            // download the original file
+            try { web.DownloadFile(url, localPath); } catch (WebException wex) {
+
+                Networking.ErrorLogging(wex, null, title, "Download Error: " + url);
+                Console.WriteLine("Error downloading original file");
+                success = false;
+            }
+
+            // reupload file to server
+            if (success) {
+
+                try {
+                    Networking.UploadFile(localPath, directory, file, title);
+                } catch (Exception ex) {
+                    Networking.ErrorLogging(null, ex, title, "Upload Error: " + file);
+                    Console.WriteLine("Error uploading file");
+                    success = false;
+                }
+
+                // delete the file that was stored locally
+                File.Delete(localPath);
+                Console.WriteLine("Deleted local file");
+            } else {
+                Console.WriteLine("No Success");
+            }
+
+            return success;
+        }
+
+
     }
 
 }
