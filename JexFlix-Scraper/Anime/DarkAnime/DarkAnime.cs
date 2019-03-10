@@ -56,7 +56,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                     UploadData.episodeData = new List<EpisodeData>();
 
                     // Grab the existing json link from the database
-                    string JsonResponse = Networking.JsonData(data.slug);
+                    string JsonResponse = Networking.GetAnimeJsonData(data.slug);
                     // Check and compare the json if we got a link
                     if (!string.IsNullOrEmpty(JsonResponse)) {
                         // If we have some content. Visit the link and get the json response

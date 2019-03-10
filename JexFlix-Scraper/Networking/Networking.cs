@@ -172,6 +172,15 @@ namespace JexFlix_Scraper {
             return URL;
         }
 
+        public static string GetAnimeJsonData(string title) {
+            SAFE_REQUEST.UserAgent = "jexflix-client";
+            NameValueCollection values = new NameValueCollection();
+            values["title"] = title;
+            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_anime_json.php", values);
+            string URL = response.GetData<string>("url");
+            return URL;
+        }
+
         /// <summary>
         /// Modified Function that handles exceptions
         /// </summary>
