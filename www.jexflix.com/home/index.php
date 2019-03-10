@@ -319,7 +319,7 @@
 
 												<ul class="card__list">
 													<li><?=$data['certification']?></li>
-													<li>16+</li>
+													<li><?=$data['year']?></li>
 												</ul>
 											</div>
 
@@ -376,7 +376,7 @@
 				</div>
 
 				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
-				    <h1>Coming soon</h1>
+				    <h1>Coming Soon</h1>
 				    
 				</div>
 			</div>

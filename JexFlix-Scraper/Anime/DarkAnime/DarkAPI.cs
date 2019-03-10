@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -24,7 +25,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         public object prev_page_url { get; set; }
         public int to { get; set; }
         public int total { get; set; }
-
 
         public class Data {
             public int kitsu_id { get; set; }
@@ -59,37 +59,19 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         }
     }
 
+    /// <summary>
+    /// This is the structure of mirror links for the json located in the page source
+    /// </summary>
+    public class DarkMirror {
+        public string episode_slug { get; set; }
+        public string mirror_name { get; set; }
+        public int mirror_number { get; set; }
+        public string video_url { get; set; }
 
-    public class DarkSearch {
+        private const string MP4UPLOAD_LINK = "https://www.mp4upload.com/{0}.html";
 
-        private static CookieContainer Cookies = null;
-
-        private const string DARKSTREAM = "https://darkanime.stream";
-        private const string ANIME_API = "https://darkanime.stream/api/animes";
-
-        /// <summary>
-        /// This bypasses cloudflare and returns a cookie aware client 
-        /// </summary>
-        public CookieAwareWebClient BypassCloudflare(string site) {
-            CookieAwareWebClient web = new CookieAwareWebClient();
-            Networking.BypassCloudFlare(site, out Cookies);
-            web.Cookies = Cookies;
-            web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-            web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
-            return web;
+        public string GetURL() {
+            return string.Format(MP4UPLOAD_LINK, video_url);
         }
-
-        /// <summary>
-        /// Makes a request to darkanime and fetches the all anime json and converts it to the darkapi
-        /// </summary>
-        public DarkAPI GetAllAnime() {
-
-
-            
-        }
-
-
     }
-
 }

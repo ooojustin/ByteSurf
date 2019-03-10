@@ -58,37 +58,34 @@ namespace JexFlix_Scraper.Anime {
 
                     if (!string.IsNullOrEmpty(JsonResponse)) {
                         // If we have some content. Visit the link and get the json response
+                        string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
 
-                        using (WebClient Web = General.GetWebClient()) {
+                        //  string raw_json = Web.DownloadString(JsonResponse);
+                        string raw_json = Networking.DownloadStringFTP(ftp_response);
 
-                            string ftp_response = JsonResponse.Substring(Networking.CDN_URL.Length, JsonResponse.Length - Networking.CDN_URL.Length);
+                        // Deseralise it to the json class.
+                        try {
 
-                            //  string raw_json = Web.DownloadString(JsonResponse);
-                            string raw_json = Networking.DownloadStringFTP(ftp_response);
+                            AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
 
-                            // Deseralise it to the json class.
-                            try {
-
-                                AniUpload AniUploadData = JsonConvert.DeserializeObject<AniUpload>(raw_json, General.DeserializeSettings);
-
-                                // If what server has is greater than what we have, we need to upload the new episodes...
-                                // We also need to skip every episode we have already...
-                                Console.WriteLine(AnimeInfo.info.title + " Our Count: " + AniUploadData.episodeData.Count() + " Their Count: " + AnimeInfo.episodes.Count());
-                                if (AniUploadData.episodeData.Count() >= AnimeInfo.episodes.Count()) {
-                                    Console.WriteLine("Skiping " + AniUploadData.url);
-                                    continue;
-                                }
-
-                                // Well if we haven't skipped.
-                                if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
-                                    Console.WriteLine("Loading existing data...");
-                                    latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
-                                    UploadData = AniUploadData;
-                                }
-                            } catch (Exception ex) {
-                                Networking.ErrorLogging(null, ex, anime.slug, "Error Converting JSON data from CDN");
+                            // If what server has is greater than what we have, we need to upload the new episodes...
+                            // We also need to skip every episode we have already...
+                            Console.WriteLine(AnimeInfo.info.title + " Our Count: " + AniUploadData.episodeData.Count() + " Their Count: " + AnimeInfo.episodes.Count());
+                            if (AniUploadData.episodeData.Count() >= AnimeInfo.episodes.Count()) {
+                                Console.WriteLine("Skiping " + AniUploadData.url);
+                                continue;
                             }
+
+                            // Well if we haven't skipped.
+                            if (AniUploadData.episodeData.Count >= 1) { // Check if we have at least 1 episode.
+                                Console.WriteLine("Loading existing data...");
+                                latest_episode = AniUploadData.episodeData[AniUploadData.episodeData.Count - 1].episode;
+                                UploadData = AniUploadData;
+                            }
+                        } catch (Exception ex) {
+                            Networking.ErrorLogging(null, ex, anime.slug, "Error Converting JSON data from CDN");
                         }
+
 
                     } else {
 
@@ -228,7 +225,7 @@ namespace JexFlix_Scraper.Anime {
                                         try {
                                             Console.WriteLine("Running Mirror Parser");
 
-                                            new MirrorParser(mirror, callback).Run();
+                                            // new MirrorParser(mirror, callback).Run();
                                             Console.WriteLine("Mirror Parser finished running");
                                         } catch (Exception ex) {
                                             Console.WriteLine(ex.Message);
@@ -261,7 +258,7 @@ namespace JexFlix_Scraper.Anime {
 
                                         try {
                                             Console.WriteLine("Running Mirror Parser");
-                                            new MirrorParser(mirror, callback).Run();
+                                            //    new MirrorParser(mirror, callback).Run();
                                             Console.WriteLine("Mirror Parser finished running");
                                         } catch (Exception ex) {
                                             Console.WriteLine(ex.Message);
@@ -295,7 +292,7 @@ namespace JexFlix_Scraper.Anime {
                                             retry:
                                             try {
                                                 Console.WriteLine("Running Mirror Parser");
-                                                new MirrorParser(mirror, callback).Run();
+                                                //     new MirrorParser(mirror, callback).Run();
                                                 Console.WriteLine("Mirror Parser finished running");
                                             } catch (Exception ex) {
                                                 Console.WriteLine(ex.Message);
