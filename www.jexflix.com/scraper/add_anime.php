@@ -26,7 +26,6 @@
     $url = $data['url'];
     $thumbnail = $data['thumbnail'];
     $ep_data = $data['episode_data'];
-    $synonyms = $data['synonyms'];
 
     // Check for existing so we dont have extras
     $get_anime = $db->prepare("SELECT * FROM anime WHERE url=:url");
@@ -37,12 +36,11 @@
     if ($get_anime->rowCount() > 0)
         die();
 
-    $add_anime = $db->prepare('INSERT INTO anime (title, url, thumbnail, data, synonyms) VALUES (:title, :url, :thumbnail, :data, :synonyms);');
+    $add_anime = $db->prepare('INSERT INTO anime (title, url, thumbnail, data) VALUES (:title, :url, :thumbnail, :data);');
     $add_anime->bindValue(':title', $title);
     $add_anime->bindValue(':url', $url);
     $add_anime->bindValue(':thumbnail', $thumbnail);
     $add_anime->bindValue(':data', $ep_data);
-    $add_anime->bindValue(':synonyms', $synonyms);
     $add_anime->execute();
 
 ?>
