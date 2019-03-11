@@ -143,11 +143,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         UploadData.episodeData = GetAscending(EpisodeCopy);
 
 
-                        if (need_skip) {
-                            Console.WriteLine("Skiping episdode: " + ep.ToString());
-                            continue;
-                        }
-
+          
                         // Only upload if we don't have.
                         bool FoundEpisode = false;
                         EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
@@ -167,6 +163,11 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         UploadData.episodeData = GetAscending(EpisodeCopy);
 
                         if (!FoundEpisode) {
+
+                            if (need_skip) {
+                                Console.WriteLine("Skiping episdode: " + ep.ToString());
+                                continue;
+                            }
 
                             MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
 
@@ -254,7 +255,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                             try {
                                 string to_upload = JsonConvert.SerializeObject(dbinfo);
-                                Console.WriteLine(to_upload);
+                                // Console.WriteLine(to_upload);
                                 Web.UploadString("https://scraper.jexflix.com/add_anime.php", to_upload);
                                 Console.WriteLine("Updated the database");
 

@@ -102,7 +102,7 @@ namespace JexFlix_Scraper {
 
             try {
                 FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
-                Console.WriteLine("url is: ftp://storage.bunnycdn.com" + directory);
+                // Console.WriteLine("url is: ftp://storage.bunnycdn.com" + directory);
                 FtpWebResponse response = (FtpWebResponse)mkdir.GetResponse();
             } catch (Exception ex) {
                 if (!ex.Message.Contains("directory already exists"))

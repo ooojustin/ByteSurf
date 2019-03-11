@@ -22,7 +22,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
 
         public void Run() {
 
-            Console.WriteLine("Running host: " + mirror.mirror_name);
+            // Console.WriteLine("Running host: " + mirror.mirror_name);
 
             //  Thread thread = new Thread(() => {
             switch (mirror.mirror_name) {
