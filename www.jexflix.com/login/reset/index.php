@@ -40,7 +40,17 @@
 				$message = str_replace('{url}', RESET_URL . $code, $message);
 
 				// send email
-				send_email('JexFlix - Password Reset', $message, 'reset@jexflix.com', $user['email']);
+				$subject = 'JexFlix - Password Reset';
+				log_email($user['email'], $subject, 'Password Reset');
+				send_email(
+					'JexFlix - Password Reset', // subject
+					$message, // message 
+					'reset@jexflix.com', // from email
+					'JexFlix', // from name
+					$user['email'], // to email
+					$user['username'] // to name
+				);
+
 				die('Password reset submitted successfully.');
 
 			} else
