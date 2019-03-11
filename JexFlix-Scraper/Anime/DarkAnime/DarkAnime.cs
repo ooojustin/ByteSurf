@@ -55,6 +55,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                     JexUpload UploadData = new JexUpload();
                     UploadData.episodeData = new List<EpisodeData>();
 
+                    int HighestEpisodeCount = DarkSearch.GetHighestEpisodeCount(data.slug);
+                    Console.WriteLine("Episode count: " + HighestEpisodeCount);
+
                     // Grab the existing json link from the database
                     string JsonResponse = Networking.GetAnimeJsonData(data.slug);
                     // Check and compare the json if we got a link
@@ -64,13 +67,15 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         string raw_json = Networking.DownloadStringFTP(ftp_response);
                         if (!string.IsNullOrEmpty(raw_json)) {
                             try {
-
                                 JexUpload AniUploadData = JsonConvert.DeserializeObject<JexUpload>(raw_json, General.DeserializeSettings);
+                                foreach (var anidata in AniUploadData.episodeData) {
+                                    Console.WriteLine("[" + AniUploadData.title + "] " + "ep: " + anidata.episode + " count: " + anidata.qualities.Count());
+                                }
 
                                 // We also need to skip every episode we have already...
-                                if (AniUploadData.episodeData.Count() >= data.episode_count) {
+                                if (AniUploadData.episodeData.Count() >= HighestEpisodeCount) {
                                     Console.WriteLine("Skiping " + AniUploadData.url);
-                                   // continue;
+                                    // continue;
                                 }
 
                                 // Well if we haven't skipped.
@@ -108,63 +113,101 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                     // EpData.duration = AnimeInfo.info.episode_length;
 
                     // Iterate each episode
-                    for (int ep = 1; ep <= data.episode_count; ep++) {
+                    for (int ep = 1; ep <= HighestEpisodeCount; ep++) {
 
                         bool need_skip = false;
 
+                        // Copy the list
+                        List<EpisodeData> EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
                         // check if the list has the current episode
+                        int remove_index = 0;
                         foreach (EpisodeData ep_data in UploadData.episodeData) {
-                            if (ep_data.episode == ep && ep_data.qualities.Count() >= 1) {
-                                need_skip = true;
-                                break;
+                            //We Found our ep
+                            if (ep_data.episode == ep) {
+                                // Console.WriteLine("Found the Episode: " + ep + " count: " + ep_data.qualities.Count());
+                                //This cell has data
+                                if (ep_data.qualities.Count() >= 1) {
+                                    need_skip = true;
+                                    break;
+                                } else {
+                                    // we across an empty cell.
+                                    // Fix it then fix json
+                                    EpisodeCopy.RemoveAt(remove_index);
+                                    break;
+                                }
                             }
+                            remove_index++;
                         }
+
+                        // Sort the list and assign it
+                        UploadData.episodeData = GetAscending(EpisodeCopy);
+
 
                         if (need_skip) {
                             Console.WriteLine("Skiping episdode: " + ep.ToString());
                             continue;
                         }
 
-                        MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
+                        // Only upload if we don't have.
+                        bool FoundEpisode = false;
+                        EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
+                        remove_index = 0;
+                        foreach (EpisodeData ep_data in UploadData.episodeData) {
+                            if (ep_data.episode == ep && ep_data.qualities.Count() >= 1) {
 
-                        EpisodeData EpData = new EpisodeData();
-                        EpData.qualities = new List<Quality>();
-                        EpData.episode = ep;
-
-                        string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
-                        Console.WriteLine(EpisodeLink);
-                        string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
-                        List<DarkMirror> mirrors = DarkSearch.GenerateMirrors(Raw);
-
-                        if (mirrors != null) {
-
-                            foreach (DarkMirror mirror in mirrors) {
-
-                                // Works pp.
-                                Action<string> callback = (s) => {
-                                    // empty string indicate 404
-                                    if (!string.IsNullOrEmpty(s)) {
-                                        Quality quality = new Quality();
-                                        quality.resolution = mirror.GetResolution();
-                                        Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
-                                        if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
-                                            EpData.qualities.Add(quality);
-                                        }
-                                    }
-                                };
-
-                                REUPLOAD:
-                                try {
-                                    new MirrorParser(mirror, callback).Run();
-                                } catch (Exception ex) {
-                                    Console.WriteLine("[DarkAPI] " + ex.Message);
-                                    goto REUPLOAD;
+                                // If we already found one, delete extras.
+                                if (FoundEpisode) {
+                                    EpisodeCopy.RemoveAt(remove_index);
                                 }
-
+                                FoundEpisode = true;
                             }
+                            remove_index++;
                         }
+                        // Sort the list and assign it
+                        UploadData.episodeData = GetAscending(EpisodeCopy);
 
-                        UploadData.episodeData.Add(EpData);
+                        if (!FoundEpisode) {
+
+                            MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
+
+                            EpisodeData EpData = new EpisodeData();
+                            EpData.qualities = new List<Quality>();
+                            EpData.episode = ep;
+
+                            string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
+                            Console.WriteLine(EpisodeLink);
+                            string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
+                            List<DarkMirror> mirrors = DarkSearch.GenerateMirrors(Raw);
+
+                            if (mirrors != null) {
+
+                                foreach (DarkMirror mirror in mirrors) {
+
+                                    // Works pp.
+                                    Action<string> callback = (s) => {
+                                        // empty string indicate 404
+                                        if (!string.IsNullOrEmpty(s)) {
+                                            Quality quality = new Quality();
+                                            quality.resolution = mirror.GetResolution();
+                                            Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
+                                            if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
+                                                EpData.qualities.Add(quality);
+                                            }
+                                        }
+                                    };
+
+                                    REUPLOAD:
+                                    try {
+                                        new MirrorParser(mirror, callback).Run();
+                                    } catch (Exception ex) {
+                                        Console.WriteLine("[DarkAPI] " + ex.Message);
+                                        goto REUPLOAD;
+                                    }
+
+                                }
+                            }
+                            UploadData.episodeData.Add(EpData);
+                        }
 
                         string localPath = Path.GetTempFileName();
 
@@ -205,7 +248,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         dbinfo.thumbnail = UploadData.poster;
                         dbinfo.episode_data = CDNLink;
 
-                   
+
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {
 
@@ -229,7 +272,14 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
             }
         }
-    }
 
+        // I can use a sorting algorithm but no.
+        // https://stackoverflow.com/questions/3062513/how-can-i-sort-generic-list-desc-and-asc
+        public static List<EpisodeData> GetAscending(List<EpisodeData> UnsortedList) {
+            return UnsortedList.OrderBy(x => x.episode).ToList();
+        }
+
+       
+    }
 }
 
