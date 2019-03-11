@@ -4,7 +4,7 @@
     require '../inc/session.php';
     require_administrator();
 
-    require 'income.php';
+    require 'statistics.php';
    
 	global $user;
 	$username = $user['username'];
@@ -191,7 +191,7 @@
 							<!-- content tabs nav -->
 							<ul class="nav nav-tabs content__tabs content__tabs--profile" id="content__tabs" role="tablist">
 								<li class="nav-item">
-									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Income</a>
+									<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Statistics</a>
 								</li>
 
 								<li class="nav-item">
@@ -209,7 +209,7 @@
 
 								<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
 									<ul class="nav nav-tabs" role="tablist">
-										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Income</a></li>
+										<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Statistics</a></li>
 
 										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Mailer</a></li>
 									</ul>
