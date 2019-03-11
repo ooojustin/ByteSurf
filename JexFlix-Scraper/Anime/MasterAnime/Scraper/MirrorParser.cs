@@ -101,9 +101,9 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
         }
 
         private void RunMP4Upload() {
+            RETRY:
             try {
                 using (WebClient web = General.GetWebClient()) {
-
                     string page = web.DownloadString(mirror.GetURL());
                     Regex regex = new Regex("function\\(p.*?\\)\\)", RegexOptions.Singleline);
                     Match match = regex.Match(page);
@@ -119,7 +119,12 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
             } catch (WebException ex) {
                 HttpWebResponse webResponse = ex.Response as HttpWebResponse;
                 if (webResponse.StatusCode == HttpStatusCode.NotFound) {
+                    Console.WriteLine("[RunMP4Upload] Not Found");
                     callback("");
+                } else {
+                    Console.WriteLine("[RunMP4Upload] " + ex.Message);
+                    Console.WriteLine("[RunMP4Upload] Retrying");
+                    goto RETRY;
                 }
             }
         }

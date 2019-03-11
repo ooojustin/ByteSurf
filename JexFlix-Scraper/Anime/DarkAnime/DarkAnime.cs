@@ -17,11 +17,11 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
         public static void Run() {
 
-            CF_HttpClient.SetupClient();
 
             DarkAPI InitialPage = null;
 
             while (InitialPage == null) {
+                CF_HttpClient.SetupClient();
                 InitialPage = DarkSearch.GetDarkAPI();
                 System.Threading.Thread.Sleep(1000);
             }
@@ -37,6 +37,8 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             for (int i = 0; i < InitialPage.last_page; i++) {
 
                 RE_SEARCH:
+                CF_HttpClient.SetupClient();
+
                 System.Threading.Thread.Sleep(1000);
 
                 DarkAPI AnimeInfo = DarkSearch.GetDarkAPI(queued_page);
@@ -51,6 +53,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                 // Iterating the anime
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
+                    CF_HttpClient.SetupClient();
 
                     JexUpload UploadData = new JexUpload();
                     UploadData.episodeData = new List<EpisodeData>();
@@ -69,7 +72,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                             try {
                                 JexUpload AniUploadData = JsonConvert.DeserializeObject<JexUpload>(raw_json, General.DeserializeSettings);
                                 //foreach (var anidata in AniUploadData.episodeData) {
-                                 //   Console.WriteLine("[" + AniUploadData.title + "] " + "ep: " + anidata.episode + " count: " + anidata.qualities.Count());
+                                //   Console.WriteLine("[" + AniUploadData.title + "] " + "ep: " + anidata.episode + " count: " + anidata.qualities.Count());
                                 //}
 
                                 // We also need to skip every episode we have already...
@@ -142,10 +145,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         // Sort the list and assign it
                         UploadData.episodeData = GetAscending(EpisodeCopy);
 
-
-          
                         // Only upload if we don't have.
                         bool FoundEpisode = false;
+                        bool HasDeleted = false;
                         EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
                         remove_index = 0;
                         foreach (EpisodeData ep_data in UploadData.episodeData) {
@@ -154,20 +156,23 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                                 // If we already found one, delete extras.
                                 if (FoundEpisode) {
                                     EpisodeCopy.RemoveAt(remove_index);
+                                    HasDeleted = true;
                                 }
                                 FoundEpisode = true;
+                                Console.WriteLine("An episode has been found");
+
                             }
                             remove_index++;
                         }
                         // Sort the list and assign it
                         UploadData.episodeData = GetAscending(EpisodeCopy);
 
-                        if (!FoundEpisode) {
+                        if (!HasDeleted && need_skip) {
+                            Console.WriteLine("Skiping episdode: " + ep.ToString());
+                            continue;
+                        }
 
-                            if (need_skip) {
-                                Console.WriteLine("Skiping episdode: " + ep.ToString());
-                                continue;
-                            }
+                        if (!FoundEpisode) {
 
                             MessageHandler.Add(UploadData.title, "Episode: " + ep.ToString() + "\n", ConsoleColor.White, ConsoleColor.Yellow);
 
@@ -177,38 +182,45 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                             string EpisodeLink = DarkSearch.GenerateAnimeEpisode(data.slug, ep);
                             Console.WriteLine(EpisodeLink);
-                            string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
-                            List<DarkMirror> mirrors = DarkSearch.GenerateMirrors(Raw);
 
-                            if (mirrors != null) {
+                            List<DarkMirror> mirrors = null;
 
-                                foreach (DarkMirror mirror in mirrors) {
+                            while (mirrors == null) {
+                                CF_HttpClient.SetupClient();
+                                string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
+                                mirrors = DarkSearch.GenerateMirrors(Raw);
+                            }
 
-                                    // Works pp.
-                                    Action<string> callback = (s) => {
-                                        // empty string indicate 404
-                                        if (!string.IsNullOrEmpty(s)) {
-                                            Quality quality = new Quality();
-                                            quality.resolution = mirror.GetResolution();
-                                            Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
-                                            if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
-                                                EpData.qualities.Add(quality);
-                                            }
+                            foreach (DarkMirror mirror in mirrors) {
+
+                                // Works pp.
+                                Action<string> callback = (s) => {
+                                    // empty string indicate 404
+                                    if (!string.IsNullOrEmpty(s)) {
+                                        Quality quality = new Quality();
+                                        quality.resolution = mirror.GetResolution();
+                                        Console.WriteLine("[DarkAPI] " + "About to upload " + quality.resolution.ToString());
+                                        if (Networking.BReuploadRemoteFile(s, "/anime/" + UploadData.url + "/" + ep.ToString(), mirror.GetResolution() + ".mp4", UploadData.title, General.GetWebClient(), data.slug)) {
+                                            EpData.qualities.Add(quality);
                                         }
-                                    };
-
-                                    REUPLOAD:
-                                    try {
-                                        new MirrorParser(mirror, callback).Run();
-                                    } catch (Exception ex) {
-                                        Console.WriteLine("[DarkAPI] " + ex.Message);
-                                        goto REUPLOAD;
                                     }
+                                };
 
+                                REUPLOAD:
+                                try {
+                                    new MirrorParser(mirror, callback).Run();
+                                } catch (Exception ex) {
+                                    Console.WriteLine("[DarkAPI] " + ex.Message);
+                                    goto REUPLOAD;
                                 }
+
                             }
                             UploadData.episodeData.Add(EpData);
                         }
+
+                        // sort list before uploading
+                        EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
+                        UploadData.episodeData = GetAscending(EpisodeCopy);
 
                         string localPath = Path.GetTempFileName();
 
@@ -280,7 +292,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             return UnsortedList.OrderBy(x => x.episode).ToList();
         }
 
-       
+
     }
 }
 
