@@ -68,9 +68,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                         if (!string.IsNullOrEmpty(raw_json)) {
                             try {
                                 JexUpload AniUploadData = JsonConvert.DeserializeObject<JexUpload>(raw_json, General.DeserializeSettings);
-                                foreach (var anidata in AniUploadData.episodeData) {
-                                    Console.WriteLine("[" + AniUploadData.title + "] " + "ep: " + anidata.episode + " count: " + anidata.qualities.Count());
-                                }
+                                //foreach (var anidata in AniUploadData.episodeData) {
+                                 //   Console.WriteLine("[" + AniUploadData.title + "] " + "ep: " + anidata.episode + " count: " + anidata.qualities.Count());
+                                //}
 
                                 // We also need to skip every episode we have already...
                                 if (AniUploadData.episodeData.Count() >= HighestEpisodeCount) {
