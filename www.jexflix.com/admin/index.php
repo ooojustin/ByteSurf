@@ -11,9 +11,9 @@
 	$role = intval($user['role']);
 
 	// variable determining how many days back to show income (default: 7)
-	$income_days = 7;
-	if (isset($_GET['income_days']) && is_numeric($_GET['income_days']))
-		$income_days = intval($_GET['income_days']);
+	$days = 7;
+	if (isset($_GET['days']) && is_numeric($_GET['days']))
+		$days = intval($_GET['days']);
 
 ?>
 <!DOCTYPE html>
@@ -243,7 +243,10 @@
 						<!-- end general info -->
 
 						<!-- graph code -->
-						<canvas id="incomeChart" width="400" height="150" style="margin-bottom: 30px;"></canvas>
+						<canvas id="incomeChart" width="400" height="120" style="margin-bottom: 30px;"></canvas>
+						<canvas id="loginChart" width="400" height="120" style="margin-bottom: 30px;"></canvas>
+						<canvas id="resellerIncomeChart" width="400" height="120" style="margin-bottom: 30px;"></canvas>
+
 						<script>
 
 							Chart.defaults.global.defaultFontColor = 'white';
@@ -252,25 +255,25 @@
 							var incomeChartCFG = {
 								type: 'line',
 								data: {
-									labels: [<? for ($i = $income_days; $i >= 0; $i--) echo "'" . day_desc($i) . "',"; ?>],
+									labels: [<? output_data('day_desc', $days, true); ?>],
 									datasets: [{
 										label: 'Direct Sales',
 										backgroundColor: 'rgb(0, 255, 255)',
 										borderColor: 'rgb(0, 255, 255)',
-										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_direct_sales_days_ago($i) . ','; ?>],
+										data: [<? output_data('get_direct_sales_days_ago', $days); ?>],
 										fill: false,
 									}, {
 										label: 'Reseller Deposits',
 										fill: false,
 										backgroundColor: 'rgb(239, 45, 220)',
 										borderColor: 'rgb(239, 45, 220)',
-										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_reseller_deposits_days_ago($i) . ','; ?>],
+										data: [<? output_data('get_reseller_deposits_days_ago', $days); ?>],
 									}, {
 										label: 'Total Income',
 										fill: false,
 										backgroundColor: 'rgb(66, 244, 72)',
 										borderColor: 'rgb(66, 244, 72)',
-										data: [<? for ($i = $income_days; $i >= 0; $i--) echo get_total_days_ago($i) . ','; ?>],
+										data: [<? output_data('get_total_days_ago', $days); ?>],
 									}]
 								},
 								options: {
@@ -306,9 +309,113 @@
 								}
 							};
 
+							var loginChartCFG = {
+								type: 'line',
+								data: {
+									labels: [<? output_data('day_desc', $days, true); ?>],
+									datasets: [{
+										label: 'Logins',
+										backgroundColor: 'rgb(232, 244, 66)',
+										borderColor: 'rgb(232, 244, 66)',
+										data: [<? output_data('get_logins', $days); ?>],
+										fill: false,
+									}, {
+										label: 'Registrations',
+										backgroundColor: 'rgb(39, 23, 216)',
+										borderColor: 'rgb(39, 23, 216)',
+										data: [<? output_data('get_registrations', $days); ?>],
+										fill: false,
+									}]
+								},
+								options: {
+									responsive: true,
+									title: {
+										display: true,
+										text: 'Reseller Sales'
+									},
+									tooltips: {
+										mode: 'index',
+										intersect: false,
+									},
+									hover: {
+										mode: 'nearest',
+										intersect: true
+									},
+									scales: {
+										xAxes: [{
+										display: true,
+										scaleLabel: {
+											display: true,
+											labelString: 'Day of the Month'
+										}
+									}],
+										yAxes: [{
+											display: true,
+											scaleLabel: {
+												display: true,
+												labelString: 'Amount (USD)'
+											}
+										}]
+									}
+								}
+							};
+
+							var resllerIncomeChartCFG = {
+								type: 'line',
+								data: {
+									labels: [<? output_data('day_desc', $days, true); ?>],
+									datasets: [{
+										label: 'PayPal Sales',
+										backgroundColor: 'rgb(255, 0, 0)',
+										borderColor: 'rgb(255, 0, 0)',
+										data: [<? output_data('get_reseller_sales', $days); ?>],
+										fill: false,
+									}]
+								},
+								options: {
+									responsive: true,
+									title: {
+										display: true,
+										text: 'Reseller Sales'
+									},
+									tooltips: {
+										mode: 'index',
+										intersect: false,
+									},
+									hover: {
+										mode: 'nearest',
+										intersect: true
+									},
+									scales: {
+										xAxes: [{
+										display: true,
+										scaleLabel: {
+											display: true,
+											labelString: 'Day of the Month'
+										}
+									}],
+										yAxes: [{
+											display: true,
+											scaleLabel: {
+												display: true,
+												labelString: 'Amount (USD)'
+											}
+										}]
+									}
+								}
+							};
+
 							window.onload = function() {
+
 								var incomeChartCTX = document.getElementById('incomeChart').getContext('2d');
 								window.myLine = new Chart(incomeChartCTX, incomeChartCFG);
+
+								var loginChartCTX = document.getElementById('loginChart').getContext('2d');
+								window.myLine = new Chart(loginChartCTX, loginChartCFG);
+
+								var resellerIncomeChartCTX = document.getElementById('resellerIncomeChart').getContext('2d');
+								window.myLine = new Chart(resellerIncomeChartCTX, resllerIncomeChartCFG);
+
 							};
 
 						</script>
