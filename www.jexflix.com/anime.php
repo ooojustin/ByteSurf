@@ -139,6 +139,7 @@
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
 										<li><a href="../about">About</a></li>
 										<li><a href="../profile">Profile</a></li>
+										<? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
 									</ul>
 								</li>
 								<!-- end dropdown -->
