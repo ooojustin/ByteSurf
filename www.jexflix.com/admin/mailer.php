@@ -68,6 +68,9 @@
     		continue;
     	}
 
+        // log email before we send it
+        log_email($email, $_POST['subject'], 'Mass Mailer');
+
     	$response = send_email(
     		$_POST['subject'], // email subject
     		fill($_POST['message']),  // email message

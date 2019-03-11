@@ -229,6 +229,17 @@
 		return -1; // specified user is invalid
 	}
 
+	// code to log sent emails
+	function log_email($address, $subject, $type) {
+		global $db;
+		$insert_email = $db->prepare('INSERT INTO emails (address, subject, type, timestamp) VALUES (:address, :subject, :type, :timestamp)');
+		$insert_email->bindValue(':address', $address);
+		$insert_email->bindValue(':subject', $subject);
+		$insert_email->bindValue(':type', $type);
+		$insert_email->bindValue(':timestamp', time());
+		return $insert_email->execute();
+	}
+
 	// gets all orders from a specific user w/ data that can be displayed
 	function get_orders($username) {
 
