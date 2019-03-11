@@ -55,6 +55,21 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             if (!match.Success) return null;
             return JsonConvert.DeserializeObject<List<DarkMirror>>(match.Value.Split('\'')[1], General.DeserializeSettings);
         }
+
+        public static int GetHighestEpisodeCount(string slug) {
+            string AnimeLink = GenerateAnimeLink(slug);
+            string raw = CF_HttpClient.HttpClient_GETAsync(AnimeLink);
+
+            if (!string.IsNullOrEmpty(raw)) {
+                Regex regex = new Regex("episodes/.*?\">", RegexOptions.Singleline);
+                Match match = regex.Match(raw);
+                if (match.Success) {
+                    string content = match.Value;
+                    return Convert.ToInt32(content.Split('/')[1].Split('"')[0]);
+                }
+            }
+            return 0;
+        }
     }
 
 }
