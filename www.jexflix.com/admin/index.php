@@ -11,9 +11,9 @@
 	$role = intval($user['role']);
 
 	// variable determining how many days back to show income (default: 7)
-	$income_days = 7;
-	if (isset($_GET['income_days']) && is_numeric($_GET['income_days']))
-		$income_days = intval($_GET['income_days']);
+	$days = 7;
+	if (isset($_GET['days']) && is_numeric($_GET['days']))
+		$days = intval($_GET['days']);
 
 ?>
 <!DOCTYPE html>
@@ -255,25 +255,25 @@
 							var incomeChartCFG = {
 								type: 'line',
 								data: {
-									labels: [<? output_data('day_desc', $income_days, true); ?>],
+									labels: [<? output_data('day_desc', $days, true); ?>],
 									datasets: [{
 										label: 'Direct Sales',
 										backgroundColor: 'rgb(0, 255, 255)',
 										borderColor: 'rgb(0, 255, 255)',
-										data: [<? output_data('get_direct_sales_days_ago', $income_days); ?>],
+										data: [<? output_data('get_direct_sales_days_ago', $days); ?>],
 										fill: false,
 									}, {
 										label: 'Reseller Deposits',
 										fill: false,
 										backgroundColor: 'rgb(239, 45, 220)',
 										borderColor: 'rgb(239, 45, 220)',
-										data: [<? output_data('get_reseller_deposits_days_ago', $income_days); ?>],
+										data: [<? output_data('get_reseller_deposits_days_ago', $days); ?>],
 									}, {
 										label: 'Total Income',
 										fill: false,
 										backgroundColor: 'rgb(66, 244, 72)',
 										borderColor: 'rgb(66, 244, 72)',
-										data: [<? output_data('get_total_days_ago', $income_days); ?>],
+										data: [<? output_data('get_total_days_ago', $days); ?>],
 									}]
 								},
 								options: {
@@ -312,18 +312,18 @@
 							var loginChartCFG = {
 								type: 'line',
 								data: {
-									labels: [<? output_data('day_desc', $income_days, true); ?>],
+									labels: [<? output_data('day_desc', $days, true); ?>],
 									datasets: [{
 										label: 'Logins',
 										backgroundColor: 'rgb(232, 244, 66)',
 										borderColor: 'rgb(232, 244, 66)',
-										data: [<? output_data('get_logins', $income_days); ?>],
+										data: [<? output_data('get_logins', $days); ?>],
 										fill: false,
 									}, {
 										label: 'Registrations',
 										backgroundColor: 'rgb(39, 23, 216)',
 										borderColor: 'rgb(39, 23, 216)',
-										data: [<? output_data('get_registrations', $income_days); ?>],
+										data: [<? output_data('get_registrations', $days); ?>],
 										fill: false,
 									}]
 								},
@@ -363,12 +363,12 @@
 							var resllerIncomeChartCFG = {
 								type: 'line',
 								data: {
-									labels: [<? output_data('day_desc', $income_days, true); ?>],
+									labels: [<? output_data('day_desc', $days, true); ?>],
 									datasets: [{
 										label: 'PayPal Sales',
 										backgroundColor: 'rgb(255, 0, 0)',
 										borderColor: 'rgb(255, 0, 0)',
-										data: [<? output_data('get_reseller_sales', $income_days); ?>],
+										data: [<? output_data('get_reseller_sales', $days); ?>],
 										fill: false,
 									}]
 								},
