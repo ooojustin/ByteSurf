@@ -53,7 +53,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                 // Iterating the anime
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
-                    CF_HttpClient.SetupClient();
 
                     JexUpload UploadData = new JexUpload();
                     UploadData.episodeData = new List<EpisodeData>();
@@ -186,7 +185,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                             List<DarkMirror> mirrors = null;
 
                             while (mirrors == null) {
-                                CF_HttpClient.SetupClient();
                                 string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
                                 mirrors = DarkSearch.GenerateMirrors(Raw);
                             }
