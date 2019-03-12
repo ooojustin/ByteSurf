@@ -18,6 +18,11 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         public static void Run() {
 
 
+            ServicePointManager.Expect100Continue = false;
+            ServicePointManager.DefaultConnectionLimit = 10000;
+            ServicePointManager.MaxServicePointIdleTime = 5000;
+
+
             DarkAPI InitialPage = null;
 
             while (InitialPage == null) {

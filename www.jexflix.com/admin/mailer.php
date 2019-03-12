@@ -10,6 +10,9 @@
     // don't limit execution time
     set_time_limit(0);
 
+    // number of emails to send each request
+    define('EMAILS_PER_REQUEST', 100);
+
 	require '../inc/server.php';
     require '../inc/session.php';
     require_administrator();
@@ -46,17 +49,19 @@
     }
 
     // start index
-    $start_index = isset($_GET['index']) ? intval($_GET['index']) : 0;
+    $start_index = get_post_int('index');
 
     // end index
-    $end_index = $start_index + 99;
-    if ($end_index > count($email_list) - 1)
-        $end_index = count($email_list) - 1;
+    $end_index = $start_index + EMAILS_PER_REQUEST - 1; // remove 1 because we include end_index
+
+    // clamp end index to the last email in the list
+    $last_index = count($email_list) - 1;
+    $end_index = ($end_index > $last_index) ? $last_index : $end_index;
 
     // counters
-    $emails_sent = isset($_GET['sent']) ? intval($_GET['sent']) : 0;
-    $emails_failed = isset($_GET['failed']) ? intval($_GET['failed']) : 0;
-    $invalid_emails = isset($_GET['invalid']) ? intval($_GET['invalid']) : 0;
+    $emails_sent = get_post_int('sent');
+    $emails_failed = get_post_int('failed');
+    $invalid_emails = get_post_int('invalid');
 
     for ($i = $start_index; $i <= $end_index; $i++) {
 
@@ -81,35 +86,48 @@
     	);
 
     	$status = $response->statusCode();
-    	if ($status >= 200 && $status < 300) { // HTTP 2xx == SUCCESS
+    	if ($status >= 200 && $status < 300) // HTTP 2xx == SUCCESS
     		$emails_sent++;
-    		// echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
-  	  	} else $emails_failed++;
-
-		/*$sent = send_email($_POST['subject'], fill($_POST['message']), 'mailer@jexflix.com', $email);
-		if ($sent) {
-			$emails_sent++;
-    		echo 'Sent email to: <b>' . $email . '</b><br>' . PHP_EOL;
-		} else $emails_failed++;*/
+  	  	else 
+            $emails_failed++;
 
     	// get next email
     	$email = strtok($token);
 
 	}
 
-    $done = $end_index == count($email_list) - 1;
+    // if the end index was the 
+    $done = $end_index == $last_index;
 
     if ($done) {
+
         echo 'Sent <b>' . $emails_sent . '</b> emails successfully.<br>' . PHP_EOL;
         echo 'Failed to send <b>' . $emails_failed . '</b> emails.<br>' . PHP_EOL;
         echo 'Found/skipped <b>' . $invalid_emails . '</b> invalid emails.<br>' . PHP_EOL;
         unset($_SESSION['POST_' . $_GET['post']]);
+
     } else {
-        $url = sprintf('https://jexflix.com/admin/mailer.php?index=%u&sent=%u&failed=%u&invalid=%u&post=%s', $end_index + 1, $emails_sent, $emails_failed, $invalid_emails, $_GET['post']);
+
+        // send request to mail with post data id
+        $url = 'https://jexflix.com/admin/mailer.php?post=' . $_GET['post'];
+
+        // update data in session before redirecting
+        $_POST['index'] = $end_index + 1;
+        $_POST['sent'] = $emails_sent;
+        $_POST['failed'] = $emails_failed;
+        $_POST['invalid'] = $invalid_emails;
+        $_SESSION['POST_' . $_GET['post']] = $_POST;
+
+        // output information and redirect to next portion of emails
         echo '<b>Sent range: </b>' . $start_index . ' - ' . $end_index . '<br>' . PHP_EOL;
         echo '<b>Total handled: </b>' . ($end_index + 1) . '/' . count($email_list) . '<br>' . PHP_EOL;
         echo 'Continuing in <b>3 seconds...</b>';
         die(str_replace('{URL}', $url, '<meta http-equiv="refresh" content="3;url={URL}"/>'));
+
+    }
+
+    function get_post_int($var) {
+        return isset($_POST[$var]) ? $_POST[$var] : 0;
     }
 
 	// replaces all wildcard variables in a message before sending
