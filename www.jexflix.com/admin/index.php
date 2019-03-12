@@ -331,7 +331,7 @@
 									responsive: true,
 									title: {
 										display: true,
-										text: 'Reseller Sales'
+										text: 'Logins & Registrations'
 									},
 									tooltips: {
 										mode: 'index',
