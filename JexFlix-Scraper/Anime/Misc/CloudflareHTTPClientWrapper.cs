@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,11 @@ namespace JexFlix_Scraper.Anime.Misc {
         public static string HttpClient_GETAsync(string url) {
             try {
                 return http_client.GetStringAsync(url).Result;
-            } catch {
+            } catch (WebException ex){
+                HttpWebResponse webResponse = ex.Response as HttpWebResponse;
+                if (webResponse.StatusCode == HttpStatusCode.NotFound) {
+                    return "404";
+                }
                 return "failed";
             }
         }

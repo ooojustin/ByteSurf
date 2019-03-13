@@ -190,11 +190,18 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                             List<DarkMirror> mirrors = null;
 
-                            while (mirrors == null) {
+                            string raw_res = null;
+
+                            while (raw_res == null && raw_res != "404") {
                                 CF_HttpClient.SetupClient();
                                 string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
-                                mirrors = DarkSearch.GenerateMirrors(Raw);
                             }
+
+                            if (raw_res == "404")
+                                continue;
+
+                            mirrors = DarkSearch.GenerateMirrors(raw_res);
+                            
 
                             foreach (DarkMirror mirror in mirrors) {
 
