@@ -192,9 +192,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                             string raw_res = null;
 
-                            while (raw_res == null && raw_res != "404") {
+                            while (raw_res == null) {
                                 CF_HttpClient.SetupClient();
-                                string Raw = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
+                                raw_res = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
                             }
 
                             if (raw_res == "404")
