@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 
 namespace JexFlix_Scraper {
 
@@ -72,9 +73,19 @@ namespace JexFlix_Scraper {
             catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
 
             // reupload file to server
-            try { UploadFile(localPath, directory, file, title); }
-            catch (Exception ex) { ErrorLogging(null, ex, title, "Upload Error: " + file); }
-            
+            while (true) {
+                try {
+                    UploadFile(localPath, directory, file, title);
+                } catch (WebException ex) {
+                    ErrorLogging(null, ex, title, "Upload Error: " + file);
+                    Console.WriteLine("Failed to upload: " + title + ". trying again in 1 minute. ");
+                    Thread.Sleep(60000);
+                    continue;
+                }
+                break;
+
+            }
+
             // delete the file that was stored locally
             File.Delete(localPath);
 
