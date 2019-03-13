@@ -7,6 +7,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 
 namespace JexFlix_Scraper {
 
@@ -75,7 +76,7 @@ namespace JexFlix_Scraper {
             while (true) {
                 try {
                     UploadFile(localPath, directory, file, title);
-                } catch (Exception ex) {
+                } catch (WebException ex) {
                     ErrorLogging(null, ex, title, "Upload Error: " + file);
                     Console.WriteLine("Failed to upload: " + title + ". trying again in 1 minute. ");
                     Thread.Sleep(60000);
