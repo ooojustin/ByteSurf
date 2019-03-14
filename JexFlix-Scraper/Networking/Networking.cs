@@ -196,7 +196,12 @@ namespace JexFlix_Scraper {
             Response response = null;
             while (response == null) {
                 try {
+
                     response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_anime_json.php", values);
+
+                    if (!response.status)
+                        response = null;
+
                 } catch (Exception ex) {
                     Console.WriteLine("[SafeRequest] " + ex.Message);
                 }
