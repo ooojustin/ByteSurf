@@ -39,7 +39,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             // sw.WriteLine(data.title_en_jp);
             // }
 
-            for (int i = 0; i < InitialPage.last_page; i++) {
+            for (int page_number = 0; page_number < InitialPage.last_page; page_number++) {
 
                 RE_SEARCH:
                 CF_HttpClient.SetupClient();
@@ -55,6 +55,8 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                 }
 
                 Console.WriteLine("Page: " + AnimeInfo.current_page);
+                if (page_number < 6)
+                    continue;
 
                 // Iterating the anime
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
@@ -194,14 +196,14 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                             while (raw_res == null) {
                                 CF_HttpClient.SetupClient();
-                                raw_res = CF_HttpClient.HttpClient_GETAsync(EpisodeLink);
+                                raw_res = CF_HttpClient.HttpClient_GetAsync(EpisodeLink).GetAwaiter().GetResult();
                             }
 
-                            if (raw_res == "404")
+                            if (raw_res == "error")
                                 continue;
 
                             mirrors = DarkSearch.GenerateMirrors(raw_res);
-                            
+
 
                             foreach (DarkMirror mirror in mirrors) {
 

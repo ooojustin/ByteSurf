@@ -22,14 +22,26 @@ namespace JexFlix_Scraper.Anime.Misc {
             http_client.GetStringAsync(DarkAnime.DarkSearch.ANIME_LINK);
         }
 
+        static public async Task<string> HttpClient_GetAsync(string path) {
+            string resp = null;
+            HttpResponseMessage response = await http_client.GetAsync(path);
+            if (response.IsSuccessStatusCode) {
+                resp = await response.Content.ReadAsStringAsync();
+            } else if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.InternalServerError) {
+                resp = "error";
+            }
+            return resp;
+        }
+
+
         /// <summary>
         /// Wrapper for HttpClient function for cloudflare bypass
         /// This creates a GET request
         /// </summary>
-        public static string HttpClient_GETAsync(string url) {
+        public static string HttpClient_GET(string url) {
             try {
                 return http_client.GetStringAsync(url).Result;
-            } catch (WebException ex){
+            } catch (WebException ex) {
                 HttpWebResponse webResponse = ex.Response as HttpWebResponse;
                 if (webResponse.StatusCode == HttpStatusCode.NotFound) {
                     return "404";

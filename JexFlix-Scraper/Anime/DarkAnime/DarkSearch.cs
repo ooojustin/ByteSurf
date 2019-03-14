@@ -24,7 +24,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         /// </summary>
         public static DarkAPI GetDarkAPI(string url = ANIME_API) {
             try {
-                string Response = CF_HttpClient.HttpClient_GETAsync(url);
+                string Response = CF_HttpClient.HttpClient_GET(url);
                 return JsonConvert.DeserializeObject<DarkAPI>(Response, General.DeserializeSettings);
             } catch (Exception ex) {
                 Console.WriteLine("[DarkAPI] " + ex.Message);
@@ -59,7 +59,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
         public static int GetHighestEpisodeCount(string slug) {
             string AnimeLink = GenerateAnimeLink(slug);
             try {
-                string raw = CF_HttpClient.HttpClient_GETAsync(AnimeLink);
+                string raw = CF_HttpClient.HttpClient_GET(AnimeLink);
 
                 if (!string.IsNullOrEmpty(raw)) {
                     Regex regex = new Regex("episodes/.*?\">", RegexOptions.Singleline);
