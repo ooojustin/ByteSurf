@@ -55,8 +55,10 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                 }
 
                 Console.WriteLine("Page: " + AnimeInfo.current_page);
-                if (page_number < 6)
-                    continue;
+
+                // Page skipper          
+                //if (page_number < 6)
+                //   continue;
 
                 // Iterating the anime
                 foreach (DarkAPI.Data data in AnimeInfo.data) {

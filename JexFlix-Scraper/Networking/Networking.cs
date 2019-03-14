@@ -194,8 +194,13 @@ namespace JexFlix_Scraper {
             NameValueCollection values = new NameValueCollection();
             values["title"] = title;
             Response response = null;
-            while(response == null)
-                response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_anime_json.php", values);
+            while (response == null) {
+                try {
+                    response = SAFE_REQUEST.Request("https://scraper.jexflix.com/get_anime_json.php", values);
+                } catch (Exception ex) {
+                    Console.WriteLine("[SafeRequest] " + ex.Message);
+                }
+            }
             return response.GetData<string>("url");
         }
 
