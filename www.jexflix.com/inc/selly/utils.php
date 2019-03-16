@@ -22,7 +22,7 @@
         // note: 'R-' before generated invoice indicates reseller payment
         $invoice = 'R-' . generate_split_string(5, 4);
 
-        $create_order = $db->prepare('INSERT INTO orders_pp (invoice, email, username, product, product_number, reseller, amount) VALUES (:invoice, :email, :username, :product, :product_number, :reseller, :amount, :timestamp)');
+        $create_order = $db->prepare('INSERT INTO orders_pp (invoice, email, username, product, product_number, reseller, amount, timestamp) VALUES (:invoice, :email, :username, :product, :product_number, :reseller, :amount, :timestamp)');
         $create_order->bindValue(':invoice', $invoice);
         $create_order->bindValue(':email', $email);
         $create_order->bindValue(':username', $username);
