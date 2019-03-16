@@ -15,6 +15,7 @@
 			'message' => $message
 		);
 		header('location: https://jexflix.com/msg');
+		die();
 	}
 
 	function login($username, $password) {
@@ -101,6 +102,14 @@
 		$get_trial_key->bindValue(':trial_key', $trial_key);
 		$get_trial_key->execute();
 		return $get_trial_key->fetch();
+	}
+
+	function trial_key_exists($trial_key) {
+		global $db;
+		$get_trial_key = $db->prepare('SELECT * FROM trial_keys WHERE trial_key=:trial_key');
+		$get_trial_key->bindValue(':trial_key', $trial_key);
+		$get_trial_key->execute();
+		return $get_trial_key->rowCount() > 0;
 	}
 	
 	function generate_trial_key($username, $duration) {
