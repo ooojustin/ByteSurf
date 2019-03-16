@@ -396,7 +396,12 @@
 										if ($get_trials->rowCount() > 0) {
 											$trials = $get_trials->fetchAll();
 											foreach ($trials as $trial) { ?>
-												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?= ($trial['duration'] / 86400) . ' days - Used by ' . $trial['user']; ?></label><br>
+												<label class="profile__label"><b><?= $trial['trial_key']; ?></b> - <?
+												if ($trial['duration'] == -1)
+													echo 'Lifetime';
+												else
+													echo ($trial['duration'] / 86400) . ' days';
+												echo ' - Used by ' . $trial['user']; ?></label><br>
 											<? }
 										} else { ?>
 											<label class="profile__label">You do not have any used trial keys.</label>
@@ -449,7 +454,7 @@
 							<form action="https://jexflix.com/pricing/purchase.php" method="get" class="profile__form">
 								<div class="row">
 									<div class="col-12">
-										<h4 class="profile__title">Balance: $<?=$reseller['balance']?></h4>
+										<h4 class="profile__title">Balance: $<?= round($reseller['balance'], 2); ?></h4>
 									</div>
 
 									<input type="hidden" value="reseller" name="plan" />
