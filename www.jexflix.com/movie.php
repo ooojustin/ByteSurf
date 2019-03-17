@@ -2,6 +2,7 @@
 
     require 'inc/server.php';
     require 'inc/session.php';
+    require 'inc/imdb.php';
     require_subscription();
    
 	global $user;
