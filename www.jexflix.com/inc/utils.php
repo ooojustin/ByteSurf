@@ -302,6 +302,15 @@
    		return $get_data->fetch();
 	}
 
+	function get_similar_movies($url) {
+		$movie = get_movie_data($url);
+		$similar_str = $movie['similar'];
+		if (is_null($similar_str))
+			return array();
+		else
+			return json_decode($similar_str, true);
+	}
+
 	function authenticated_movie_links($data) {
    		$qualities = json_decode($data['qualities']);
     	foreach ($qualities as $quality)
