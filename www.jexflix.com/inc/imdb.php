@@ -10,11 +10,13 @@
 		foreach ($matches as $match) {
 			$href = explode('"', $match)[1];
 			$title = explode('/', $href)[2];
-			array_push($titles, $title);
+			if ($convert_to_movie_urls) {
+				$title = movie_url_from_imdb($title);
+				if ($title)
+					array_push($titles, $title);
+			} else array_push($titles, $title);
 		}
-		if ($convert_to_movie_urls) {
-			// todo
-		} else return $titles;
+		return $titles;
 	}
 
 	function get_imdb_rating($url) {
@@ -61,6 +63,18 @@
 			return true;
 		$day_ago = time() - (60 * 60 * 24); // timestamp 1 day ago
 		return $last_update['timestamp'] < $day_ago; // return true if last update was over a day ago
+	}
+
+	function movie_url_from_imdb($imdb) {
+		global $db;
+		$get_movie = $db->prepare('SELECT * FROM movies WHERE imdb_id = :imdb');
+		$get_movie->bindValue(':imdb', $imdb);
+		$get_movie->execute();
+		$movie = $get_movie->fetch();
+		if ($movie)
+			return $movie['url'];
+		else
+			return false;
 	}
 
 ?>
