@@ -69,8 +69,7 @@ namespace JexFlix_Scraper {
                     web.DownloadFile(url, localPath);
                 else
                     CF_HttpClient.HttpClient_DOWNLOAD(url, localPath);
-            }
-            catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
+            } catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
 
             // reupload file to server
             while (true) {
@@ -103,7 +102,7 @@ namespace JexFlix_Scraper {
 
                 return fileString;
             } catch (WebException e) {
-   
+
                 return string.Empty;
             }
 
@@ -159,7 +158,7 @@ namespace JexFlix_Scraper {
             bool exists = response.GetData<bool>("exists");
             return exists;
         }
-         
+
         public static string Sanitized(this string path) {
             string invalid = "|:@";
             foreach (char c in invalid)
@@ -202,8 +201,15 @@ namespace JexFlix_Scraper {
                     if (!response.status)
                         response = null;
 
-                } catch (Exception ex) {
+                } catch (WebException ex) {
                     Console.WriteLine("[SafeRequest] " + ex.Message);
+                    HttpWebResponse webResponse = ex.Response as HttpWebResponse;
+                    if (webResponse.StatusCode == HttpStatusCode.NotFound
+                        || webResponse.StatusCode == HttpStatusCode.InternalServerError
+                        || webResponse.StatusCode == HttpStatusCode.BadGateway) {
+                        response = null;
+                    }
+
                 }
             }
             return response.GetData<string>("url");

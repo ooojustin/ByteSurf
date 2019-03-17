@@ -16,12 +16,9 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
     public class DarkAnime {
 
         public static void Run() {
-
-
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.DefaultConnectionLimit = 10000;
             ServicePointManager.MaxServicePointIdleTime = 5000;
-
 
             DarkAPI InitialPage = null;
 
@@ -42,8 +39,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             for (int page_number = 0; page_number < InitialPage.last_page; page_number++) {
 
                 RE_SEARCH:
-                CF_HttpClient.SetupClient();
-
                 System.Threading.Thread.Sleep(1000);
 
                 DarkAPI AnimeInfo = DarkSearch.GetDarkAPI(queued_page);
@@ -62,7 +57,6 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                 // Iterating the anime
                 foreach (DarkAPI.Data data in AnimeInfo.data) {
-                    CF_HttpClient.SetupClient();
 
                     JexUpload UploadData = new JexUpload();
                     UploadData.episodeData = new List<EpisodeData>();
@@ -197,8 +191,11 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                             string raw_res = null;
 
                             while (raw_res == null) {
-                                CF_HttpClient.SetupClient();
-                                raw_res = CF_HttpClient.HttpClient_GetAsync(EpisodeLink).GetAwaiter().GetResult();
+                                try {
+                                    raw_res = CF_HttpClient.HttpClient_GetAsync(EpisodeLink).GetAwaiter().GetResult();
+                                } catch {
+                                    raw_res = null;
+                                }
                             }
 
                             if (raw_res == "error")
