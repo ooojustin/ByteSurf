@@ -7,11 +7,11 @@
    
 	global $user;
 
-    update_imdb_rating($_GET['t']);
+    update_imdb_information($_GET['t']);
     
     $data = get_movie_data($_GET['t']);
     if (!$data)
-        die('Movie not found.'); // make a 404 page or smth
+        msg('Error', 'Movie not found.');
 
     $title = $data['title'];
     $description = $data['description'];

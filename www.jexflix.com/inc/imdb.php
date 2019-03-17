@@ -28,29 +28,29 @@
 		return doubleval(explode('<', explode('>', $matches[0])[1])[0]);
 	}
 
-	function get_imdb_page_data($url) {
-		$movie_data = get_movie_data($url);
-		$imdb_url = 'https://www.imdb.com/title/' . $movie_data['imdb_id'];
-		$imdb_raw = file_get_contents($imdb_url);
-		return $imdb_raw;
-	}
 
-	function update_imdb_rating($url) {
+	function update_imdb_information($url) {
+
+		// make sure we actually need to update this info
+		if (!needs_imdb_update($url))
+			return;
+
+		// give us access to database connection
 		global $db;
-		if (needs_imdb_update($url)) {
-			// get current rating from imdb
-			$rating = get_imdb_rating($url);
-			// store updated rating
-			$update_imdb_rating = $db->prepare('UPDATE movies SET rating=:rating WHERE url=:url');
-			$update_imdb_rating->bindValue(':rating', $rating);
-			$update_imdb_rating->bindValue(':url', $url);
-			$update_imdb_rating->execute();
-			// log update
-			$log_imdb_update = $db->prepare('INSERT INTO imdb_updates (url, timestamp) VALUES (:url, :timestamp)');
-			$log_imdb_update->bindValue(':url', $url);
-			$log_imdb_update->bindValue(':timestamp', time());
-			$log_imdb_update->execute();
-		}
+
+		// update rating and similar content
+		$update_imdb_rating = $db->prepare('UPDATE movies SET rating=:rating, similar=:similar WHERE url=:url');
+		$update_imdb_rating->bindValue(':rating', get_imdb_rating($url));
+		$update_imdb_rating->bindValue(':similar', json_encode(get_imdb_similar_titles($url, true)));
+		$update_imdb_rating->bindValue(':url', $url);
+		$update_imdb_rating->execute();
+
+		// log update
+		$log_imdb_update = $db->prepare('INSERT INTO imdb_updates (url, timestamp) VALUES (:url, :timestamp)');
+		$log_imdb_update->bindValue(':url', $url);
+		$log_imdb_update->bindValue(':timestamp', time());
+		$log_imdb_update->execute();
+		
 	}
 
 	function needs_imdb_update($url) {
@@ -63,6 +63,16 @@
 			return true;
 		$day_ago = time() - (60 * 60 * 24); // timestamp 1 day ago
 		return $last_update['timestamp'] < $day_ago; // return true if last update was over a day ago
+	}
+
+	function get_imdb_page_data($url) {
+		global $imdb_data;
+		if (!isset($imdb_data)) {
+			$movie_data = get_movie_data($url);
+			$imdb_url = 'https://www.imdb.com/title/' . $movie_data['imdb_id'];
+			$imdb_data = file_get_contents($imdb_url);
+		}
+		return $imdb_data;
 	}
 
 	function movie_url_from_imdb($imdb) {
