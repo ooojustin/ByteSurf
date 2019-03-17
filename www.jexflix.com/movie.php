@@ -7,12 +7,15 @@
    
 	global $user;
 
-    update_imdb_information($_GET['t']);
-    
+    if (!isset($_GET['t']))
+        msg('Error', 'Movie not specified.');
+
     $data = get_movie_data($_GET['t']);
     if (!$data)
         msg('Error', 'Movie not found.');
 
+    update_imdb_information($_GET['t']);
+    
     $title = $data['title'];
     $description = $data['description'];
     $thumbnail = authenticate_cdn_url($data['thumbnail']);
@@ -24,8 +27,6 @@
     $rating = $data['rating'];
 
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -238,99 +239,43 @@
 </section>
 <!-- end content -->
 
-<!--
+<!-- similar movies -->
 <section>
     <div class="container-fluid">
         <div class="row>">
             <div class="col-12">
                 <div class="owl-carousel">
-                    <div class="card">
+
+                    <?
+                        $similar = get_similar_movies($_GET['t']);
+                        foreach ($similar as $movie) {
+                            $movie = get_movie_data($movie);
+                            $thumbnail = authenticate_cdn_url($movie['thumbnail']);
+                            $href = 'https://jexflix.com/movie.php?t=' . $movie['url'];
+                    ?>
+                     <div class="card">
                         <div class="card__cover">
-                            <img src="img/covers/cover.jpg" alt="">
-                            <a href="#" class="card__play">
+                            <img src=<?= '"' . $thumbnail . '"'; ?> alt="">
+                            <a href=<?= '"' . $href . '"'; ?> class="card__play">
                                 <i class="icon ion-ios-play"></i>
                             </a>
                         </div>
                         <div class="card__content">
-                            <h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
+                            <h3 class="card__title"><a href=<?= '"' . $href . '"'; ?>><?= $movie['title'] ?></a></h3>
                             <span class="card__category">
-										<a href="#">Action</a>
-										<a href="#">Triler</a>
-									</span>
-                            <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
+                                <a href=<?= '"https://jexflix.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year']    ?></a>
+                            </span>
+                            <span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card__cover">
-                            <img src="img/covers/cover.jpg" alt="">
-                            <a href="#" class="card__play">
-                                <i class="icon ion-ios-play"></i>
-                            </a>
-                        </div>
-                        <div class="card__content">
-                            <h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
-                            <span class="card__category">
-										<a href="#">Action</a>
-										<a href="#">Triler</a>
-									</span>
-                            <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card__cover">
-                            <img src="img/covers/cover.jpg" alt="">
-                            <a href="#" class="card__play">
-                                <i class="icon ion-ios-play"></i>
-                            </a>
-                        </div>
-                        <div class="card__content">
-                            <h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
-                            <span class="card__category">
-										<a href="#">Action</a>
-										<a href="#">Triler</a>
-									</span>
-                            <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card__cover">
-                            <img src="img/covers/cover.jpg" alt="">
-                            <a href="#" class="card__play">
-                                <i class="icon ion-ios-play"></i>
-                            </a>
-                        </div>
-                        <div class="card__content">
-                            <h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
-                            <span class="card__category">
-										<a href="#">Action</a>
-										<a href="#">Triler</a>
-									</span>
-                            <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card__cover">
-                            <img src="img/covers/cover.jpg" alt="">
-                            <a href="#" class="card__play">
-                                <i class="icon ion-ios-play"></i>
-                            </a>
-                        </div>
-                        <div class="card__content">
-                            <h3 class="card__title"><a href="#">I Dream in Another Language</a></h3>
-                            <span class="card__category">
-										<a href="#">Action</a>
-										<a href="#">Triler</a>
-									</span>
-                            <span class="card__rate"><i class="icon ion-ios-star"></i>8.4</span>
-                        </div>
-                    </div>
+                    <? } ?>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
-
--->
+<!-- end similar movies -->
 
 	<!-- footer -->
 	<footer class="footer">
