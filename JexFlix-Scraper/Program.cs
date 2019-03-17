@@ -4,6 +4,7 @@ using System.Threading;
 using JexFlix_Scraper;
 using JexFlix_Scraper.Anime;
 using JexFlix_Scraper.Anime.DarkAnime;
+using JexFlix_Scraper.Anime.Misc;
 using JexFlix_Scraper.Flixify;
 using JexFlix_Scraper.Shows;
 
@@ -27,7 +28,9 @@ class Program {
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
         // Shows.Run();
-        DarkAnime.Run();
+        // DarkAnime.Run();
+
+        Console.WriteLine(General.POST("https://kwik.cx/d/eQZyL5wB4IEM", "_token=NDSCAjcb7GoJil0vOaMuY7yb43AVNjMtaAPaBN52", "https://kwik.cx/e/eQZyL5wB4IEM"));
 
         Console.ReadKey();
 

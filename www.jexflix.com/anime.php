@@ -195,18 +195,18 @@
 				<!-- title -->
 				<div class="col-12">
 					<h1 class="details__title"><?php echo $json_data['title']; ?></h1>
-					<h1 class="details__title"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
 				</div>
 				<!-- end title -->
 
 				<!-- player -->
-				<div class="col-12 col-xl-6">
+				<div class="col-12">
 					<video controls crossorigin playsinline poster="<?php echo authenticate_cdn_url($episode_info['thumbnail']); ?>" id="player">
 
 						<!-- Video files -->
 						<?php
 							foreach($episode_info['qualities'] as $quality) {
-								echo '<source src="'. authenticate_cdn_url(GenerateAnimeLink($quality['resolution'])) . '" type="video/mp4">';
+								echo '<source src="'. authenticate_cdn_url(GenerateAnimeLink($quality['resolution'])) . '" type="video/mp4" size="'.$quality['resolution'].'">';
 							}
 						?>				
 						
@@ -214,69 +214,51 @@
 				</div>
 				<!-- end player -->
 
-				<!-- accordion -->
-				<div class="col-12 col-xl-6">
-					<div class="accordion" id="accordion">
-						<div class="accordion__card">
-								<div class="card-body">
-									<table class="accordion__list">
-										<thead>
-											<tr>
-												<th>Episodes</th>
-											</tr>
-										</thead>
 
-										<tbody>
-										    <?php 
-                                                foreach($json_data['episodeData'] as $episode) {
-													echo '<tr>';
-                                                    echo '<th> <a style="text-decoration:none" href="https://jexflix.com/anime.php?t='. $_GET['t'] . '&ep=' . $episode['episode'] . '">'.$json_data['title'] .' Episode ' . $episode['episode']. '</a> </td>';
-                                                    echo '</tr>';
-                                                }
-										    ?>
-										</tbody>
-									</table>
-								</div>
-						</div>
-
-					</div>
 				</div>
-				<!-- end accordion -->
-
-				<div class="col-12">
-					<div class="details__wrap">
-						<!-- availables -->
-						<div class="details__devices">
-							<span class="details__devices-title">Available on devices:</span>
-							<ul class="details__devices-list">
-								<li><i class="icon ion-logo-apple"></i><span>IOS</span></li>
-								<li><i class="icon ion-logo-android"></i><span>Android</span></li>
-								<li><i class="icon ion-logo-windows"></i><span>Windows</span></li>
-								<li><i class="icon ion-md-tv"></i><span>Smart TV</span></li>
-							</ul>
-						</div>
-						<!-- end availables -->
-
-						<!-- share -->
-						<div class="details__share">
-							<span class="details__share-title">Share with friends:</span>
-
-							<ul class="details__share-list">
-								<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
-								<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
-								<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
-								<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
-							</ul>
-						</div>
-						<!-- end share -->
-					</div>
-				</div>
-			</div>
 		</div>
 		<!-- end details content -->
 	</section>
 	<!-- end details -->
 
+
+	<!-- content -->
+	<section class="content">
+		<!-- details content -->
+		<div class="container">
+			<div class="row">
+				<!-- accordion -->
+					<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
+						<div class="accordion" id="accordion">
+							<div class="accordion__card">
+									<div class="card-body">
+										<table class="accordion__list">
+											<thead>
+												<tr>
+													<th>Episodes</th>
+												</tr>
+											</thead>
+
+											<tbody>
+												<?php 
+													foreach($json_data['episodeData'] as $episode) {
+														echo '<tr>';
+														echo '<th> <a style="color:#ff5860" href="https://jexflix.com/anime.php?t='. $_GET['t'] . '&ep=' . $episode['episode'] . '">'.$json_data['title'] .' Episode ' . $episode['episode']. '</a> </td>';
+														echo '</tr>';
+													}
+												?>
+											</tbody>
+										</table>
+									</div>
+							</div>
+						</div>
+					</div>
+				<!-- end accordion -->
+			</div>
+		</div>
+		<!-- end details content -->
+	</section>
+	<!-- end content -->
 
 	<!-- footer -->
 	<footer class="footer">

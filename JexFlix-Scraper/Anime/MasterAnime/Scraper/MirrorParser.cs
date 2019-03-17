@@ -122,7 +122,7 @@ namespace JexFlix_Scraper.Anime.MasterAnime.Scraper {
                             callback(match_deobf.Value.Split('"')[3]);
                         }
                     }
-                }               
+                }
             } catch (WebException ex) {
                 HttpWebResponse webResponse = ex.Response as HttpWebResponse;
                 if (webResponse.StatusCode == HttpStatusCode.NotFound) {
