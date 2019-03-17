@@ -24,7 +24,7 @@ namespace JexFlix_Scraper.Anime.Misc {
         /// <summary>
         /// Simple Post request using webClient
         /// </summary>
-        public static string POST(string url, string post_param, string referer) {
+        public static string POST(string url, string post_param, string referer = "") {
             try {
                 using (WebClient webClient = GetWebClient()) {
                     webClient.Headers[HttpRequestHeader.Referer] = referer;
