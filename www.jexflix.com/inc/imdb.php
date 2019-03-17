@@ -16,7 +16,8 @@
 					array_push($titles, $title);
 			} else array_push($titles, $title);
 		}
-		return $titles;
+		// note: array_unique removes duplicates
+		return array_unique($titles);
 	}
 
 	function get_imdb_rating($url) {
