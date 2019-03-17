@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -23,17 +24,16 @@ namespace JexFlix_Scraper.Anime.Misc {
         /// <summary>
         /// Simple Post request using webClient
         /// </summary>
-        public static string POST(string url, string post_param, string intended_page) {
+        public static string POST(string url, string post_param, string referer = "") {
             try {
                 using (WebClient webClient = GetWebClient()) {
-                    webClient.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                    webClient.Headers[HttpRequestHeader.Referer] = intended_page;
-                    webClient.Headers.Add("origin", "https://www.masterani.me");
+                    webClient.Headers[HttpRequestHeader.Referer] = referer;
                     return webClient.UploadString(url, post_param);
                 }
 
-            } catch (Exception ex) {
-                return "ERROR: " + ex.Message;
+            } catch (WebException ex) {
+                return new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                // return "ERROR: " + ex.Message;
             }
 
         }

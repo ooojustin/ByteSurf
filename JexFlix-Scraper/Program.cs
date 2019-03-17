@@ -4,6 +4,8 @@ using System.Threading;
 using JexFlix_Scraper;
 using JexFlix_Scraper.Anime;
 using JexFlix_Scraper.Anime.DarkAnime;
+using JexFlix_Scraper.Anime.Misc;
+using JexFlix_Scraper.Anime.Twist.Moe;
 using JexFlix_Scraper.Flixify;
 using JexFlix_Scraper.Shows;
 
@@ -16,7 +18,6 @@ class Program {
 
         // Anime.Run();
 
-
         //Flixify.Run();
         //Thread t1 = new Thread(() => Flixify.Run(0));
         //t1.Start();
@@ -27,7 +28,10 @@ class Program {
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
         // Shows.Run();
-        DarkAnime.Run();
+        // DarkAnime.Run();
+
+        Twist.Run();
+
 
         Console.ReadKey();
 

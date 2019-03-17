@@ -179,8 +179,6 @@
 </div>
 
 
-
-
 </section>
 <!-- end details -->
 

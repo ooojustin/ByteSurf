@@ -71,6 +71,7 @@
     <Compile Include="Anime\DarkAnime\DarkAnime.cs" />
     <Compile Include="Anime\DarkAnime\DarkAPI.cs" />
     <Compile Include="Anime\DarkAnime\DarkSearch.cs" />
+    <Compile Include="Anime\Kitsu.IO\Kitsu.cs" />
     <Compile Include="Anime\MasterAnime\AniEpisode.cs" />
     <Compile Include="Anime\MasterAnime\AniExtensions.cs" />
     <Compile Include="Anime\MasterAnime\AniInfo.cs" />
@@ -80,6 +81,9 @@
     <Compile Include="Anime\Misc\CaptchaBypass.cs" />
     <Compile Include="Anime\Misc\CloudflareHTTPClientWrapper.cs" />
     <Compile Include="Anime\Misc\General.cs" />
+    <Compile Include="Anime\Twist.Moe\AESCrypto.cs" />
+    <Compile Include="Anime\Twist.Moe\Twist.cs" />
+    <Compile Include="Anime\Twist.Moe\TwistAPI.cs" />
     <Compile Include="MessageHandler.cs" />
     <Compile Include="Movies\Flixify.cs" />
     <Compile Include="Movies\FlixifyUrlClasses.cs" />
