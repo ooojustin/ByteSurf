@@ -1,6 +1,6 @@
 <?php
 
-	header('location: https://discord.gg/UwTUhtU');
+	header('location: https://discord.gg/A63TFhP');
 	die();
 
 ?>
