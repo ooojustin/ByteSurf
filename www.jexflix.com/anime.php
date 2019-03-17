@@ -15,7 +15,8 @@
    	}   
 
 	require 'inc/server.php';
-   	
+	require 'inc/session.php';
+	
     if (!isset($_GET['t']))
     	die('No anime selected');
 
@@ -34,12 +35,7 @@
     $json_data = json_decode($data_raw, true);
 
     // comment out these 2 lines and access all of the data from the $json_data variable
-    // $json_encode($json_data, JSON_PRETTY_PRINT);
-    
-    //foreach($json_data['episodeData'] as $episode) {
-    //   echo $episode['title'];
-    //}
-    
+    // $json_encode($json_data, JSON_PRETTY_PRINT);   
 	//die();
 
 	if (!isset($_GET['ep'])) {
@@ -47,6 +43,12 @@
 	} 
 
 	$episode_info = $json_data['episodeData'][$_GET['ep'] - 1];
+
+	function GenerateAnimeLink($res) {
+		// https://cdn.jexflix.com/anime/asobi-asobase/poster.jpg
+		// https://cdn.jexflix.com/anime/asobi-asobase/8/1080.mp4
+		return "https://cdn.jexflix.com/anime/".$_GET['t']."/".$_GET['ep']."/" . $res . ".mp4";
+	}
 
 ?>
 <!DOCTYPE html>
@@ -120,91 +122,71 @@
 
 								<!-- catalog -->
 								<li class="header__nav-item">
-									<a href="../catalog" class="header__nav-link">Catalog</a>
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Catalog</a>
+										<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
+											<li><a href="../catalog">Movies</a></li>
+											<li><a href="index.php">Anime</a></li>
+									</ul>
 								</li>
 								<!-- catalog -->
 
 								<li class="header__nav-item">
-									<a href="../pricing" class="header__nav-link">Pricing Plan</a>
+									<a href="../random.php" class="header__nav-link">Random</a>
 								</li>
 
 								<li class="header__nav-item">
-									<a href="../faq" class="header__nav-link">Help</a>
+									<a href="../about" class="header__nav-link">About</a>
 								</li>
 
-								<!-- dropdown -->
-								<li class="dropdown header__nav-item">
-									<a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon ion-ios-more"></i></a>
 
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-										<li><a href="../about">About</a></li>
-										<li><a href="../profile">Profile</a></li>
-										<? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
-									</ul>
-								</li>
-								<!-- end dropdown -->
 							</ul>
 							<!-- end header nav -->
 
 							<!-- header auth -->
 							<div class="header__auth">
+							    
 								<button class="header__search-btn" type="button">
 									<i class="icon ion-ios-search"></i>
 								</button>
 
-								<!-- dropdown -->
 								<div class="dropdown header__lang">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</a>
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
 
 									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-										<li><a href="#">English</a></li>
-										<li><a href="#">Spanish</a></li>
+										<li><a href="../profile">Profile</a></li>
+                                        <? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
+										<li><a href="index.php?logout=1">Sign Out</a></li>
 									</ul>
 								</div>
-								<!-- end dropdown -->
-
-								<a href="index.php?logout=1" class="header__sign-in">
-									<i class="icon ion-ios-log-in"></i>
-									<span>Sign Out</span>
-								</a>
 							</div>
 							<!-- end header auth -->
-
-							<!-- header menu btn -->
-							<button class="header__btn" type="button">
-								<span></span>
-								<span></span>
-								<span></span>
-							</button>
-							<!-- end header menu btn -->
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
-		<!-- header search -->
-		<form action="#" class="header__search">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="header__search-content">
-							<input type="text" placeholder="Search for a movie, TV Series that you are looking for">
-
-							<button type="button">search</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</form>
-		<!-- end header search -->
+        <!-- header search -->
+        <form action="https://jexflix.com/anime" method="get" class="header__search">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="header__search-content">
+                            <input type="text" id="search" name='search' placeholder="Search for an anime that you are looking for">
+                            <button type="submit">search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- end header search -->
 	</header>
 	<!-- end header -->
 
 	<!-- details -->
 	<section class="section details">
 		<!-- details background -->
-		<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>
+		<!-- <div class="details__bg" data-bg="img/home/home__bg.jpg"></div> -->
 		<!-- end details background -->
 
 		<!-- details content -->
@@ -224,7 +206,7 @@
 						<!-- Video files -->
 						<?php
 							foreach($episode_info['qualities'] as $quality) {
-								echo '<source src="'. authenticate_cdn_url($quality['link']) . '" type="video/mp4">';
+								echo '<source src="'. authenticate_cdn_url(GenerateAnimeLink($quality['resolution'])) . '" type="video/mp4">';
 							}
 						?>				
 						
@@ -240,8 +222,7 @@
 									<table class="accordion__list">
 										<thead>
 											<tr>
-												<th>#</th>
-												<th>Title</th>
+												<th>Episodes</th>
 											</tr>
 										</thead>
 
@@ -249,9 +230,7 @@
 										    <?php 
                                                 foreach($json_data['episodeData'] as $episode) {
 													echo '<tr>';
-                                                    echo '<th>'.$episode['episode'].'</td>';
-													echo '<td> <a style="text-decoration:none" href="https://jexflix.com/anime.php?t='. $_GET['t'] . '&ep=' . $episode['episode'] . '">' . $episode['title']. '</a></td>';
-													echo '</a>';
+                                                    echo '<th> <a style="text-decoration:none" href="https://jexflix.com/anime.php?t='. $_GET['t'] . '&ep=' . $episode['episode'] . '">'.$json_data['title'] .' Episode ' . $episode['episode']. '</a> </td>';
                                                     echo '</tr>';
                                                 }
 										    ?>

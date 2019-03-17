@@ -203,7 +203,7 @@
 		</div>
 
         <!-- header search -->
-        <form action="https://jexflix.com/anime_catalog" method="get" class="header__search">
+        <form action="https://jexflix.com/anime" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
