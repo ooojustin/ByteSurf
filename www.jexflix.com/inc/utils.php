@@ -15,6 +15,7 @@
 			'message' => $message
 		);
 		header('location: https://jexflix.com/msg');
+		die();
 	}
 
 	function login($username, $password) {
@@ -101,6 +102,14 @@
 		$get_trial_key->bindValue(':trial_key', $trial_key);
 		$get_trial_key->execute();
 		return $get_trial_key->fetch();
+	}
+
+	function trial_key_exists($trial_key) {
+		global $db;
+		$get_trial_key = $db->prepare('SELECT * FROM trial_keys WHERE trial_key=:trial_key');
+		$get_trial_key->bindValue(':trial_key', $trial_key);
+		$get_trial_key->execute();
+		return $get_trial_key->rowCount() > 0;
 	}
 	
 	function generate_trial_key($username, $duration) {
@@ -293,45 +302,13 @@
    		return $get_data->fetch();
 	}
 
-	function get_imdb_rating($url) {
-		$movie_data = get_movie_data($url);
-		$imdb_url = 'https://www.imdb.com/title/' . $movie_data['imdb_id'];
-		$imdb_raw = file_get_contents($imdb_url);
-		$regex = '/<span class="rating">.*<span class="ofTen">\/10<\/span><\/span>/m';
-		if (!preg_match($regex, $imdb_raw, $matches))
-			return doubleval(-1);
-		// forgive me lord for i have sinned:
-		return doubleval(explode('<', explode('>', $matches[0])[1])[0]);
-	}
-
-	function update_imdb_rating($url) {
-		global $db;
-		if (needs_imdb_update($url)) {
-			// get current rating from imdb
-			$rating = get_imdb_rating($url);
-			// store updated rating
-			$update_imdb_rating = $db->prepare('UPDATE movies SET rating=:rating WHERE url=:url');
-			$update_imdb_rating->bindValue(':rating', $rating);
-			$update_imdb_rating->bindValue(':url', $url);
-			$update_imdb_rating->execute();
-			// log update
-			$log_imdb_update = $db->prepare('INSERT INTO imdb_updates (url, timestamp) VALUES (:url, :timestamp)');
-			$log_imdb_update->bindValue(':url', $url);
-			$log_imdb_update->bindValue(':timestamp', time());
-			$log_imdb_update->execute();
-		}
-	}
-
-	function needs_imdb_update($url) {
-		global $db;
-		$get_last_update = $db->prepare('SELECT * FROM imdb_updates WHERE url=:url ORDER BY id DESC LIMIT 1');
-		$get_last_update->bindValue(':url', $url);
-		$get_last_update->execute();
-		$last_update = $get_last_update->fetch();
-		if (!$last_update)
-			return true;
-		$day_ago = time() - (60 * 60 * 24); // timestamp 1 day ago
-		return $last_update['timestamp'] < $day_ago; // return true if last update was over a day ago
+	function get_similar_movies($url) {
+		$movie = get_movie_data($url);
+		$similar_str = $movie['similar'];
+		if (is_null($similar_str))
+			return array();
+		else
+			return json_decode($similar_str, true);
 	}
 
 	function authenticated_movie_links($data) {

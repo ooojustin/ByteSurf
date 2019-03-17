@@ -1,7 +1,12 @@
 <?php
 	
 	session_set_cookie_params(86400);
-	session_start();
+
+	$started = @session_start();
+	if(!$started) {
+		session_regenerate_id(true); // replace the Session ID
+		session_start(); 
+	}
 
 	// establish user data
 	if (isset($_SESSION['id']))
