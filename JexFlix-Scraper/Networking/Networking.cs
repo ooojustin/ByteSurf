@@ -154,7 +154,16 @@ namespace JexFlix_Scraper {
             SAFE_REQUEST.UserAgent = "jexflix-client";
             NameValueCollection values = new NameValueCollection();
             values["url"] = title;
-            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+            Response response = null;
+            while (response == null) {
+                try {
+                    response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+                    if (!response.status)
+                        response = null;
+                } catch (Exception ex) {
+                    Console.WriteLine("[SafeRequest] " + ex.Message);
+                }
+            }
             bool exists = response.GetData<bool>("exists");
             return exists;
         }
