@@ -10,7 +10,7 @@
     define('RED', '#9c3636, #dc3c3c');
     define('GREEN', '#32905c, #6adc3c');
 
-    $replyto = $user['email'];
+    $email = $user['email'];
     $username = $user['username'];
     
     switch ($_GET['q']) {
@@ -37,22 +37,30 @@
     	goto skip_send;
 
     if (strlen($_POST['message']) < 20) {
-    	$notification = "Message must be at least 20 characters."
+    	$notification = "Message must be at least 20 characters.";
     	$notification_colors = RED;
     	goto skip_send;
     }
 
     if (strlen($_POST['message']) > 20) {
 
-        $message = "Username: " . $username . "\r\n" . 
-        			   "Email Address: " . $replyto . "\r\n" . "\r\n" .  $_POST['message'];
+        $message = "<b>Username:</b> " . $username . "<br>" . PHP_EOL . 
+					"<b>Email Address:</b> " . $email . "<br><br>" . PHP_EOL .
+					"<b>Message:</b><br>" . PHP_EOL . $_POST['message'];
 
-		$headers = 'From: '.'mailer@jexflix.com'."\r\n".
-					'Reply-To: '. $replyto ."\r\n" .
-					'From: Jexflix - Support Request' . "\r\n" .
-					'X-Mailer: PHP/' . phpversion();
+  		$response = send_email(
+  			$subject, // email subject
+  			$message, // email contents (html)
+  			'mailer@jexflix.com', // sender email
+  			'JexFlix - Support Request', // sender name
+  			'support@jexflix.com', // receiver email
+  			'JexFlix Staff', // receiver name
+  			$email, // reply-to email (optional)
+  			$username // reply-to name (optional)
+  		);
 
-		$sent = @mail('support@jexflix.com', $subject, $message, $headers);
+  		$status = $response->statusCode();
+    	$sent = $status >= 200 && $status < 300; // HTTP 2xx == SUCCESS
 
 		if ($sent) {
 			$notification = "Message Sent Successfully.";
