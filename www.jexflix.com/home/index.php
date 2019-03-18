@@ -5,10 +5,11 @@
     require_subscription();
     
     $trending = array(
-        'isnt-it-romantic-2019',
+        'triple-frontier-2019',
         'mortal-engines-2018',
         'overlord-2018',
         'aquaman-2018',
+        'isnt-it-romantic-2019',
         'spider-man-into-the-spider-verse-2018',
         'ralph-breaks-the-internet-2018',
         'crazy-rich-asians-2018'
@@ -46,6 +47,20 @@
         'upgrade-2018', // 18
     );
     
+    global $db;
+    
+	$get_movie_count = $db->prepare('SELECT * FROM movies');
+	$get_movie_count->execute();
+	$movie_count = $get_movie_count->rowCount();
+	
+	$get_anime_count = $db->prepare('SELECT * FROM anime');
+	$get_anime_count->execute();
+	$anime_count = $get_anime_count->rowCount();
+	
+	$get_series_count = $db->prepare('SELECT * FROM series');
+	$get_series_count->execute();
+	$series_count = $get_series_count->rowCount();
+    
 ?>
 
 
@@ -80,8 +95,8 @@
 	<title>jexflix</title>
 
 </head>
-<body class="body">
 
+<body class="body">
 	<!-- header -->
 	<header class="header">
 		<div class="header__wrap">
@@ -162,8 +177,8 @@
         <!-- end header search -->
 	</header>
 	<!-- end header -->
-
-
+	
+    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px">We currently have <?=$movie_count?> movies, <?=$series_count?> TV shows, and <?=$anime_count?> animes. Refresh for the newest info.</div>
 	<!-- home -->
 	<section class="home">
 		<!-- home bg -->

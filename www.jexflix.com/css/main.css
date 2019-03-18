@@ -1,11 +1,4 @@
 /*----------------------------------------
-[Master Stylesheet]
-
-Project:	FlixGo
-Version:	1.1
-Primary use:	FlixGo Template
-----------------------------------------*/
-/*----------------------------------------
 [Table of contents]
 
 1. Header
@@ -479,6 +472,25 @@ ul {
   opacity: 0.85;
   margin-left: 20px;
 }
+
+.header__dropmore {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 40px;
+  width: 40px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background-image: -moz-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: -webkit-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: -ms-linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  background-image: linear-gradient(90deg, #ff55a5 0%, #ff5860 100%);
+  -webkit-box-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
+  box-shadow: 0 0 20px 0 rgba(255,88,96,0.5);
+  opacity: 0.85;
+  margin-left: 20px;
+}
+
 .header__sign-in span {
   display: none;
 }
@@ -779,6 +791,7 @@ ul {
   right: 0;
   bottom: 0;
   z-index: 1;
+  background-color: #2b2b31;
 }
 .home__cover {
   opacity: 0.07;
@@ -835,7 +848,6 @@ ul {
   bottom: 0;
   left: 0;
   display: block;
-  background: url("../img/home/home__bg.jpg") no-repeat center/cover;
   opacity: 0.06;
 }
 @media (min-width: 576px) {
@@ -3622,6 +3634,8 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   align-items: center;
   margin-bottom: 10px;
 }
+
+
 .profile__meta {
   display: flex;
   flex-direction: column;
@@ -3725,6 +3739,36 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   letter-spacing: 0.2px;
   font-family: 'Open Sans', sans-serif;
 }
+
+
+.redeem-input {
+  background-color: #2b2b31;
+  border: none;
+  height: 50px;
+  position: relative;
+  color: #fff;
+  font-size: 15px;
+  width: 100%;
+  color: #fff;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  padding: 0 20px;
+  letter-spacing: 0.2px;
+  font-family: 'Open Sans', sans-serif;
+}
+
+#dabar{
+background: #2c3644;
+color: #fff;
+font-size:16px;
+top: 0px;
+left: 0px;
+width: 100% !important;
+padding: 10px 0px;
+text-align: center;}
+#dabar a {color: #ffffff; border-bottom: 1px dotted;}
+
+
 .profile__btn {
   display: flex;
   justify-content: center;
@@ -4243,6 +4287,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
   justify-content: center;
   
 }
+
 
 @media (min-width: 360px){
   .register-error {
