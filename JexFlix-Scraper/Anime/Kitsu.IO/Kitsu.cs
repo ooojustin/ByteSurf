@@ -18,6 +18,8 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         private const string MEDIA_API = "https://awqo5j657s-dsn.algolia.net/1/indexes/production_media/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.27.1&x-algolia-application-id=AWQO5J657S&x-algolia-api-key={0}";
         private const string MEDIA_API_PARAMS = "query={0}&attributesToRetrieve=%5B%22id%22%2C%22slug%22%2C%22kind%22%2C%22canonicalTitle%22%2C%22titles%22%2C%22posterImage%22%2C%22subtype%22%2C%22posterImage%22%5D&hitsPerPage=4";
 
+        private const string KITSU_ANIME_LINK = "https://kitsu.io/api/edge/anime/{0}";
+
         public static Aligolia_Keys GetAligoliaKeys() {
             try {
                 string raw = General.GET(GET_KEYS);
@@ -35,6 +37,25 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 string to_upload = JsonConvert.SerializeObject(to_post);
                 string raw = General.POST(string.Format(MEDIA_API, keys.media.key), to_upload, "https://kitsu.io");
                 return JsonConvert.DeserializeObject<Media_Production>(raw, General.DeserializeSettings);
+            } catch (WebException ex) {
+                Console.WriteLine("[GetAligoliaKeys] " + ex.Message);
+            }
+            return null;
+        }
+
+        public static int GetFirstTVID(Media_Production Medias) {
+            foreach (Hit hit in Medias.hits) {
+                if (hit.subtype.ToLower().Contains("tv")) {
+                    return hit.id;
+                }
+            }
+            return 0;
+        }
+
+        public static KitsuAnime.Anime GetKitsuAnime(int ID) {
+            try {
+                string raw = General.GET(string.Format(KITSU_ANIME_LINK, ID.ToString()));
+                return JsonConvert.DeserializeObject<KitsuAnime.Anime>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
                 Console.WriteLine("[GetAligoliaKeys] " + ex.Message);
             }
@@ -211,5 +232,321 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             public string @params { get; set; }
         }
 
+        public class KitsuAnime {
+
+            public class Links {
+                public string self { get; set; }
+            }
+
+            public class Titles {
+                public string en { get; set; }
+                public string en_jp { get; set; }
+                public string ja_jp { get; set; }
+            }
+
+            public class RatingFrequencies {
+                public string __invalid_name__2 { get; set; }
+                public string __invalid_name__3 { get; set; }
+                public string __invalid_name__4 { get; set; }
+                public string __invalid_name__5 { get; set; }
+                public string __invalid_name__6 { get; set; }
+                public string __invalid_name__7 { get; set; }
+                public string __invalid_name__8 { get; set; }
+                public string __invalid_name__9 { get; set; }
+                public string __invalid_name__10 { get; set; }
+                public string __invalid_name__11 { get; set; }
+                public string __invalid_name__12 { get; set; }
+                public string __invalid_name__13 { get; set; }
+                public string __invalid_name__14 { get; set; }
+                public string __invalid_name__15 { get; set; }
+                public string __invalid_name__16 { get; set; }
+                public string __invalid_name__17 { get; set; }
+                public string __invalid_name__18 { get; set; }
+                public string __invalid_name__19 { get; set; }
+                public string __invalid_name__20 { get; set; }
+            }
+
+            public class Tiny {
+                public object width { get; set; }
+                public object height { get; set; }
+            }
+
+            public class Small {
+                public object width { get; set; }
+                public object height { get; set; }
+            }
+
+            public class Medium {
+                public object width { get; set; }
+                public object height { get; set; }
+            }
+
+            public class Large {
+                public object width { get; set; }
+                public object height { get; set; }
+            }
+
+            public class Dimensions {
+                public Tiny tiny { get; set; }
+                public Small small { get; set; }
+                public Medium medium { get; set; }
+                public Large large { get; set; }
+            }
+
+            public class Meta {
+                public Dimensions dimensions { get; set; }
+            }
+
+            public class PosterImage {
+                public string tiny { get; set; }
+                public string small { get; set; }
+                public string medium { get; set; }
+                public string large { get; set; }
+                public string original { get; set; }
+                public Meta meta { get; set; }
+            }
+
+            public class Tiny2 {
+                public int width { get; set; }
+                public int height { get; set; }
+            }
+
+            public class Small2 {
+                public int width { get; set; }
+                public int height { get; set; }
+            }
+
+            public class Large2 {
+                public int width { get; set; }
+                public int height { get; set; }
+            }
+
+            public class Dimensions2 {
+                public Tiny2 tiny { get; set; }
+                public Small2 small { get; set; }
+                public Large2 large { get; set; }
+            }
+
+            public class Meta2 {
+                public Dimensions2 dimensions { get; set; }
+            }
+
+            public class CoverImage {
+                public string tiny { get; set; }
+                public string small { get; set; }
+                public string large { get; set; }
+                public string original { get; set; }
+                public Meta2 meta { get; set; }
+            }
+
+            public class Attributes {
+                public DateTime createdAt { get; set; }
+                public DateTime updatedAt { get; set; }
+                public string slug { get; set; }
+                public string synopsis { get; set; }
+                public int coverImageTopOffset { get; set; }
+                public Titles titles { get; set; }
+                public string canonicalTitle { get; set; }
+                public List<string> abbreviatedTitles { get; set; }
+                public string averageRating { get; set; }
+                public RatingFrequencies ratingFrequencies { get; set; }
+                public int userCount { get; set; }
+                public int favoritesCount { get; set; }
+                public string startDate { get; set; }
+                public string endDate { get; set; }
+                public object nextRelease { get; set; }
+                public int popularityRank { get; set; }
+                public int ratingRank { get; set; }
+                public string ageRating { get; set; }
+                public string ageRatingGuide { get; set; }
+                public string subtype { get; set; }
+                public string status { get; set; }
+                public string tba { get; set; }
+                public PosterImage posterImage { get; set; }
+                public CoverImage coverImage { get; set; }
+                public int episodeCount { get; set; }
+                public int episodeLength { get; set; }
+                public int totalLength { get; set; }
+                public string youtubeVideoId { get; set; }
+                public string showType { get; set; }
+                public bool nsfw { get; set; }
+            }
+
+            public class Links2 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Genres {
+                public Links2 links { get; set; }
+            }
+
+            public class Links3 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Categories {
+                public Links3 links { get; set; }
+            }
+
+            public class Links4 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Castings {
+                public Links4 links { get; set; }
+            }
+
+            public class Links5 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Installments {
+                public Links5 links { get; set; }
+            }
+
+            public class Links6 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Mappings {
+                public Links6 links { get; set; }
+            }
+
+            public class Links7 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Reviews {
+                public Links7 links { get; set; }
+            }
+
+            public class Links8 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class MediaRelationships {
+                public Links8 links { get; set; }
+            }
+
+            public class Links9 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Characters {
+                public Links9 links { get; set; }
+            }
+
+            public class Links10 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Staff {
+                public Links10 links { get; set; }
+            }
+
+            public class Links11 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Productions {
+                public Links11 links { get; set; }
+            }
+
+            public class Links12 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Quotes {
+                public Links12 links { get; set; }
+            }
+
+            public class Links13 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class Episodes {
+                public Links13 links { get; set; }
+            }
+
+            public class Links14 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class StreamingLinks {
+                public Links14 links { get; set; }
+            }
+
+            public class Links15 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class AnimeProductions {
+                public Links15 links { get; set; }
+            }
+
+            public class Links16 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class AnimeCharacters {
+                public Links16 links { get; set; }
+            }
+
+            public class Links17 {
+                public string self { get; set; }
+                public string related { get; set; }
+            }
+
+            public class AnimeStaff {
+                public Links17 links { get; set; }
+            }
+
+            public class Relationships {
+                public Genres genres { get; set; }
+                public Categories categories { get; set; }
+                public Castings castings { get; set; }
+                public Installments installments { get; set; }
+                public Mappings mappings { get; set; }
+                public Reviews reviews { get; set; }
+                public MediaRelationships mediaRelationships { get; set; }
+                public Characters characters { get; set; }
+                public Staff staff { get; set; }
+                public Productions productions { get; set; }
+                public Quotes quotes { get; set; }
+                public Episodes episodes { get; set; }
+                public StreamingLinks streamingLinks { get; set; }
+                public AnimeProductions animeProductions { get; set; }
+                public AnimeCharacters animeCharacters { get; set; }
+                public AnimeStaff animeStaff { get; set; }
+            }
+
+            public class Data {
+                public string id { get; set; }
+                public string type { get; set; }
+                public Links links { get; set; }
+                public Attributes attributes { get; set; }
+                public Relationships relationships { get; set; }
+            }
+
+            public class Anime {
+                public Data data { get; set; }
+            }
+
+        }
     }
 }
