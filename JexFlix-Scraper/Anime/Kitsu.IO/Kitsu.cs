@@ -112,6 +112,16 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return synList;
         }
 
+        public static string GetSynopsis(KitsuAnime.Anime anime) {
+            return anime.data.attributes.synopsis;
+        }
+
+        public static string GetTitle(KitsuAnime.Anime anime) {
+            if (string.IsNullOrEmpty(anime.data.attributes.titles.en))
+                return anime.data.attributes.titles.en_jp;
+            return anime.data.attributes.titles.en;
+        }
+
         public class MediaPost {
             public string @params { get; set; }
         }
