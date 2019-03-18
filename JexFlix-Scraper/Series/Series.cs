@@ -78,10 +78,10 @@ namespace JexFlix_Scraper.Shows {
 
             foreach (PageItem item in pageData.items) {
 
-                if (!item.title.Contains("Walking")) {
-                    Console.WriteLine("Skipping: " + item.title);
-                    continue;
-                }
+                //if (!item.title.Contains("Walking")) {
+                //    Console.WriteLine("Skipping: " + item.title);
+                //    continue;
+                //}
 
                 SeriesData series = new SeriesData();
                 series.title = item.title;
