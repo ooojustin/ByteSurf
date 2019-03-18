@@ -63,10 +63,11 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
 
         /// <summary>
         /// Automates the search for u given a query
+        /// https://kitsu.io/api/edge/anime/11 this is an example of the json data it returns
         /// </summary>
         public static KitsuAnime.Anime GetKitsuAnime(Aligolia_Keys keys, string title) {
             try {
-                Media_Production Media = KitsuAPI.GetMediaProduction(keys, "naruto");
+                Media_Production Media = KitsuAPI.GetMediaProduction(keys, title);
                 if (Media == null)
                     return null;
                 int id = KitsuAPI.GetFirstTVID(Media);
