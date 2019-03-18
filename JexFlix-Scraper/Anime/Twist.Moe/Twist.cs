@@ -15,9 +15,13 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             Media_Production Media = KitsuAPI.GetMediaProduction(AligoliaKeys, "naruto");
 
-            foreach (Hit hit in Media.hits) {
-                Console.WriteLine(hit.slug);
-            }
+            int id = KitsuAPI.GetFirstTVID(Media);
+
+            KitsuAnime.Anime AnimeInfo = KitsuAPI.GetKitsuAnime(id);
+
+            Console.WriteLine(AnimeInfo.data.attributes.titles.en_jp);
+            Console.WriteLine(AnimeInfo.data.attributes.synopsis);
+
         }
     }
 }
