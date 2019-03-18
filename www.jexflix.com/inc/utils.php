@@ -277,14 +277,24 @@
 
 	}
 
-	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
+	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name, $reply_to = NULL, $reply_to_name = NULL) {
+
+		// initialize sendgrid & email
 		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
         $email = new \SendGrid\Mail\Mail(); 
+
+        // default variables
         $email->setFrom($from_email, $from_name);
         $email->setSubject($subject);
         $email->addTo($to_email, $to_name);
         $email->addContent("text/html", $message);
+
+        // optional stuff
+        if (!is_null($reply_to) && !is_null($reply_to_name))
+        	$email->setReplyTo($reply_to, $reply_to_name);
+
         return $sendgrid->send($email);
+
 	}
 
 	/*function send_email($subject, $message, $from_email, $to_email) {
