@@ -6,12 +6,17 @@
     
     global $user;
     
-    $subject = "General Inquiry";
+    // gradient color ranges
+    define('RED', '#9c3636, #dc3c3c');
+    define('GREEN', '#32905c, #6adc3c');
+
     $replyto = $user['email'];
     $username = $user['username'];
-    $title = "";
     
     switch ($_GET['q']) {
+    	default:
+		    $subject = "General Inquiry";
+		    break;
         case "request":
             $subject = "Movie / Feature Request";
             break;
@@ -19,37 +24,48 @@
             $subject = "Abuse";
             break;
         case "bug":
-            $subject = "Bug report";
+            $subject = "Bug Report";
             break;
         case "problem":
-            if (isset($_GET['t'])) $title = $_GET['t']; 
-            $subject = "Problem - " . $title;
-            break;
-        default:
-            break;
+        	$subject = 'Problem';
+            if (isset($_GET['t']))
+            	$subject .= ' - ' . $_GET['t'];
+			break;
     }
     
-    if (isset($_POST['send_inquiry']) && strlen($_POST['message']) > 20) {
-        $log_message = "Username: " . $username . "\r\n" . "Replying To: " . $replyto . "\r\n" . "\r\n" .  $_POST['message'];
+    if (!isset($_POST['send_inquiry']))
+    	goto skip_send;
+
+    if (strlen($_POST['message']) < 20) {
+    	$notification = "Message must be at least 20 characters."
+    	$notification_colors = RED;
+    	goto skip_send;
+    }
+
+    if (strlen($_POST['message']) > 20) {
+
+        $message = "Username: " . $username . "\r\n" . 
+        			   "Email Address: " . $replyto . "\r\n" . "\r\n" .  $_POST['message'];
+
 		$headers = 'From: '.'mailer@jexflix.com'."\r\n".
 					'Reply-To: '. $replyto ."\r\n" .
 					'From: Jexflix - Support Request' . "\r\n" .
 					'X-Mailer: PHP/' . phpversion();
-		@mail('support@jexflix.com', $subject, $log_message, $headers);  
+
+		$sent = @mail('support@jexflix.com', $subject, $message, $headers);
+
+		if ($sent) {
+			$notification = "Message Sent Successfully.";
+			$notification_colors = GREEN;
+		} else {
+			$notification = "Failed to send message. Please close and reopen the page.";
+        	$notification_colors = RED;
+		}
 		
-		$message = "Message Sent Successfully.";
-		$style = "background: linear-gradient(to right, #32905c, #6adc3c);";
     }
-    else if (strlen($_POST['message']) < 20) {
-        $message = "Please enter a message longer than 20 characters.";
-        $style = "background: linear-gradient(to right, #9c3636, #dc3c3c);";
-    }
-    else {
-        $message = "Failed to send message. Please close and reopen the page.";
-        $style = "background: linear-gradient(to right, #9c3636, #dc3c3c);";
-    }
-    
-    
+
+    skip_send:
+        
     
 ?>
 
@@ -194,9 +210,10 @@
 <div class="container" style="padding-top: 50px">
 	<div class="row">
 		<div class="col-12">
-		<? if (isset($_POST['send_inquiry'])) { ?>
-	    <div class="register-error" style="width: auto; <?=$style?>">
-    	    <span class="signin-error-text"><?=$message?></span>
+
+		<? if (isset($notification)) { ?>
+	    <div class="register-error" style="width: auto; background: linear-gradient(to right, <?=$notification_colors?>);">
+    	    <span class="signin-error-text"><?=$notification?></span>
     	</div>
     	<? } ?>
     	
