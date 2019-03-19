@@ -100,6 +100,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                         UploadData.url = data.slug;
                     }
+
                     Console.WriteLine("Scraping " + data.title_en_jp);
 
                     // Fill in upload data values

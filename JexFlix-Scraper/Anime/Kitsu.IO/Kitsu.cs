@@ -95,6 +95,10 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return anime.data.attributes.averageRating;
         }
 
+        public static string GetSlug(KitsuAnime.Anime anime) {
+            return anime.data.attributes.slug;
+        }
+
         public static List<string> GetSynonyms(KitsuAnime.Anime anime) {
             List<string> synList = new List<string>();
             var attributes = anime.data.attributes;
@@ -143,6 +147,10 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 synList.Add(genre.attributes.name);
             }
             return synList;
+        }
+
+        public static string GetAirDate(KitsuAnime.Anime anime) {
+            return anime.data.attributes.startDate;
         }
 
         public class MediaPost {
