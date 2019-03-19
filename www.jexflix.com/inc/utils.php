@@ -130,6 +130,14 @@
 		return $get_data->fetch(); 
 	}
 	
+	function get_series_data($url) {
+		global $db;
+		$get_data = $db->prepare('SELECT * FROM series WHERE url=:url');
+    	$get_data->bindValue(':url', $url);
+    	$get_data->execute();
+   		return $get_data->fetch();
+	}
+	
 	
 	function get_user_by_id($id) {
 		global $db;
