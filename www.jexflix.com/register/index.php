@@ -68,6 +68,20 @@
 	<link rel="stylesheet" href="../css/default-skin.css">
 	<link rel="stylesheet" href="../css/main.css">
 
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
+
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -85,8 +99,20 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="sign__content">
+
+						<? if (!isset($_GET['r'])) { ?>
+						<script>
+							function referrerChanged() {
+								var referrer = $('#referrer').val();
+								if (referrer.length > 0)
+									referrer = 'index.php?r=' + referrer;
+								$('#register-form').attr('action', referrer);
+							}
+						</script>
+						<? } ?>
+
 						<!-- registration form -->
-						<form action="" method="post" class="sign__form">
+						<form id="register-form" action="" method="post" class="sign__form">
 							
 							<a href="#" class="sign__logo">
 								<img src="../img/logo.png" alt="">
@@ -114,6 +140,12 @@
 								<input type="password" class="sign__input" id="password_confirm" name="password_confirm" placeholder="Confirm Password">
 							</div>
 
+							<? if (!isset($_GET['r'])) { ?>
+							<div class="sign__group">
+								<input type="text" class="sign__input" id="referrer" placeholder="Referrer" onchange="referrerChanged()">
+							</div>
+							<? } ?>
+
 							<div class="sign__group sign__group--checkbox">
 								<input id="remember" name="remember" type="checkbox" checked="checked">
 								<label for="remember">I agree to the <a href="#">Privacy Policy</a></label>
@@ -130,18 +162,5 @@
 		</div>
 	</div>
 
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>
