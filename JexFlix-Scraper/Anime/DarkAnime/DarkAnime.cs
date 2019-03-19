@@ -23,7 +23,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             DarkAPI InitialPage = null;
 
             while (InitialPage == null) {
-                CF_HttpClient.SetupClient();
+                CF_HttpClient.SetupClient(DarkSearch.DARKSTREAM);
                 InitialPage = DarkSearch.GetDarkAPI();
                 System.Threading.Thread.Sleep(1000);
             }
@@ -100,6 +100,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
 
                         UploadData.url = data.slug;
                     }
+
                     Console.WriteLine("Scraping " + data.title_en_jp);
 
                     // Fill in upload data values

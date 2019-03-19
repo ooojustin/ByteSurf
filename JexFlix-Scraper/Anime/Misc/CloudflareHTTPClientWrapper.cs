@@ -16,10 +16,10 @@ namespace JexFlix_Scraper.Anime.Misc {
 
         private static HttpClient http_client;
 
-        public static void SetupClient() {
+        public static void SetupClient(string site) {
             handler = new ClearanceHandler();
             http_client = new HttpClient(handler);
-            http_client.GetStringAsync(DarkAnime.DarkSearch.ANIME_LINK);
+            http_client.GetStringAsync(site);
         }
 
         static public async Task<string> HttpClient_GetAsync(string path) {
