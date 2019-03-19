@@ -214,14 +214,22 @@
 
 	// confirms resellers selly email & api key (test api call)
 	function reseller_is_valid($reseller) {
+
+		// return if we don't have reseller
 		if (!$reseller)
 			return false;
-		require dirname(__FILE__) . '/selly/selly.php';
+
+		// include selly file, if class is undefined
+		if (!class_exists('SellyAPI'))
+			require dirname(__FILE__) . '/selly/selly.php';
+
+		// init SellyAPI class, check validity
 		$selly = new SellyAPI($reseller['selly_email'], $reseller['selly_api_key']);
 		if (!$selly->is_valid()) {
 			update_reseller($reseller['username'], '', '');
 			return false;
 		} else return true;
+		
 	}
 
 	// gets a list of resellers available for an amount (sorted by last_purchase low to high)
