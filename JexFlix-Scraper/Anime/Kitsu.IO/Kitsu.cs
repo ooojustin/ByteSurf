@@ -20,6 +20,9 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
 
         private const string KITSU_ANIME_LINK = "https://kitsu.io/api/edge/anime/{0}";
 
+        /// <summary>
+        /// Generates a key to perform search querys with
+        /// </summary>
         public static Aligolia_Keys GetAligoliaKeys() {
             try {
                 string raw = General.GET(GET_KEYS);
@@ -30,6 +33,9 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return null;
         }
 
+        /// <summary>
+        /// Generate a search query for the different types of medias
+        /// </summary>
         public static Media_Production GetMediaProduction(Aligolia_Keys keys, string query) {
             try {
                 MediaPost to_post = new MediaPost();
@@ -43,6 +49,9 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return null;
         }
 
+        /// <summary>
+        /// Finds the first TV show or the first hit.
+        /// </summary>
         public static int GetFirstTVID(Media_Production Medias) {
             foreach (Hit hit in Medias.hits) {
                 if (hit.subtype.ToLower().Contains("tv")) {
@@ -52,14 +61,66 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return 0;
         }
 
-        public static KitsuAnime.Anime GetKitsuAnime(int ID) {
+        /// <summary>
+        /// Automates the search for u given a query
+        /// https://kitsu.io/api/edge/anime/11 this is an example of the json data it returns
+        /// </summary>
+        public static KitsuAnime.Anime GetKitsuAnime(Aligolia_Keys keys, string title) {
             try {
-                string raw = General.GET(string.Format(KITSU_ANIME_LINK, ID.ToString()));
+                Media_Production Media = KitsuAPI.GetMediaProduction(keys, title);
+                if (Media == null)
+                    return null;
+                int id = KitsuAPI.GetFirstTVID(Media);
+                if (id == 0)
+                    return null;
+                string raw = General.GET(string.Format(KITSU_ANIME_LINK, id.ToString()));
+                if (string.IsNullOrEmpty(raw))
+                    return null;
                 return JsonConvert.DeserializeObject<KitsuAnime.Anime>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
                 Console.WriteLine("[GetAligoliaKeys] " + ex.Message);
             }
             return null;
+        }
+
+        public static string GetPoster(KitsuAnime.Anime anime) {
+            return anime.data.attributes.posterImage.original;
+        }
+
+        public static string GetCover(KitsuAnime.Anime anime) {
+            return anime.data.attributes.coverImage.original; 
+        }
+
+        public static string GetRating(KitsuAnime.Anime anime) {
+            return anime.data.attributes.averageRating;
+        }
+
+        public static List<string> GetSynonyms(KitsuAnime.Anime anime) {
+            List<string> synList = new List<string>();
+            var attributes = anime.data.attributes;
+            if (!string.IsNullOrEmpty(attributes.titles.en))
+            synList.Add(attributes.titles.en);
+            if (!string.IsNullOrEmpty(attributes.titles.en_jp))
+                synList.Add(attributes.titles.en_jp);
+            if (!string.IsNullOrEmpty(attributes.titles.ja_jp))
+                synList.Add(attributes.titles.ja_jp);
+            if (!string.IsNullOrEmpty(attributes.canonicalTitle))
+                synList.Add(attributes.canonicalTitle);
+            foreach (string title in attributes.abbreviatedTitles) {
+                if (!string.IsNullOrEmpty(title))
+                    synList.Add(title);
+            }
+            return synList;
+        }
+
+        public static string GetSynopsis(KitsuAnime.Anime anime) {
+            return anime.data.attributes.synopsis;
+        }
+
+        public static string GetTitle(KitsuAnime.Anime anime) {
+            if (string.IsNullOrEmpty(anime.data.attributes.titles.en))
+                return anime.data.attributes.titles.en_jp;
+            return anime.data.attributes.titles.en;
         }
 
         public class MediaPost {

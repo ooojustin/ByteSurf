@@ -11,13 +11,9 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
         public static void Run() {
 
+            // Setup.
             Aligolia_Keys AligoliaKeys = KitsuAPI.GetAligoliaKeys();
 
-            Media_Production Media = KitsuAPI.GetMediaProduction(AligoliaKeys, "naruto");
-
-            foreach (Hit hit in Media.hits) {
-                Console.WriteLine(hit.slug);
-            }
         }
     }
 }
