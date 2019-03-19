@@ -44,7 +44,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 string raw = General.POST(string.Format(MEDIA_API, keys.media.key), to_upload, "https://kitsu.io");
                 return JsonConvert.DeserializeObject<Media_Production>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
-                Console.WriteLine("[GetAligoliaKeys] " + ex.Message);
+                Console.WriteLine("[GetMediaProduction] " + ex.Message);
             }
             return null;
         }
@@ -78,7 +78,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                     return null;
                 return JsonConvert.DeserializeObject<KitsuAnime.Anime>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
-                Console.WriteLine("[GetAligoliaKeys] " + ex.Message);
+                Console.WriteLine("[GetKitsuAnime] " + ex.Message);
             }
             return null;
         }
@@ -88,7 +88,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetCover(KitsuAnime.Anime anime) {
-            return anime.data.attributes.coverImage.original; 
+            return anime.data.attributes.coverImage.original;
         }
 
         public static string GetRating(KitsuAnime.Anime anime) {
@@ -99,7 +99,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             List<string> synList = new List<string>();
             var attributes = anime.data.attributes;
             if (!string.IsNullOrEmpty(attributes.titles.en))
-            synList.Add(attributes.titles.en);
+                synList.Add(attributes.titles.en);
             if (!string.IsNullOrEmpty(attributes.titles.en_jp))
                 synList.Add(attributes.titles.en_jp);
             if (!string.IsNullOrEmpty(attributes.titles.ja_jp))
@@ -121,6 +121,28 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             if (string.IsNullOrEmpty(anime.data.attributes.titles.en))
                 return anime.data.attributes.titles.en_jp;
             return anime.data.attributes.titles.en;
+        }
+
+        private static KitsuAnime.GenreData.Genres FetchGenrePage(KitsuAnime.Anime anime) {
+            try {
+                string raw = General.GET(anime.data.relationships.genres.links.related);
+                return JsonConvert.DeserializeObject<KitsuAnime.GenreData.Genres>(raw, General.DeserializeSettings);
+            } catch (WebException ex) {
+                Console.WriteLine("[FetchGenrePage] " + ex.Message);
+            }
+            return null;
+        }
+
+        public static List<string> GetGenres(KitsuAnime.Anime anime) {
+            List<string> synList = new List<string>();
+            var GenreInfo = FetchGenrePage(anime);
+            if (GenreInfo == null)
+                return null;
+            foreach (var genre in GenreInfo.data) {
+                if (!string.IsNullOrEmpty(genre.attributes.name))
+                synList.Add(genre.attributes.name);
+            }
+            return synList;
         }
 
         public class MediaPost {
@@ -608,6 +630,42 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 public Data data { get; set; }
             }
 
+            public class GenreData {
+
+                public class Links {
+                    public string self { get; set; }
+                }
+
+                public class Attributes {
+                    public DateTime createdAt { get; set; }
+                    public DateTime updatedAt { get; set; }
+                    public string name { get; set; }
+                    public string slug { get; set; }
+                    public string description { get; set; }
+                }
+
+                public class Datum {
+                    public string id { get; set; }
+                    public string type { get; set; }
+                    public Links links { get; set; }
+                    public Attributes attributes { get; set; }
+                }
+
+                public class Meta {
+                    public int count { get; set; }
+                }
+
+                public class Links2 {
+                    public string first { get; set; }
+                    public string last { get; set; }
+                }
+
+                public class Genres {
+                    public List<Datum> data { get; set; }
+                    public Meta meta { get; set; }
+                    public Links2 links { get; set; }
+                }
+            }
         }
     }
 }
