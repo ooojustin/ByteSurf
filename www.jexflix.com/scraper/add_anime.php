@@ -4,7 +4,6 @@
     
     $post_body = file_get_contents('php://input');
     $data = json_decode(utf8_encode($post_body), true);
-
     $title = $data['name'];
     $url = $data['url'];
     $thumbnail = $data['thumbnail'];
