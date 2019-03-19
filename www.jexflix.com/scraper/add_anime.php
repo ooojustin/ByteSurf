@@ -5,23 +5,6 @@
     $post_body = file_get_contents('php://input');
     $data = json_decode(utf8_encode($post_body), true);
 
-    // DB Structure
-    // title
-    // url
-    // thumbnail
-    // data
-    // synonyms
-
-    // Upload structure
-    // public class AniDb {
-    //    public string name { get; set; }
-    //    public string url { get; set; }
-    //    public string thumbnail { get; set; }
-    //    public string episode_data { get; set; }
-    //    public string synonyms { get; set; }
-    // }
-
-
     $title = $data['name'];
     $url = $data['url'];
     $thumbnail = $data['thumbnail'];
@@ -42,7 +25,7 @@
         
     if ($get_anime->rowCount() > 0)
         die();
-          		   
+        											
     $add_anime = $db->prepare('INSERT INTO anime (title, url, thumbnail, data, similar, genres, rating, release_date, duration, ageclass, cover) VALUES (:title, :url, :thumbnail, :data, :similar, :genres, :rating, :release_date, :duration, :ageclass, :cover);');
     $add_anime->bindValue(':title', $title);
     $add_anime->bindValue(':url', $url);
