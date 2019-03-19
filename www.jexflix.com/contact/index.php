@@ -233,14 +233,23 @@
 					<div class="col-12 col-lg-12">
 						<div class="profile__group">
 							<label class="profile__label" for="username">Subject</label>
-							<input id="subject" type="text" name="subject" value="<?=$subject?>" class="profile__input" readonly>
+					<!--		<input id="subject" type="text" name="subject" value="<?=$subject?>" class="profile__input" readonly> -->
+					
+					<select class="minimal">
+                        <option value="general">General</option>
+                        <option value="request">Movie / Feature Request</option>
+                        <option value="bug">Report A Bug</option>
+                        <option value="abuse">Report Abuse / DMCA Requests</option>
+                        <? if (isset($_GET['t'])) { ?> <option value="problem" selected="selected">Problem - <?= $_GET['t']?></option> <? } ?>
+                        <option value="billing">Billing Problems</option>
+                    </select>
+                    
 						</div>
 					</div>
-
 					<div class="col-12 col-lg-12">
 						<div class="profile__group">
 							<label class="profile__label" for="email">Message (HTML)</label>
-							<textarea id="message" name="message" class="profile__input" style="height: 200px; padding-top: 10px" placeholder="Please enter a brief message regarding your inquiry here (min 20 chars). "></textarea>
+							<textarea id="message" name="message" class="profile__input" style="height: 200px; padding-top: 12px; padding-left: 10px;" placeholder="Please enter a brief message regarding your inquiry here (min 20 chars). "></textarea>
 						</div>
 					</div>
 
