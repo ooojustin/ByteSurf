@@ -35,6 +35,8 @@ namespace JexFlix_Scraper.Anime {
         public string rating { get; set; }
         public string release { get; set; }
         public string duration { get; set; }
+        public string age_class { get; set; }
+
     }
 
 }

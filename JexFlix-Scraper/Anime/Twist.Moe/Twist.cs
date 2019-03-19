@@ -213,6 +213,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     dbinfo.rating = KitsuAPI.GetRating(KitsuAnimeInfo);
                     dbinfo.release = KitsuAPI.GetAirDate(KitsuAnimeInfo);
                     dbinfo.duration = KitsuAPI.EpisodeDuration(KitsuAnimeInfo);
+                    dbinfo.age_class = KitsuAPI.GetAgeClass(KitsuAnimeInfo);
 
                     // Update the database.
                     using (WebClient Web = General.GetWebClient()) {
