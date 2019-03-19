@@ -15,6 +15,7 @@
         } else {
             // an error occurred
             // handle here...
+            msg('PayPal Error', 'Error occurred while creating PayPal payment.');
         }
     }
 
