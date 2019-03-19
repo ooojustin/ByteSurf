@@ -54,7 +54,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             // We also need to skip every episode we have already...
                             if (AniUploadData.episodeData.Count() >= TwistEpisodes.Count()) {
                                 Console.WriteLine("Skiping " + AniUploadData.url);
-                                continue;
+                               // continue;
                             }
                             // Well if we haven't skipped.
                             if (AniUploadData.episodeData.Count >= 1) {
@@ -99,7 +99,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     int remove_index = 0;
                     foreach (EpisodeData ep_data in UploadData.episodeData) {
                         //We Found our ep
-                        if (ep_data.episode == TwistEp.number) {
+                        if (ep_data.episode == TwistEp.number && (!string.IsNullOrEmpty(ep_data.episode_title))) {
                             if (ep_data.qualities.Count() >= 1) {
                                 need_skip = true;
                                 break;
@@ -123,8 +123,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
                     remove_index = 0;
                     foreach (EpisodeData ep_data in UploadData.episodeData) {
+                        // Found our episode and it has qualities
                         if (ep_data.episode == TwistEp.number && ep_data.qualities.Count() >= 1) {
-
                             // If we already found one, delete extras.
                             if (FoundEpisode) {
                                 EpisodeCopy.RemoveAt(remove_index);
@@ -132,7 +132,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             }
                             FoundEpisode = true;
                             Console.WriteLine("An episode has been found");
-
                         }
                         remove_index++;
                     }
@@ -141,7 +140,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
                     if (!HasDeleted && need_skip) {
                         Console.WriteLine("Skiping episdode: " + TwistEp.number.ToString());
-                        continue;
+                        // continue; Don't skip episodes.
                     }
 
                     if (!FoundEpisode) {
@@ -151,6 +150,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         EpisodeData EpData = new EpisodeData();
                         EpData.qualities = new List<Quality>();
                         EpData.episode = TwistEp.number;
+                        EpData.episode_title = KitsuAPI.GetEpisodeTitle(KitsuAnimeInfo, TwistEp.number);
                         string VideoUrl = TwistAPI.GetVideoLink(TwistEp.source);
 
                         REUPLOAD:
@@ -165,6 +165,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             goto REUPLOAD;
                         }
                         UploadData.episodeData.Add(EpData);
+                    } else {
+                        UploadData.episodeData[TwistEp.number - 1].episode_title = KitsuAPI.GetEpisodeTitle(KitsuAnimeInfo, TwistEp.number);
                     }
 
 

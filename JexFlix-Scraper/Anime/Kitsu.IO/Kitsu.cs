@@ -122,9 +122,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetTitle(KitsuAnime.Anime anime) {
-            if (string.IsNullOrEmpty(anime.data.attributes.titles.en))
-                return anime.data.attributes.titles.en_jp;
-            return anime.data.attributes.titles.en;
+            return anime.data.attributes.titles.en_jp;
         }
 
         private static KitsuAnime.GenreData.Genres FetchGenrePage(KitsuAnime.Anime anime) {
@@ -137,6 +135,26 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return null;
         }
 
+        private static KitsuAnime.EpisodeData.Episodes FetchEpisodePage(KitsuAnime.Anime anime) {
+            try {
+                string raw = General.GET(anime.data.relationships.episodes.links.related);
+                return JsonConvert.DeserializeObject<KitsuAnime.EpisodeData.Episodes>(raw, General.DeserializeSettings);
+            } catch (WebException ex) {
+                Console.WriteLine("[FetchEpisodePage] " + ex.Message);
+            }
+            return null;
+        }
+
+        private static KitsuAnime.EpisodeData.Episodes FetchNextEpisodePage(KitsuAnime.EpisodeData.Episodes eps) {
+            try {
+                string raw = General.GET(eps.links.next);
+                return JsonConvert.DeserializeObject<KitsuAnime.EpisodeData.Episodes>(raw, General.DeserializeSettings);
+            } catch (WebException ex) {
+                Console.WriteLine("[FetchEpisodePage] " + ex.Message);
+            }
+            return null;
+        }
+
         public static List<string> GetGenres(KitsuAnime.Anime anime) {
             List<string> synList = new List<string>();
             var GenreInfo = FetchGenrePage(anime);
@@ -144,9 +162,29 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 return null;
             foreach (var genre in GenreInfo.data) {
                 if (!string.IsNullOrEmpty(genre.attributes.name))
-                synList.Add(genre.attributes.name);
+                    synList.Add(genre.attributes.name);
             }
             return synList;
+        }
+
+        public static string GetEpisodeTitle(KitsuAnime.Anime anime, int episode) {
+            var epdata = FetchEpisodePage(anime);
+            // Fetch the last episode
+            var last_ep = epdata.data[epdata.data.Count() - 1];
+            // When episode is on the next page
+            while (episode > last_ep.attributes.number) {
+                epdata = FetchNextEpisodePage(epdata);
+                last_ep = epdata.data[epdata.data.Count() - 1];
+            }
+            try {
+                foreach (var ep in epdata.data) {
+                    if (ep.attributes.number == episode)
+                        return ep.attributes.titles.en_us;
+                }
+            } catch (Exception ex) {
+                Console.WriteLine("[GetEpisodeTitle] " + ex.Message);
+            }
+            return "";
         }
 
         public static string GetAirDate(KitsuAnime.Anime anime) {
@@ -644,6 +682,91 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
 
             public class Anime {
                 public Data data { get; set; }
+            }
+
+            public class EpisodeData {
+                public class Links {
+                    public string self { get; set; }
+                }
+
+                public class Titles {
+                    public string en_jp { get; set; }
+                    public string en_us { get; set; }
+                    public string ja_jp { get; set; }
+                }
+
+                public class Dimensions {
+                }
+
+                public class Meta {
+                    public Dimensions dimensions { get; set; }
+                }
+
+                public class Thumbnail {
+                    public string original { get; set; }
+                    public Meta meta { get; set; }
+                }
+
+                public class Attributes {
+                    public DateTime createdAt { get; set; }
+                    public DateTime updatedAt { get; set; }
+                    public Titles titles { get; set; }
+                    public string canonicalTitle { get; set; }
+                    public int seasonNumber { get; set; }
+                    public int number { get; set; }
+                    public int relativeNumber { get; set; }
+                    public string synopsis { get; set; }
+                    public string airdate { get; set; }
+                    public int length { get; set; }
+                    public Thumbnail thumbnail { get; set; }
+                }
+
+                public class Links2 {
+                    public string self { get; set; }
+                    public string related { get; set; }
+                }
+
+                public class Media {
+                    public Links2 links { get; set; }
+                }
+
+                public class Links3 {
+                    public string self { get; set; }
+                    public string related { get; set; }
+                }
+
+                public class Videos {
+                    public Links3 links { get; set; }
+                }
+
+                public class Relationships {
+                    public Media media { get; set; }
+                    public Videos videos { get; set; }
+                }
+
+                public class Datum {
+                    public string id { get; set; }
+                    public string type { get; set; }
+                    public Links links { get; set; }
+                    public Attributes attributes { get; set; }
+                    public Relationships relationships { get; set; }
+                }
+
+                public class Meta2 {
+                    public int count { get; set; }
+                }
+
+                public class Links4 {
+                    public string first { get; set; }
+                    public string next { get; set; }
+                    public string last { get; set; }
+                }
+
+                public class Episodes {
+                    public List<Datum> data { get; set; }
+                    public Meta2 meta { get; set; }
+                    public Links4 links { get; set; }
+                }
             }
 
             public class GenreData {
