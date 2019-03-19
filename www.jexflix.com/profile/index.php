@@ -273,21 +273,21 @@
 										<h4 class="profile__title">Profile Details</h4>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="username">Username</label>
 											<input id="username" type="text" name="username" class="profile__input" disabled value="<?=$username?>">
 										</div>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="email">Email</label>
 											<input id="email" type="text" name="email" class="profile__input" disabled value="<?=$email?>">
 										</div>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="pfp">Profile Picture</label>
 											<input id="pfp" type="text" name="pfp" class="profile__input" placeholder="Enter Image URL">
@@ -295,7 +295,7 @@
 									</div>
 
 									<div class="col-12">
-										<button class="profile__btn" type="submit">Save</button>
+										<button class="profile__btn" type="submit" style="width: 100%;">Save</button>
 									</div>
 								</div>
 							</form>
@@ -310,21 +310,21 @@
 										<h4 class="profile__title">Change Password</h4>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="oldpass">Old Password</label>
 											<input id="oldpass" type="password" name="oldpass" class="profile__input">
 										</div>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="newpass">New Password</label>
 											<input id="newpass" type="password" name="newpass" class="profile__input">
 										</div>
 									</div>
 
-									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="confirmpass">Confirm New Password</label>
 											<input id="confirmpass" type="password" name="confirmpass" class="profile__input">
@@ -332,7 +332,7 @@
 									</div>
 
 									<div class="col-12">
-										<button class="profile__btn" type="submit">Change</button>
+										<button class="profile__btn" type="submit" style="width: 100%;">Change</button>
 									</div>
 								</div>
 							</form>
@@ -490,7 +490,7 @@
 									</div>
 
 									<div class="col-12">
-										<button class="profile__btn" type="submit">Save</button>
+										<button class="profile__btn" type="submit" style="width: 100%;">Save</button>
 									</div>
 								</div>
 							</form>
@@ -511,7 +511,7 @@
 										<div class="profile__group">	
 											<label class="profile__label" for="username">Amount</label>
 											<input id="reseller_deposit_amount" type="text" name="amount" class="profile__input" placeholder="Amount (USD)">
-											<button class="profile__btn" type="submit">Deposit</button>
+											<button class="profile__btn" type="submit" style="width: 100%;">Deposit</button>
 										</div>
 									</div>
 
