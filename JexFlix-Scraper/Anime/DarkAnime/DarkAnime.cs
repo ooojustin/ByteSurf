@@ -23,7 +23,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
             DarkAPI InitialPage = null;
 
             while (InitialPage == null) {
-                CF_HttpClient.SetupClient();
+                CF_HttpClient.SetupClient(DarkSearch.DARKSTREAM);
                 InitialPage = DarkSearch.GetDarkAPI();
                 System.Threading.Thread.Sleep(1000);
             }
