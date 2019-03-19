@@ -153,6 +153,10 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return anime.data.attributes.startDate;
         }
 
+        public static string EpisodeDuration(KitsuAnime.Anime anime) {
+            return anime.data.attributes.episodeLength;
+        }
+
         public class MediaPost {
             public string @params { get; set; }
         }

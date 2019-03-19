@@ -258,14 +258,11 @@ namespace JexFlix_Scraper {
                     Console.WriteLine("Error uploading file");
                     success = false;
                 }
-
-                // delete the file that was stored locally
-                File.Delete(localPath);
-                Console.WriteLine("Deleted local file");
             } else {
                 Console.WriteLine("No Success");
             }
-
+              // delete the file that was stored locally
+                File.Delete(localPath);
             return success;
         }
 
