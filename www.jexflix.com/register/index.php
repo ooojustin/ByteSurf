@@ -1,4 +1,5 @@
 <?php
+
     require('../inc/server.php');
     require('../inc/session.php');
 
@@ -6,6 +7,9 @@
 		header("location: https://jexflix.com/home/");
 		die();
 	}
+
+	if (!isset($_POST['username']))
+		goto skip_create_account;
 
 	// a list of blacklisted usernames, cuz y not
 	$blacklisted = array('mailer', 'admin', 'penguware', 'weebware');
@@ -24,16 +28,23 @@
     	$issue = 'Account already exists with that email address.';
     else if ($_POST['password'] != $_POST['password_confirm'])
         $issue = 'Passwords do not match';
+    else {
 
-    if (!isset($issue)) {
-        create_account($_POST['username'], $_POST['email'], $_POST['password']);
+    	// establish referrer
+    	$referrer = NULL;
+    	if (isset($_GET['r']) && get_user($_GET['r']))
+    		$referrer = $_GET['r'];
+
+    	// create account
+        create_account($_POST['username'], $_POST['email'], $_POST['password'], $referrer);
+
+        // redirect
         header("location: ../home");
         die();
+
     }
 
-    // if $_POST['username'] isn't set, they didnt post data from form
-    if (!isset($_POST['username']))
-    	unset($issue);
+    skip_create_account:
 
 ?>
 <!DOCTYPE html>
