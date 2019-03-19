@@ -178,9 +178,9 @@
 	</header>
 	<!-- end header -->
 	
-    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px">We currently have <?=$movie_count?> movies, <?=$series_count?> TV shows, and <?=$anime_count?> animes. Refresh for the newest info.</div>
+    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px; background: rgba(10, 10, 10, 0.6);"><b><span style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%); -webkit-text-fill-color: transparent; -webkit-background-clip: text;">We currently have 5761 movies, 20 TV shows, and 1 animes. Refresh for the newest info.</span></b></div>
 	<!-- home -->
-	<section class="home">
+	<section class="home" style="margin-top: 0px;">
 		<!-- home bg -->
 		<div class="owl-carousel home__bg">
 			<div style="color:#221f30"></div>
