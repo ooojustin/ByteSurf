@@ -167,6 +167,27 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             return synList;
         }
 
+        public static string GetEpisodeAir(KitsuAnime.Anime anime, int episode) {
+            var epdata = FetchEpisodePage(anime);
+            // Fetch the last episode
+            var last_ep = epdata.data[epdata.data.Count() - 1];
+            // When episode is on the next page
+            while (episode > last_ep.attributes.number) {
+                epdata = FetchNextEpisodePage(epdata);
+                last_ep = epdata.data[epdata.data.Count() - 1];
+            }
+            try {
+                foreach (var ep in epdata.data) {
+                    if (ep.attributes.number == episode)
+                        return ep.attributes.airdate;
+                }
+            } catch (Exception ex) {
+                Console.WriteLine("[GetEpisodeAir] " + ex.Message);
+            }
+            return "";
+        }
+
+
         public static string GetEpisodeTitle(KitsuAnime.Anime anime, int episode) {
             var epdata = FetchEpisodePage(anime);
             // Fetch the last episode

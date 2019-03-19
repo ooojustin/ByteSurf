@@ -99,7 +99,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     int remove_index = 0;
                     foreach (EpisodeData ep_data in UploadData.episodeData) {
                         //We Found our ep
-                        if (ep_data.episode == TwistEp.number && (!string.IsNullOrEmpty(ep_data.episode_title))) {
+                        if (ep_data.episode == TwistEp.number) {
                             if (ep_data.qualities.Count() >= 1) {
                                 need_skip = true;
                                 break;
@@ -151,6 +151,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         EpData.qualities = new List<Quality>();
                         EpData.episode = TwistEp.number;
                         EpData.episode_title = KitsuAPI.GetEpisodeTitle(KitsuAnimeInfo, TwistEp.number);
+                        EpData.air_date = KitsuAPI.GetEpisodeAir(KitsuAnimeInfo, TwistEp.number);
+
                         string VideoUrl = TwistAPI.GetVideoLink(TwistEp.source);
 
                         REUPLOAD:
@@ -167,6 +169,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         UploadData.episodeData.Add(EpData);
                     } else {
                         UploadData.episodeData[TwistEp.number - 1].episode_title = KitsuAPI.GetEpisodeTitle(KitsuAnimeInfo, TwistEp.number);
+                        UploadData.episodeData[TwistEp.number - 1].air_date = KitsuAPI.GetEpisodeAir(KitsuAnimeInfo, TwistEp.number);
                     }
 
 
