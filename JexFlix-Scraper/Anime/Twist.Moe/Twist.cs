@@ -148,16 +148,14 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         EpisodeData EpData = new EpisodeData();
                         EpData.qualities = new List<Quality>();
                         EpData.episode = TwistEp.number;
+                        string VideoUrl = TwistAPI.GetVideoLink(TwistEp.source);
 
                         REUPLOAD:
                         try {
-                            string VideoUrl = TwistAPI.GetVideoLink(TwistEp.source);
-                            if (!string.IsNullOrEmpty(VideoUrl)) {
-                                Quality quality = new Quality();
-                                quality.resolution = 1080;
-                                if (Networking.BReuploadRemoteFile(VideoUrl, "/anime/" + UploadData.url + "/" + TwistEp.number.ToString(), 1080 + ".mp4", UploadData.title, General.GetWebClient(), KitsuAPI.GetSlug(KitsuAnimeInfo))) {
-                                    EpData.qualities.Add(quality);
-                                }
+                            Quality quality = new Quality();
+                            quality.resolution = 1080;
+                            if (Networking.BReuploadRemoteFile(VideoUrl, "/anime/" + UploadData.url + "/" + TwistEp.number.ToString(), 1080 + ".mp4", UploadData.title, General.GetWebClient(), KitsuAPI.GetSlug(KitsuAnimeInfo))) {
+                                EpData.qualities.Add(quality);
                             }
                         } catch (Exception ex) {
                             Console.WriteLine("[Anime Re-Upload Error] " + ex.Message);
@@ -217,7 +215,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
                     // Update the database.
                     using (WebClient Web = General.GetWebClient()) {
-
                         try {
                             string to_upload = JsonConvert.SerializeObject(dbinfo);
                             // Console.WriteLine(to_upload);
@@ -228,7 +225,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             Console.WriteLine("Error submitting database info " + ex.Message);
                             Networking.ErrorLogging(null, ex, dbinfo.name, "Error Updating Database");
                         }
-
                     }
 
                     System.Threading.Thread.Sleep(100);
