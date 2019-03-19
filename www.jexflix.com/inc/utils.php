@@ -241,7 +241,7 @@
 		foreach ($resellers as $reseller) {
 			if ($reseller['username'] == $username)
 				return $ahead + 1;
-			else
+			else if (reseller_is_valid($reseller))
 				$ahead++;
 		}
 		return -1; // specified user is invalid
@@ -303,6 +303,29 @@
         	$email->setReplyTo($reply_to, $reply_to_name);
 
         return $sendgrid->send($email);
+
+	}
+
+	function get_referred_users($username, $paid_only = false) {
+
+		global $db;
+
+		$get_referred_users = $db->prepare('SELECT * FROM registrations WHERE referrer = :referrer');
+		$get_referred_users->bindValue(':referrer', $username);
+		$get_referred_users->execute();
+
+		if (!$paid_only)
+			return $get_referred_users->rowCount();
+
+		$paid_users = 0;
+		while ($user = $get_referred_users->fetch()) {
+			$username = $user['username'];
+			$orders = get_orders($username);
+			if (count($orders) > 0)
+				$paid_users++;
+		}
+
+		return $paid_users;
 
 	}
 
