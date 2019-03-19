@@ -27,6 +27,12 @@
 		for ($i = 0; $i < $product['trial_keys']; $i++)
 			generate_trial_key($username, SECONDS_PER_DAY * 7);
 
+		// give referrer 1 week free (if applicable)
+		$referrer = get_user_registration($username)['referrer'];
+		$first_order = count(get_orders($username)) == 0;
+		if (!is_null($referrer) && get_user($referrer) && $first_order)
+				add_subscription_time($referrer, SECONDS_PER_DAY * 7);
+
 		// remove credit from reseller account, update last_purchase
 		reseller_received_payment($invoice['reseller']);
 		remove_reseller_balance($invoice['reseller'], $invoice['amount'] * 0.75);

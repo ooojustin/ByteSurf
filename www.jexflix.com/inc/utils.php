@@ -91,10 +91,21 @@
 	}
 
 	function add_subscription_time($username, $duration) {
+
+		// get current expiration time
 		$expires = intval(get_user($username)['expires']);
+
+		// ignore call if user is already lifetime
+		if ($expires == -1)
+			return;
+
+		// if their subscription isnt expired yet, add remaining time to duration
 		if ($expires > time())
 			$duration += $expires - time();
+
+		// set expiration time to current timestamp + subscription duration
 		update_expires($username, time() + $duration);
+		
 	}
 
 	function get_trial_key($trial_key) {
