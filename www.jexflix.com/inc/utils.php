@@ -359,9 +359,10 @@
 		$token = strtr($token, '+/', '-_');
 		$token = str_replace('=', '', $token);
 
-		// generate new url
+		// generate new url (note: decode special chars)
+		// http://php.net/manual/en/function.htmlspecialchars-decode.php
 		$url = "{$base_url}{$path}?token={$token}&expires={$expires}&ip={$ip}";
-		return $url;
+		return htmlspecialchars_decode($url);
 
 	}
 
