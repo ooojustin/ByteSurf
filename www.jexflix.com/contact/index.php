@@ -13,32 +13,34 @@
     $email = $user['email'];
     $username = $user['username'];
     
-    switch ($_GET['q']) {
-    	default:
-		    $subject = "General Inquiry";
-		    break;
-        case "request":
-            $subject = "Movie / Feature Request";
-            break;
-        case "abuse":
-            $subject = "Abuse";
-            break;
-        case "bug":
-            $subject = "Bug Report";
-            break;
-        case "problem":
-        	$subject = 'Problem';
-            if (isset($_GET['t']))
-            	$subject .= ' - ' . $_GET['t'];
-			break;
-    }
+    if (isset($_GET['q'])) {
+    	switch ($_GET['q']) {
+        	case "request":
+            	$subject = "Movie / Feature Request";
+            	break;
+        	case "abuse":
+            	$subject = "Abuse";
+            	break;
+        	case "bug":
+            	$subject = "Bug Report";
+            	break;
+        	case "problem":
+        		$subject = 'Problem';
+            	if (isset($_GET['t']))
+            		$subject .= ' - ' . $_GET['t'];
+				break;
+			default:
+				$subject = 'Other - ' . $_GET['q'];
+				break;
+    	}
+	} else $subject = 'General Inquiry';
     
     if (!isset($_POST['send_inquiry']))
     	goto skip_send;
 
     if (strlen($_POST['message']) < 20) {
     	$notification = "Message must be at least 20 characters.";
-    	$notification_colors = RED;
+    	$notification_colors = RED;	
     	goto skip_send;
     }
 
