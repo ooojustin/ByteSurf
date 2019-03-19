@@ -258,7 +258,7 @@
 					<div class="col-12 col-lg-12">
 						<div class="profile__group">
 							<label class="profile__label" for="username">Subject</label>
-					<!--		<input id="subject" type="text" name="subject" value="<?=$subject?>" class="profile__input" readonly> -->
+					<!--		<input id="subject" type="text" name="subject" value="" class="profile__input" readonly> -->
 					
 					<select name="select_subject" id="select_subject" onchange="subject_changed()" class="minimal">
                         <option value="general">General Inquiry</option>
