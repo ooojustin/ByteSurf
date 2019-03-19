@@ -81,10 +81,13 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                 try {
                     Networking.ReuploadRemoteFile(KitsuAPI.GetCover(KitsuAnimeInfo), "/anime/" + UploadData.url, "cover.jpg", UploadData.title, General.GetWebClient());
                 } catch (Exception ex) {
-                    Console.WriteLine("[Poster Upload] " + ex.Message);
+                    Console.WriteLine("[Cover Upload] " + ex.Message);
                 }
                 UploadData.cover = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + "cover.jpg";
 
+                UploadData.title = KitsuAPI.GetTitle(KitsuAnimeInfo);
+                UploadData.synopsis = KitsuAPI.GetSynopsis(KitsuAnimeInfo);
+                UploadData.episode_length = Convert.ToInt32(KitsuAPI.EpisodeDuration(KitsuAnimeInfo));
 
                 // Iterate each episode
                 foreach (EpisodeInfo TwistEp in TwistEpisodes) {
@@ -212,6 +215,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     dbinfo.release = KitsuAPI.GetAirDate(KitsuAnimeInfo);
                     dbinfo.duration = KitsuAPI.EpisodeDuration(KitsuAnimeInfo);
                     dbinfo.age_class = KitsuAPI.GetAgeClass(KitsuAnimeInfo);
+                    dbinfo.cover = UploadData.cover;
 
                     // Update the database.
                     using (WebClient Web = General.GetWebClient()) {
