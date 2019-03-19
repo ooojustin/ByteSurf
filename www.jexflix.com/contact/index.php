@@ -13,28 +13,6 @@
     $email = $user['email'];
     $username = $user['username'];
     
-    if (isset($_GET['q'])) {
-    	switch ($_GET['q']) {
-        	case "request":
-            	$subject = "Movie / Feature Request";
-            	break;
-        	case "abuse":
-            	$subject = "Abuse";
-            	break;
-        	case "bug":
-            	$subject = "Bug Report";
-            	break;
-        	case "problem":
-        		$subject = 'Problem';
-            	if (isset($_GET['t']))
-            		$subject .= ' - ' . $_GET['t'];
-				break;
-			default:
-				$subject = 'Other - ' . $_GET['q'];
-				break;
-    	}
-	} else $subject = 'General Inquiry';
-    
     if (!isset($_POST['send_inquiry']))
     	goto skip_send;
 
@@ -42,6 +20,34 @@
     	$notification = "Message must be at least 20 characters.";
     	$notification_colors = RED;	
     	goto skip_send;
+    }
+
+    switch ($_POST['select_subject']) {
+    	case "general":
+    		$subject = "General Inquiry";
+		case "request":
+			$subject = "Movie / Feature Request";
+			break;
+		case "bug":
+			$subject = "Report a Bug";
+			break;
+		case "abuse":
+			$subject = "Report Abuse / DMCA Notice";
+			break;
+		case "billing":
+			$subject = "Billing Problems";
+			break;
+		case "problem":
+			$subject = 'Problem - ';
+			if (isset($_GET['t']))
+				$subject .= $_GET['t'];
+			else
+				$subject .= 'Unknown';
+			break;
+		default:
+			$notification = "Please specify a reason/email subject.";
+    		$notification_colors = RED;
+    		goto skip_send;
     }
 
     if (strlen($_POST['message']) > 20) {
@@ -78,7 +84,6 @@
         
     
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,6 +104,20 @@
 	<link rel="stylesheet" href="../css/photoswipe.css">
 	<link rel="stylesheet" href="../css/default-skin.css">
 	<link rel="stylesheet" href="../css/main.css">
+
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
@@ -226,8 +245,14 @@
     	    <span class="signin-error-text"><?=$notification?></span>
     	</div>
     	<? } ?>
+
+    	<?
+    		$action = 'index.php';
+    		if (isset($_GET['t']))
+    			$action .= '?t=' . $_GET['t'];
+    	?>
     	
-			<form action="" method="post" class="profile__form">
+			<form action="<?= $action ?>" method="post" class="profile__form">
 				<div class="row">
 				    
 					<div class="col-12 col-lg-12">
@@ -235,13 +260,15 @@
 							<label class="profile__label" for="username">Subject</label>
 					<!--		<input id="subject" type="text" name="subject" value="<?=$subject?>" class="profile__input" readonly> -->
 					
-					<select class="minimal">
-                        <option value="general">General</option>
+					<select name="select_subject" id="select_subject" onchange="subject_changed()" class="minimal">
+                        <option value="general">General Inquiry</option>
                         <option value="request">Movie / Feature Request</option>
-                        <option value="bug">Report A Bug</option>
-                        <option value="abuse">Report Abuse / DMCA Requests</option>
-                        <? if (isset($_GET['t'])) { ?> <option value="problem" selected="selected">Problem - <?= $_GET['t']?></option> <? } ?>
+                        <option value="bug">Report a Bug</option>
+                        <option value="abuse">Report Abuse / DMCA Notice</option>
                         <option value="billing">Billing Problems</option>
+                        <? if (isset($_GET['t'])) { ?>
+                        <option value="problem" selected="selected">Problem - <?= $_GET['t']?></option> 
+                        <? } ?>
                     </select>
                     
 						</div>
@@ -258,9 +285,23 @@
 					</div>
 				</div>
 			</form>
+
+			<? if (isset($_GET['q'])) { ?>
+				<script>
+					var selector = document.getElementById("select_subject");
+					var subjects = ["general", "request", "bug", "abuse", "billing"];
+					<? if (isset($_GET['t'])) { ?> 
+						selector.push("problem"); 
+					<? } ?>
+					var selected = subjects.indexOf("<?= $_GET['q'] ?>");
+					if (selected > -1)
+						selector.selectedIndex = selected; // yeet
+				</script>
+			<? } ?>
+
 		</div>
 	</div>
-	
+		
 	</div>
 	
 	<!-- footer -->
@@ -314,19 +355,5 @@
 		</div>
 	</footer>
 	<!-- end footer -->
-
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>
