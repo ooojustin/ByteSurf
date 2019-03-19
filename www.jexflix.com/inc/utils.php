@@ -229,7 +229,7 @@
 			update_reseller($reseller['username'], '', '');
 			return false;
 		} else return true;
-		
+
 	}
 
 	// gets a list of resellers available for an amount (sorted by last_purchase low to high)
@@ -314,6 +314,14 @@
 
 	}
 
+	function get_user_registration($username) {
+		global $db;
+		$get_user_registration = $db->prepare('SELECT * FROM registrations WHERE username = :username');
+		$get_user_registration->bindValue(':username', $username);
+		$get_user_registration->execute();
+		return $get_user_registration->fetch();
+	}
+
 	function get_referred_users($username, $paid_only = false) {
 
 		global $db;
@@ -336,13 +344,6 @@
 		return $paid_users;
 
 	}
-
-	/*function send_email($subject, $message, $from_email, $to_email) {
-		$headers = "MIME-Version: 1.0" . "\r\n";
-		$headers .= "Content-type: text/html;charset=UTF-8" . "\r\n";
-		$headers .= 'From: <' . $from_email . '>' . "\r\n";
-		return mail($to_email, $subject, $message, $headers);
-	}*/
 
 	function get_movie_data($url) {
 		global $db;
