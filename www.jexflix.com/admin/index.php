@@ -452,7 +452,7 @@
 									<div class="col-12 col-lg-12">
 										<div class="profile__group">
 											<label class="profile__label" for="email">Message (HTML)</label>
-											<textarea id="message" name="message" class="profile__input" style="height: 200px"></textarea>
+											<textarea id="message" name="message" class="profile__input" style="height: 200px; padding-top: 10px"></textarea>
 										</div>
 									</div>
 

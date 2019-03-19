@@ -1,6 +1,5 @@
 <?php
 	
-	session_set_cookie_params(86400);
 
 	$started = @session_start();
 	if(!$started) {

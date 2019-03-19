@@ -10,13 +10,12 @@
     	goto skip_redeem;
 
     $trial_key = $_POST['code'];
-    $trial_key_exists = trial_key_exists($trial_key);
     $trial_key_data = get_trial_key($trial_key);
 
-    if (!$trial_key_data)
+    if (!trial_key_exists($trial_key))
     	msg('Error', 'That trial key does not exist.');
     else if (!is_null($trial_key_data['user']))
-    	msg('Error', 'That trial key does not exist.');
+    	msg('Error', 'That trial key has already been used.');
     else if ($trial_key_data['owner'] == $user['username'])
     	msg('Error', 'You can\'t redeem your own trial key.');
 

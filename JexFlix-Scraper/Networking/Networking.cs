@@ -52,7 +52,7 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
         }
 
-        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null, bool cf_bypass = false) {
+        public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
 
             // initialize webclient if we weren't provided with one
             if (web == null) {
@@ -64,26 +64,10 @@ namespace JexFlix_Scraper {
             string localPath = Path.GetTempFileName();
 
             // download the original file
-            try {
-                if (!cf_bypass)
-                    web.DownloadFile(url, localPath);
-                else
-                    CF_HttpClient.HttpClient_DOWNLOAD(url, localPath);
-            } catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
+            try { web.DownloadFile(url, localPath); } catch (WebException wex) { ErrorLogging(wex, null, title, "Download Error: " + url); }
 
             // reupload file to server
-            while (true) {
-                try {
-                    UploadFile(localPath, directory, file, title);
-                } catch (WebException ex) {
-                    ErrorLogging(null, ex, title, "Upload Error: " + file);
-                    Console.WriteLine("Failed to upload: " + title + ". trying again in 1 minute. ");
-                    Thread.Sleep(60000);
-                    continue;
-                }
-                break;
-
-            }
+            try { UploadFile(localPath, directory, file, title); } catch (Exception ex) { ErrorLogging(null, ex, title, "Upload Error: " + file); }
 
             // delete the file that was stored locally
             File.Delete(localPath);
@@ -112,7 +96,7 @@ namespace JexFlix_Scraper {
 
             try {
                 FtpWebRequest mkdir = GetFTPRequest("ftp://storage.bunnycdn.com" + directory, WebRequestMethods.Ftp.MakeDirectory);
-                // Console.WriteLine("url is: ftp://storage.bunnycdn.com" + directory);
+                //  Console.WriteLine("url is: ftp://storage.bunnycdn.com" + directory);
                 FtpWebResponse response = (FtpWebResponse)mkdir.GetResponse();
             } catch (Exception ex) {
                 if (!ex.Message.Contains("directory already exists"))
@@ -125,7 +109,12 @@ namespace JexFlix_Scraper {
             Console.WriteLine("[" + title + "] " + "Uploading: " + file);
             //MessageHandler.Add(title, "Uploading: " + file, ConsoleColor.White, ConsoleColor.Yellow);
             using (Stream fileStream = File.OpenRead(localPath)) {
-                using (Stream ftpStream = request.GetRequestStream()) {
+                Stream ftpStream = null;
+                while (ftpStream == null) {
+                    try { ftpStream = request.GetRequestStream(); } catch (WebException ex) { ftpStream = null; }
+
+                }
+                using (ftpStream) {
                     byte[] buffer = new byte[1024 * 1024];
                     double totalReadBytesCount = 0;
                     int readBytesCount;
@@ -154,7 +143,16 @@ namespace JexFlix_Scraper {
             SAFE_REQUEST.UserAgent = "jexflix-client";
             NameValueCollection values = new NameValueCollection();
             values["url"] = title;
-            Response response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+            Response response = null;
+            while (response == null) {
+                try {
+                    response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+                    if (!response.status)
+                        response = null;
+                } catch (Exception ex) {
+                    Console.WriteLine("[SafeRequest] " + ex.Message);
+                }
+            }
             bool exists = response.GetData<bool>("exists");
             return exists;
         }

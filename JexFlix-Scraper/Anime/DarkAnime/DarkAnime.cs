@@ -108,7 +108,7 @@ namespace JexFlix_Scraper.Anime.DarkAnime {
                     UploadData.episode_length = data.episode_length;
 
                     try {
-                        Networking.ReuploadRemoteFile(data.poster_image_medium, "/anime/" + UploadData.url, "poster.jpg", UploadData.title, General.GetWebClient(), true);
+                        Networking.ReuploadRemoteFile(data.poster_image_medium, "/anime/" + UploadData.url, "poster.jpg", UploadData.title, General.GetWebClient());
                     } catch (Exception ex) {
                         Console.WriteLine(ex.Message);
                     }

@@ -1,6 +1,8 @@
 <?php
     // index in root directory
-    session_start();
+    require 'inc/server.php';
+    require 'inc/session.php';
+    require_subscription();
     
     if (!isset($_SESSION['username'])) {
         header("location: /login");

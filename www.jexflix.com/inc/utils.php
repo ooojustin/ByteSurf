@@ -27,7 +27,7 @@
 		return $user && password_verify($password, $user['password']);
 	}
 
-	function create_account($username, $email, $password) {
+	function create_account($username, $email, $password, $referrer = NULL) {
 
 		global $db, $ip;
 
@@ -42,10 +42,11 @@
 		$code = generate_split_string(3, 3);
 
 		// log registration
-		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, ip_address, timestamp) VALUES (:username, :email, :code, :ip_address, :timestamp)');
+		$log_registration = $db->prepare('INSERT INTO registrations (username, email, code, referrer, ip_address, timestamp) VALUES (:username, :email, :code, :referrer, :ip_address, :timestamp)');
 		$log_registration->bindValue(':username', $username);
 		$log_registration->bindValue(':email', $email);
 		$log_registration->bindValue(':code', $code);
+		$log_registration->bindValue(':referrer', $referrer);
 		$log_registration->bindValue(':ip_address', $ip);
 		$log_registration->bindValue(':timestamp', time());
 		$log_registration->execute();
@@ -128,6 +129,14 @@
 		$get_data->bindValue(':username', $username);
 		$get_data->execute();
 		return $get_data->fetch(); 
+	}
+	
+	function get_series_data($url) {
+		global $db;
+		$get_data = $db->prepare('SELECT * FROM series WHERE url=:url');
+    	$get_data->bindValue(':url', $url);
+    	$get_data->execute();
+   		return $get_data->fetch();
 	}
 	
 	
@@ -277,14 +286,24 @@
 
 	}
 
-	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name) {
+	function send_email($subject, $message, $from_email, $from_name, $to_email, $to_name, $reply_to = NULL, $reply_to_name = NULL) {
+
+		// initialize sendgrid & email
 		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
         $email = new \SendGrid\Mail\Mail(); 
+
+        // default variables
         $email->setFrom($from_email, $from_name);
         $email->setSubject($subject);
         $email->addTo($to_email, $to_name);
         $email->addContent("text/html", $message);
+
+        // optional stuff
+        if (!is_null($reply_to) && !is_null($reply_to_name))
+        	$email->setReplyTo($reply_to, $reply_to_name);
+
         return $sendgrid->send($email);
+
 	}
 
 	/*function send_email($subject, $message, $from_email, $to_email) {

@@ -179,6 +179,8 @@
 </div>
 
 
+
+
 </section>
 <!-- end details -->
 
@@ -221,7 +223,11 @@
                         <li><span>Running time:</span> 120 min</li>
                         <li><span>Country:</span> <a href="#">USA</a></li>
                     </ul>
-
+               
+                    <span class="card__category">
+                        <a href="https://jexflix.com/contact/?q=problem&t=<?=$title?>" target="blank">Report a Problem</a>
+                    </span>
+                    
                     <div class="card__description card__description--details">
                         <p>
                             <?=$description?>

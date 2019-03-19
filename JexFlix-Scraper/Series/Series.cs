@@ -78,10 +78,10 @@ namespace JexFlix_Scraper.Shows {
 
             foreach (PageItem item in pageData.items) {
 
-                if (!item.title.Contains("Walking")) {
-                    Console.WriteLine("Skipping: " + item.title);
-                    continue;
-                }
+                //if (!item.title.Contains("Walking")) {
+                //    Console.WriteLine("Skipping: " + item.title);
+                //    // continue;
+                //}
 
                 SeriesData series = new SeriesData();
                 series.title = item.title;
@@ -114,8 +114,11 @@ namespace JexFlix_Scraper.Shows {
                     Networking.ReuploadRemoteFile(FixThumbnailRes(thumbnail_url), item.url, "thumbnail.jpg", item.title, web);
 
                 // add the series, checks if exists server sided
-                web.UploadString("https://scraper.jexflix.com/add_series.php", JsonConvert.SerializeObject(series));
+                try {
+                    web.UploadString("https://scraper.jexflix.com/add_series.php", JsonConvert.SerializeObject(series));
+                } catch {
 
+                }
                 string data_url = Networking.JsonData(series.url);
                 string ftp_directory = data_url.Substring(Networking.CDN_URL.Length, data_url.Length - Networking.CDN_URL.Length);
 
@@ -163,8 +166,6 @@ namespace JexFlix_Scraper.Shows {
                 }
                 season_number++;
             }
-
-            Console.WriteLine(JsonConvert.SerializeObject(seriesList));
         }
 
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
