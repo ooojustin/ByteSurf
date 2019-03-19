@@ -66,7 +66,6 @@
 
 					// create paypal payment & redirect
 					$url = create_paypal_payment($user['username'], $_POST['email'], $reseller, $product['name'], $id, $price);
-					echo 'reseller: ' . $reseller['username'] . ', url: ' . $url;
 					header("location: " . $url);
 					break;
 

@@ -65,7 +65,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 

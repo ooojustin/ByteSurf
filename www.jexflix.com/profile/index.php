@@ -2,9 +2,10 @@
 
     require '../inc/server.php';
     require '../inc/session.php';
+    require '../inc/products.php';
     require_subscription();
    
-	global $user;
+	global $user, $db;
    
    	// establish general user details
    	$username = $user['username'];
@@ -28,6 +29,10 @@
    	// update profile pic
    	if (isset($_POST['pfp']))
     	update_picture($username, $_POST['pfp']);
+
+    // get referral info
+    $referred_users = get_referred_users($username);
+    $referred_users_paid = get_referred_users($username, true);
 
     // update reseller info (NOTE: VALIDATE EMAIL ADDRESS)
     if (isset($_POST['selly_email']) && isset($_POST['selly_api_key'])) {
@@ -223,7 +228,7 @@
 								</li>
 
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a>
+									<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Affiliates</a>
 								</li>
 							</ul>
 							<!-- end content tabs nav -->
@@ -241,7 +246,7 @@
 
 										<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Subscription</a></li>
 
-										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Reselling</a></li>
+										<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Affiliates</a></li>
 									</ul>
 								</div>
 							</div>
@@ -419,6 +424,49 @@
 				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
 					<div class="row">
 
+						<!-- referral system form -->
+						<div class="col-lg-6">
+							<form action="" method="post" class="profile__form">
+								<div class="row">
+
+									<div class="col-12">
+										<h4 class="profile__title">Referral Link</h4>
+									</div>
+
+									<div class="col-12">
+										<div class="profile__group">
+											<label class="profile__label" for="username">Get rewarded when users sign up with your link!</label>
+											<input id="referral_link" type="text" class="profile__input" value="https://jexflix.com/register/?r=<?= $username ?>" disabled>
+										</div>
+									</div>
+
+								</div>
+							</form>
+						</div>
+						<!-- end referral system form -->
+
+						<!-- referral system form -->
+						<div class="col-lg-6">
+							<form action="" method="post" class="profile__form">
+								<div class="row">
+
+									<div class="col-12">
+										<h4 class="profile__title">Referral Statistics</h4>
+									</div>
+
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">	
+											<label class="profile__label"><b>Referred Users:</b> <?= $referred_users ?></label>
+											<br>
+											<label class="profile__label"><b>Paid Referrals:</b> <?= $referred_users_paid ?></label>
+										</div>
+									</div>
+
+								</div>
+							</form>
+						</div>
+						<!-- end referral system form -->
+
 						<!-- selly info form -->
 						<div class="col-12 col-lg-6">
 							<form action="" method="post" class="profile__form">
@@ -463,11 +511,33 @@
 										<div class="profile__group">	
 											<label class="profile__label" for="username">Amount</label>
 											<input id="reseller_deposit_amount" type="text" name="amount" class="profile__input" placeholder="Amount (USD)">
+											<button class="profile__btn" type="submit">Deposit</button>
 										</div>
 									</div>
 
-									<div class="col-12">
-										<button class="profile__btn" type="submit">Deposit</button>
+									<div class="col-12 col-md-6 col-lg-12 col-xl-6">
+										<div class="profile__group">	
+
+											<label class="profile__label"><b>Reseller Priority</b></label>
+
+											<?
+												global $products;
+												foreach ($products as $product) {
+
+													if ($product['price'] == 0)
+														continue;
+
+													$priority = get_reseller_priority($username, $product['price']);
+													if ($priority == -1)
+														$priority = 'N/A';
+													else
+														$priority = '#' . $priority;
+
+											?> 
+											<label class="profile__label"><?= $product['name'] . ' - ' . $priority ?></label> 
+											<? } ?>
+											
+										</div>
 									</div>
 								</div>
 							</form>
