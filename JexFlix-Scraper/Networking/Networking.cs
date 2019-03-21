@@ -232,8 +232,6 @@ namespace JexFlix_Scraper {
             bool success = true;
 
 
-
-
             // download the original file
             try {
                 if (!cf_bypass) {
