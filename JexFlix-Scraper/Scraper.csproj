@@ -81,6 +81,7 @@
     <Compile Include="Anime\Misc\CaptchaBypass.cs" />
     <Compile Include="Anime\Misc\CloudflareHTTPClientWrapper.cs" />
     <Compile Include="Anime\Misc\General.cs" />
+    <Compile Include="Anime\MyAnimeList\MAL.cs" />
     <Compile Include="Anime\Twist.Moe\AESCrypto.cs" />
     <Compile Include="Anime\Twist.Moe\Twist.cs" />
     <Compile Include="Anime\Twist.Moe\TwistAPI.cs" />

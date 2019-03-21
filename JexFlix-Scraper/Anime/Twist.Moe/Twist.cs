@@ -54,7 +54,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             // We also need to skip every episode we have already...
                             if (AniUploadData.episodeData.Count() >= TwistEpisodes.Count()) {
                                 Console.WriteLine("Skiping " + AniUploadData.url);
-                               // continue;
+                                continue;
                             }
                             // Well if we haven't skipped.
                             if (AniUploadData.episodeData.Count >= 1) {
@@ -140,7 +140,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
                     if (!HasDeleted && need_skip) {
                         Console.WriteLine("Skiping episdode: " + TwistEp.number.ToString());
-                        // continue; Don't skip episodes.
+                        continue;
                     }
 
                     if (!FoundEpisode) {
