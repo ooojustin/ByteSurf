@@ -32,7 +32,7 @@
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
 	<title>jexflix</title>
 
@@ -203,6 +203,27 @@
 					</div>
 				</div>
 				<!-- end feature -->
+
+				<!-- feature -->
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="feature">
+						<i class="icon ion-ios-bulb feature__icon"></i>
+						<h3 class="feature__title">New Releases</h3>
+						<p class="feature__text">New movies and shows are released quickly after they release. Don't miss out on new content because you don't want to go to a theater.</p>
+					</div>
+				</div>
+				<!-- end feature -->
+
+				<!-- feature -->
+				<div class="col-12 col-md-6 col-lg-4">
+					<div class="feature">
+						<i class="icon ion-ios-cash feature__icon"></i>
+						<h3 class="feature__title">Competitive Pricing</h3>
+						<p class="feature__text">We charge less than our competitors, and our main goal is to cover server costs. We're one of the only providers with a lifetime payment plan!</p>
+					</div>
+				</div>
+				<!-- end feature -->
+
 			</div>
 		</div>
 	</section>
