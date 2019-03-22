@@ -4,7 +4,7 @@
 	include 'inc/session.php';
 	// require_login();
 
-	header("location: https://bytesurf.io/home/");
+	header("location: /bytesurf/home");
     die();
 
 ?>
