@@ -1,4 +1,4 @@
-# JexFlix Scraper
+# ByteSurf.io + Scraper
 
 Software to automatically scrape and reupload content from other websites.
 
@@ -6,7 +6,7 @@ This program will support movies, anime, and porn.
 
 ## Notes
 
-* This project is still in development - made for [JexFlix](https://jexflix.com).
+* This project is still in development - made for [ByteSurf](https://bytesurf.io).
 
 ## Developers
 
