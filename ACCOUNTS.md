@@ -4,29 +4,20 @@ Email: anthonyalmond@protonmail.com
 Password: 0j*enDQy5Cww3rL
 
 ### DATABASE ACCOUNT
-Username: jexflixc_admin  
-Password: K+VLZP;x{G%Q
+Database Name: bytesurf_db
+Username: bytesurf_db  
+Password: ad!lb36IUL2mFDf*C75X0#db
 
 ### NORD VPN
 URL: https://nordvpn.com/  
 Username: justin@garofolo.net  
 Password: 99HToIfF5NXMJV86Ct
 
-### BLAZINGFAST CPANEL
-URL: https://cpanel.blazingfast.io:2083/  
-Username: jexflixc  
-Password: z3QDkFfL
-
-### SHADOW TECH
-URL: https://shadow.tech/  
-Email: justin@garofolo.net  
-Password: 6h$KjKKEq*a2%vYG
-
 ### PROTONMAIL
 URL: https://protonmail.com/  
-Email: anthonyalmond@protonmail.com  
-Password: htGL#*b2bwVp6HDZA&N%
+Email: peterpistachio@protonmail.com  
+Password: N6ihVdB8JLhmFVy
 
 ### BUNNY CDN
-Email: anthonyalmond@protonmail.com  
-Password: htGL#*b2bwVp6HDZA&N%
+Email: peterpistachio@protonmail.com    
+Password: N6ihVdB8JLhmFVy

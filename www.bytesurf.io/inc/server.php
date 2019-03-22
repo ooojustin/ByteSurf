@@ -9,9 +9,9 @@
 	require dirname(__FILE__) . "/sendgrid/sendgrid-php.php";
 	require dirname(__FILE__) . "/utils.php";
 
-	$db_username = "jexflixc_admin";
-	$db_password = "K+VLZP;x{G%Q";
-	$db_name = "jexflixc_db";
+	$db_username = "bytesurf_db";
+	$db_password = "ad!lb36IUL2mFDf*C75X0#db";
+	$db_name = "bytesurf_db";
 	
 	try {
 		$GLOBALS['db'] = new PDO('mysql:host=' . SERVER . ';dbname=' . $db_name, $db_username, $db_password, [PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
