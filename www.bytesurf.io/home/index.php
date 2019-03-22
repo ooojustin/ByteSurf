@@ -1,8 +1,3 @@
-<?php
-	
-	
-	
-?>
 <!DOCTYPE html>
 <!--[if IE 7]>
 <html class="ie ie7 no-js" lang="en-US">
@@ -28,14 +23,14 @@
 	<meta name="format-detection" content="telephone-no">
 
 	<!-- CSS files -->
-	<link rel="stylesheet" href="css/plugins.css">
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="../css/plugins.css">
+	<link rel="stylesheet" href="../css/style.css">
 
 </head>
 <body>
 <!--preloading-->
 <div id="preloader">
-    <img class="logo" src="images/logo1.png" alt="" width="119" height="58">
+    <img class="logo" src="../images/logo1.png" alt="" width="119" height="58">
     <div id="status">
         <span></span>
         <span></span>
@@ -57,7 +52,7 @@
 							<span></span>
 						</div>
 				    </div>
-				    <a href="index.html"><img class="logo" src="images/logo1.png" alt="" width="119" height="58"></a>
+				    <a href="index.html"><img class="logo" src="../images/logo1.png" alt="" width="119" height="58"></a>
 			    </div>
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
@@ -197,7 +192,7 @@
 	    				</div>
 	    				<div class="col-md-4 col-sm-12 col-xs-12">
 		    				<div class="mv-img-2">
-			    				<a href="#"><img src="images/uploads/poster1.jpg" alt=""></a>
+			    				<a href="#"><img src="../images/uploads/poster1.jpg" alt=""></a>
 			    			</div>
 		    			</div>
 	    			</div>	
@@ -229,7 +224,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it1.jpg" alt="">
+				            				<img src="../images/uploads/mv-it1.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -243,7 +238,7 @@
 								<div class="slide-it">
 									<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it2.jpg" alt="">
+				            				<img src="../images/uploads/mv-it2.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -257,7 +252,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it3.jpg" alt="">
+				            				<img src="../images/uploads/mv-it3.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -271,7 +266,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -285,7 +280,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -299,7 +294,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -313,7 +308,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -327,7 +322,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -347,7 +342,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -361,7 +356,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -375,7 +370,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -389,7 +384,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -403,7 +398,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -423,7 +418,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it1.jpg" alt="">
+				            				<img src="../images/uploads/mv-it1.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -437,7 +432,7 @@
 								<div class="slide-it">
 									<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it2.jpg" alt="">
+				            				<img src="../images/uploads/mv-it2.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -451,7 +446,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it3.jpg" alt="">
+				            				<img src="../images/uploads/mv-it3.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -465,7 +460,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -479,7 +474,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -499,7 +494,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -513,7 +508,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -527,7 +522,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -541,7 +536,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -575,7 +570,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -589,7 +584,7 @@
 								<div class="slide-it">
 									<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -603,7 +598,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it9.jpg" alt="">
+				            				<img src="../images/uploads/mv-it9.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -617,7 +612,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -631,7 +626,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -645,7 +640,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -659,7 +654,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -673,7 +668,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -693,7 +688,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -707,7 +702,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -721,7 +716,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -735,7 +730,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -749,7 +744,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -768,7 +763,7 @@
 			            	<div class="slick-multiItem2">
 			            		<div class="movie-item">
 			            			<div class="mv-img">
-			            				<img src="images/uploads/mv-it1.jpg" alt="">
+			            				<img src="../images/uploads/mv-it1.jpg" alt="">
 			            			</div>
 			            			<div class="hvr-inner">
 			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -780,7 +775,7 @@
 			            		</div>
 								<div class="movie-item">
 			            			<div class="mv-img">
-			            				<img src="images/uploads/mv-it2.jpg" alt="">
+			            				<img src="../images/uploads/mv-it2.jpg" alt="">
 			            			</div>
 			            			<div class="hvr-inner">
 			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -792,7 +787,7 @@
 			            		</div>
 			            		<div class="movie-item">
 			            			<div class="mv-img">
-			            				<img src="images/uploads/mv-it3.jpg" alt="">
+			            				<img src="../images/uploads/mv-it3.jpg" alt="">
 			            			</div>
 			            			<div class="hvr-inner">
 			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -804,7 +799,7 @@
 			            		</div>
 			            		<div class="movie-item">
 			            			<div class="mv-img">
-			            				<img src="images/uploads/mv-it4.jpg" alt="">
+			            				<img src="../images/uploads/mv-it4.jpg" alt="">
 			            			</div>
 			            			<div class="hvr-inner">
 			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -816,7 +811,7 @@
 			            		</div>
 			            		<div class="movie-item">
 			            			<div class="mv-img">
-			            				<img src="images/uploads/mv-it3.jpg" alt="">
+			            				<img src="../images/uploads/mv-it3.jpg" alt="">
 			            			</div>
 			            			<div class="hvr-inner">
 			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -835,7 +830,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it4.jpg" alt="">
+				            				<img src="../images/uploads/mv-it4.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -849,7 +844,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it5.jpg" alt="">
+				            				<img src="../images/uploads/mv-it5.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -863,7 +858,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it6.jpg" alt="">
+				            				<img src="../images/uploads/mv-it6.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -877,7 +872,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it7.jpg" alt="">
+				            				<img src="../images/uploads/mv-it7.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -891,7 +886,7 @@
 			            		<div class="slide-it">
 			            			<div class="movie-item">
 				            			<div class="mv-img">
-				            				<img src="images/uploads/mv-it8.jpg" alt="">
+				            				<img src="../images/uploads/mv-it8.jpg" alt="">
 				            			</div>
 				            			<div class="hvr-inner">
 				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
@@ -943,7 +938,7 @@
 					<div class="slider-nav-2 thumb-ft">
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer7.jpg"  alt="photo by Barn Images" width="4096" height="2737">
+								<img src="../images/uploads/trailer7.jpg"  alt="photo by Barn Images" width="4096" height="2737">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Wonder Woman</h4>
@@ -952,7 +947,7 @@
 						</div>
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer2.jpg"  alt="photo by Barn Images" 	width="350" height="200">
+								<img src="../images/uploads/trailer2.jpg"  alt="photo by Barn Images" 	width="350" height="200">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Oblivion: Official Teaser Trailer</h4>
@@ -961,7 +956,7 @@
 						</div>
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer6.jpg" alt="photo by Joshua Earle" width="509" height="301">
+								<img src="../images/uploads/trailer6.jpg" alt="photo by Joshua Earle" width="509" height="301">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Exclusive Interview:  Skull Island</h4>
@@ -970,7 +965,7 @@
 						</div>
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer3.png" alt="photo by Alexander Dimitrov" width="100" height="56">
+								<img src="../images/uploads/trailer3.png" alt="photo by Alexander Dimitrov" width="100" height="56">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Logan: Director James Mangold Interview</h4>	
@@ -979,7 +974,7 @@
 						</div>
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer4.png"  alt="photo by Wojciech Szaturski" width="100" height="56">
+								<img src="../images/uploads/trailer4.png"  alt="photo by Wojciech Szaturski" width="100" height="56">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Beauty and the Beast: Official Teaser Trailer 2</h4>	
@@ -988,7 +983,7 @@
 						</div>
 						<div class="item">
 							<div class="trailer-img">
-								<img src="images/uploads/trailer5.jpg"  alt="photo by Wojciech Szaturski" width="360" height="189">
+								<img src="../images/uploads/trailer5.jpg"  alt="photo by Wojciech Szaturski" width="360" height="189">
 							</div>
 							<div class="trailer-infor">
 	                        	<h4 class="desc">Fast&Furious 8</h4>	
@@ -1003,28 +998,28 @@
 					<div class="celebrities">
 						<h4 class="sb-title">Spotlight Celebrities</h4>
 						<div class="celeb-item">
-							<a href="#"><img src="images/uploads/ava1.jpg" alt="" width="70" height="70"></a>
+							<a href="#"><img src="../images/uploads/ava1.jpg" alt="" width="70" height="70"></a>
 							<div class="celeb-author">
 								<h6><a href="#">Samuel N. Jack</a></h6>
 								<span>Actor</span>
 							</div>
 						</div>
 						<div class="celeb-item">
-							<a href="#"><img src="images/uploads/ava2.jpg" alt="" width="70" height="70"></a>
+							<a href="#"><img src="../images/uploads/ava2.jpg" alt="" width="70" height="70"></a>
 							<div class="celeb-author">
 								<h6><a href="#">Benjamin Carroll</a></h6>
 								<span>Actor</span>
 							</div>
 						</div>
 						<div class="celeb-item">
-							<a href="#"><img src="images/uploads/ava3.jpg" alt="" width="70" height="70"></a>
+							<a href="#"><img src="../images/uploads/ava3.jpg" alt="" width="70" height="70"></a>
 							<div class="celeb-author">
 								<h6><a href="#">Beverly Griffin</a></h6>
 								<span>Actor</span>
 							</div>
 						</div>
 						<div class="celeb-item">
-							<a href="#"><img src="images/uploads/ava4.jpg" alt="" width="70" height="70"></a>
+							<a href="#"><img src="../images/uploads/ava4.jpg" alt="" width="70" height="70"></a>
 							<div class="celeb-author">
 								<h6><a href="#">Justin Weaver</a></h6>
 								<span>Actor</span>
@@ -1041,7 +1036,7 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="ads adsv2">
-					<img src="images/uploads/ads2.png" alt="">
+					<img src="../images/uploads/ads2.png" alt="">
 				</div>
 				<div class="title-hd">
 					<h2>Latest news</h2>
@@ -1049,7 +1044,7 @@
 				</div>
 				<div class="latestnewv2">
 					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="images/uploads/blogv21.jpg" alt=""></a>
+						<a href="blogdetail.html"><img src="../images/uploads/blogv21.jpg" alt=""></a>
 						<div class="blog-it-infor">
 							<h3><a href="blogdetail.html">Godzilla: King Of The Monsters Adds O’Shea Jackson Jr</a></h3>
 							<span class="time">27 Mar 2017</span>
@@ -1057,7 +1052,7 @@
 						</div>
 					</div>
 					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="images/uploads/blogv22.jpg" alt=""></a>
+						<a href="blogdetail.html"><img src="../images/uploads/blogv22.jpg" alt=""></a>
 						<div class="blog-it-infor">
 							<h3><a href="blogdetail.html">First Official Images of Alicia Vikander As Tomb Raider’s Lara Croft</a></h3>
 							<span class="time">27 Mar 2017</span>
@@ -1065,7 +1060,7 @@
 						</div>
 					</div>
 					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="images/uploads/blogv23.jpg" alt=""></a>
+						<a href="blogdetail.html"><img src="../images/uploads/blogv23.jpg" alt=""></a>
 						<div class="blog-it-infor">
 							<h3><a href="blogdetail.html">New Spider-Man: Homecoming Poster Finds Peter Parker At Rest</a></h3>
 							<span class="time">27 Mar 2017</span>
@@ -1073,7 +1068,7 @@
 						</div>
 					</div>
 					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="images/uploads/blogv24.jpg" alt=""></a>
+						<a href="blogdetail.html"><img src="../images/uploads/blogv24.jpg" alt=""></a>
 						<div class="blog-it-infor">
 							<h3><a href="blogdetail.html">Joseph Gordon-Levitt Directing Moive Musical Comedy Wingmen</a></h3>
 							<span class="time">27 Mar 2017</span>
@@ -1108,7 +1103,7 @@
 	<div class="row">
 		<div class="flex-parent-ft">
 			<div class="flex-child-ft item1">
-				 <a href="index.html"><img class="logo" src="images/logo1.png" alt=""></a>
+				 <a href="index.html"><img class="logo" src="../images/logo1.png" alt=""></a>
 				 <p>5th Avenue st, manhattan<br>
 				New York, NY 10001</p>
 				<p>Call us: <a href="#">(+01) 202 342 6789</a></p>
@@ -1162,9 +1157,9 @@
 </footer>
 <!-- end of footer v2 section-->
 
-<script src="js/jquery.js"></script>
-<script src="js/plugins.js"></script>
-<script src="js/plugins2.js"></script>
-<script src="js/custom.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/plugins.js"></script>
+<script src="../js/plugins2.js"></script>
+<script src="../js/custom.js"></script>
 </body>
 </html>

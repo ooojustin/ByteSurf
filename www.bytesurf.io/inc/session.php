@@ -14,14 +14,14 @@
 	// handle logout
 	if (isset($_GET['logout'])) {
         session_destroy();
-        header("location: https://jexflix.com/login/");
+        header("location: https://bytesurf.io/login/");
         die();
     }
 
     // function to require a login
 	function require_login() {
 		if (!is_logged_in()) {
-			header("location: https://jexflix.com/login/");
+			header("location: https://bytesurf.io/login/");
         	die();
        	}
 	}
@@ -38,7 +38,7 @@
 		$expires = intval($user['expires']);
 		// note: expires == -1 means lifetime
 		if (time() > $expires && $expires != -1) {
-			header("location: https://jexflix.com/pricing/");
+			header("location: https://bytesurf.io/pricing/");
 			die();
 		}
 	}
@@ -46,7 +46,7 @@
 	// function to require administrator access (role >= 1000)
 	function require_administrator() {
 		if (!is_administrator()) {
-			header("location: https://jexflix.com/home/");
+			header("location: https://bytesurf.io/home/");
 			die();
 		}
 	}
