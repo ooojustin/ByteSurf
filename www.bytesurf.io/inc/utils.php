@@ -476,4 +476,28 @@
    			return $subject;
     }
 
+    function get_genre_color($genre) {
+    	switch ($genre) {
+    		case 'animation': return '#00ff6e';
+    		case 'fantasy': return '#9b51ef';
+    		case 'science-fiction': return '#0021ff';
+    		case 'music': return '#0b9eed';
+    		case 'documentary': return '#d87008';
+    		case 'western': return '#d1610c';
+    		case 'action': return '#d13d0b';
+    		case 'comedy': return '#e88610';
+    		case 'drama': return '#960679';
+    		case 'history': return '#7e9606';
+    		case 'mystery': return '#8966cc';
+    		case 'thriller': return '#ea6060';
+    		case 'adventure': return '#ff0000';
+    		case 'crime': return '#0d76e0';
+    		case 'family': return '#e0ce0d';
+    		case 'horror': return '#150721 ';
+    		case 'romance': return '#e8106d';
+    		case 'war': return '#4c1313';
+    		default: return '#3c3c3c';
+    	}
+    }
+
 ?>
