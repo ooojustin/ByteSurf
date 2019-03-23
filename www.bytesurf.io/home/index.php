@@ -2,7 +2,9 @@
 
 	include '../inc/server.php';
 	include '../inc/session.php';
-	// require_subscription();
+
+	require_login();
+	global $user;
 
 	$trending = array(
         'triple-frontier-2019',
@@ -14,6 +16,16 @@
         'ralph-breaks-the-internet-2018',
         'crazy-rich-asians-2018'
     );
+
+	// get all of the favorited items that are trending
+    $trending_favorites = get_favorites($user['username']);
+	foreach ($trending_favorites as $index => $favorite) {
+		$remove = explode('|', $favorite)[0] . '|';
+		$trending_favorites[$index] = str_replace($remove, '', $favorite);
+		$favorite = $trending_favorites[$index];
+		if (!in_array($favorite, $trending))
+			unset($trending_favorites[$index]);	
+	}
 
 ?>
 <!DOCTYPE html>
@@ -44,6 +56,12 @@
 	<link rel="stylesheet" href="../css/plugins.css">
 	<link rel="stylesheet" href="../css/style.css">
 
+	<!-- JS files -->
+	<script src="../js/jquery.js"></script>
+	<script src="../js/plugins.js"></script>
+	<script src="../js/plugins2.js"></script>
+	<script src="../js/custom.js"></script>
+
 </head>
 <body>
 <!--preloading-->
@@ -61,6 +79,29 @@
 <!-- END | Header -->
 
 <div class="slider sliderv2" style="background-color: rgb(2, 13, 24);">
+	<script>
+		var favorites = [<?
+			foreach ($trending_favorites as $index => $favorite) {
+				echo '"' . $favorite . '"';
+				if ($index != count($trending_favorites) - 1)
+					echo ',';
+			}
+		?>];
+		function toggle_favorite(url) {
+			console.log(url);
+			var is_favorited = favorites.includes(url);
+			var v = is_favorited ? '0' : '1';
+			send_update('action=favorite&type=movie&url=' + url + '&v=' + v);
+			if (is_favorited) {
+				$('#heart_' + url).removeAttr('style');
+				var index = favorites.indexOf(url);
+ 				favorites.splice(index, 1);
+			} else {
+				$('#heart_' + url).attr('style', 'background-color: white;');
+				favorites.push(url);
+			}
+		}
+	</script>
 	<div class="container">
 		<div class="row">
 	    	<div class="slider-single-item">
@@ -83,14 +124,11 @@
 			    					<? foreach ($genres as $genre) { ?>
 			    					<span style="background-color: <?= get_genre_color($genre) ?>"><a href="#"><?= ucfirst($genre); ?></a></span>
 			    					<? } ?>
-			    					<!--<span class="blue"><a href="#">Sci-fi</a></span>
-			    					<span class="yell"><a href="#">Action</a></span>
-			    					<span class="orange"><a href="#">advanture</a></span>-->
 			    				</div>
 			    				<h1><a href="#"><?= $movie['title'] ?> <span><?= $movie['year'] ?></span></a></h1>
 								<div class="social-btn">
 									<a href="#" class="parent-btn"><i class="ion-play"></i> Watch Trailer</a>
-									<a href="#" class="parent-btn"><i class="ion-heart"></i> Add to Favorite</a>
+									<a href="#" class="parent-btn" onclick="toggle_favorite('<?= $url ?>')"><i class="ion-heart" id="heart_<?=$url?>"></i> Add to Favorite</a>
 									<!--<div class="hover-bnt">
 										<a href="#" class="parent-btn"><i class="ion-android-share-alt"></i>share</a>
 										<div class="hvr-item">
@@ -127,6 +165,11 @@
 	    	</div>
 	    </div>
 	</div>
+	<script>
+		favorites.forEach(function(favorite) {
+  			$('#heart_' + favorite).attr('style', 'background-color: white;');
+		});
+	</script>
 </div>
 <div class="movie-items  full-width">
 	<div class="row">
@@ -1082,9 +1125,5 @@
 </footer>
 <!-- end of footer v2 section-->
 
-<script src="../js/jquery.js"></script>
-<script src="../js/plugins.js"></script>
-<script src="../js/plugins2.js"></script>
-<script src="../js/custom.js"></script>
 </body>
 </html>

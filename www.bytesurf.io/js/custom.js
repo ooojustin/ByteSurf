@@ -1,3 +1,18 @@
+function send_get_request(url, callback) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", url, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
+
+function send_update(params) {
+	var url = 'https://bytesurf.io/updater.php?' + params;
+	send_get_request(url, function() { });
+}
+
 //preloading for page
 $(window).on('load', function() { // makes sure the whole site is loaded 
 	var status = $('#status');

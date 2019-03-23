@@ -206,7 +206,7 @@
 		if ($is_favorited)
 			array_push($favorites, $item);
 		else
-			unset($favorites[array_search($item, $array)]);
+			unset($favorites[array_search($item, $favorites)]);
 
 		// encode data
 		$data = json_encode($favorites);
