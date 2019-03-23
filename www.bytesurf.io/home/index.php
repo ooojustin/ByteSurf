@@ -98,8 +98,8 @@
 											<a href="#" class="hvr-grow"><i class="ion-social-twitter"></i></a>
 											<a href="#" class="hvr-grow"><i class="ion-social-googleplus"></i></a>
 											<a href="#" class="hvr-grow"><i class="ion-social-youtube"></i></a>
-										</div>-->
-									</div>		
+										</div>
+									</div>-->	
 								</div>
 			    				<div class="mv-details">
 			    					<p><i class="ion-android-star"></i> <span><?= $movie['rating'] ?></span> /10</p>
