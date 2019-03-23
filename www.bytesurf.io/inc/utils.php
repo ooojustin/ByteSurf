@@ -142,6 +142,14 @@
 		$get_data->execute();
 		return $get_data->fetch(); 
 	}
+
+	function get_anime_data($url) {
+		global $db;
+		$get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
+    	$get_anime->bindValue(':url', $_GET['t']);   
+    	$get_anime->execute();   
+    	return $get_anime->fetch();
+	}
 	
 	function get_series_data($url) {
 		global $db;
