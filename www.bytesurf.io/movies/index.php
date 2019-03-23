@@ -3,13 +3,13 @@
 	include '../inc/server.php';
 	include '../inc/session.php';
 	
+    // # of videos shown on each page
+	define('VIDEOS_PER_PAGE', 16);
+	
 	$get_movie_count = $db->prepare('SELECT * FROM movies');
 	$get_movie_count->execute();
 	$movie_count = $get_movie_count->rowCount();
 	
-    // # of videos shown on each page
-	define('VIDEOS_PER_PAGE', 16);
-
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
@@ -63,6 +63,7 @@
     	die('No videos found.');
     }
     
+
     function get_movies($vars, $page) {
 
 	   	global $db;
@@ -71,14 +72,24 @@
     		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max AND LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
     		foreach ($vars as $var => $default)
     			$get_movies->bindValue(':' . $var, $default);
+    			
+    		$get_movies_count = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max AND LOWER(title) LIKE :query');
+    		foreach ($vars as $var => $default)
+    			$get_movies_count->bindValue(':' . $var, $default);
         }
 	   	else if (isset($vars['query'])) {
 	   		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+	   		$get_movies_count = $db->prepare('SELECT * FROM `movies` WHERE LOWER(title) LIKE :query');
 	   		$get_movies->bindValue(':query', $vars['query']);
+	   		$get_movies_count->bindValue(':query', $vars['query']);
 	   	} else {
     		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT :offset, :count');
     		foreach ($vars as $var => $default)
     			$get_movies->bindValue(':' . $var, $default);
+    			
+    		$get_movies_count = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max');
+    		foreach ($vars as $var => $default)
+    			$get_movies_count->bindValue(':' . $var, $default);
     	}
 
     	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
@@ -86,7 +97,13 @@
     	$get_movies->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
 
     	$get_movies->execute();
+    	$get_movies_count->execute();
+
+        global $pagecount;
+    	$pagecount = $get_movies_count->rowCount() / VIDEOS_PER_PAGE;
+    	
     	$movies = $get_movies->fetchAll();
+    	
     	
     	return $movies;
 
@@ -149,116 +166,7 @@
 <!--end of preloading-->
 
 <!-- BEGIN | Header -->
-<header class="ht-header">
-	<div class="container">
-		<nav class="navbar navbar-default navbar-custom">
-				<!-- Brand and toggle get grouped for better mobile display -->
-				<div class="navbar-header logo">
-				    <div class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-					    <span class="sr-only">Toggle navigation</span>
-					    <div id="nav-icon1">
-							<span></span>
-							<span></span>
-							<span></span>
-						</div>
-				    </div>
-				    <a href="index.html"><img class="logo" src="../images/logo1.png" alt="" width="119" height="58"></a>
-			    </div>
-				<!-- Collect the nav links, forms, and other content for toggling -->
-				<div class="collapse navbar-collapse flex-parent" id="bs-example-navbar-collapse-1">
-					<ul class="nav navbar-nav flex-child-menu menu-left">
-						<li class="hidden">
-							<a href="#page-top"></a>
-						</li>
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown">
-							Home <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="index.html">Home 01</a></li>
-								<li><a href="homev2.html">Home 02</a></li>
-								<li><a href="homev3.html">Home 03</a></li>
-							</ul>
-						</li>
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							movies<i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li class="dropdown">
-									<a href="#" class="dropdown-toggle" data-toggle="dropdown" >Movie grid<i class="ion-ios-arrow-forward"></i></a>
-									<ul class="dropdown-menu level2">
-										<li><a href="moviegrid.html">Movie grid</a></li>
-										<li><a href="moviegridfw.html">movie grid full width</a></li>
-									</ul>
-								</li>			
-								<li><a href="movielist.html">Movie list</a></li>
-								<li><a href="moviesingle.html">Movie single</a></li>
-								<li class="it-last"><a href="seriessingle.html">Series single</a></li>
-							</ul>
-						</li>
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							celebrities <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="celebritygrid01.html">celebrity grid 01</a></li>
-								<li><a href="celebritygrid02.html">celebrity grid 02 </a></li>
-								<li><a href="celebritylist.html">celebrity list</a></li>
-								<li class="it-last"><a href="celebritysingle.html">celebrity single</a></li>
-							</ul>
-						</li>
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							news <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="bloglist.html">blog List</a></li>
-								<li><a href="bloggrid.html">blog Grid</a></li>
-								<li class="it-last"><a href="blogdetail.html">blog Detail</a></li>
-							</ul>
-						</li>
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							community <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="userfavoritegrid.html">user favorite grid</a></li>
-								<li><a href="userfavoritelist.html">user favorite list</a></li>
-								<li><a href="userprofile.html">user profile</a></li>
-								<li class="it-last"><a href="userrate.html">user rate</a></li>
-							</ul>
-						</li>
-					</ul>
-					<ul class="nav navbar-nav flex-child-menu menu-right">
-						<li class="dropdown first">
-							<a class="btn btn-default dropdown-toggle lv1" data-toggle="dropdown" data-hover="dropdown">
-							pages <i class="fa fa-angle-down" aria-hidden="true"></i>
-							</a>
-							<ul class="dropdown-menu level1">
-								<li><a href="landing.html">Landing</a></li>
-								<li><a href="404.html">404 Page</a></li>
-								<li class="it-last"><a href="comingsoon.html">Coming soon</a></li>
-							</ul>
-						</li>                
-						<li><a href="#">Help</a></li>
-						<li class="loginLink"><a href="#">LOG In</a></li>
-						<li class="btn signupLink"><a href="#">sign up</a></li>
-					</ul>
-				</div>
-			<!-- /.navbar-collapse -->
-	    </nav>
-	    
-	    <!-- top search form -->
-	    <div class="top-search">
-	    	<select>
-				<option value="united">TV show</option>
-				<option value="saab">Others</option>
-			</select>
-			<input type="text" placeholder="Search for a movie, TV Show or celebrity that you are looking for">
-	    </div>
-	</div>
-</header>
+<?=output_page_header();?>
 <!-- END | Header -->
 
 <div class="hero common-hero">
@@ -281,18 +189,27 @@
 		<div class="row ipad-width">
 			<div class="col-md-8 col-sm-12 col-xs-12">
 				<div class="topbar-filter">
-					<p>Found <span><?=number_format($movie_count)?> movies</span> in total</p>
-					<label>Sort by:</label>
-					<select>
-						<option value="popularity">Popularity Descending</option>
-						<option value="popularity">Popularity Ascending</option>
-						<option value="rating">Rating Descending</option>
-						<option value="rating">Rating Ascending</option>
-						<option value="date">Release date Descending</option>
-						<option value="date">Release date Ascending</option>
-					</select>
-					<a href="movielist.html" class="list"><i class="ion-ios-list-outline "></i></a>
-					<a  href="moviegrid.html" class="grid"><i class="ion-grid active"></i></a>
+					<p>Found <span><?=number_format($movie_count)?> movies in total</span></p>
+					<div class="pagination2">
+					    
+						<?
+						    $page = 1;
+						    if (isset($_GET['page'])) $page = $_GET['page'];
+						?>
+						
+						<span>Page <?=$page?> of <?=intval($pagecount) + 1?>:</span>
+						<? if ($page > 1) { ?><a href="<?=generate_page_url($page - 1)?>"><i class="ion-arrow-left-b"></i></a> <? } ?>
+						<? if ($page > 2) { ?> <a href="<?=generate_page_url(intval(1))?>"><?=intval(1)?></a> <? } ?>
+						<? if ($page > 2) { ?> <a href="#">...</a> <? } ?>
+						<? if ($page > 1) { ?><a href="<?=generate_page_url($page - 1)?>"><?=$page - 1?></a> <? } ?>
+						<a class="active" href="#"><?=$page?></a>
+						<? if ($page < $pagecount) { ?> <a href="<?=generate_page_url($page + 1)?>"><?=$page + 1?></a> <? } ?>
+						<? if ($page < $pagecount) { ?> <a href="#">...</a> <? } ?>
+						<? if ($page < $pagecount) { ?> <a href="<?=generate_page_url(intval($pagecount) + 1)?>"><?=intval($pagecount) + 1?></a> <? } ?>
+						<? if ($page < intval($pagecount + 1)) { ?><a href="<?=generate_page_url($page + 1)?>"><i class="ion-arrow-right-b"></i></a> <? } ?>
+						
+						<? ?>
+					</div>
 				</div>
 				<div class="flex-wrap-movielist">
 				    
@@ -318,7 +235,6 @@
 
 				</div>		
 				<div class="topbar-filter">
-					<label>Movies per page:</label>
 					<select>
 						<option value="range">16 Movies</option>
 						<option value="range">24 Movies</option>
@@ -326,14 +242,24 @@
 					</select>
 					
 					<div class="pagination2">
-						<span>Page 1 of 2:</span>
-						<a class="active" href="#">1</a>
-						<a href="#">2</a>
-						<a href="#">3</a>
-						<a href="#">...</a>
-						<a href="#">78</a>
-						<a href="#">79</a>
-						<a href="#"><i class="ion-arrow-right-b"></i></a>
+					    
+						<?
+						    $page = 1;
+						    if (isset($_GET['page'])) $page = $_GET['page'];
+						?>
+						
+						<span>Page <?=$page?> of <?=intval($pagecount) + 1?>:</span>
+						<? if ($page > 1) { ?><a href="<?=generate_page_url($page - 1)?>"><i class="ion-arrow-left-b"></i></a> <? } ?>
+						<? if ($page > 2) { ?> <a href="<?=generate_page_url(intval(1))?>"><?=intval(1)?></a> <? } ?>
+						<? if ($page > 2) { ?> <a href="#">...</a> <? } ?>
+						<? if ($page > 1) { ?><a href="<?=generate_page_url($page - 1)?>"><?=$page - 1?></a> <? } ?>
+						<a class="active" href="#"><?=$page?></a>
+						<? if ($page < $pagecount) { ?> <a href="<?=generate_page_url($page + 1)?>"><?=$page + 1?></a> <? } ?>
+						<? if ($page < $pagecount) { ?> <a href="#">...</a> <? } ?>
+						<? if ($page < $pagecount) { ?> <a href="<?=generate_page_url(intval($pagecount) + 1)?>"><?=intval($pagecount) + 1?></a> <? } ?>
+						<? if ($page < intval($pagecount + 1)) { ?><a href="<?=generate_page_url($page + 1)?>"><i class="ion-arrow-right-b"></i></a> <? } ?>
+						
+						<? ?>
 					</div>
 				</div>
 			</div>
@@ -395,62 +321,7 @@
 	</div>
 </div>
 <!-- footer section-->
-<footer class="ht-footer">
-	<div class="container">
-		<div class="flex-parent-ft">
-			<div class="flex-child-ft item1">
-				 <a href="index.html"><img class="logo" src="../images/logo1.png" alt=""></a>
-				 <p>5th Avenue st, manhattan<br>
-				New York, NY 10001</p>
-				<p>Call us: <a href="#">(+01) 202 342 6789</a></p>
-			</div>
-			<div class="flex-child-ft item2">
-				<h4>Resources</h4>
-				<ul>
-					<li><a href="#">About</a></li> 
-					<li><a href="#">Blockbuster</a></li>
-					<li><a href="#">Contact Us</a></li>
-					<li><a href="#">Forums</a></li>
-					<li><a href="#">Blog</a></li>
-					<li><a href="#">Help Center</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item3">
-				<h4>Legal</h4>
-				<ul>
-					<li><a href="#">Terms of Use</a></li> 
-					<li><a href="#">Privacy Policy</a></li>	
-					<li><a href="#">Security</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item4">
-				<h4>Account</h4>
-				<ul>
-					<li><a href="#">My Account</a></li> 
-					<li><a href="#">Watchlist</a></li>	
-					<li><a href="#">Collections</a></li>
-					<li><a href="#">User Guide</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item5">
-				<h4>Newsletter</h4>
-				<p>Subscribe to our newsletter system now <br> to get latest news from us.</p>
-				<form action="#">
-					<input type="text" placeholder="Enter your email...">
-				</form>
-				<a href="#" class="btn">Subscribe now <i class="ion-ios-arrow-forward"></i></a>
-			</div>
-		</div>
-	</div>
-	<div class="ft-copyright">
-		<div class="ft-left">
-			<p>© 2017 Blockbuster. All Rights Reserved. Designed by leehari.</p>
-		</div>
-		<div class="backtotop">
-			<p><a href="#" id="back-to-top">Back to top  <i class="ion-ios-arrow-thin-up"></i></a></p>
-		</div>
-	</div>
-</footer>
+<?= output_page_footer(); ?>
 <!-- end of footer section-->
 
 <script src="../js/jquery.js"></script>

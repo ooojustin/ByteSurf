@@ -574,7 +574,14 @@
     	$header = file_get_contents($header_path);
     	echo $header;
     }
+    
+    function output_page_footer() {
+    	$header_path = dirname(__FILE__) . '/html/footer.html';
+    	$header = file_get_contents($header_path);
+    	echo $header;
+    }
 
+    
     function get_content_data($type, $url) {
     	$func = get_content_data_function($type);
     	$data = call_user_func($func, $url);
