@@ -570,9 +570,8 @@
     }
 
     function output_page_header() {
-    	global $protocol;
-    	$header = file_get_contents(dirname(__FILE__) . '/html/header.html');
-    	$header = str_replace('{protocol}', $protocol, $header);
+    	$header_path = dirname(__FILE__) . '/html/header.html';
+    	$header = file_get_contents($header_path);
     	echo $header;
     }
 
