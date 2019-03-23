@@ -4,7 +4,8 @@
 	// Functions used generally in other parts of the website.
 	
 	// https://stackoverflow.com/a/6768831/5699643
-	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$GLOBALS['protocol'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+	$GLOBALS['current_url'] = $GLOBALS['protocol'] . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 	// clients ip address
 	$GLOBALS['ip'] = get_ip();
@@ -498,6 +499,13 @@
     		case 'war': return '#4c1313';
     		default: return '#3c3c3c';
     	}
+    }
+
+    function output_page_header() {
+    	global $protocol;
+    	$header = file_get_contents(dirname(__FILE__) . '/html/header.html');
+    	$header = str_replace('{protocol}', $protocol, $header);
+    	echo $header;
     }
 
 ?>
