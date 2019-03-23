@@ -1,3 +1,47 @@
+<?php
+
+    require('../inc/server.php');
+    require('../inc/session.php');
+
+	if (is_logged_in()) {
+		header("location: https://bytesurf.io/home/");
+		die();
+	}
+
+	// if $_POST['username'] isn't set, they didnt post data from form
+	if (!isset($_POST['username']))
+		goto skip_login;
+
+    if (empty($_POST['username']) || empty($_POST['password'])) {
+    	$issue = 'Please enter username/password.';
+    } else {
+    	if (login($_POST['username'], $_POST['password'])) {
+
+    		// log login info into database
+    		global $db, $ip;
+    		$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
+    		$log_login->bindValue(':username', $_POST['username']);
+    		$log_login->bindValue(':ip_address', $ip);
+    		$log_login->bindValue(':timestamp', time());
+    		$log_login->execute();
+
+    		// create session, proceed to home page
+       		$_SESSION['id'] = get_user($_POST['username'])['id'];
+       		header("location: ../home");
+
+       		die();
+
+    	} else
+    		$issue = 'Incorrect username/password.';
+    }
+
+    skip_login:
+
+    $redirect = '';
+    if (isset($_GET['r']))
+    	$redirect = '../' . $_GET['r'];
+
+?>
 <html lang="en" class="no-js">
 <head>
 	<!-- Basic need -->
@@ -24,19 +68,19 @@
 <div class="page-single">
 	<div class="container" style="width: 500px; max-width: 100%">
 			<div class="col-12">
-				<div class="form-style-1 user-pro" action="">
-					<form action="" class="user">
+				<div class="form-style-1 user-pro">
+					<form action="<?= $redirect ?>" class="user" method="post">
 						<center><h4 style="font-size: 20px; margin-bottom: 10px">Login</h4></center>
 						<div class="row">
 							<div class="col-md-12 form-it">
 								<label>Username</label>
-								<input type="text" placeholder="Username">
+								<input type="text" placeholder="Username" name="username">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-12 form-it">
 								<label>Password</label>
-								<input type="text" placeholder="Password">
+								<input type="password" placeholder="Password" name="password">
 							</div>
 						</div>
 						<div class="row">
