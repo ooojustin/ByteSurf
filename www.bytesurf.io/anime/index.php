@@ -66,7 +66,7 @@
 	   	global $db;
 
         if (isset($vars['query']) && isset($vars['rating_min']) && isset($vars['rating_max'])  && isset($vars['query'])) {
-			
+
     		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
 		
 			foreach ($vars as $var => $default) 
@@ -88,8 +88,8 @@
     		$get_animes_count = $db->prepare('SELECT * FROM `anime`');
     	}
 
-    	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
-    	$get_animes->bindValue(':offset', $movie_offset, PDO::PARAM_INT);
+    	$anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
+    	$get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
     	$get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
 
     	$get_animes->execute();
@@ -211,16 +211,15 @@
 				    
 				    
 				    <?
-				        foreach ($anime as $movie) {
-				            $url = 'https://bytesurf.io/movie.php?t=' . $movie['url'];
-				    
+				        foreach ($anime as $a_member) {
+				            $url = 'https://bytesurf.io/anime.php?t=' . $a_member['url'];		    
 				    ?>
 				    
 						<div class="movie-item-style-2 movie-item-style-1">
-							<a href="<?=$url?>"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($movie['thumbnail'])) ?>" alt=""></a>
+							<a href="<?=$url?>"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($a_member['thumbnail'])) ?>" alt=""></a>
 							<div class="mv-item-infor">
-								<h6><a href="<?=$url?>"><?=$movie['title']?></a></h6>
-								<p class="rate"><i class="ion-android-star"></i><span><?=$movie['rating']?></span> /100</p>
+								<h6><a href="<?=$url?>"><?=$a_member['title']?></a></h6>
+								<p class="rate"><i class="ion-android-star"></i><span><?=$a_member['rating']?></span> /100</p>
 							</div>
 						</div>	
 						
@@ -262,7 +261,7 @@
 			<div class="col-md-4 col-sm-12 col-xs-12">
 				<div class="sidebar">
 					<div class="searh-form">
-						<h4 class="sb-title">Search for movie</h4>
+						<h4 class="sb-title">Search for an anime</h4>
 						<form class="form-style-1" action="" method="get">
 							<div class="row">
 								<div class="col-md-12 form-it">
