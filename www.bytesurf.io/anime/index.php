@@ -13,7 +13,7 @@
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
-    	'genre' => "", 
+    	'genre' => '', 
     	'rating_min' => 0.0,
     	'rating_max' => 100.0, 
     	'query' => '' // search query ($_GET['search'])
@@ -51,7 +51,8 @@
     	$GLOBALS['page'] = intval($_GET['page']);
 
     // get anime and determine if any videos were found correctly
-    $anime = get_animes($vars, $page);
+	$anime = get_animes($vars, $page);
+	$page = 2;
     if ($page < 1 || count($anime) == 0) {
     	// PAGE NUMBER IS INVALID or NO animeS ARE FOUND
 		// somebody handle this with something (@trevor)
@@ -65,27 +66,30 @@
 	   	global $db;
 
         if (isset($vars['query']) && isset($vars['rating_min']) && isset($vars['rating_max'])  && isset($vars['query'])) {
-    		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+    		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
     		foreach ($vars as $var => $default)
     			$get_animes->bindValue(':' . $var, $default);
     			
-    		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre  AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(title) LIKE :query');
+    		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre  AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query');
     		foreach ($vars as $var => $default)
-    			$get_animes_count->bindValue(':' . $var, $default);
+				$get_animes_count->bindValue(':' . $var, $default);
+				
+				echo "sq1";
         }
 	   	else if (isset($vars['query'])) {
-	   		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-	   		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(title) LIKE :query');
+	   		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+	   		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
 	   		$get_animes->bindValue(':query', $vars['query']);
-	   		$get_animes_count->bindValue(':query', $vars['query']);
+			$get_animes_count->bindValue(':query', $vars['query']);
+			   
+			echo "sq2";
+
 	   	} else {
-    		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre  AND `rating` >= :rating_min AND `rating` <= :rating_max ORDER BY id DESC LIMIT :offset, :count');
-    		foreach ($vars as $var => $default)
-    			$get_animes->bindValue(':' . $var, $default);
+    		$get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count');
     			
-    		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max');
-    		foreach ($vars as $var => $default)
-    			$get_animes_count->bindValue(':' . $var, $default);
+    		$get_animes_count = $db->prepare('SELECT * FROM `anime`');
+				
+			echo "sq3";
     	}
 
     	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
@@ -220,7 +224,7 @@
 							<a href="<?=$url?>"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($movie['thumbnail'])) ?>" alt=""></a>
 							<div class="mv-item-infor">
 								<h6><a href="<?=$url?>"><?=$movie['title']?></a></h6>
-								<p class="rate"><i class="ion-android-star"></i><span><?=$movie['rating']?></span> /10</p>
+								<p class="rate"><i class="ion-android-star"></i><span><?=$movie['rating']?></span> /100</p>
 							</div>
 						</div>	
 						
@@ -275,7 +279,7 @@
 										<select
 											name="skills" multiple="" class="ui fluid dropdown">
 											<option value="">Enter to filter genres</option>
-											<option value="Action1">Action 1</option>
+											<option value="Action">Action 1</option>
 					                        <option value="Action2">Action 2</option>
 					                        <option value="Action3">Action 3</option>
 					                        <option value="Action4">Action 4</option>
