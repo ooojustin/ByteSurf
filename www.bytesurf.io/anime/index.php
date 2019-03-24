@@ -6,9 +6,9 @@
     // # of videos shown on each page
 	define('VIDEOS_PER_PAGE', 16);
 	
-	$get_movie_count = $db->prepare('SELECT * FROM anime');
-	$get_movie_count->execute();
-	$movie_count = $get_movie_count->rowCount();
+	$get_anime_count = $db->prepare('SELECT * FROM anime');
+	$get_anime_count->execute();
+	$anime_count = $get_anime_count->rowCount();
 	
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
@@ -66,30 +66,26 @@
 	   	global $db;
 
         if (isset($vars['query']) && isset($vars['rating_min']) && isset($vars['rating_max'])  && isset($vars['query'])) {
+			
     		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-    		foreach ($vars as $var => $default)
-    			$get_animes->bindValue(':' . $var, $default);
-    			
-    		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre  AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query');
-    		foreach ($vars as $var => $default)
-				$get_animes_count->bindValue(':' . $var, $default);
-				
-				echo "sq1";
+		
+			foreach ($vars as $var => $default) 
+				$get_animes->bindValue(':' . $var, $default);		
+					
+    		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre  AND `rating` >= :rating_min AND `rating` <= :rating_max AND LOWER(similar) LIKE :query');	
+			foreach ($vars as $var => $default)
+				$get_animes_count->bindValue(':' . $var, $default);				
         }
 	   	else if (isset($vars['query'])) {
+			   // If we only want to search.
 	   		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
 	   		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
 	   		$get_animes->bindValue(':query', $vars['query']);
-			$get_animes_count->bindValue(':query', $vars['query']);
-			   
-			echo "sq2";
-
+			$get_animes_count->bindValue(':query', $vars['query']);			
 	   	} else {
-    		$get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count');
-    			
+			// Only like on page load / nothing selected
+    		$get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count'); 			
     		$get_animes_count = $db->prepare('SELECT * FROM `anime`');
-				
-			echo "sq3";
     	}
 
     	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
@@ -174,10 +170,10 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="hero-ct">
-					<h1> movie listing - grid</h1>
+					<h1> anime listing - grid</h1>
 					<ul class="breadcumb">
 						<li class="active"><a href="#">Home</a></li>
-						<li> <span class="ion-ios-arrow-right"></span> movie listing</li>
+						<li> <span class="ion-ios-arrow-right"></span> anime listing</li>
 					</ul>
 				</div>
 			</div>
@@ -189,7 +185,7 @@
 		<div class="row ipad-width">
 			<div class="col-md-8 col-sm-12 col-xs-12">
 				<div class="topbar-filter">
-					<p>Found <span><?=number_format($movie_count)?> anime in total</span></p>
+					<p>Found <span><?=number_format($anime_count)?> anime in total</span></p>
 					<div class="pagination2">
 					    
 						<?
@@ -270,14 +266,14 @@
 						<form class="form-style-1" action="" method="get">
 							<div class="row">
 								<div class="col-md-12 form-it">
-									<label>Movie name</label>
+									<label>Anime name</label>
 									<input type="text" name="search" placeholder="Enter keywords">
 								</div>
 								<div class="col-md-12 form-it">
 									<label>Genres & Subgenres</label>
 									<div class="group-ip">
 										<select
-											name="skills" multiple="" class="ui fluid dropdown">
+											name="genre" multiple="" class="ui fluid dropdown">
 											<option value="">Enter to filter genres</option>
 											<option value="Action">Action 1</option>
 					                        <option value="Action2">Action 2</option>
@@ -291,24 +287,13 @@
 									<label>Rating (From - To)</label>
 									<div class="row">
 										<div class="col-md-6">
-											<input type="number" min="0" name="imdb_min" value="0">
+											<input type="number" min="0" name="rating_min" value="0">
 										</div>
 										<div class="col-md-6">
-											<input type="number" name="imdb_max" max="10" value="10">
+											<input type="number" name="rating_max" max="100" value="100">
 										</div>
 									</div>
-								</div>
-								<div class="col-md-12 form-it">
-									<label>Release Year (From - To)</label>
-									<div class="row">
-										<div class="col-md-6">
-											<input type="number" min="1900" name="year_min" value="1900">
-										</div>
-										<div class="col-md-6">
-											<input type="number" name="year_max" max="2019" value="2019">
-										</div>
-									</div>
-								</div>
+								</div>	
 								<div class="col-md-12 ">
 									<input class="submit" type="submit" value="submit">
 								</div>
