@@ -21,3 +21,9 @@ Password: N6ihVdB8JLhmFVy
 ### BUNNY CDN
 Email: peterpistachio@protonmail.com    
 Password: N6ihVdB8JLhmFVy
+
+### Host   
+Username: bytesurf
+Password: EG7F-4*cH0ad4  
+
+URL: https://host3.abelohost.com:2083/
