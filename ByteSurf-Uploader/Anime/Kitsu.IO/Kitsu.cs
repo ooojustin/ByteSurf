@@ -17,7 +17,6 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         // {"params":"query=naruto&attributesToRetrieve=%5B%22id%22%2C%22slug%22%2C%22kind%22%2C%22canonicalTitle%22%2C%22titles%22%2C%22posterImage%22%2C%22subtype%22%2C%22posterImage%22%5D&hitsPerPage=4"}
         private const string MEDIA_API = "https://awqo5j657s-dsn.algolia.net/1/indexes/production_media/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.27.1&x-algolia-application-id=AWQO5J657S&x-algolia-api-key={0}";
         private const string MEDIA_API_PARAMS = "query={0}&attributesToRetrieve=%5B%22id%22%2C%22slug%22%2C%22kind%22%2C%22canonicalTitle%22%2C%22titles%22%2C%22posterImage%22%2C%22subtype%22%2C%22posterImage%22%5D&hitsPerPage=4";
-
         private const string KITSU_ANIME_LINK = "https://kitsu.io/api/edge/anime/{0}";
 
         /// <summary>
