@@ -5,7 +5,39 @@ include '../inc/session.php';
 // Session authentication
 require_login();
 
+// Get the anime title
+if (!isset($_GET['t']))
+	die('No anime selected');
 
+// Fetch anime given slug
+global $db;
+$get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
+$get_anime->bindValue(':url', $_GET['t']);   
+$get_anime->execute();   
+$anime = $get_anime->fetch();
+
+if (!$anime)
+	die('No anime found with that title.');
+
+$url = authenticate_cdn_url($anime['data'], true);  
+$data_raw = file_get_contents($url);
+$json_data = json_decode($data_raw, true);
+
+    // comment out these 2 lines and access all of the data from the $json_data variable
+    // $json_encode($json_data, JSON_PRETTY_PRINT);   
+	//die();
+
+if (!isset($_GET['ep'])) {
+	$_GET['ep'] = 1;
+} 
+
+$episode_info = $json_data['episodeData'][$_GET['ep'] - 1];
+
+function GenerateAnimeLink($res) {
+	// https://cdn.jexflix.com/anime/asobi-asobase/poster.jpg
+	// https://cdn.jexflix.com/anime/asobi-asobase/8/1080.mp4
+	return "https://cdn.jexflix.com/anime/".$_GET['t']."/".$_GET['ep']."/" . $res . ".mp4";
+}
 ?>
 
 <!DOCTYPE html>
