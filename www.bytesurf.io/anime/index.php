@@ -3,6 +3,8 @@
 	include '../inc/server.php';
 	include '../inc/session.php';
 	
+	require_login();
+
     // # of videos shown on each page
 	define('VIDEOS_PER_PAGE', 16);
 	
