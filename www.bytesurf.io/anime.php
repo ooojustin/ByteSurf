@@ -1,6 +1,6 @@
 <?php 
-include '../inc/server.php';
-include '../inc/session.php';
+include 'inc/server.php';
+include 'inc/session.php';
 
 // Session authentication
 require_login();
@@ -19,13 +19,28 @@ $anime = $get_anime->fetch();
 if (!$anime)
 	die('No anime found with that title.');
 
-$url = authenticate_cdn_url($anime['data'], true);  
-$data_raw = file_get_contents($url);
+$url = str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($anime['data'], true));
+
+echo $url;
+
+function file_get_contents_curl($url) {	
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	$data = curl_exec($ch);
+	curl_close($ch);
+    return $data;
+}
+
+$data_raw = file_get_contents_curl($url);
+
+echo $data_raw;
+
 $json_data = json_decode($data_raw, true);
 
-    // comment out these 2 lines and access all of the data from the $json_data variable
-    // $json_encode($json_data, JSON_PRETTY_PRINT);   
-	//die();
+// comment out these 2 lines and access all of the data from the $json_data variable
+// echo json_encode($json_data, JSON_PRETTY_PRINT);   
+// die();
 
 if (!isset($_GET['ep'])) {
 	$_GET['ep'] = 1;
