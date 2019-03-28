@@ -276,7 +276,7 @@ function GenerateAnimeLink($res) {
 		<div class="row">
 			<div class="col-md-12">
 				<div class="hero-ct">
-					<h1> Anime Title </h1>
+					<h1> <?php echo $json_data['title']; ?> </h1>
 					<ul class="breadcumb">
 						<li class="active"><a href="#">Home</a></li>
 						<li> <span class="ion-ios-arrow-right"></span> Anime Catalog </li>
@@ -306,10 +306,8 @@ function GenerateAnimeLink($res) {
 
 					<div>
 						<p>
-							<?php echo $json_data['synopsis']; ?>
 							<!-- Synopsis -->
-							Joss Whedon has a little bit of a history with superhero movies, and for creating layered female characters. After his documented frustrations with Wonder Woman, he's getting another chance at the DC Extended Universe and Warner Bros., closing in on a deal to write direct and produce a Batgirl movie.
-							It's a somewhat surprising, but welcome move, given that Whedon has taken a long break to write something original, but has now pivoted to focus on developing the Batgirl project. First appearing in 1967 in Gardner Fox and Carmine Infantino's story run The Million Dollar Debut Of Batgirl, she's the superhero alias of Barbara Gordon, daughter of Gotham City Police Commissioner James Gordon. So we can likely expect J.K. Simmons' take on Gordon to appear along with other Bat-related characters.
+							<?php echo $json_data['synopsis']; ?>
 							<!-- End Synopsis -->
 						</p>
 					</div>
@@ -323,63 +321,15 @@ function GenerateAnimeLink($res) {
 					</style>
 
 					<div class="row">
+						<?php foreach($json_data['episodeData'] as $epData) { ?>
 							<div class="col-md-4">
 								<div class="ceb-item-style-2">
 									<div class="ceb-infor">
-										<h2><a href="celebritysingle.html">Episode 1</a></h2>
+										<h2><a href="https://bytesurf.io/anime.php?t=<?php echo $_GET['t'] . '&ep='. $epData['episode']; ?>">Episode <?php echo $epData['episode']; ?></a></h2>
 									</div>
 								</div>
 							</div>
-							<div class="col-md-4">
-								<div class="ceb-item-style-2">
-									<div class="ceb-infor">
-										<h2><a href="celebritysingle.html">Episode 2</a></h2>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="ceb-item-style-2">
-									<div class="ceb-infor">
-										<h2><a href="celebritysingle.html">Episode 3</a></h2>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<div class="ceb-item-style-2">
-									<div class="ceb-infor">
-										<h2><a href="celebritysingle.html">Episode 4</a></h2>
-									</div>
-								</div>
-							</div>	
-							<div class="col-md-4">
-									<div class="ceb-item-style-2">
-										<div class="ceb-infor">
-											<h2><a href="celebritysingle.html">Episode 5</a></h2>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="ceb-item-style-2">
-										<div class="ceb-infor">
-											<h2><a href="celebritysingle.html">Episode 6</a></h2>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="ceb-item-style-2">
-										<div class="ceb-infor">
-											<h2><a href="celebritysingle.html">Episode 7</a></h2>
-										</div>
-									</div>
-								</div>
-								<div class="col-md-4">
-									<div class="ceb-item-style-2">
-										<div class="ceb-infor">
-											<h2><a href="celebritysingle.html">Episode 111</a></h2>
-										</div>
-									</div>
-								</div>
-
+						<?php } ?>						
 						</div>
 
 						<div class="topbar-filter">
