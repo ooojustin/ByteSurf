@@ -6,7 +6,7 @@ include '../inc/session.php';
 require_login();
 
 // Get the anime title
-if (!isset($_GET['t']))
+if (!isset($_GET['t'])) 
 	die('No anime selected');
 
 // Fetch anime given slug
@@ -33,9 +33,9 @@ if (!isset($_GET['ep'])) {
 
 $episode_info = $json_data['episodeData'][$_GET['ep'] - 1];
 
+// https://cdn.jexflix.com/anime/asobi-asobase/poster.jpg
+// https://cdn.jexflix.com/anime/asobi-asobase/8/1080.mp4
 function GenerateAnimeLink($res) {
-	// https://cdn.jexflix.com/anime/asobi-asobase/poster.jpg
-	// https://cdn.jexflix.com/anime/asobi-asobase/8/1080.mp4
 	return "https://cdn.jexflix.com/anime/".$_GET['t']."/".$_GET['ep']."/" . $res . ".mp4";
 }
 ?>
@@ -48,7 +48,7 @@ function GenerateAnimeLink($res) {
 <html class="ie ie8 no-js" lang="en-US">
 <![endif]-->
 <!--[if !(IE 7) | !(IE 8)  ]><!-->
-<html lang="en" class="no-js">
+<html lang="en" class="no-js">	
 <head>
 	<!-- Basic need -->
 	<title>Open Pediatrics</title>
@@ -292,7 +292,11 @@ function GenerateAnimeLink($res) {
 		<div class="row">
 			<div class="col-md-9 col-sm-12 col-xs-12" style="width: 100%;">
 				<div class="blog-detail-ct">
-					<h1>New Character Posters For Pirates Of The Caribbean</h1>
+					<h1><?php if ($episode_info['episode_title'] != '') {
+						echo $episode_info['episode_title'];
+					} else {
+						echo $json_data['title'];
+					} ?></h1>
 					<!-- Player -->				
 					<video controls playsinline id="player">		
 						<source src="media/sample.mp4" type="video/mp4" size="1080">
@@ -302,6 +306,7 @@ function GenerateAnimeLink($res) {
 
 					<div>
 						<p>
+							<?php echo $json_data['synopsis']; ?>
 							<!-- Synopsis -->
 							Joss Whedon has a little bit of a history with superhero movies, and for creating layered female characters. After his documented frustrations with Wonder Woman, he's getting another chance at the DC Extended Universe and Warner Bros., closing in on a deal to write direct and produce a Batgirl movie.
 							It's a somewhat surprising, but welcome move, given that Whedon has taken a long break to write something original, but has now pivoted to focus on developing the Batgirl project. First appearing in 1967 in Gardner Fox and Carmine Infantino's story run The Million Dollar Debut Of Batgirl, she's the superhero alias of Barbara Gordon, daughter of Gotham City Police Commissioner James Gordon. So we can likely expect J.K. Simmons' take on Gordon to appear along with other Bat-related characters.
