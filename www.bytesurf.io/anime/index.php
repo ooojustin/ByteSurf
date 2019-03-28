@@ -218,7 +218,7 @@
 				    ?>
 				    
 						<div class="movie-item-style-2 movie-item-style-1">
-							<a href="<?=$url?>"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($a_member['thumbnail'])) ?>" alt=""></a>
+							<a href="<?=$url?>"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($a_member['thumbnail'])) ?>" alt="" style="width: 170px; height: 255px;"></a>
 							<div class="mv-item-infor">
 								<h6><a href="<?=$url?>"><?=$a_member['title']?></a></h6>
 								<p class="rate"><i class="ion-android-star"></i><span><?=$a_member['rating']?></span> /100</p>
