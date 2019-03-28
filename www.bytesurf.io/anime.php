@@ -21,8 +21,6 @@ if (!$anime)
 
 $url = str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($anime['data'], true));
 
-echo $url;
-
 function file_get_contents_curl($url) {	
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -33,8 +31,6 @@ function file_get_contents_curl($url) {
 }
 
 $data_raw = file_get_contents_curl($url);
-
-echo $data_raw;
 
 $json_data = json_decode($data_raw, true);
 
@@ -314,7 +310,9 @@ function GenerateAnimeLink($res) {
 					} ?></h1>
 					<!-- Player -->				
 					<video controls playsinline id="player">		
-						<source src="media/sample.mp4" type="video/mp4" size="1080">
+						<?php foreach($episode_info['qualities'] as $quality) { ?>
+						<source src="<?php echo str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url(GenerateAnimeLink($quality['resolution']))); ?>" type="video/mp4" size="<?php echo $quality['resolution']; ?>">
+						<?php } ?>
 					</video>
 					<!-- End Player -->
 					<br/>
