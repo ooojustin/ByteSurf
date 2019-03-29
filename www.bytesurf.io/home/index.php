@@ -88,7 +88,6 @@
 			}
 		?>];
 		function toggle_favorite(url) {
-			console.log(url);
 			var is_favorited = favorites.includes(url);
 			var v = is_favorited ? '0' : '1';
 			send_update('action=favorite&type=movie&url=' + url + '&v=' + v);
