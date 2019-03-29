@@ -227,7 +227,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         try {
                             string to_upload = JsonConvert.SerializeObject(dbinfo);
                             // Console.WriteLine(to_upload);
-                            Web.UploadString("https://scraper.jexflix.com/add_anime.php", to_upload);
+                            Web.UploadString("https://bytesurf.io/scraper/add_anime.php", to_upload);
                             Console.WriteLine("Updated the database");
 
                         } catch (Exception ex) {

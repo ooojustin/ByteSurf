@@ -452,7 +452,7 @@
 	function authenticate_cdn_url($url, $is_server_request = false) {
 
 		// important vars
-		$ip = $is_server_request ? $_SERVER['SERVER_ADDR'] : $GLOBALS['ip'];
+		$ip = $is_server_request ? gethostbyname(gethostname()) : $GLOBALS['ip'];
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
 		$base_url = 'https://cdn.jexflix.com';
 

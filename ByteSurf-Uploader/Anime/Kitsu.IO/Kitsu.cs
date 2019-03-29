@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JexFlix_Scraper.Anime.Kitsu.IO {
@@ -17,7 +18,6 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         // {"params":"query=naruto&attributesToRetrieve=%5B%22id%22%2C%22slug%22%2C%22kind%22%2C%22canonicalTitle%22%2C%22titles%22%2C%22posterImage%22%2C%22subtype%22%2C%22posterImage%22%5D&hitsPerPage=4"}
         private const string MEDIA_API = "https://awqo5j657s-dsn.algolia.net/1/indexes/production_media/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%20(lite)%203.27.1&x-algolia-application-id=AWQO5J657S&x-algolia-api-key={0}";
         private const string MEDIA_API_PARAMS = "query={0}&attributesToRetrieve=%5B%22id%22%2C%22slug%22%2C%22kind%22%2C%22canonicalTitle%22%2C%22titles%22%2C%22posterImage%22%2C%22subtype%22%2C%22posterImage%22%5D&hitsPerPage=4";
-
         private const string KITSU_ANIME_LINK = "https://kitsu.io/api/edge/anime/{0}";
 
         /// <summary>
@@ -146,11 +146,15 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         private static KitsuAnime.EpisodeData.Episodes FetchNextEpisodePage(KitsuAnime.EpisodeData.Episodes eps) {
+            Thread.Sleep(1000); // so we don't get limited
             try {
-                string raw = General.GET(eps.links.next);
-                return JsonConvert.DeserializeObject<KitsuAnime.EpisodeData.Episodes>(raw, General.DeserializeSettings);
+                if (!string.IsNullOrEmpty(eps.links.next)) {
+                    string raw = General.GET(eps.links.next);
+                    var next_page = JsonConvert.DeserializeObject<KitsuAnime.EpisodeData.Episodes>(raw, General.DeserializeSettings);
+                    return next_page;
+                }
             } catch (WebException ex) {
-                Console.WriteLine("[FetchEpisodePage] " + ex.Message);
+                Console.WriteLine("[FetchNextEpisodePage] " + ex.Message);
             }
             return null;
         }
@@ -173,8 +177,11 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
             while (episode > last_ep.attributes.number) {
-                epdata = FetchNextEpisodePage(epdata);
-                last_ep = epdata.data[epdata.data.Count() - 1];
+                if (string.IsNullOrEmpty(epdata.links.next))
+                    return "";
+                var nextep = FetchNextEpisodePage(epdata);
+                last_ep = nextep.data[nextep.data.Count() - 1];
+                epdata = nextep;
             }
             try {
                 foreach (var ep in epdata.data) {
@@ -194,8 +201,11 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
             while (episode > last_ep.attributes.number) {
-                epdata = FetchNextEpisodePage(epdata);
-                last_ep = epdata.data[epdata.data.Count() - 1];
+                if (string.IsNullOrEmpty(epdata.links.next))
+                    return "";
+                var nextep = FetchNextEpisodePage(epdata);
+                last_ep = nextep.data[nextep.data.Count() - 1];
+                epdata = nextep;
             }
             try {
                 foreach (var ep in epdata.data) {

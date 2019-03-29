@@ -2017,6 +2017,23 @@
 
 }(window, document, jQuery));
 
+
+/*==============================
+Player
+==============================*/
+function initializePlayer() {
+	if ($('#player').length) {
+		const player = new Plyr('#player');
+	} else {
+		return false;
+	}
+	return false;
+}
+
+$(document).ready(function () {
+	$(window).on('load', initializePlayer());
+});
+
 /*!
  * Media helper for fancyBox
  * version: 1.0.6 (Fri, 14 Jun 2013)
