@@ -32,9 +32,10 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                 KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.title);
 
                 // Skip animes we can't update!
-                if (KitsuAnimeInfo == null)
+                if (KitsuAnimeInfo == null) {
                     MessageHandler.Add(Anime.title, "Skipping! Fail to fetch Kitsu Information \n", ConsoleColor.Red, ConsoleColor.White);
-                else
+                    continue;
+                } else
                     MessageHandler.Add(Anime.title, "Now Scraping! \n", ConsoleColor.Magenta, ConsoleColor.White);
 
 
