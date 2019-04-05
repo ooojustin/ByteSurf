@@ -1,1128 +1,470 @@
-<?php
-
-	include '../inc/server.php';
-	include '../inc/session.php';
-
-	require_login();
-	global $user;
-
-	$trending = array(
-        'triple-frontier-2019',
-        'mortal-engines-2018',
-        'overlord-2018',
-        'aquaman-2018',
-        'isnt-it-romantic-2019',
-        'spider-man-into-the-spider-verse-2018',
-        'ralph-breaks-the-internet-2018',
-        'crazy-rich-asians-2018'
-    );
-
-	// get all of the favorited items that are trending
-    $trending_favorites = get_favorites($user['username']);
-	foreach ($trending_favorites as $index => $favorite) {
-		$remove = explode('|', $favorite)[0] . '|';
-		$trending_favorites[$index] = str_replace($remove, '', $favorite);
-		$favorite = $trending_favorites[$index];
-		if (!in_array($favorite, $trending))
-			unset($trending_favorites[$index]);	
-	}
-
-?>
-<!DOCTYPE html>
-<!--[if IE 7]>
-<html class="ie ie7 no-js" lang="en-US">
-<![endif]-->
-<!--[if IE 8]>
-<html class="ie ie8 no-js" lang="en-US">
-<![endif]-->
-<!--[if !(IE 7) | !(IE 8)  ]><!-->
-<html lang="en" class="no-js">
-<head>
-	<!-- Basic need -->
-	<title>ByteSurf</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="">
-	<meta name="keywords" content="">
-	<meta name="author" content="">
-	<link rel="profile" href="#">
-
-    <!--Google Font-->
-    <link rel="stylesheet" href='http://fonts.googleapis.com/css?family=Dosis:400,700,500|Nunito:300,400,600' />
-	<!-- Mobile specific meta -->
-	<meta name=viewport content="width=device-width, initial-scale=1">
-	<meta name="format-detection" content="telephone-no">
-
-	<!-- CSS files -->
-	<link rel="stylesheet" href="../css/plugins.css">
-	<link rel="stylesheet" href="../css/style.css">
-
-	<!-- JS files -->
-	<script src="../js/jquery.js"></script>
-	<script src="../js/plugins.js"></script>
-	<script src="../js/plugins2.js"></script>
-	<script src="../js/custom.js"></script>
-
-</head>
-<body>
-<!--preloading-->
-<div id="preloader">
-    <img class="logo" src="../images/logo1.png" alt="" width="119" height="58">
-    <div id="status">
-        <span></span>
-        <span></span>
-    </div>
-</div>
-<!--end of preloading-->
-
-<!-- BEGIN | Header -->
-<? output_page_header() ?>
-<!-- END | Header -->
-
-<div class="slider sliderv2" style="background-color: rgb(2, 13, 24);">
-	<script>
-		var favorites = [<?
-			foreach ($trending_favorites as $index => $favorite) {
-				echo '"' . $favorite . '"';
-				if ($index != count($trending_favorites) - 1)
-					echo ',';
-			}
-		?>];
-		function toggle_favorite(url) {
-			var is_favorited = favorites.includes(url);
-			var v = is_favorited ? '0' : '1';
-			send_update('action=favorite&type=movie&url=' + url + '&v=' + v);
-			if (is_favorited) {
-				$('#heart_' + url).removeAttr('style');
-				var index = favorites.indexOf(url);
- 				favorites.splice(index, 1);
-			} else {
-				$('#heart_' + url).attr('style', 'background-color: white;');
-				favorites.push(url);
-			}
-		}
-	</script>
-	<div class="container">
-		<div class="row">
-	    	<div class="slider-single-item">
-	    		<?php 
-	    			foreach ($trending as $url) { 
-
-	    				$movie = get_movie_data($url);
-
-	    				$duration_data = explode(':', gmdate('H:i', $movie['duration']));
-	    				$duration = intval($duration_data[0]) . 'h ' . $duration_data[1] . 'm';
-
-	    				$genres = json_decode($movie['genres'], true);
-
-	    		?>
-	    		<div class="movie-item">
-	    			<div class="row">
-	    				<div class="col-md-8 col-sm-12 col-xs-12">
-	    					<div class="title-in">
-			    				<div class="cate">
-			    					<? foreach ($genres as $genre) { ?>
-			    					<span style="background-color: <?= get_genre_color($genre) ?>"><a href="#"><?= ucfirst($genre); ?></a></span>
-			    					<? } ?>
-			    				</div>
-			    				<h1><a href="#"><?= $movie['title'] ?> <span><?= $movie['year'] ?></span></a></h1>
-								<div class="social-btn">
-									<a href="#" class="parent-btn"><i class="ion-play"></i> Watch Trailer</a>
-									<a href="#" class="parent-btn" onclick="toggle_favorite('<?= $url ?>')"><i class="ion-heart" id="heart_<?=$url?>"></i> Add to Favorite</a>
-									<!--<div class="hover-bnt">
-										<a href="#" class="parent-btn"><i class="ion-android-share-alt"></i>share</a>
-										<div class="hvr-item">
-											<a href="#" class="hvr-grow"><i class="ion-social-facebook"></i></a>
-											<a href="#" class="hvr-grow"><i class="ion-social-twitter"></i></a>
-											<a href="#" class="hvr-grow"><i class="ion-social-googleplus"></i></a>
-											<a href="#" class="hvr-grow"><i class="ion-social-youtube"></i></a>
-										</div>
-									</div>-->	
-								</div>
-			    				<div class="mv-details">
-			    					<p><i class="ion-android-star"></i> <span><?= $movie['rating'] ?></span> /10</p>
-			    					<ul class="mv-infor">
-			    						<li>  Run Time: <?= $duration ?> </li>
-			    						<li>  Rated: <?= $movie['certification'] ?>  </li>
-			    						<li>  Release: 1 May 2015</li>
-			    					</ul>
-			    				</div>
-			    				<!--<div class="btn-transform transform-vertical">
-									<div><a href="#" class="item item-1 redbtn">more detail</a></div>
-									<div><a href= "#" class="item item-2 redbtn hvrbtn">more detail</a></div>
-								</div>-->
-								<p style="font-size: 130%; padding-left: 7px;"><?= $movie['description'] ?></p>
-			    			</div>
-	    				</div>
-	    				<div class="col-md-4 col-sm-12 col-xs-12">
-		    				<div class="mv-img-2">
-			    				<a href="#"><img src="<?= str_replace('cdn.jexflix.com', 'jexflix.b-cdn.net', authenticate_cdn_url($movie['thumbnail'])) ?>" alt=""></a>
-			    			</div>
-		    			</div>
-	    			</div>	
-	    		</div>
-	    		<? } ?>
-	    	</div>
-	    </div>
-	</div>
-	<script>
-		favorites.forEach(function(favorite) {
-  			$('#heart_' + favorite).attr('style', 'background-color: white;');
-		});
-	</script>
-</div>
-<div class="movie-items  full-width">
-	<div class="row">
-		<div class="col-md-12">
-			<div class="title-hd">
-				<h2>in theater</h2>
-				<a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
-			</div>
-			<div class="tabs">
-				<ul class="tab-links">
-					<li class="active"><a href="#tab1-h2">#Popular</a></li>
-					<li><a href="#tab2-h2"> #Coming soon</a></li>
-					<li><a href="#tab3-h2">  #Top rated  </a></li>
-					<li><a href="#tab4-h2"> #Most reviewed</a></li>                        
-				</ul>
-			    <div class="tab-content">
-			        <div id="tab1-h2" class="tab active">
-			            <div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it1.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-								<div class="slide-it">
-									<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it2.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The revenant</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-								</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it3.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-			        </div>
-			        <div id="tab2-h2" class="tab">
-			           <div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-			        </div>
-			        <div id="tab3-h2" class="tab">
-			        	<div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it1.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-								<div class="slide-it">
-									<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it2.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The revenant</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-								</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it3.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-		       	 	</div>
-		       	 	 <div id="tab4-h2" class="tab">
-			        	<div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-		       	 	</div>
-			    </div>
-			</div>
-			<div class="title-hd">
-				<h2>on tv</h2>
-				<a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
-			</div>
-			<div class="tabs">
-				<ul class="tab-links-2">
-					<li class="active"><a href="#tab21-h2">#Popular</a></li>
-					<li><a href="#tab22-h2"> #Coming soon</a></li>
-					<li><a href="#tab23-h2">  #Top rated  </a></li>
-					<li><a href="#tab24-h2"> #Most reviewed</a></li>                        
-				</ul>
-			    <div class="tab-content">
-			        <div id="tab21-h2" class="tab active">
-			            <div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-								<div class="slide-it">
-									<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The revenant</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-								</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it9.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-			        </div>
-			        <div id="tab22-h2" class="tab">
-			           <div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-			        </div>
-			        <div id="tab23-h2" class="tab">
-			        	<div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="movie-item">
-			            			<div class="mv-img">
-			            				<img src="../images/uploads/mv-it1.jpg" alt="">
-			            			</div>
-			            			<div class="hvr-inner">
-			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-			            			</div>
-			            			<div class="title-in">
-			            				<h6><a href="#">Interstellar</a></h6>
-			            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-			            			</div>
-			            		</div>
-								<div class="movie-item">
-			            			<div class="mv-img">
-			            				<img src="../images/uploads/mv-it2.jpg" alt="">
-			            			</div>
-			            			<div class="hvr-inner">
-			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-			            			</div>
-			            			<div class="title-in">
-			            				<h6><a href="#">The revenant</a></h6>
-			            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-			            			</div>
-			            		</div>
-			            		<div class="movie-item">
-			            			<div class="mv-img">
-			            				<img src="../images/uploads/mv-it3.jpg" alt="">
-			            			</div>
-			            			<div class="hvr-inner">
-			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-			            			</div>
-			            			<div class="title-in">
-			            				<h6><a href="#">Die hard</a></h6>
-			            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-			            			</div>
-			            		</div>
-			            		<div class="movie-item">
-			            			<div class="mv-img">
-			            				<img src="../images/uploads/mv-it4.jpg" alt="">
-			            			</div>
-			            			<div class="hvr-inner">
-			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-			            			</div>
-			            			<div class="title-in">
-			            				<h6><a href="#">The walk</a></h6>
-			            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-			            			</div>
-			            		</div>
-			            		<div class="movie-item">
-			            			<div class="mv-img">
-			            				<img src="../images/uploads/mv-it3.jpg" alt="">
-			            			</div>
-			            			<div class="hvr-inner">
-			            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-			            			</div>
-			            			<div class="title-in">
-			            				<h6><a href="#">Die hard</a></h6>
-			            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-			            			</div>
-			            		</div>
-			            	</div>
-			            </div>
-		       	 	</div>
-		       	 	 <div id="tab24-h2" class="tab">
-			        	<div class="row">
-			            	<div class="slick-multiItem2">
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it4.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">The walk</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it5.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it6.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Interstellar</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it7.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            		<div class="slide-it">
-			            			<div class="movie-item">
-				            			<div class="mv-img">
-				            				<img src="../images/uploads/mv-it8.jpg" alt="">
-				            			</div>
-				            			<div class="hvr-inner">
-				            				<a  href="moviesingle.html"> Read more <i class="ion-android-arrow-dropright"></i> </a>
-				            			</div>
-				            			<div class="title-in">
-				            				<h6><a href="#">Die hard</a></h6>
-				            				<p><i class="ion-android-star"></i><span>7.4</span> /10</p>
-				            			</div>
-				            		</div>
-			            		</div>
-			            	</div>
-			            </div>
-		       	 	</div>
-			    </div>
-			</div>
-		</div>
-	</div>
-</div>
-
-<div class="trailers full-width">
-		<div class="row ipad-width">
-			<div class="col-md-9 col-sm-12 col-xs-12">
-				<div class="title-hd">
-					<h2>in theater</h2>
-					<a href="#" class="viewall">View all <i class="ion-ios-arrow-right"></i></a>
-				</div>
-				<div class="videos">
-				 	<div class="slider-for-2 video-ft">
-					   <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/1Q8fG0TtVAY"></iframe>
-					    </div>
-					    <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/w0qQkSuWOS8"></iframe>
-					    </div>
-					    <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/44LdLqgOpjo"></iframe>
-					    </div>
-					    <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/gbug3zTm3Ws"></iframe>
-					    </div>
-					    <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/e3Nl_TCQXuw"></iframe>
-					    </div>
-					    <div>
-					    	<iframe class="item-video" src="" data-src="https://www.youtube.com/embed/NxhEZG0k9_w"></iframe>
-					    </div>
-
-					</div>
-					<div class="slider-nav-2 thumb-ft">
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer7.jpg"  alt="photo by Barn Images" width="4096" height="2737">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Wonder Woman</h4>
-	                        	<p>2:30</p>
-	                        </div>
-						</div>
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer2.jpg"  alt="photo by Barn Images" 	width="350" height="200">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Oblivion: Official Teaser Trailer</h4>
-	                        	<p>2:37</p>
-	                        </div>
-						</div>
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer6.jpg" alt="photo by Joshua Earle" width="509" height="301">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Exclusive Interview:  Skull Island</h4>
-	                        	<p>2:44</p>
-	                        </div>
-						</div>
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer3.png" alt="photo by Alexander Dimitrov" width="100" height="56">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Logan: Director James Mangold Interview</h4>	
-	                        	<p>2:43</p>
-	                        </div>
-						</div>
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer4.png"  alt="photo by Wojciech Szaturski" width="100" height="56">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Beauty and the Beast: Official Teaser Trailer 2</h4>	
-	                        	<p>2: 32</p>
-	                        </div>	
-						</div>
-						<div class="item">
-							<div class="trailer-img">
-								<img src="../images/uploads/trailer5.jpg"  alt="photo by Wojciech Szaturski" width="360" height="189">
-							</div>
-							<div class="trailer-infor">
-	                        	<h4 class="desc">Fast&Furious 8</h4>	
-	                        	<p>3:11</p>
-	                        </div>	
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3 col-sm-12 col-xs-12">
-				<div class="sidebar">
-					<div class="celebrities">
-						<h4 class="sb-title">Spotlight Celebrities</h4>
-						<div class="celeb-item">
-							<a href="#"><img src="../images/uploads/ava1.jpg" alt="" width="70" height="70"></a>
-							<div class="celeb-author">
-								<h6><a href="#">Samuel N. Jack</a></h6>
-								<span>Actor</span>
-							</div>
-						</div>
-						<div class="celeb-item">
-							<a href="#"><img src="../images/uploads/ava2.jpg" alt="" width="70" height="70"></a>
-							<div class="celeb-author">
-								<h6><a href="#">Benjamin Carroll</a></h6>
-								<span>Actor</span>
-							</div>
-						</div>
-						<div class="celeb-item">
-							<a href="#"><img src="../images/uploads/ava3.jpg" alt="" width="70" height="70"></a>
-							<div class="celeb-author">
-								<h6><a href="#">Beverly Griffin</a></h6>
-								<span>Actor</span>
-							</div>
-						</div>
-						<div class="celeb-item">
-							<a href="#"><img src="../images/uploads/ava4.jpg" alt="" width="70" height="70"></a>
-							<div class="celeb-author">
-								<h6><a href="#">Justin Weaver</a></h6>
-								<span>Actor</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	
-</div>
-<!-- latest new v2 section-->
-<div class="latestnew full-width">
-		<div class="row">
-			<div class="col-md-9">
-				<div class="ads adsv2">
-					<img src="../images/uploads/ads2.png" alt="">
-				</div>
-				<div class="title-hd">
-					<h2>Latest news</h2>
-					<a href="bloggrid.html" class="viewall">see all news <i class="ion-ios-arrow-right"></i></a>
-				</div>
-				<div class="latestnewv2">
-					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="../images/uploads/blogv21.jpg" alt=""></a>
-						<div class="blog-it-infor">
-							<h3><a href="blogdetail.html">Godzilla: King Of The Monsters Adds O’Shea Jackson Jr</a></h3>
-							<span class="time">27 Mar 2017</span>
-							<p>Looks like Kong: Skull Island started a tradition with its casting of Straight ...</p>
-						</div>
-					</div>
-					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="../images/uploads/blogv22.jpg" alt=""></a>
-						<div class="blog-it-infor">
-							<h3><a href="blogdetail.html">First Official Images of Alicia Vikander As Tomb Raider’s Lara Croft</a></h3>
-							<span class="time">27 Mar 2017</span>
-							<p>Aside from the her digital incarnation, the most recognisable image of Tomb ...</p>
-						</div>
-					</div>
-					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="../images/uploads/blogv23.jpg" alt=""></a>
-						<div class="blog-it-infor">
-							<h3><a href="blogdetail.html">New Spider-Man: Homecoming Poster Finds Peter Parker At Rest</a></h3>
-							<span class="time">27 Mar 2017</span>
-							<p>He might be a primary protector of New York City, but at heart, Peter Parker is ...</p>
-						</div>
-					</div>
-					<div class="blog-item-style-2">
-						<a href="blogdetail.html"><img src="../images/uploads/blogv24.jpg" alt=""></a>
-						<div class="blog-it-infor">
-							<h3><a href="blogdetail.html">Joseph Gordon-Levitt Directing Moive Musical Comedy Wingmen</a></h3>
-							<span class="time">27 Mar 2017</span>
-							<p>A little over a year ago, we learned that Joseph Gordon-Levitt and Channing ...</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-3">
-				<div class="sidebar">
-					<div class="sb-facebook sb-it">
-						<h4 class="sb-title">Find us on Facebook</h4>
-						<iframe src="" data-src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fhaintheme%2F%3Ffref%3Dts&tabs=timeline&width=340&height=315px&small_header=true&adapt_container_width=false&hide_cover=false&show_facepile=true&appId"  height="315" style="width:100%;border:none;overflow:hidden" ></iframe>
-					</div>
-					<div class="sb-twitter sb-it">
-						<h4 class="sb-title">Tweet to us</h4>
-						<div class="slick-tw">
-							<div class="tweet item" id="599202861751410688">
-							</div>
-							<div class="tweet item" id="297462728598122498">
-							</div>
-						</div>					
-					</div>
-				</div>
-			</div>
-		</div>
-	
-</div>
-<!--end of latest new v2 section-->
-<!-- footer v2 section-->
-<footer class="ht-footer full-width-ft">
-	<div class="row">
-		<div class="flex-parent-ft">
-			<div class="flex-child-ft item1">
-				 <a href="index.html"><img class="logo" src="../images/logo1.png" alt=""></a>
-				 <p>5th Avenue st, manhattan<br>
-				New York, NY 10001</p>
-				<p>Call us: <a href="#">(+01) 202 342 6789</a></p>
-			</div>
-			<div class="flex-child-ft item2">
-				<h4>Resources</h4>
-				<ul>
-					<li><a href="#">About</a></li> 
-					<li><a href="#">Blockbuster</a></li>
-					<li><a href="#">Contact Us</a></li>
-					<li><a href="#">Forums</a></li>
-					<li><a href="#">Blog</a></li>
-					<li><a href="#">Help Center</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item3">
-				<h4>Legal</h4>
-				<ul>
-					<li><a href="#">Terms of Use</a></li> 
-					<li><a href="#">Privacy Policy</a></li>	
-					<li><a href="#">Security</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item4">
-				<h4>Account</h4>
-				<ul>
-					<li><a href="#">My Account</a></li> 
-					<li><a href="#">Watchlist</a></li>	
-					<li><a href="#">Collections</a></li>
-					<li><a href="#">User Guide</a></li>
-				</ul>
-			</div>
-			<div class="flex-child-ft item5">
-				<h4>Newsletter</h4>
-				<p>Subscribe to our newsletter system now <br> to get latest news from us.</p>
-				<form action="#">
-					<input type="text" placeholder="Enter your email">
-				</form>
-				<a href="#" class="btn">Subscribe now <i class="ion-ios-arrow-forward"></i></a>
-			</div>
-		</div>
-		<div class="ft-copyright">
-			<div class="ft-left">
-				<p>© 2017 Blockbuster. All Rights Reserved. Designed by leehari.</p>
-			</div>
-			<div class="backtotop">
-				<p><a href="#" id="back-to-top">Back to top  <i class="ion-ios-arrow-thin-up"></i></a></p>
-			</div>
-		</div>
-	</div>
-</footer>
-<!-- end of footer v2 section-->
-
-</body>
+<?php
+    
+    require '../inc/server.php';
+    require '../inc/session.php';
+    require_subscription();
+    
+    $trending = array(
+        'triple-frontier-2019',
+        'mortal-engines-2018',
+        'overlord-2018',
+        'aquaman-2018',
+        'isnt-it-romantic-2019',
+        'spider-man-into-the-spider-verse-2018',
+        'ralph-breaks-the-internet-2018',
+        'crazy-rich-asians-2018'
+    );
+    
+    $new_releases = array(
+        'creed-ii-2018',
+        'deadpool-2-2018',
+        'bumblebee-2018',
+        'venom-2018',
+        'bohemian-rhapsody-2018',
+        'fantastic-beasts-the-crimes-of-grindelwald-2018',
+        'hunter-killer-2018',
+        'jurassic-world-fallen-kingdom-2018'
+    );
+    
+    $explore_movies = array(
+        'halloween-2018', // 1
+        'the-meg-2018', // 2
+        'split-2016', // 3
+        'passengers-2016', // 4
+        'john-wick-chapter-2-2017', // 5
+        'robin-hood-2018', // 6
+        'the-wolf-of-wall-street-2013', // 7
+        'mile-22-2018', // 8
+        'hacksaw-ridge-2016', // 9
+        'incredibles-2-2018', // 10
+        'the-grinch-2018', // 11
+        'avengers-infinity-war-2018', // 12
+        'first-man-2018', // 13
+        'polar-2019', // 14
+        'the-girl-in-the-spiders-web-2018', // 15
+        'baby-driver-2017', // 16
+        'the-kissing-booth-2018', // 17
+        'upgrade-2018', // 18
+    );
+    
+    global $db;
+    
+	$get_movie_count = $db->prepare('SELECT * FROM movies');
+	$get_movie_count->execute();
+	$movie_count = $get_movie_count->rowCount();
+	
+	$get_anime_count = $db->prepare('SELECT * FROM anime');
+	$get_anime_count->execute();
+	$anime_count = $get_anime_count->rowCount();
+	
+	$get_series_count = $db->prepare('SELECT * FROM series');
+	$get_series_count->execute();
+	$series_count = $get_series_count->rowCount();
+    
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="../css/bootstrap-reboot.min.css">
+	<link rel="stylesheet" href="../css/bootstrap-grid.min.css">
+	<link rel="stylesheet" href="../css/owl.carousel.min.css">
+	<link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
+	<link rel="stylesheet" href="../css/nouislider.min.css">
+	<link rel="stylesheet" href="../css/ionicons.min.css">
+	<link rel="stylesheet" href="../css/plyr.css">
+	<link rel="stylesheet" href="../css/photoswipe.css">
+	<link rel="stylesheet" href="../css/default-skin.css">
+	<link rel="stylesheet" href="../css/main.css">
+
+	<!-- Favicons -->
+	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
+	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
+	<meta name="description" content="">
+	<meta name="keywords" content="">A
+	<meta name="author" content="Anthony Almond">
+	<title>jexflix</title>
+
+</head>
+
+<body class="body">
+	<!-- header -->
+	<header class="header">
+		<div class="header__wrap">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<div class="header__content">
+							<!-- header logo -->
+							<a href="../home" class="header__logo">
+								<img src="../img/logo.png" alt="">
+							</a>
+							<!-- end header logo -->
+
+								<!-- header nav -->
+							<ul class="header__nav">
+								<!-- dropdown -->
+								<li class="header__nav-item">
+									<a href="../home" class="header__nav-link">Home</a>
+								</li>
+								<!-- end dropdown -->
+
+								<!-- catalog -->
+								<li class="header__nav-item">
+									<a href="../catalog" class="header__nav-link">Catalog</a>
+								</li>
+								<!-- catalog -->
+
+								<li class="header__nav-item">
+									<a href="../random.php" class="header__nav-link">Random</a>
+								</li>
+
+								<li class="header__nav-item">
+									<a href="../about" class="header__nav-link">About</a>
+								</li>
+
+
+							</ul>
+							<!-- end header nav -->
+
+							<!-- header auth -->
+							<div class="header__auth">
+							    
+								<button class="header__search-btn" type="button">
+									<i class="icon ion-ios-search"></i>
+								</button>
+
+								<div class="dropdown header__lang">
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
+
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
+										<li><a href="../profile">Profile</a></li>
+										<? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
+										<li><a href="index.php?logout=1">Sign Out</a></li>
+									</ul>
+								</div>
+							</div>
+							<!-- end header auth -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+        <!-- header search -->
+        <form action="https://jexflix.com/catalog" method="get" class="header__search">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="header__search-content">
+                            <input type="text" id="search" name='search' placeholder="Search for a movie, TV Series that you are looking for">
+
+                            <button type="submit">search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- end header search -->
+	</header>
+	<!-- end header -->
+	
+    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px; background: rgba(10, 10, 10, 0.6);"><b><span style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%); -webkit-text-fill-color: transparent; -webkit-background-clip: text;">We currently have 5761 movies, 20 TV shows, and 1 animes. Refresh for the newest info.</span></b></div>
+	<!-- home -->
+	<section class="home" style="margin-top: 0px;">
+		<!-- home bg -->
+		<div class="owl-carousel home__bg">
+			<div style="color:#221f30"></div>
+		</div>
+		<!-- end home bg -->
+
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<h1 class="home__title"><b>TRENDING</b></h1>
+
+					<button class="home__nav home__nav--prev" type="button">
+						<i class="icon ion-ios-arrow-round-back"></i>
+					</button>
+					<button class="home__nav home__nav--next" type="button">
+						<i class="icon ion-ios-arrow-round-forward"></i>
+					</button>
+				</div>
+
+				<div class="col-12">
+					<div class="owl-carousel home__carousel">
+					    
+					    <?
+					        foreach ($trending as $movie) {
+					            $data = get_movie_data($movie);
+					            $url = "../movie.php?t=" . $data['url'];
+					            $genres = json_decode($data['genres']);
+					    ?>
+					    
+						<div class="item">
+							<!-- card -->
+							<div class="card card--big">
+								<div class="card__cover">
+									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+									<a href=<?=$url?> class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href=<?=$url?>><?=$data['title']?></a></h3>
+									<span class="card__category">
+										<a href="#"><?=ucwords($genres[0])?></a>
+										<a href="#"><?=ucwords($genres[1])?></a>
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+								</div>
+							</div>
+							<!-- end card -->
+						</div>
+						
+						<? } ?>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- end home -->
+
+	<!-- content -->
+	<section class="content">
+		<div class="content__head">
+			<div class="container">
+				<div class="row">
+					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">Explore</h2>
+						<!-- end content title -->
+
+						<!-- content tabs nav -->
+						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
+							<li class="nav-item">
+								<a class="nav-link active" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">NEW RELEASES</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">MOVIES</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">TV SERIES</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">ANIME</a>
+							</li>
+						</ul>
+						<!-- end content tabs nav -->
+
+						<!-- content mobile tabs nav -->
+						<div class="content__mobile-tabs" id="content__mobile-tabs">
+							<div class="content__mobile-tabs-btn dropdown-toggle" role="navigation" id="mobile-tabs" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<input type="button" value="New items">
+								<span></span>
+							</div>
+
+							<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
+								<ul class="nav nav-tabs" role="tablist">
+									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">NEW RELEASES</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">MOVIES</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">TV SERIES</a></li>
+
+									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">CARTOONS</a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- end content mobile tabs nav -->
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container">
+			<!-- content tabs -->
+			<div class="tab-content" id="myTabContent">
+				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+					<div class="row">
+					    
+					    <?
+					        foreach ($new_releases as $movie) {
+					            $data = get_movie_data($movie);
+					            $url = "../movie.php?t=" . $data['url'];
+					            $genres = json_decode($data['genres']);
+					    ?>
+					    
+						<!-- card -->
+						<div class="col-6 col-sm-12 col-lg-6">
+							<div class="card card--list">
+								<div class="row">
+									<div class="col-12 col-sm-4">
+										<div class="card__cover">
+											<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+											<a href="<?=$url?>" class="card__play">
+												<i class="icon ion-ios-play"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="col-12 col-sm-8">
+										<div class="card__content">
+											<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
+											<span class="card__category">
+												<a href="#"><?=ucwords($genres[0])?></a>
+												<a href="#"><?=ucwords($genres[1])?></a>
+											</span>
+
+											<div class="card__wrap">
+												<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+
+												<ul class="card__list">
+													<li><?=$data['certification']?></li>
+													<li><?=$data['year']?></li>
+												</ul>
+											</div>
+
+											<div class="card__description">
+												<p><?=$data['description']?></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+						<? } ?>
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+					<div class="row">
+					    
+					    <?
+					        foreach ($explore_movies as $movie) {
+					            $data = get_movie_data($movie);
+					            $url = "../movie.php?t=" . $data['url'];
+					            $genres = json_decode($data['genres']);
+					    ?>
+					    
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+									<a href="<?=$url?>" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
+									<span class="card__category">
+											<a href="#"><?=ucwords($genres[0])?></a>
+											<a href="#"><? if (isset($genres[1])) { echo ucwords($genres[1]); }?></a>
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+								</div>
+							</div>
+						</div>
+						<!-- end card -->
+						<? } ?>
+
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+				    <h1>Coming Soon</h1>
+				</div>
+
+				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
+				    <h1>Coming Soon</h1>
+				    
+				</div>
+			</div>
+			<!-- end content tabs -->
+		</div>
+	</section>
+	<!-- end content -->
+
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="container">
+			<div class="row">
+				<!-- footer list -->
+				<div class="col-6 col-sm-4 col-md-3">
+					<h6 class="footer__title">Resources</h6>
+					<ul class="footer__list">
+						<li><a href="#">About Us</a></li>
+						<li><a href="../pricing">Pricing Plan</a></li>
+						<li><a href="../faq">Help</a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer list -->
+				<div class="col-6 col-sm-4 col-md-3">
+					<h6 class="footer__title">Legal</h6>
+					<ul class="footer__list">
+						<li><a href="../tos">Terms of Use</a></li>
+						<li><a href="../privacy">Privacy Policy</a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer list -->
+				<div class="col-12 col-sm-4 col-md-3">
+					<h6 class="footer__title">Contact</h6>
+					<ul class="footer__list">
+					    <li><a href="../discord">Discord</a></li>
+						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
+					</ul>
+				</div>
+				<!-- end footer list -->
+
+				<!-- footer copyright -->
+				<div class="col-12">
+					<div class="footer__copyright">
+						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
+
+						<ul>
+							<li><a href="../tos">Terms of Use</a></li>
+							<li><a href="../privacy">Privacy Policy</a></li>
+						</ul>
+					</div>
+				</div>
+				<!-- end footer copyright -->
+			</div>
+		</div>
+	</footer>
+	<!-- end footer -->
+
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
+</body>
 </html>

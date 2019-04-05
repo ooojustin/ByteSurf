@@ -4,8 +4,7 @@
 	// Functions used generally in other parts of the website.
 	
 	// https://stackoverflow.com/a/6768831/5699643
-	$GLOBALS['protocol'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
-	$GLOBALS['current_url'] = $GLOBALS['protocol'] . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
 	// clients ip address
 	$GLOBALS['ip'] = get_ip();
@@ -142,14 +141,6 @@
 		$get_data->execute();
 		return $get_data->fetch(); 
 	}
-
-	function get_anime_data($url) {
-		global $db;
-		$get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
-    	$get_anime->bindValue(':url', $_GET['t']);   
-    	$get_anime->execute();   
-    	return $get_anime->fetch();
-	}
 	
 	function get_series_data($url) {
 		global $db;
@@ -158,67 +149,7 @@
     	$get_data->execute();
    		return $get_data->fetch();
 	}
-
-	function get_favorites($username, $get_data = false) {
-
-		// get raw favorites information
-		$user = get_user($username);
-		$favorites = $user['favorites'];
-
-		// null check (return empty array)
-		if (is_null($favorites))
-			return array();
-
-		// list of movie urls
-		$favorites = json_decode($favorites, true);
-
-		// return list of urls, if necessary
-		if (!$get_data)
-			return $favorites;
-
-		// otherwise, convert urls to an array of movies
-		$item_list = array();
-		foreach ($favorites as $favorite) {
-			$type = explode('|', $favorite)[0];
-			$item = get_content_data($type, $favorite);
-			$item['type'] = $type;
-			array_push($item_list, $item);
-		}
-
-		return $item_list;
-
-	}
-
-	function set_favorited($username, $type, $url, $is_favorited) {
-
-		// check if it's already favorited
-		$item = $type . '|' . $url;
-		$favorites = get_favorites($username);
-		$was_favorited = in_array($item, $favorites);
-
-		// check if we don't need to update anything
-		$ignore_1 = $is_favorited && $was_favorited; // + +
-		$ignore_2 = !$is_favorited && !$was_favorited; // - -
-		if ($ignore_1 || $ignore_2)
-			return true;
-
-		// add item to array or remove it from array
-		if ($is_favorited)
-			array_push($favorites, $item);
-		else
-			unset($favorites[array_search($item, $favorites)]);
-
-		// encode data
-		$data = json_encode($favorites);
-
-		// update data in database
-		global $db;
-		$update_favorites = $db->prepare('UPDATE users SET favorites=:favorites WHERE username=:username');
-		$update_favorites->bindValue(':favorites', $data);
-		$update_favorites->bindValue(':username', $username);
-		return $update_favorites->execute();
-
-	}
+	
 	
 	function get_user_by_id($id) {
 		global $db;
@@ -452,12 +383,18 @@
 	function authenticate_cdn_url($url, $is_server_request = false) {
 
 		// important vars
-		$ip = $is_server_request ? gethostbyname(gethostname()) : $GLOBALS['ip'];
+		$ip = $is_server_request ? $_SERVER['SERVER_ADDR'] : $GLOBALS['ip'];
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
-		$base_url = 'https://cdn.jexflix.com';
+		$base_url = 'https://cdn.bytesurf.io';
 
 		// determine the path of the file (remove base url)
-		$path = str_replace('https://cdn.jexflix.com', '', $url);
+		if (strpos($url, 'jexflix') !== false) {
+		    $path = str_replace('https://cdn.jexflix.com', '', $url);
+		}
+		else {
+		 	$path = str_replace('https://cdn.bytesurf.io', '', $url);   
+		}
+
 
 		// Set the time of expiry to one day from now
 		$expires = time() + (60 * 60 * 24); 
@@ -543,60 +480,6 @@
    			return substr_replace($subject, $replace, $pos, strlen($search));
    		else
    			return $subject;
-    }
-
-    function get_genre_color($genre) {
-    	switch ($genre) {
-    		case 'animation': return '#00ff6e';
-    		case 'fantasy': return '#9b51ef';
-    		case 'science-fiction': return '#0021ff';
-    		case 'music': return '#0b9eed';
-    		case 'documentary': return '#d87008';
-    		case 'western': return '#d1610c';
-    		case 'action': return '#d13d0b';
-    		case 'comedy': return '#e88610';
-    		case 'drama': return '#960679';
-    		case 'history': return '#7e9606';
-    		case 'mystery': return '#8966cc';
-    		case 'thriller': return '#ea6060';
-    		case 'adventure': return '#ff0000';
-    		case 'crime': return '#0d76e0';
-    		case 'family': return '#e0ce0d';
-    		case 'horror': return '#150721 ';
-    		case 'romance': return '#e8106d';
-    		case 'war': return '#4c1313';
-    		default: return '#3c3c3c';
-    	}
-    }
-
-    function output_page_header() {
-    	$header_path = dirname(__FILE__) . '/html/header.html';
-    	$header = file_get_contents($header_path);
-    	echo $header;
-    }
-    
-    function output_page_footer() {
-    	$header_path = dirname(__FILE__) . '/html/footer.html';
-    	$header = file_get_contents($header_path);
-    	echo $header;
-    }
-
-    
-    function get_content_data($type, $url) {
-    	$func = get_content_data_function($type);
-    	$data = call_user_func($func, $url);
-    	return $data;
-    }
-
-    function get_content_data_function($type) {
-    	switch ($type) {
-    		case 'movie':
-    			return 'get_movie_data';
-    		case 'anime':
-    			return 'get_anime_data';
-    		case 'series':
-    			return 'get_series_data';
-    	}
     }
 
 ?>
