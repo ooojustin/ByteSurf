@@ -1,4 +1,4 @@
-	<footer class="footer">
+<footer class="footer">
 		<div class="container">
 			<div class="row">
 				<!-- footer list -->
@@ -27,7 +27,7 @@
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
 					    <li><a href="../discord">Discord</a></li>
-						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
+						<li><a href="mailto:support@jexflix.com">support@bytesurf.io</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
@@ -35,7 +35,7 @@
 				<!-- footer copyright -->
 				<div class="col-12">
 					<div class="footer__copyright">
-						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
+						<small class="section__text">© 2019 ByteSurf. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Peter Pistachio</a></small>
 
 						<ul>
 							<li><a href="../tos">Terms of Use</a></li>
