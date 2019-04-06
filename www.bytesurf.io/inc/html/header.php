@@ -1,11 +1,3 @@
-<?php
-
-require '../server.php';
-require '../session.php';
-
-?>
-
-
 	<header class="header">
 		<div class="header__wrap">
 			<div class="container">
