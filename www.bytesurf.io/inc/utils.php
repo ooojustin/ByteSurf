@@ -356,6 +356,19 @@
 
 	}
 
+	
+    function output_page_header() {
+    	$header_path = dirname(__FILE__) . '/html/header.html';
+    	$header = file_get_contents($header_path);
+    	echo $header;
+    }
+    
+    function output_page_footer() {
+    	$header_path = dirname(__FILE__) . '/html/footer.html';
+    	$header = file_get_contents($header_path);
+    	echo $header;
+    }
+
 	function get_movie_data($url) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
