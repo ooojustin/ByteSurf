@@ -7,18 +7,14 @@
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
-    	'genre' => "Action", 
-    	'quality' => 1080, 
-    	'imdb_min' => 0.1,
-    	'imdb_max' => 10.0, 
-    	'year_min' => 2000,
-    	'year_max' => 2019,
+    	'genre' => "", 
+    	'rating_min' => 0.1,
+    	'rating_max' => 100.0, 
     	'query' => '' // search query ($_GET['search'])
     );
     // vars that are checked via 'LIKE' selection in sql query
     $vars_containify = array(
     	'genre', 
-    	'quality',
     	'query'
     );
     // set search query, or remove from array
@@ -38,43 +34,46 @@
     // update page # if it's set by the user
     if (isset($_GET['page']))
     	$GLOBALS['page'] = intval($_GET['page']);
-    // get movies and determine if any videos were found correctly
-    $movies = get_movies($vars, $page);
-    if ($page < 1 || count($movies) == 0) {
-    	// PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
+    // get animes and determine if any videos were found correctly
+    $animes = get_animes($vars, $page);
+    if ($page < 1 || count($animes) == 0) {
+    	// PAGE NUMBER IS INVALID or NO animes ARE FOUND
 		// somebody handle this with something (@trevor)
-		header("location: https://jexflix.com/404?e=video");		
+		header("location: https://bytesurf.io/404?e=video");		
     	die('No videos found.');
     }
-	function get_movies($vars, $page) {
-	   	global $db;
-	   	if (isset($vars['query'])) {
-	   		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-	   		$get_movies->bindValue(':query', $vars['query']);
-	   	} else {
-    		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT :offset, :count');
-    		foreach ($vars as $var => $default)
-    			$get_movies->bindValue(':' . $var, $default);
-    	}
-    	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
-    	$get_movies->bindValue(':offset', $movie_offset, PDO::PARAM_INT);
-    	$get_movies->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
-    	$get_movies->execute();
-    	$movies = $get_movies->fetchAll();
-    	return $movies;
-    }
-  	//echo $get_movies->rowCount() . PHP_EOL;
-    function generate_page_url($new_page) {
-    	global $current_url, $page;
-    	$page_str = 'page=' . $page;
-    	$page_str_new = 'page=' . $new_page;
-    	if (contains($page_str, $current_url))
-    		return str_replace($page_str, $page_str_new, $current_url);
-    	else if (count($_GET) == 0)
-    		return $current_url . '?' . $page_str_new;
-    	else
-    		return $current_url . '&' . $page_str_new;
-    }
+    function get_animes($vars, $page) {
+	global $db;
+
+	// doesnt work.
+	 if (isset($vars['rating_min']) && isset($vars['rating_max'])  && isset($vars['query'])) {
+		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
+		$get_animes->bindValue(':query', $vars['query']);
+		$get_animes_count->bindValue(':query', $vars['query']);		
+	 }
+	 else if (isset($vars['query'])) {
+		// If we only want to search.
+		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
+		$get_animes->bindValue(':query', $vars['query']);
+		$get_animes_count->bindValue(':query', $vars['query']);			
+	} else {
+		 // Only like on page load / nothing selected
+		 $get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count'); 			
+		 $get_animes_count = $db->prepare('SELECT * FROM `anime`');
+	 }
+	 $anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
+	 $get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
+	 $get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
+	 $get_animes->execute();
+	 $get_animes_count->execute();
+	 global $pagecount;
+	 $pagecount = $get_animes_count->rowCount() / VIDEOS_PER_PAGE;  	
+	 $anime = $get_animes->fetchAll();   	   	
+	 return $anime;
+ }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -169,7 +168,7 @@
 			</div>
 		</div>
         <!-- header search -->
-        <form action="https://jexflix.com/catalog" method="get" class="header__search">
+        <form action="https://bytesurf.io/anime" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -191,12 +190,12 @@
 				<div class="col-12">
 					<div class="section__wrap">
 						<!-- section title -->
-						<h2 class="section__title">Movie Catalog</h2>
+						<h2 class="section__title">Anime Catalog</h2>
 						<!-- end section title -->
 						<!-- breadcrumb -->
 						<ul class="breadcrumb">
 							<li class="breadcrumb__item"><a href="../home">Home</a></li>
-							<li class="breadcrumb__item breadcrumb__item--active">Movie Catalog</li>
+							<li class="breadcrumb__item breadcrumb__item--active">Anime Catalog</li>
 						</ul>
 						<!-- end breadcrumb -->
 					</div>
@@ -245,50 +244,19 @@
 							</div>
 							<!-- end filter item -->
 							<!-- filter item -->
-							<div class="filter__item" id="filter__quality">
-								<span class="filter__item-label">QUALITY:</span>
-								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-quality" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<input type="button" value="1080">
-									<input type="hidden" name="quality" value="1080"/>
-									<span></span>
-								</div>
-								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-quality">
-									<li>1080</li>
-									<li>720</li>
-								</ul>
-							</div>
-							<!-- end filter item -->
-							<!-- filter item -->
 							<div class="filter__item" id="filter__rate">
-								<span class="filter__item-label">IMDB:</span>
+								<span class="filter__item-label">RATING:</span>
 								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-rate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<div class="filter__range">
 										<div id="filter__imbd-start" contenteditable="true"></div>
 										<div id="filter__imbd-end" contenteditable="true"></div>
-										<input type="hidden" id="imdb_min" name="imdb_min">
-										<input type="hidden" id="imdb_max" name="imdb_max">
+										<input type="hidden" id="rating_min" name="rating_min">
+										<input type="hidden" id="rating_max" name="rating_max">
 									</div>
 									<span></span>
 								</div>
 								<div class="filter__item-menu filter__item-menu--range dropdown-menu" aria-labelledby="filter-rate">
 									<div id="filter__imbd"></div>
-								</div>
-							</div>
-							<!-- end filter item -->
-							<!-- filter item -->
-							<div class="filter__item" id="filter__year">
-								<span class="filter__item-label">RELEASE YEAR:</span>
-								<div class="filter__item-btn dropdown-toggle" role="button" id="filter-year" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<div class="filter__range">
-										<div id="filter__years-start"></div>
-										<div id="filter__years-end"></div>
-										<input type="hidden" id="year_min" name="year_min">
-										<input type="hidden" id="year_max" name="year_max">
-									</div>
-									<span></span>
-								</div>
-								<div class="filter__item-menu filter__item-menu--range dropdown-menu" aria-labelledby="filter-year">
-									<div id="filter__years"></div>
 								</div>
 							</div>
 							<!-- end filter item -->
@@ -308,23 +276,24 @@
 		<div class="container">
 			<div class="row">
 				<?
-					foreach ($movies as $movie) { 
-						$url = 'https://jexflix.com/movie.php?t=' . $movie['url'];
+					foreach ($animes as $anime) { 
+						$url = 'https://jexflix.com/anime.php?t=' . $anime['url'];
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">
-							<img src=<?= authenticate_cdn_url($movie['thumbnail']) ?> alt="">
+						<img src="<?= authenticate_cdn_url($anime['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
 							<a href=<?= '"' . $url . '"' ?> class="card__play">
 								<i class="icon ion-ios-play"></i>
 							</a>
 						</div>
 						<div class="card__content">
-							<h3 class="card__title"><a href=<?= '"' . $url . '"' ?>><?= $movie['title'] ?></a></h3>
+							<h3 class="card__title"><a href=<?= '"' . $url . '"' ?>><?= $anime['title'] ?></a></h3>
 							<span class="card__category">
-								<a href=<?= '"https://jexflix.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year'] 	?></a>
+								<a>Released: <?= $anime['release_date']	?></a>
+
 							</span>
-							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
+							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $anime['rating'] ?></span>
 						</div>
 					</div>
 				</div>
@@ -347,7 +316,7 @@
 						</li>
 						<?
 							$is_first_page = $page == 1;
-							$is_last_page = count(get_movies($vars, $page + 1)) == 0;
+							$is_last_page = count(get_animes($vars, $page + 1)) == 0;
 							// it's probably the last page if the number of videos on the next page is 0
 							// this can probably be done better but im keeping it this way until the backend code is done
 							if ($is_first_page) { ?>

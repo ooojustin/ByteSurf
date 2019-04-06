@@ -388,7 +388,7 @@
 		$base_url = 'https://cdn.bytesurf.io';
 
 		// determine the path of the file (remove base url)
-		if (strpos($url, 'jexflix') !== false) {
+		if (strpos($url, 'jexflix') != false) {
 		    $path = str_replace('https://cdn.jexflix.com', '', $url);
 		}
 		else {
