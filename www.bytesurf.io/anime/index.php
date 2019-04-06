@@ -43,36 +43,23 @@
     	die('No videos found.');
     }
     function get_animes($vars, $page) {
-	global $db;
+		global $db;
 
-	// doesnt work.
-	 if (isset($vars['rating_min']) && isset($vars['rating_max'])  && isset($vars['query'])) {
-		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
-		$get_animes->bindValue(':query', $vars['query']);
-		$get_animes_count->bindValue(':query', $vars['query']);		
-	 }
-	 else if (isset($vars['query'])) {
-		// If we only want to search.
-		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-		$get_animes_count = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query');
-		$get_animes->bindValue(':query', $vars['query']);
-		$get_animes_count->bindValue(':query', $vars['query']);			
-	} else {
-		 // Only like on page load / nothing selected
-		 $get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count'); 			
-		 $get_animes_count = $db->prepare('SELECT * FROM `anime`');
-	 }
-	 $anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
-	 $get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
-	 $get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
-	 $get_animes->execute();
-	 $get_animes_count->execute();
-	 global $pagecount;
-	 $pagecount = $get_animes_count->rowCount() / VIDEOS_PER_PAGE;  	
-	 $anime = $get_animes->fetchAll();   	   	
-	 return $anime;
- }
+		if (isset($vars['query'])) {
+			$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+			$get_animes->bindValue(':query', $vars['query']);
+		} else {
+			$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max ORDER BY id DESC LIMIT :offset, :count');
+			foreach ($vars as $var => $default)
+				$get_animes->bindValue(':' . $var, $default);
+		}
+		$anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
+		$get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
+		$get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
+		$get_animes->execute();
+		$animes = $get_animes->fetchAll();	
+		return $animes;
+ 	}
 
 ?>
 <!DOCTYPE html>
