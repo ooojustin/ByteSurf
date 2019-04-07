@@ -73,16 +73,16 @@
 			<div class="row">
 				<!-- section title -->
 				<div class="col-12">
-					<h2 class="section__title"><b>jexflix</b> – entertainment for all</h2>
+					<h2 class="section__title"><b>ByteSurf</b> – entertainment for all</h2>
 				</div>
 				<!-- end section title -->
 
 				<!-- section text -->
 				<div class="col-12">
-					<p class="section__text">My name is <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a>, I am a 24 year old fullstack developer from Stamford, CT. Ever since I was a young user of the internet, I had the issue of low quality movies buffering, and my ISP sending torrent notices to my email. This is why I decided to create jexflix, a fast, legal, high definition movie streaming site.
+					<p class="section__text">My name is <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Peter Pistachio</a>, I am a 34 year old fullstack developer from Stamford, CT. Ever since I was a young user of the internet, I had the issue of low quality movies buffering, and my ISP sending torrent notices to my email. This is why I decided to create jexflix, a fast, legal, high definition movie streaming site.
 					<br>
 					<br>
-					With jexflix, you can access your favorite content from your computer, phone, smart tv, or virtually anything connected to the internet with a web browser.
+					With ByteSurf, you can access your favorite content from your computer, phone, smart tv, or virtually anything connected to the internet with a web browser.
 					 </p>
 
 	

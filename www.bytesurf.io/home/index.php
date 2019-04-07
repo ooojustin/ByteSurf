@@ -5,14 +5,16 @@
     require_subscription();
     
     $trending = array(
-        'triple-frontier-2019',
+		'glass-2019',
+		'the-highwaymen-2019',
+		'how-to-train-your-dragon-the-hidden-world-2019',
+		'dragged-across-concrete-2019',
         'mortal-engines-2018',
         'overlord-2018',
         'aquaman-2018',
         'isnt-it-romantic-2019',
         'spider-man-into-the-spider-verse-2018',
-        'ralph-breaks-the-internet-2018',
-        'crazy-rich-asians-2018'
+        'triple-frontier-2019'
     );
     
     $new_releases = array(
