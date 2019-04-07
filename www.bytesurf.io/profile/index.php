@@ -73,8 +73,8 @@
 
 	<meta name="description" content="">
 	<meta name="keywords" content="">
-	<meta name="author" content="Anthony Almond">
-	<title>jexflix</title>
+	<meta name="author" content="Peter Pistachio">
+	<title>ByteSurf</title>
 
 	<!-- JS -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
