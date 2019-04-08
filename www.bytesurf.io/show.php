@@ -5,7 +5,7 @@
     require 'inc/imdb.php';
     require_subscription();
     
-    date_default_timezone_set('UTC');
+    date_default_timezone_set('UTC'); // why?
    
 	global $user;
 	
@@ -23,21 +23,24 @@
     $year = $data['year'];
     $certification = $data['certification'];
     $rating = $data['rating'];
-    $series_data = json_decode(file_get_contents(authenticate_cdn_url($data['data'], true)), true);
-    $genres = json_decode($data['genres']);
-    
+    $series_data_url = authenticate_cdn_url($data['data'], true);
+    $series_data_raw = get_request($series_data_url); // note: using 'get_request' instead of 'file_get_contents'
+    $series_data = json_decode($series_data_raw, true);
+    $genres = json_decode($data['genres']);    
     $show_url_built = "https://bytesurf.io/show.php?t=" . $_GET['t'];
     
     if (isset($_GET['s']) && isset($_GET['e'])) {
         $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
-        $specific_data = json_decode(file_get_contents(authenticate_cdn_url($specific_data_url . 'data.json', true)), true);
-        
+        $specific_data_url = authenticate_cdn_url($specific_data_url . 'data.json', true);
+        $specific_data_raw = get_request($specific_data_url);
+        $specific_data = json_decode($specific_data_raw, true);
         $title = $title . " - " . $specific_data['title'];
         $description = $specific_data['description'];
-    }
-    else {
+    } else {
         $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . 1 . "/" . 1 . "/";
-        $specific_data = json_decode(file_get_contents(authenticate_cdn_url($specific_data_url . "data.json", true)), true);
+        $specific_data_url = authenticate_cdn_url($specific_data_url . "data.json", true);
+        $specific_data_raw = get_request($specific_data_url);
+        $specific_data = json_decode($specific_data_raw, true);
     }
     
 	
