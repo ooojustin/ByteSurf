@@ -18,6 +18,15 @@
 		die();
 	}
 
+	function get_request($url) {
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}
+
 	function login($username, $password) {
 		global $db;
 		$check_login = $db->prepare('SELECT * FROM users WHERE username=:username');
