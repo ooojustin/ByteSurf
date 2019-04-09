@@ -89,22 +89,15 @@
     		$get_animes = $db->prepare('SELECT * FROM `anime` ORDER BY id DESC LIMIT :offset, :count'); 			
     		$get_animes_count = $db->prepare('SELECT * FROM `anime`');
     	}
-
     	$anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
     	$get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
     	$get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
-
     	$get_animes->execute();
     	$get_animes_count->execute();
-
         global $pagecount;
-    	$pagecount = $get_animes_count->rowCount() / VIDEOS_PER_PAGE;
-    	
-    	$anime = $get_animes->fetchAll();
-    	
-    	
+    	$pagecount = $get_animes_count->rowCount() / VIDEOS_PER_PAGE;  	
+    	$anime = $get_animes->fetchAll();   	   	
     	return $anime;
-
     }
 
   	//echo $get_animes->rowCount() . PHP_EOL;

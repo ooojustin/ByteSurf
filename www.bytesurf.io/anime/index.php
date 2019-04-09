@@ -86,7 +86,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">A
 	<meta name="author" content="Anthony Almond">
-	<title>jexflix</title>
+	<title>Bytesurf</title>
 	<!-- JS -->
 	<script src="../js/jquery-3.3.1.min.js"></script>
 	<script src="../js/bootstrap.bundle.min.js"></script>
@@ -264,7 +264,7 @@
 			<div class="row">
 				<?
 					foreach ($animes as $anime) { 
-						$url = 'https://jexflix.com/anime.php?t=' . $anime['url'];
+						$url = 'https://bytesurf.io/anime.php?t=' . $anime['url'];
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
@@ -374,7 +374,7 @@
 				<!-- footer copyright -->
 				<div class="col-12">
 					<div class="footer__copyright">
-						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
+						<small class="section__text">© 2019 bytesurf. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
 						<ul>
 							<li><a href="../tos">Terms of Use</a></li>
 							<li><a href="../privacy">Privacy Policy</a></li>
