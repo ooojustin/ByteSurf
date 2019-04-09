@@ -24,7 +24,7 @@
     $certification = $data['certification'];
     $rating = $data['rating'];
     $series_data_url = authenticate_cdn_url($data['data'], true);
-    $series_data_raw = get_request($series_data_url); // note: using 'get_request' instead of 'file_get_contents'
+    $series_data_raw = file_get_contents($series_data_url); // note: using 'get_request' instead of 'file_get_contents'
     $series_data = json_decode($series_data_raw, true);
     $genres = json_decode($data['genres']);    
     $show_url_built = "https://bytesurf.io/show.php?t=" . $_GET['t'];

@@ -419,18 +419,15 @@
 	function authenticate_cdn_url($url, $is_server_request = false) {
 
 		// important vars
-		$ip = $is_server_request ? $_SERVER['SERVER_ADDR'] : $GLOBALS['ip'];
+		$ip = $is_server_request ? get_server_ip() : $GLOBALS['ip'];
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
 		$base_url = 'https://cdn.bytesurf.io';
 
 		// determine the path of the file (remove base url)
-		if (strpos($url, 'jexflix') != false) {
+		if (strpos($url, 'jexflix') != false)
 		    $path = str_replace('https://cdn.jexflix.com', '', $url);
-		}
-		else {
-		 	$path = str_replace('https://cdn.bytesurf.io', '', $url);   
-		}
-
+		else
+		 	$path = str_replace('https://cdn.bytesurf.io', '', $url);
 
 		// Set the time of expiry to one day from now
 		$expires = time() + (60 * 60 * 24); 
