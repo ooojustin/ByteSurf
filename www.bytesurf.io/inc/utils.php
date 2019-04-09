@@ -18,6 +18,20 @@
 		die();
 	}
 
+	// rebuilt file_get_contents
+	// parses given url, rebuilds it using parse_url and http_build_query
+	// automatically ensures that params are encoded properly to prevent errors
+	function file_get_contents_fixed($url) {
+		if (!filter_var($url, FILTER_VALIDATE_URL))
+			throw new Exception('Invalid URL provided to file_get_contents_fixed.');
+		$parsed = parse_url($url);
+		parse_str($parsed['query'], $query_params);
+		$query = http_build_query($query_params);
+		$url = sprintf('%s://%s%s?%s', $parsed['scheme'], $parsed['host'], $parsed['path'], $query);
+		$data = file_get_contents($url);
+		return $data;
+  }
+
 	function get_request($url) {
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
