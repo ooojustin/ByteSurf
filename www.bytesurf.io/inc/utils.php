@@ -484,6 +484,15 @@
 		return $ip_info;
 	}
 
+	// using http://ip-api.com/ pro version
+	function ip_api($ip, $fields) {
+		$access_key = 'IkI7kEr9x3P51qu'; // NOTE TO SELF: GET NEW API KEY
+		$url = sprintf('http://pro.ip-api.com/json/%s?key=%s&fields=%s', $ip, $access_key, $fields);
+		$json = file_get_contents($url);
+		$data = json_decode($json, true);
+		return $data;
+	}
+
 	// return time string (local time tho, so its meant for display)
 	function get_time_string($timestamp) {
 		$ip_info = get_ip_info();
