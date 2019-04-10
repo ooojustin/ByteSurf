@@ -13,7 +13,7 @@ define('VIDEOS_PER_PAGE', 24);
 
 $GLOBALS['page'] = 1; // page #
 $vars = array(
-	'genre' => "",
+	'genre' => "Action",
 	'rating_min' => 0.1,
 	'rating_max' => 10.0,
 	'query' => ''
@@ -41,10 +41,10 @@ $genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
 // set all filtering variables from $_GET and modify accordingly
 
 foreach($vars as $var => $default)
-	{
+{
 	if (isset($_GET[$var])) $vars[$var] = $_GET[$var];
 	if (in_array($var, $vars_containify)) $vars[$var] = '%' . strtolower($vars[$var]) . '%';
-	}
+}
 
 // update page # if it's set by the user
 
@@ -55,31 +55,30 @@ if (isset($_GET['page'])) $GLOBALS['page'] = intval($_GET['page']);
 $animes = get_animes($vars, $page);
 
 if ($page < 1 || count($animes) == 0)
-	{
+{
 
 	// PAGE NUMBER IS INVALID or NO animes ARE FOUND
 	// somebody handle this with something (@trevor)
 
 	header("location: https://bytesurf.io/404?e=video");
 	die('No videos found.');
-	}
+}
 
 function get_animes($vars, $page)
-	{
+{
 	global $db;
 	if (isset($vars['query']))
-		{
+	{
 		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
 		$get_animes->bindValue(':query', $vars['query']);
-		}
-	  else
-	if (isset($vars['genre']))
-		{
+	}
+	else if (isset($vars['genre']))
+	{
 		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max ORDER BY id DESC LIMIT :offset, :count');
 		$get_animes->bindValue(':genre', $vars['genre']);
 		$get_animes->bindValue(':rating_min', $vars['rating_min'] * 10);
 		$get_animes->bindValue(':rating_max', $vars['rating_max'] * 10);
-		}
+	}
 
 	$anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
 	$get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
@@ -87,8 +86,19 @@ function get_animes($vars, $page)
 	$get_animes->execute();
 	$animes = $get_animes->fetchAll();
 	return $animes;
-	}
-
+}
+//echo $get_movies->rowCount() . PHP_EOL;
+function generate_page_url($new_page) {
+    	global $current_url, $page;
+    	$page_str = 'page=' . $page;
+    	$page_str_new = 'page=' . $new_page;
+    	if (contains($page_str, $current_url))
+    		return str_replace($page_str, $page_str_new, $current_url);
+    	else if (count($_GET) == 0)
+    		return $current_url . '?' . $page_str_new;
+    	else
+    		return $current_url . '&' . $page_str_new;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -283,6 +293,7 @@ function get_animes($vars, $page)
 							</ul>
 							</div>
 							<!-- end filter item -->
+
 							<!-- filter item -->
 							<div class="filter__item" id="filter__rate">
 								<span class="filter__item-label">RATING:</span>
@@ -290,8 +301,8 @@ function get_animes($vars, $page)
 									<div class="filter__range">
 										<div id="filter__imbd-start" contenteditable="true"></div>
 										<div id="filter__imbd-end" contenteditable="true"></div>
-										<input type="hidden" id="rating_min" name="rating_min">
-										<input type="hidden" id="rating_max" name="rating_max">
+										<input type="hidden" id="imdb_min" name="rating_min">
+										<input type="hidden" id="imdb_max" name="rating_max">
 									</div>
 									<span></span>
 								</div>
@@ -317,7 +328,7 @@ function get_animes($vars, $page)
 			<div class="row">
 				<?php
 					foreach($animes as $anime)
-						{
+					{
 						$url = 'https://bytesurf.io/anime.php?t=' . $anime['url'];
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
@@ -332,7 +343,6 @@ function get_animes($vars, $page)
 							<h3 class="card__title"><a href=<?php echo '"' . $url . '"' ?>><?php echo $anime['title'] ?></a></h3>
 							<span class="card__category">
 								<a>Released: <?php echo $anime['release_date'] ?></a>
-
 							</span>
 							<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'] / 10, 1) ?></span>
 						</div>
@@ -366,32 +376,30 @@ $is_last_page = count(get_animes($vars, $page + 1)) == 0;
 // this can probably be done better but im keeping it this way until the backend code is done
 
 if ($is_first_page)
-	{ ?>
+{ ?>
 							<li class="paginator__item paginator__item--active"><a href="#"><?php echo $page
-?></a></li>
+	?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page + 1) . '"' ?>><?php echo $page + 1 ?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page + 2) . '"' ?>><?php echo $page + 2 ?></a></li>
 							<script>$(function () { paginate(1, 2) });</script>
 							<?php
-	}
-  else
-if ($is_last_page)
-	{ ?>
+}
+  else if ($is_last_page)
+{ ?>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page - 2) . '"' ?>><?php echo $page - 2 ?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page - 1) . '"' ?>><?php echo $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?php echo $page ?></a></li>
 							<script>$(function () { paginate(2, 3) });</script>
 							<?php
-	}
+}
   else
-	{ ?>
+{ ?>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page - 1) . '"' ?>><?php echo $page - 1 ?></a></li>
 							<li class="paginator__item paginator__item--active"><a href="#"><?php echo $page ?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page + 1) . '"' ?>><?php echo $page + 1 ?></a></li>
 							<script>$(function () { paginate(1, 3) });</script>
 							<?php
-	}
-
+}
 ?>
 						<!--
 						old stuff before making this functional
