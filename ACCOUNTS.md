@@ -1,3 +1,7 @@
+### SUPPORT EMAIL
+Email: support@bytesurf.io
+Password: q6CR3^Yb^SdU
+
 ### MEGA.NZ (BACKUPS)
 URL: https://mega.nz/
 Email: anthonyalmond@protonmail.com
