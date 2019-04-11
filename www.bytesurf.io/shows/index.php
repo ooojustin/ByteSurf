@@ -10,14 +10,15 @@
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
-    	'genre' => "Action", 
+    	'genre' => "Any", 
     //	'quality' => 1080, 
     	'imdb_min' => 0.1,
     	'imdb_max' => 10.0, 
     	'year_min' => 2000,
     	'year_max' => 2019,
     	'query' => '' // search query ($_GET['search'])
-    );
+	);
+		
 
     // vars that are checked via 'LIKE' selection in sql query
     $vars_containify = array(
@@ -33,8 +34,14 @@
     	unset($vars['query']);
 
     // set $genre for use later in html (must be done before containify)
-    $genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
+	$genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
+	
 
+	// make modifications if user has no selected genre
+	if ($genre == 'Any') {
+		$vars['genre'] = '%';
+		unset($vars_containify[0]);
+	}
     // set all filtering variables from $_GET and modify accordingly
     foreach ($vars as $var => $default) {
 
@@ -189,10 +196,11 @@
 								<span class="filter__item-label">GENRE:</span>
 								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<input type="button" value="<?=$genre?>">
-									<input type="hidden" name="genre" value="Action"/>
+									<input type="hidden" name="genre" value="Any"/>
 									<span></span>
 								</div>
 								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
+									<li>Any</li>
 									<li>Action</li>
 									<li>Adventure</li>
 									<li>Animation</li>
