@@ -1,20 +1,14 @@
 <?php
-    // details page
-    session_start();
-    if (!isset($_SESSION['id'])) {
-        header("location: /login");
-        die();
-    }
-   	if (isset($_GET['logout'])) {
-  		session_destroy();
-        unset($_SESSION['id']);
-    	header("location: ../login");
-    	die();
-   	}   
-	require 'inc/server.php';
-	require 'inc/session.php';
+    require 'inc/server.php';
+    require 'inc/session.php';
+    require 'inc/imdb.php';
+    require_subscription();  
+	date_default_timezone_set('UTC'); 
+
     if (!isset($_GET['t']))
-    	die('No anime selected');
+		die('No anime selected');
+
+	global $db;
     $get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
     $get_anime->bindValue(':url', $_GET['t']);   
     $get_anime->execute();   
@@ -37,118 +31,43 @@
 		return "https://cdn.jexflix.com/anime/".$_GET['t']."/".$_GET['ep']."/" . $res . ".mp4";
 	}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initgial-scale=1, shrink-to-fit=no">
-	<!-- Font -->
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
-	<!-- CSS -->
-	<link rel="stylesheet" href="../css/bootstrap-reboot.min.css">
-	<link rel="stylesheet" href="../css/bootstrap-grid.min.css">
-	<link rel="stylesheet" href="../css/owl.carousel.min.css">
-	<link rel="stylesheet" href="../css/jquery.mCustomScrollbar.min.css">
-	<link rel="stylesheet" href="../css/nouislider.min.css">
-	<link rel="stylesheet" href="../css/ionicons.min.css">
-	<link rel="stylesheet" href="../css/plyr.css">
-	<link rel="stylesheet" href="../css/photoswipe.css">
-	<link rel="stylesheet" href="../css/default-skin.css">
-	<link rel="stylesheet" href="../css/main.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+    <link rel="stylesheet" href="css/nouislider.min.css">
+    <link rel="stylesheet" href="css/ionicons.min.css">
+    <link rel="stylesheet" href="css/plyr.css">
+    <link rel="stylesheet" href="css/photoswipe.css">
+    <link rel="stylesheet" href="css/default-skin.css">
+    <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+
 	<meta name="description" content="">
 	<meta name="keywords" content="">A
-	<meta name="author" content="Anthony Almond">
-	<title>jexflix</title>
-	<!-- JS -->
-	<script src="js/jquery-3.3.1.min.js"></script>
-	<script src="js/bootstrap.bundle.min.js"></script>
-	<script src="js/owl.carousel.min.js"></script>
-	<script src="js/jquery.mousewheel.min.js"></script>
-	<script src="js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="js/wNumb.js"></script>
-	<script src="js/nouislider.min.js"></script>
-	<script src="js/plyr.min.js"></script>
-	<script src="js/jquery.morelines.min.js"></script>
-	<script src="js/photoswipe.min.js"></script>
-	<script src="js/photoswipe-ui-default.min.js"></script>
-	<script src="js/main.js"></script>
+	<meta name="author" content="Peter Pistachio">
+	<title>ByteSurf</title>
 </head>
 <body class="body">
+	
 	<!-- header -->
-	<header class="header">
-		<div class="header__wrap">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="header__content">
-							<!-- header logo -->
-							<a href="../home" class="header__logo">
-								<img src="../img/logo.png" alt="">
-							</a>
-							<!-- end header logo -->
-								<!-- header nav -->
-							<ul class="header__nav">
-								<!-- dropdown -->
-								<li class="header__nav-item">
-									<a href="../home" class="header__nav-link">Home</a>
-								</li>
-								<!-- end dropdown -->
-								<!-- catalog -->
-								<li class="header__nav-item">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Catalog</a>
-										<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-											<li><a href="../catalog">Movies</a></li>
-											<li><a href="index.php">Anime</a></li>
-									</ul>
-								</li>
-								<!-- catalog -->
-								<li class="header__nav-item">
-									<a href="../random.php" class="header__nav-link">Random</a>
-								</li>
-								<li class="header__nav-item">
-									<a href="../about" class="header__nav-link">About</a>
-								</li>
-							</ul>
-							<!-- end header nav -->
-							<!-- header auth -->
-							<div class="header__auth">
-								<button class="header__search-btn" type="button">
-									<i class="icon ion-ios-search"></i>
-								</button>
-								<div class="dropdown header__lang">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-										<li><a href="../profile">Profile</a></li>
-                                        <? if (is_administrator()) { ?><li><a href="../admin">Administration</a></li><? } ?>
-										<li><a href="index.php?logout=1">Sign Out</a></li>
-									</ul>
-								</div>
-							</div>
-							<!-- end header auth -->
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-        <!-- header search -->
-        <form action="https://jexflix.com/anime" method="get" class="header__search">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="header__search-content">
-                            <input type="text" id="search" name='search' placeholder="Search for an anime that you are looking for">
-                            <button type="submit">search</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <!-- end header search -->
-	</header>
+	<?=require 'inc/html/header.php'?>
 	<!-- end header -->
+	
 	<!-- details -->
 	<section class="section details">
 		<!-- details background -->
@@ -163,6 +82,50 @@
 					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
 				</div>
 				<!-- end title -->
+
+			<!-- content -->
+			<div class="col-10">
+				<div class="card card--details card--series">
+					<div class="row">
+						<!-- card cover -->
+						<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
+							<div class="card__cover">
+								<img src="<?php  ?>" alt="">
+							</div>
+						</div>
+						<!-- end card cover -->
+
+						<!-- card content -->
+						<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
+							<div class="card__content">
+								<div class="card__wrap">
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$rating?></span>
+									<ul class="card__list">
+										<li>HD</li>
+									</ul>
+								</div>
+								<ul class="card__meta">
+									<li><span>Genre:</span>
+									<? foreach ($genres as $genre) { ?>
+									<a href="#"><?php ucwords($genre) ?></a>
+									<?php } ?>
+									</li>
+									<li><span>Release: </span><?php  ?></li>
+								</ul>
+
+								<div class="card__description card__description--details">
+								<!-- Description -->
+								<?php  ?>
+								</div>
+							</div>
+						</div>
+						<!-- end card content -->
+					</div>
+				</div>
+			</div>
+				<!-- end content -->
+
+
 				<!-- player -->
 				<div class="col-12">
 					<video controls crossorigin playsinline poster="<?php echo authenticate_cdn_url($episode_info['thumbnail']); ?>" id="player">
@@ -199,11 +162,11 @@
 											<tbody>
 												<?php 
 													foreach($json_data['episodeData'] as $episode) {
-														?>
-														<tr>;
-														<th> <a style="color:#ff5860" href="https://jexflix.com/anime.php?t='<?php. $_GET['t'] . '&ep=' . $episode['episode'] . '">'.$json_data['title'] .' Episode ' . $episode['episode']. ?>'</a> </td>
+												?>
+														<tr>
+														<th> <a style="color:#ff5860" href="https://bytesurf.io/anime.php?t=<?php $_GET['t'] . '&ep=' . $episode['episode'] ?>"><?php $json_data['title'] .' Episode ' . $episode['episode'] ?></a></td>
 														</tr>
-													<?php}?>
+													<?php } ?>
 											</tbody>
 										</table>
 									</div>
