@@ -65,83 +65,7 @@
 <body class="body">
 	
 	<!-- header -->
-	<header class="header">
-		<div class="header__wrap">
-			<div class="container">
-				<div class="row">
-					<div class="col-12">
-						<div class="header__content">
-							<!-- header logo -->
-							<a href="../home" class="header__logo">
-								<img src="../img/logo.png" alt="">
-							</a>
-							<!-- end header logo -->
-
-								<!-- header nav -->
-							<ul class="header__nav">
-								<!-- dropdown -->
-								<li class="header__nav-item">
-									<a href="../home" class="header__nav-link">Home</a>
-								</li>
-								<!-- end dropdown -->
-
-								<!-- catalog -->
-								<li class="header__nav-item">
-									<a href="../catalog" class="header__nav-link">Catalog</a>
-								</li>
-								<!-- catalog -->
-
-								<li class="header__nav-item">
-									<a href="../random.php" class="header__nav-link">Random</a>
-								</li>
-
-								<li class="header__nav-item">
-									<a href="../about" class="header__nav-link">About</a>
-								</li>
-
-
-							</ul>
-							<!-- end header nav -->
-
-							<!-- header auth -->
-							<div class="header__auth">
-							    
-								<button class="header__search-btn" type="button">
-									<i class="icon ion-ios-search"></i>
-								</button>
-
-								<div class="dropdown header__lang">
-									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?=$user['username']?></a>
-
-									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
-										<li><a href="../profile">Profile</a></li>
-										<li><a href="index.php?logout=1">Sign Out</a></li>
-									</ul>
-								</div>
-							</div>
-							<!-- end header auth -->
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-        <!-- header search -->
-        <form action="https://jexflix.com/catalog" method="get" class="header__search">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="header__search-content">
-                            <input type="text" id="search" name='search' placeholder="Search for a movie, TV Series that you are looking for">
-
-                            <button type="submit">search</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <!-- end header search -->
-	</header>
+	<?=require '../inc/html/header.php'?>
 	<!-- end header -->
 
 	<!-- page title -->
@@ -480,55 +404,7 @@
 	<!-- end content -->
 
 	<!-- footer -->
-	<footer class="footer">
-		<div class="container">
-			<div class="row">
-				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Resources</h6>
-					<ul class="footer__list">
-						<li><a href="#">About Us</a></li>
-						<li><a href="../pricing">Pricing Plan</a></li>
-						<li><a href="../faq">Help</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Legal</h6>
-					<ul class="footer__list">
-						<li><a href="../tos">Terms of Use</a></li>
-						<li><a href="../privacy">Privacy Policy</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer list -->
-				<div class="col-12 col-sm-4 col-md-3">
-					<h6 class="footer__title">Contact</h6>
-					<ul class="footer__list">
-					    <li><a href="../discord">Discord</a></li>
-						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-
-				<!-- footer copyright -->
-				<div class="col-12">
-					<div class="footer__copyright">
-						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
-
-						<ul>
-							<li><a href="../tos">Terms of Use</a></li>
-							<li><a href="../privacy">Privacy Policy</a></li>
-						</ul>
-					</div>
-				</div>
-				<!-- end footer copyright -->
-			</div>
-		</div>
-	</footer>
+	<?=require '../inc/html/footer.php'?>
 	<!-- end footer -->
 </body>
 </html>
