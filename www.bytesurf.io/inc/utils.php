@@ -14,7 +14,7 @@
 			'title' => $title,
 			'message' => $message
 		);
-		header('location: https://jexflix.com/msg');
+		header('location: https://bytesurf.io/msg');
 		die();
 	}
 

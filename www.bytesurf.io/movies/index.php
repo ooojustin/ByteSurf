@@ -10,7 +10,7 @@
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
-    	'genre' => "Action", 
+    	'genre' => "Any", 
     	'quality' => 1080, 
     	'imdb_min' => 0.1,
     	'imdb_max' => 10.0, 
@@ -46,19 +46,21 @@
 
     }
 
+    // make modifications if user has no selected genre
+    if ($genre == 'Any') {
+        $vars['genre'] = '%';
+        unset($vars_containify[0]);
+    }
+
     // update page # if it's set by the user
     if (isset($_GET['page']))
     	$GLOBALS['page'] = intval($_GET['page']);
 
     // get movies and determine if any videos were found correctly
     $movies = get_movies($vars, $page);
-    if ($page < 1 || count($movies) == 0) {
-    	// PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
-		// somebody handle this with something (@trevor)
-		header("location: https://jexflix.com/404?e=video");		
-    	die('No videos found.');
-    }
-
+    if ($page < 1 || count($movies) == 0) // PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
+        msg('Oh no :(', 'We couldn\'t find any movies fitting your request.');
+        
     function get_movies($vars, $page) {
 
 	   	global $db;
@@ -187,10 +189,11 @@
 								<span class="filter__item-label">GENRE:</span>
 								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<input type="button" value="<?=$genre?>">
-									<input type="hidden" name="genre" value="Action"/>
+									<input type="hidden" name="genre" value="Any"/>
 									<span></span>
 								</div>
 								<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
+                                    <li>Any</li>
 									<li>Action</li>
 									<li>Adventure</li>
 									<li>Animation</li>
