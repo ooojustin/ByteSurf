@@ -48,6 +48,20 @@
     <link rel="stylesheet" href="css/default-skin.css">
     <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
+    
+    <!-- JS -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.mousewheel.min.js"></script>
+    <script src="js/jquery.mCustomScrollbar.min.js"></script>
+    <script src="js/wNumb.js"></script>
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/plyr.min.js"></script>
+    <script src="js/jquery.morelines.min.js"></script>
+    <script src="js/photoswipe.min.js"></script>
+    <script src="js/photoswipe-ui-default.min.js"></script>
+    <script src="js/main.js"></script>
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
@@ -76,14 +90,14 @@
 
         <!-- player -->
         <div class="col-12">
-        <video controls crossorigin playsinline poster=<?=$preview?> id="player">
+        <video controls crossorigin playsinline poster="<?=$preview?>" id="player">
 
             <!-- Video files -->
             <? foreach ($qualities as $quality) { ?>
             <source 
-                src=<?= '"' . $quality->link . '"' ?> 
+                src="<?= $quality->link ?>"
                 type="video/mp4" 
-                size=<?= '"' . $quality->resolution . '"' ?>
+                size="<?= $quality->resolution ?>"
             />
             <? } ?>
 
@@ -259,19 +273,5 @@
         </div>
     </div>
 </div>
-
-<!-- JS -->
-<script src="js/jquery-3.3.1.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-<script src="js/owl.carousel.min.js"></script>
-<script src="js/jquery.mousewheel.min.js"></script>
-<script src="js/jquery.mCustomScrollbar.min.js"></script>
-<script src="js/wNumb.js"></script>
-<script src="js/nouislider.min.js"></script>
-<script src="js/plyr.min.js"></script>
-<script src="js/jquery.morelines.min.js"></script>
-<script src="js/photoswipe.min.js"></script>
-<script src="js/photoswipe-ui-default.min.js"></script>
-<script src="js/main.js"></script>
 </body>
 </html>
