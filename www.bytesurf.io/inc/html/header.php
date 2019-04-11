@@ -18,11 +18,16 @@
 								</li>
 								<!-- end dropdown -->
 
-								<!-- catalog -->
-								<li class="header__nav-item">
-									<a href="../catalog" class="header__nav-link">Catalog</a>
-								</li>
-								<!-- catalog -->
+								<!-- browsing -->
+								<div class="dropdown header__nav-item"> <!-- note: use nav-item instead of header_lang to fix alignment -->
+									<a class="dropdown-toggle header__nav-link" href="#" role="button" id="dropdownMenuLang" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Browse</a>
+									<ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuLang">
+										<li><a href="../movies">Movies</a></li>
+										<li><a href="../shows">Shows</a></li>
+                                        <li><a href="../anime">Anime</a></li>
+									</ul>
+								</div>
+								<!-- browsing -->
 
 								<li class="header__nav-item">
 									<a href="../random.php" class="header__nav-link">Random</a>
