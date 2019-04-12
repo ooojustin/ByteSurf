@@ -24,6 +24,7 @@
     $title = $data['title'];
     $episodes = $data['episodeData'];
     $poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
+    $cover = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['cover']));
 
 	if (!isset($_GET['ep']))
 	    $_GET['ep'] = 1;
@@ -99,12 +100,58 @@
 				<div class="col-12">
 					<h1 class="details__title"><?= $title ?></h1>
 					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?php echo  $episode_info['episode_title']; ?></h1>
+
 				</div>
 				<!-- end title -->
 
+				<!-- content -->
+				<div class="col-10">
+				<div class="card card--details card--series">
+					<div class="row">
+						<!-- card cover -->
+						<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
+							<div class="card__cover">
+								<img src="<?=$poster?>" alt="">
+							</div>
+						</div>
+						<!-- end card cover -->
+						<!-- card content -->
+						<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
+							<div class="card__content">
+								<div class="card__wrap">
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'], 1); ?></span>
+									<ul class="card__list">
+										<li>HD</li>
+									</ul>
+								</div>
+
+								<ul class="card__meta">
+									<li><span>Genre:</span>
+									<?php 							
+									$genres_json = json_decode($anime['genres'], true);
+									foreach ($genres_json as $genre) { 							
+									?>
+									<a href="#"><?=ucwords($genre)?></a>
+									<?php } ?>
+									</li>
+									<li><span>Release year: </span><?php echo $anime['release_date']; ?></li>
+								</ul>
+
+								<div class="card__description card__description--details">
+									<?php echo $data['synopsis']; ?>
+								</div>
+							</div>
+						</div>
+						<!-- end card content -->
+						</div>
+					</div>
+				</div>
+				<!-- end content -->
+
 				<!-- player -->
 				<div class="col-12">
-					<video controls crossorigin playsinline poster="<?=$poster?>" id="player">
+					<video controls crossorigin playsinline poster="<?=$cover?>" id="player">
 						<!-- Video files -->
 						<?
 							foreach($episode_info['qualities'] as $quality) {
@@ -143,18 +190,33 @@
 										<table class="accordion__list">
 											<thead>
 												<tr>
-													<th>Episodes</th>
+												<th style="color:#ff5860">#</th>
+												<th style="color:#ff5860">Title</th>
+												<th style="color:#ff5860">Air Date</th>
 												</tr>
 											</thead>
 											<tbody>
-												<? foreach($episodes as $episode) { ?>
-                                                    <? $episode_url = sprintf('%s&ep=%s', $_GET['t'], $episode['episode']); ?>
-                                                    <tr><th> 
-                                                    <a style="color:#ff5860" href="https://bytesurf.io/anime.php?t=<?= $episode_url ?>">
-                                                        <?= $title .' Episode ' . $episode['episode'] ?>
-                                                    </a>
-                                                    </th></tr>
-												<? } ?>
+												<?php foreach($episodes as $episode) { 		
+													$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&ep='	. $episode['episode'];							
+													if ($episode['episode'] == $_GET['ep']) {											
+												?>
+
+													<tr>
+													<th><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['episode']?><a></th>
+													<td><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['episode_title']?></a></td>
+													<td><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['air_date']?></a></td>
+													</tr>
+
+												<?php
+													} else {
+												?>																		
+													<tr>
+													<th><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['episode']?><a></th>
+													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['episode_title']?></a></td>
+													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['air_date']?></a></td>
+													</tr>
+
+												<? } } ?>
 											</tbody>
 										</table>
 									</div>
