@@ -1,37 +1,42 @@
 <?php
+
     require 'inc/server.php';
     require 'inc/session.php';
     require 'inc/imdb.php';
+
     require_subscription();  
 	date_default_timezone_set('UTC'); 
 
+    // make sure the user has provided an anime
     if (!isset($_GET['t']))
-		die('No anime selected');
+		msg('Uh oh :(', 'Please specify an anime.');
 
-	global $db;
-    $get_anime = $db->prepare('SELECT * FROM anime WHERE url=:url');
-    $get_anime->bindValue(':url', $_GET['t']);   
-    $get_anime->execute();   
-    $anime = $get_anime->fetch();
+    // get data regarding current anime
+	$anime = get_anime_data($_GET['t']);
     if (!$anime)
-        die('No anime found with that title.');
+        msg('Uh oh :(', 'We couldn\'t find that anime.');
+
+    // retrieve raw anime data from cdn server
     $url = authenticate_cdn_url($anime['data'], true);  
     $data_raw = file_get_contents($url);
-    $json_data = json_decode($data_raw, true);
-    // comment out these 2 lines and access all of the data from the $json_data variable
-    // $json_encode($json_data, JSON_PRETTY_PRINT);   
-	//die();
-	if (!isset($_GET['ep'])) {
-	    $_GET['ep'] = 1;
-	} 
-	$episode_info = $json_data['episodeData'][$_GET['ep'] - 1];
-	function GenerateAnimeLink($res) {
-		// https://cdn.jexflix.com/anime/asobi-asobase/poster.jpg
-		// https://cdn.jexflix.com/anime/asobi-asobase/8/1080.mp4
-		return "https://cdn.jexflix.com/anime/".$_GET['t']."/".$_GET['ep']."/" . $res . ".mp4";
-	}
-?>
+    $data = json_decode($data_raw, true);
 
+    $title = $data['title'];
+    $episodes = $data['episodeData'];
+    $poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
+
+	if (!isset($_GET['ep']))
+	    $_GET['ep'] = 1;
+
+	$episode_info = $episodes[$_GET['ep'] - 1];
+
+	function generate_mp4_link($res) {
+        $format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
+        $url = sprintf($format, $_GET['t'], $_GET['ep'], $res);
+        return $url;
+	}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,13 +57,27 @@
     <link rel="stylesheet" href="css/default-skin.css">
     <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
+    
+    <!-- JS -->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+    <script src="js/jquery.mousewheel.min.js"></script>
+    <script src="js/jquery.mCustomScrollbar.min.js"></script>
+    <script src="js/wNumb.js"></script>
+    <script src="js/nouislider.min.js"></script>
+    <script src="js/plyr.min.js"></script>
+    <script src="js/jquery.morelines.min.js"></script>
+    <script src="js/photoswipe.min.js"></script>
+    <script src="js/photoswipe-ui-default.min.js"></script>
+    <script src="js/main.js"></script>
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
 	<meta name="description" content="">
-	<meta name="keywords" content="">A
+	<meta name="keywords" content="">
 	<meta name="author" content="Peter Pistachio">
 	<title>ByteSurf</title>
 </head>
@@ -78,63 +97,31 @@
 			<div class="row">
 				<!-- title -->
 				<div class="col-12">
-					<h1 class="details__title"><?php echo $json_data['title']; ?></h1>
+					<h1 class="details__title"><?= $title ?></h1>
 					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
 				</div>
 				<!-- end title -->
 
-			<!-- content -->
-			<div class="col-10">
-				<div class="card card--details card--series">
-					<div class="row">
-						<!-- card cover -->
-						<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
-							<div class="card__cover">
-								<img src="<?php  ?>" alt="">
-							</div>
-						</div>
-						<!-- end card cover -->
-
-						<!-- card content -->
-						<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
-							<div class="card__content">
-								<div class="card__wrap">
-									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$rating?></span>
-									<ul class="card__list">
-										<li>HD</li>
-									</ul>
-								</div>
-								<ul class="card__meta">
-									<li><span>Genre:</span>
-									<? foreach ($genres as $genre) { ?>
-									<a href="#"><?php ucwords($genre) ?></a>
-									<?php } ?>
-									</li>
-									<li><span>Release: </span><?php  ?></li>
-								</ul>
-
-								<div class="card__description card__description--details">
-								<!-- Description -->
-								<?php  ?>
-								</div>
-							</div>
-						</div>
-						<!-- end card content -->
-					</div>
-				</div>
-			</div>
-				<!-- end content -->
-
-
 				<!-- player -->
 				<div class="col-12">
-					<video controls crossorigin playsinline poster="<?php echo authenticate_cdn_url($episode_info['thumbnail']); ?>" id="player">
+					<video controls crossorigin playsinline poster="<?=$poster?>" id="player">
 						<!-- Video files -->
-						<?php
+						<?
 							foreach($episode_info['qualities'] as $quality) {
-								echo '<source src="'. authenticate_cdn_url(GenerateAnimeLink($quality['resolution'])) . '" type="video/mp4" size="'.$quality['resolution'].'">';
-							}
-						?>				
+                                $res = $quality['resolution'];
+                                $url = generate_mp4_link($res);
+                                $url = authenticate_cdn_url($url);
+                        ?>
+                        <source 
+                            src="<?= $url ?>"
+                            type="video/mp4" 
+                            size="<?= $res ?>"
+                        />
+                        <? } ?>
+                        
+                        <!-- Fallback for browsers that don't support the <video> element -->
+                        <a href=<?= '"' . $episode_info['qualities'][0]['link'] . '"' ?> download>Download</a>
+                        
 					</video>
 				</div>
 				<!-- end player -->
@@ -160,13 +147,14 @@
 												</tr>
 											</thead>
 											<tbody>
-												<?php 
-													foreach($json_data['episodeData'] as $episode) {
-												?>
-														<tr>
-														<th> <a style="color:#ff5860" href="https://bytesurf.io/anime.php?t=<?php $_GET['t'] . '&ep=' . $episode['episode'] ?>"><?php $json_data['title'] .' Episode ' . $episode['episode'] ?></a></td>
-														</tr>
-													<?php } ?>
+												<? foreach($episodes as $episode) { ?>
+                                                    <? $episode_url = sprintf('%s&ep=%s', $_GET['t'], $episode['episode']); ?>
+                                                    <tr><th> 
+                                                    <a style="color:#ff5860" href="https://bytesurf.io/anime.php?t=<?= $episode_url ?>">
+                                                        <?= $title .' Episode ' . $episode['episode'] ?>
+                                                    </a>
+                                                    </th></tr>
+												<? } ?>
 											</tbody>
 										</table>
 									</div>

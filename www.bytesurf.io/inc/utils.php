@@ -173,6 +173,13 @@
    		return $get_data->fetch();
 	}
 	
+    function get_anime_data($url) {
+        global $db;
+        $get_data = $db->prepare('SELECT * FROM anime WHERE url=:url');
+        $get_data->bindValue(':url', $url);   
+        $get_data->execute();   
+        return $get_data->fetch();
+    }
 	
 	function get_user_by_id($id) {
 		global $db;

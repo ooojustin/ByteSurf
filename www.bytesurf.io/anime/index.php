@@ -1,104 +1,103 @@
 <?php
-require '../inc/server.php';
+    
+    require '../inc/server.php';
+    require '../inc/session.php';
+    require_subscription();
 
-require '../inc/session.php';
+    // # of videos shown on each page
+    define('VIDEOS_PER_PAGE', 24);
 
-require_subscription();
+    // all variables and their default values
+    $GLOBALS['page'] = 1; // page #
+    $vars = array(
+	   'genre' => "Any",
+	   'rating_min' => 0.1,
+	   'rating_max' => 10.0,
+	   'query' => ''
+    );
 
-// # of videos shown on each page
+    // vars that are checked via 'LIKE' selection in sql query
+    $vars_containify = array(
+	   'genre',
+	   'query'
+    );
 
-define('VIDEOS_PER_PAGE', 24);
+    // set search query, or remove from array
+    if (isset($_GET['search'])) 
+        $vars['query'] = $_GET['search'];
+    else
+        unset($vars['query']);
 
-// all variables and their default values
+    // set $genre for use later in html (must be done before containify)
+    $genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
 
-$GLOBALS['page'] = 1; // page #
-$vars = array(
-	'genre' => "Action",
-	'rating_min' => 0.1,
-	'rating_max' => 10.0,
-	'query' => ''
+    // set all filtering variables from $_GET and modify accordingly
+    foreach($vars as $var => $default) {
+    
+        if (isset($_GET[$var])) 
+            $vars[$var] = $_GET[$var];
 
-	// search query ($_GET['search'])
+        if (in_array($var, $vars_containify)) 
+            $vars[$var] = '%' . strtolower($vars[$var]) . '%';
+        
+    }
 
-);
+    // multiply ratings by 10 to account for 100 based rating system
+    $vars['rating_min'] *= 10;
+    $vars['rating_max'] *= 10;
 
-// vars that are checked via 'LIKE' selection in sql query
+    // make modifications if user has no selected genre
+    if ($genre == 'Any') {
+        $vars['genre'] = '%';
+        unset($vars_containify[0]);
+    }
 
-$vars_containify = array(
-	'genre',
-	'query'
-);
+    // update page # if it's set by the user
+    if (isset($_GET['page'])) 
+        $GLOBALS['page'] = intval($_GET['page']);
 
-// set search query, or remove from array
+    // get animes and determine if any videos were found correctly
+    $animes = get_animes($vars, $page);
 
-if (isset($_GET['search'])) $vars['query'] = $_GET['search'];
-  else unset($vars['query']);
+    if ($page < 1 || count($animes) == 0) // PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
+        msg('Oh no :(', 'We couldn\'t find any anime fitting your request.');
 
-// set $genre for use later in html (must be done before containify)
+    function get_animes($vars, $page) {
+        
+	   global $db;
+        
+	   if (isset($vars['query'])) {
+           $get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
+           $get_animes->bindValue(':query', $vars['query']);
+       } else if (isset($vars['genre'])) {
+           $get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max ORDER BY id DESC LIMIT :offset, :count');
+           foreach ($vars as $var => $default)
+               $get_animes->bindValue(':' . $var, $default);
+       }
 
-$genre = isset($_GET['genre']) ? $_GET['genre'] : $vars['genre'];
+	   $anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
+	   $get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
+	   $get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
+        
+	   $get_animes->execute();
+	   $animes = $get_animes->fetchAll();
+	   return $animes;
+        
+    }
 
-// set all filtering variables from $_GET and modify accordingly
-
-foreach($vars as $var => $default)
-{
-	if (isset($_GET[$var])) $vars[$var] = $_GET[$var];
-	if (in_array($var, $vars_containify)) $vars[$var] = '%' . strtolower($vars[$var]) . '%';
-}
-
-// update page # if it's set by the user
-
-if (isset($_GET['page'])) $GLOBALS['page'] = intval($_GET['page']);
-
-// get animes and determine if any videos were found correctly
-
-$animes = get_animes($vars, $page);
-
-if ($page < 1 || count($animes) == 0)
-{
-
-	// PAGE NUMBER IS INVALID or NO animes ARE FOUND
-	// somebody handle this with something (@trevor)
-
-	header("location: https://bytesurf.io/404?e=video");
-	die('No videos found.');
-}
-
-function get_animes($vars, $page)
-{
-	global $db;
-	if (isset($vars['query']))
-	{
-		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(similar) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-		$get_animes->bindValue(':query', $vars['query']);
-	}
-	else if (isset($vars['genre']))
-	{
-		$get_animes = $db->prepare('SELECT * FROM `anime` WHERE LOWER(genres) LIKE :genre AND `rating` >= :rating_min AND `rating` <= :rating_max ORDER BY id DESC LIMIT :offset, :count');
-		$get_animes->bindValue(':genre', $vars['genre']);
-		$get_animes->bindValue(':rating_min', $vars['rating_min'] * 10);
-		$get_animes->bindValue(':rating_max', $vars['rating_max'] * 10);
-	}
-
-	$anime_offset = ($page - 1) * VIDEOS_PER_PAGE;
-	$get_animes->bindValue(':offset', $anime_offset, PDO::PARAM_INT);
-	$get_animes->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
-	$get_animes->execute();
-	$animes = $get_animes->fetchAll();
-	return $animes;
-}
-//echo $get_movies->rowCount() . PHP_EOL;
-function generate_page_url($new_page) {
-    	global $current_url, $page;
-    	$page_str = 'page=' . $page;
-    	$page_str_new = 'page=' . $new_page;
+    function generate_page_url($new_page) {
+        global $current_url, $page;
+        $page_str = 'page=' . $page;
+        $page_str_new = 'page=' . $new_page;
     	if (contains($page_str, $current_url))
     		return str_replace($page_str, $page_str_new, $current_url);
     	else if (count($_GET) == 0)
     		return $current_url . '?' . $page_str_new;
     	else
     		return $current_url . '&' . $page_str_new;
-}
+    }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -179,10 +178,11 @@ function generate_page_url($new_page) {
 								<span class="filter__item-label">GENRE:</span>
 								<div class="filter__item-btn dropdown-toggle" role="navigation" id="filter-genre" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 									<input type="button" value="<?php echo $genre?>">
-									<input type="hidden" name="genre" value="Action"/>
+									<input type="hidden" name="genre" value="Any"/>
 									<span></span>
 								</div>			
 							<ul class="filter__item-menu dropdown-menu scrollbar-dropdown" aria-labelledby="filter-genre">
+                                <li>Any</li>
 								<li>Comedy</li>
 								<li>Fantasy</li>
 								<li>Romance</li>

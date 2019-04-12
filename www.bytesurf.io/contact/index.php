@@ -59,10 +59,10 @@
   		$response = send_email(
   			$subject, // email subject
   			$message, // email contents (html)
-  			'mailer@jexflix.com', // sender email
-  			'JexFlix - Support Request', // sender name
-  			'support@jexflix.com', // receiver email
-  			'JexFlix Staff', // receiver name
+  			'mailer@bytesurf.io', // sender email
+  			'ByteSurf - Support Request', // sender name
+  			'support@bytesurf.io', // receiver email
+  			'ByteSurf Staff', // receiver name
   			$email, // reply-to email (optional)
   			$username // reply-to name (optional)
   		);
