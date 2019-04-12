@@ -48,6 +48,48 @@
         'the-kissing-booth-2018', // 17
         'upgrade-2018', // 18
     );
+
+    $explore_shows = array(
+        'the-walking-dead', // 1
+        'the-grand-tour', // 2
+        'the-flash', // 3
+        'greys-anatomy', // 4
+        'shameless', // 5
+        'game-of-thrones', // 6
+        'the-orville', // 7
+        'the-big-bang-theory', // 8
+        'american-gods', // 9
+        'arrow', // 10
+        'the-blacklist', // 11
+        'the-passage', // 12
+        'supergirl', // 13
+        'brooklyn-nine-nine', // 14
+        'doom-patrol', // 15
+        'supernatural', // 16
+        'the-good-doctor', // 17
+        'star-trek-discovery' // 18
+    );
+
+    $explore_anime = array(
+        'soredemo-machi-wa-mawatteiru', // 1
+        'soredemo-machi-wa-mawatteiru', // 2
+        'soredemo-machi-wa-mawatteiru', // 3
+        'soredemo-machi-wa-mawatteiru', // 4
+        'soredemo-machi-wa-mawatteiru', // 5
+        'soredemo-machi-wa-mawatteiru', // 6
+        'soredemo-machi-wa-mawatteiru', // 7
+        'soredemo-machi-wa-mawatteiru', // 8
+        'soredemo-machi-wa-mawatteiru', // 9
+        'soredemo-machi-wa-mawatteiru', // 10
+        'soredemo-machi-wa-mawatteiru', // 11
+        'soredemo-machi-wa-mawatteiru', // 12
+        'soredemo-machi-wa-mawatteiru', // 13
+        'soredemo-machi-wa-mawatteiru', // 14
+        'soredemo-machi-wa-mawatteiru', // 15
+        'soredemo-machi-wa-mawatteiru', // 16
+        'soredemo-machi-wa-mawatteiru', // 17
+        'soredemo-machi-wa-mawatteiru' // 18
+    );
     
     global $db;
     
@@ -304,7 +346,7 @@
 									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
 								</div>
 							</div>
-						</div>
+                        </div>
 						<!-- end card -->
 						<? } ?>
 
@@ -312,12 +354,74 @@
 				</div>
 
 				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
-				    <h1>Coming Soon</h1>
+				    <div class="row">
+                        
+                        <?
+					        foreach ($explore_shows as $series) {
+					            $data = get_series_data($series);
+					            $url = "../show.php?t=" . $data['url'];
+					            $genres = json_decode($data['genres']);
+					    ?>
+					    
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+									<a href="<?=$url?>" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
+									<span class="card__category">
+											<a href="#"><?=ucwords($genres[0])?></a>
+											<a href="#"><? if (isset($genres[1])) { echo ucwords($genres[1]); }?></a>
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+								</div>
+							</div>
+                        </div>
+						<!-- end card -->
+						<? } ?>
+                    
+                    </div>
 				</div>
 
 				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
-				    <h1>Coming Soon</h1>
-				    
+				    <div class="row">
+                        
+                        <?
+					        foreach ($explore_anime as $anime) {
+					            $data = get_anime_data($anime);
+					            $url = "../anime.php?t=" . $data['url'];
+					            $genres = json_decode($data['genres']);
+                                $rating = round($data['rating'], 1);
+					    ?>
+					    
+						<!-- card -->
+						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+							<div class="card">
+								<div class="card__cover">
+									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+									<a href="<?=$url?>" class="card__play">
+										<i class="icon ion-ios-play"></i>
+									</a>
+								</div>
+								<div class="card__content">
+									<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
+									<span class="card__category">
+											<a href="#"><?=ucwords($genres[0])?></a>
+											<a href="#"><? if (isset($genres[1])) { echo ucwords($genres[1]); }?></a>
+									</span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$rating?></span>
+								</div>
+							</div>
+                        </div>
+						<!-- end card -->
+						<? } ?>
+                    
+                    </div>
 				</div>
 			</div>
 			<!-- end content tabs -->
