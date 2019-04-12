@@ -197,6 +197,15 @@
 						var next = document.getElementById("page-next");
 						prev.href = (paginators[p1]).children[0].href;
 						next.href = (paginators[p2]).children[0].href;
+                        if (p1 == 1 && p2 == 2) {
+                            // first page, fix some things
+                            $('.paginator__item').each(function() {
+                                var classes = $(this).attr("class").split(' ');
+                                var is_active = $(this).hasClass('paginator__item--active');
+                                if (!is_active && classes.length == 1)
+                                    $(this).remove();
+                            });
+                        }
 					}
 				</script>
 				<div class="col-12">
@@ -207,7 +216,7 @@
 
 						<?
 							$is_first_page = $page == 1;
-							$is_last_page = count(get_movies($vars, $page + 1)) == 0;
+							$is_last_page = count(get_matches($_GET['q'], $page + 1)) == 0;
 							// it's probably the last page if the number of videos on the next page is 0
 							// this can probably be done better but im keeping it this way until the backend code is done
 							if ($is_first_page) { ?>
