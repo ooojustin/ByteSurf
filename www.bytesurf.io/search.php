@@ -164,7 +164,7 @@
                             case 'anime': 
                                 $script = 'anime.php';
                                 $released = $item['release_date'];
-                                $rating /= 10;
+                                $rating = round($rating / 10, 1);
                                 break;
                         }
 						$url = sprintf('https://bytesurf.io/%s?t=%s', $script, $item['url']);
