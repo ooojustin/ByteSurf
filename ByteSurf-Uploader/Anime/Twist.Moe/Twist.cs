@@ -178,7 +178,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     EpisodeCopy = new List<EpisodeData>(UploadData.episodeData);
                     UploadData.episodeData = GetAscending(EpisodeCopy);
 
-                    string localPath = Path.GetTempFileName();
+                    string localPath = General.GetTempFileName();
 
                     //open file stream
                     using (StreamWriter file = File.CreateText(localPath)) {

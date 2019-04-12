@@ -165,7 +165,7 @@ namespace JexFlix_Scraper.Anime {
 
                         // Upload to the CDN then delete
                         // cdn.jexflix.com/anime/anime-name-here/1/thumbnail.jpg and set the link
-                        Networking.ReuploadRemoteFile(AnimeInfo.GetThumbnail(Convert.ToInt32(EpisodeInfo.info.episode) - 1), "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "thumbnail.jpg", UploadData.title, General.GetWebClient());               
+                        Networking.ReuploadRemoteFile(AnimeInfo.GetThumbnail(Convert.ToInt32(EpisodeInfo.info.episode) - 1), "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode, "thumbnail.jpg", UploadData.title, General.GetWebClient());
                         // EpData.thumbnail = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + EpisodeInfo.info.episode + "/" + "thumbnail.jpg";
                         // EpData.duration = AnimeInfo.info.episode_length;
 
@@ -310,7 +310,7 @@ namespace JexFlix_Scraper.Anime {
                         Console.WriteLine("Adding EPData");
                         UploadData.episodeData.Add(EpData);
                         Console.WriteLine("Saving to path");
-                        string localPath = Path.GetTempFileName();
+                        string localPath = General.GetTempFileName();
 
                         //open file stream
                         using (StreamWriter file = File.CreateText(localPath)) {
@@ -353,7 +353,7 @@ namespace JexFlix_Scraper.Anime {
                         foreach (AniInfo.Synonyms syn in AnimeInfo.synonyms) {
                             synlist.Add(syn.title);
                         }
-                       //  dbinfo.synonyms = JsonConvert.SerializeObject(synlist);
+                        //  dbinfo.synonyms = JsonConvert.SerializeObject(synlist);
 
                         // Update the database.
                         using (WebClient Web = General.GetWebClient()) {
