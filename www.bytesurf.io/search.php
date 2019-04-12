@@ -150,27 +150,39 @@
 				
 				<?
 					foreach ($list as $item) {
+                        $thumbnail = authenticate_cdn_url($item['thumbnail']);
+                        $rating = $item['rating'];
                         switch ($item['type']) {
-                            case 'movie': $script = 'movie.php'; break;
-                            case 'series': $script = 'show.php'; break;
-                            case 'anime': $script = 'anime.php'; break;
+                            case 'movies': 
+                                $script = 'movie.php';
+                                $released = $item['year'];
+                                break;
+                            case 'series': 
+                                $script = 'show.php';
+                                $released = $item['year'];
+                                break;
+                            case 'anime': 
+                                $script = 'anime.php';
+                                $released = $item['release_date'];
+                                $rating /= 10;
+                                break;
                         }
-						$url = sprintf('https://bytesurf.io/%s?t=%s', $item['url']);
+						$url = sprintf('https://bytesurf.io/%s?t=%s', $script, $item['url']);
 				?>   					
     			<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 					<div class="card">
 						<div class="card__cover">
-							<img src="<?= authenticate_cdn_url($item['thumbnail']) ?>" alt="">
+							<img src="<?= $thumbnail ?>" alt="">
 							<a href="<?= $url ?>" class="card__play">
 								<i class="icon ion-ios-play"></i>
 							</a>
 						</div>
 						<div class="card__content">
-							<h3 class="card__title"><a href=<?= '"' . $url . '"' ?>><?= $item['title'] ?></a></h3>
+							<h3 class="card__title"><a href="<?= $url ?>"><?= $item['title'] ?></a></h3>
 							<span class="card__category">
-								<a href=<?= '"https://jexflix.com/catalog/?year_min=' . $item['year'] . '&year_max=' . $item['year'] . '"' ?>>Released: <?= $item['year'] 	?></a>
+                                <a href="<?= $url ?>">Released: <?= $released ?></a>
 							</span>
-							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $item['rating'] ?></span>
+							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $rating ?></span>
 						</div>
 					</div>
 				</div>
