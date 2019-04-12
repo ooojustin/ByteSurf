@@ -6,7 +6,7 @@
     global $db;
 
 	if (is_logged_in()) {
-		header("location: https://jexflix.com/home/");
+		header("location: https://bytesurf.io/home/");
 		die();
 	}
 
@@ -34,19 +34,19 @@
 				$create->execute();
 
 				// generate the email message
-				define('RESET_URL', 'https://jexflix.com/login/reset/?code=');
+				define('RESET_URL', 'https://bytesurf.io/login/reset/?code=');
 				$message = file_get_contents('email_template.txt');
 				$message = str_replace('{username}', $user['username'], $message);
 				$message = str_replace('{url}', RESET_URL . $code, $message);
 
 				// send email
-				$subject = 'JexFlix - Password Reset';
+				$subject = 'ByteSurf - Password Reset';
 				log_email($user['email'], $subject, 'Password Reset');
 				send_email(
-					'JexFlix - Password Reset', // subject
+					'ByteSurf - Password Reset', // subject
 					$message, // message 
-					'reset@jexflix.com', // from email
-					'JexFlix', // from name
+					'reset@ByteSurf.com', // from email
+					'ByteSurf', // from name
 					$user['email'], // to email
 					$user['username'] // to name
 				);
@@ -110,7 +110,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="Anthony Almond">
-	<title>jexflix</title>
+	<title>ByteSurf</title>
 
 </head>
 <body class="body">
