@@ -11,7 +11,6 @@
     $GLOBALS['page'] = 1; // page #
     $vars = array(
     	'genre' => "Any", 
-    //	'quality' => 1080, 
     	'imdb_min' => 0.1,
     	'imdb_max' => 10.0, 
     	'year_min' => 2000,
@@ -23,7 +22,6 @@
     // vars that are checked via 'LIKE' selection in sql query
     $vars_containify = array(
     	'genre', 
-    //	'quality',
     	'query'
     );
 
@@ -59,12 +57,8 @@
 
     // get shows and determine if any videos were found correctly
     $shows = get_shows($vars, $page);
-    if ($page < 1 || count($shows) == 0) {
-    	// PAGE NUMBER IS INVALID or NO showS ARE FOUND
-		// somebody handle this with something (@trevor)
-	//	header("location: https://jexflix.com/404?e=video");		
-    //	die('No videos found.');
-    }
+    if ($page < 1 || count($shows) == 0) // PAGE NUMBER IS INVALID or NO MOVIES ARE FOUND
+        msg('Oh no :(', 'We couldn\'t find any movies fitting your request.');
 
     function get_shows($vars, $page) {
 
