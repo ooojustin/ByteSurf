@@ -36,10 +36,15 @@
     $add_data->bindValue(4, $spent);
     $add_data->execute();
 
+    // format numbers before sending email
+    $balance = number_format($balance, 2);
+    $deposited = number_format($deposited, 2);
+    $spent = number_format($spent, 2);
+
     // determine percent change from yesterday
-    $balance_diff = percent_diff($data['balance'], $balance);
-    $deposited_diff = percent_diff($data['deposited'], $deposited);
-    $spent_diff = percent_diff($data['spent'], $spent);
+    $balance_diff = percent_diff_html($data['balance'], $balance);
+    $deposited_diff = percent_diff_html($data['deposited'], $deposited);
+    $spent_diff = percent_diff_html($data['spent'], $spent);
 
     // send email notification to support email
     // send_email($subject, $message, $from_email, $from_name, $to_email, $to_name, $reply_to = NULL, $reply_to_name = NULL)
@@ -50,8 +55,29 @@
     die('Executed: ' . $today->getTimestamp());
 
     function percent_diff($a, $b) {
-        $p = (($a - $b) / $a)  * 100;
+        
+        if ($a == $b)
+            $p = 0;
+        else if ($b == 0)
+            $p = -100;
+        else
+            $p = (1 - ($a / $b))  * 100;
+        
         return number_format($p, 2);
+        
+    }
+
+    function percent_diff_html($a, $b) {
+        
+        $diff = percent_diff($a, $b);
+        
+        if ($diff > 0)
+            return '<span style="color: #00FF00">(+' . $diff . '%)</span>';
+        else if ($diff < 0)
+            return '<span style="color: #FF0000">(-' . abs($diff) . '%)</span>';
+        else
+            return '(0%)';
+        
     }
 
 ?>
