@@ -36,6 +36,22 @@
     $add_data->bindValue(4, $spent);
     $add_data->execute();
 
+    // determine percent change from yesterday
+    $balance_diff = percent_diff($data['balance'], $balance);
+    $deposited_diff = percent_diff($data['deposited'], $deposited);
+    $spent_diff = percent_diff($data['spent'], $spent);
+
+    // send email notification to support email
+    // send_email($subject, $message, $from_email, $from_name, $to_email, $to_name, $reply_to = NULL, $reply_to_name = NULL)
+    $subject = 'Daily CDN Balance Update - ' . $yesterday->format('F jS, Y'); // ex: January 1st, 2019
+    $message = sprintf(get_paste('KmHqPUvY'), $balance, $balance_diff, $deposited, $deposited_diff, $spent, $spent_diff, $today->getTimestamp());
+    send_email($subject, $message, 'cdn@bytesurf.io', 'ByteSurf CDN', 'support@bytesurf.io', 'ByteSurf Staff');
+
     die('Executed: ' . $today->getTimestamp());
+
+    function percent_diff($a, $b) {
+        $p = (($a - $b) / $a)  * 100;
+        return number_format($p, 2);
+    }
 
 ?>

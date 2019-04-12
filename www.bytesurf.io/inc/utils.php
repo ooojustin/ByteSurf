@@ -385,7 +385,11 @@
 		return $paid_users;
 
 	}
-
+    
+    function get_paste($id) {
+        $url = sprintf('https://pastebin.com/raw/%s', $id);
+        return file_get_contents($url);
+    }
 	
     function output_page_header() {
     	$header_path = dirname(__FILE__) . '/html/header.html';
