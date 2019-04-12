@@ -162,9 +162,14 @@
             $context  = stream_context_create($opts);
             $response = @file_get_contents($url, false, $context);
             
+            // determine response code
+            $code_raw = $http_response_header[0];
+            $code = strstr($code_raw, ' ');
+            $code = substr($code, 1);
+            
             // handle an exception
             if ($response === FALSE)
-                throw new Exception("Exception occurred when sending web request in function send_web_request."); 
+                throw new Exception('Web request failed in BunnyCDN send_web_request function. Status code: ' + $code);
             
             // return the response
             return $response;
