@@ -66,13 +66,12 @@
 		</div>
 
         <!-- header search -->
-        <form action="https://bytesurf.io/movies" method="get" class="header__search">
+        <form action="https://bytesurf.io/search.php" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <div class="header__search-content">
-                            <input type="text" id="search" name='search' placeholder="Search for a movie, TV Series that you are looking for">
-
+                            <input type="text" id="search" name="q" placeholder="Search for a movie, TV Series that you are looking for">
                             <button type="submit">search</button>
                         </div>
                     </div>
