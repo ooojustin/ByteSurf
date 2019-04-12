@@ -12,6 +12,13 @@ namespace JexFlix_Scraper.Anime.Misc {
     class General {
 
         /// <summary>
+        /// Better version that will never collide
+        /// </summary>
+        public static string GetTempFileName() {
+            return Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+        }
+
+        /// <summary>
         /// Gets an instance of the WebClient class.
         /// </summary>
         public static WebClient GetWebClient() {

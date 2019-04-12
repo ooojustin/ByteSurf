@@ -14,7 +14,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
         // Found in javascript https://twist.moe/_nuxt/1d5bd2d9ff91717fa9b4.js after decrypting it using an nice-fier and reading where it gets encrypted 
         // then trace back where the key is defined
-        public const string SECRET_KEY = "k8B$B@0L8D$tDYHGmRg98sQ7!%GOEGOX27T"; 
+        public const string SECRET_KEY = "k8B$B@0L8D$tDYHGmRg98sQ7!%GOEGOX27T";
 
         public const string API_LINK = "https://twist.moe/api/anime/";
         public const string API_EPISODE_LINK = "https://twist.moe/api/anime/{0}/sources";
@@ -59,10 +59,10 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             }
             return null;
         }
-        
+
         public static string GetVideoLink(string source) {
             AESCrypto crypto = new AESCrypto();
-            return string.Format(VIDEO_FILE_LINK, crypto.OpenSSLDecrypt(source, SECRET_KEY));
+            return string.Format(VIDEO_FILE_LINK, crypto.OpenSSLDecrypt(source, SECRET_KEY)).Replace(" /", "/");
         }
 
         public class EpisodeInfo {
