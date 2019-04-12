@@ -66,7 +66,7 @@
 		</div>
 
         <!-- header search -->
-        <form action="https://bytesurf.io/catalog" method="get" class="header__search">
+        <form action="https://bytesurf.io/movies" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
