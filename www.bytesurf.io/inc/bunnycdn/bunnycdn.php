@@ -15,8 +15,8 @@
 
     // === EXAMPLE CODE ===
     /*
-    define('BUNNYCDN_API_KEY', 'put your api key in here');
-    $bcdn = new BunnyCDN(BUNNYCDN_API_KEY, 'put a user-agent here');  
+    define('BUNNYCDN_API_KEY', 'put your api key here');
+    $bcdn = new BunnyCDN(BUNNYCDN_API_KEY, 'put a user agent here');  
     echo $bcdn->get_balance();
     */
     // === END EXAMPLE CODE ===
