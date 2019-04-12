@@ -120,7 +120,7 @@
 						<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
 							<div class="card__content">
 								<div class="card__wrap">
-									<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'], 1); ?></span>
+									<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'] / 10, 1); ?></span>
 									<ul class="card__list">
 										<li>HD</li>
 									</ul>
@@ -230,51 +230,7 @@
 	</section>
 	<!-- end content -->
 	<!-- footer -->
-	<footer class="footer">
-		<div class="container">
-			<div class="row">
-				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Resources</h6>
-					<ul class="footer__list">
-						<li><a href="../about">About Us</a></li>
-						<li><a href="../pricing">Pricing Plan</a></li>
-						<li><a href="../faq">Help</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-				<!-- footer list -->
-				<div class="col-6 col-sm-4 col-md-3">
-					<h6 class="footer__title">Legal</h6>
-					<ul class="footer__list">
-						<li><a href="../tos">Terms of Use</a></li>
-						<li><a href="../privacy">Privacy Policy</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-				<!-- footer list -->
-				<div class="col-12 col-sm-4 col-md-3">
-					<h6 class="footer__title">Contact</h6>
-					<ul class="footer__list">
-					    <li><a href="../discord">Discord</a></li>
-						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
-					</ul>
-				</div>
-				<!-- end footer list -->
-				<!-- footer copyright -->
-				<div class="col-12">
-					<div class="footer__copyright">
-						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
-						<ul>
-							<li><a href="../tos">Terms of Use</a></li>
-							<li><a href="../privacy">Privacy Policy</a></li>
-						</ul>
-					</div>
-				</div>
-				<!-- end footer copyright -->
-			</div>
-		</div>
-	</footer>
+	<?=require 'inc/html/footer.php'?>
 	<!-- end footer -->
 	<!-- Root element of PhotoSwipe. Must have class pswp. -->
 	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">

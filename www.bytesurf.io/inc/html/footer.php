@@ -26,6 +26,7 @@
 				<div class="col-12 col-sm-4 col-md-3">
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
+						<li><a href="../contact">Inquiries and Requests</a></li>
 					    <li><a href="../discord">Discord</a></li>
 						<li><a href="mailto:support@bytesurf.io">support@bytesurf.io</a></li>
 					</ul>
