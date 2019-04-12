@@ -48,6 +48,31 @@
             return $this->get_billing_summary()['Balance'];
         }
         
+        // Returns deposits the user has made into their balance, with a useable 'DateTime' object.
+        function get_deposits() {
+            return $this->get_billing_summary()['BillingRecords'];
+        }
+        
+        // Returns the total amount of money deposited on a given day.
+        function get_deposited_on_day($date = NULL) {        
+            // If call doesn't provide date, assume it's today.
+            if (is_null($date))
+                $date = new DateTime();
+            $date->setTime(0, 0, 0);
+            $deposited = 0;
+            $deposits = $this->get_deposits();
+            foreach ($deposits as $deposit) {
+                $deposit['DateTime'] = new DateTime($deposit['Timestamp']);
+                $deposit['DateTime']->setTime(0, 0, 0);
+                $days = intval($date->diff($deposit['DateTime'])->format("%R%a"));
+                if ($days == 0)
+                    $deposited += $deposit['Amount'];
+                else if ($days < 0)
+                    break;
+            }
+            return $deposited;
+        }
+        
         // Applys a promo code to the users account.
         function apply_promo_code($code) {
             $path = 'billing/applycode?couponCode=' . $code;
