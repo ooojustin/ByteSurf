@@ -26,14 +26,14 @@
     $poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
     $cover = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['cover']));
 
-	if (!isset($_GET['ep']))
-	    $_GET['ep'] = 1;
+	if (!isset($_GET['e']))
+	    $_GET['e'] = 1;
 
-	$episode_info = $episodes[$_GET['ep'] - 1];
+	$episode_info = $episodes[$_GET['e'] - 1];
 
 	function generate_mp4_link($res) {
         $format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
-        $url = sprintf($format, $_GET['t'], $_GET['ep'], $res);
+        $url = sprintf($format, $_GET['t'], $_GET['e'], $res);
         return $url;
 	}
 
@@ -99,7 +99,7 @@
 				<!-- title -->
 				<div class="col-12">
 					<h1 class="details__title"><?= $title ?></h1>
-					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['ep']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['e']; ?></h1>
 					<h1 class="details__devices" style="color: #fff"><?php echo  $episode_info['episode_title']; ?></h1>
 
 				</div>
@@ -197,8 +197,8 @@
 											</thead>
 											<tbody>
 												<?php foreach($episodes as $episode) { 		
-													$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&ep='	. $episode['episode'];							
-													if ($episode['episode'] == $_GET['ep']) {											
+													$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];							
+													if ($episode['episode'] == $_GET['e']) {											
 												?>
 
 													<tr>
