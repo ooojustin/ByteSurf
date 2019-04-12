@@ -48,6 +48,13 @@
             return $this->get_billing_summary()['Balance'];
         }
         
+        // Applys a promo code to the users account.
+        function apply_promo_code($code) {
+            $path = 'billing/applycode?couponCode=' . $code;
+            $response = $this->send_api_request('GET', $path, NULL, false);
+            return strlen($response) == 0;
+        }
+        
         // Returns an estimate of how much longer the current balance will last, in days.
         // Based on current balance/amount spent thus far in the current month.
         function get_balance_remainder_estimate() {
