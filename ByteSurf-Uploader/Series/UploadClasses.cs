@@ -32,7 +32,7 @@ namespace JexFlix_Scraper.Series {
             public int? released = 0;
 
         }
-        
+
         public class EpisodeList {
             public List<Episode> episodes = new List<Episode>();
         }

@@ -16,7 +16,7 @@ namespace JexFlix_Scraper {
         /// <summary>
         /// Public link to access files uploaded to the JexFlix FTP/CDN server.
         /// </summary>
-        public const string CDN_URL = "https://cdn.jexflix.com";
+        public const string CDN_URL = "https://cdn.bytesurf.io";
 
         /// <summary>
         /// Credentials to CDN hosting FTP server.
@@ -146,7 +146,7 @@ namespace JexFlix_Scraper {
             Response response = null;
             while (response == null) {
                 try {
-                    response = SAFE_REQUEST.Request("https://scraper.jexflix.com/movie_exists.php", values);
+                    response = SAFE_REQUEST.Request("https://bytesurf.io/scraper/movie_exists.php", values);
                     if (!response.status)
                         response = null;
                 } catch (Exception ex) {
@@ -232,6 +232,8 @@ namespace JexFlix_Scraper {
             bool success = true;
 
 
+
+
             // download the original file
             try {
                 if (!cf_bypass) {
@@ -256,11 +258,14 @@ namespace JexFlix_Scraper {
                     Console.WriteLine("Error uploading file");
                     success = false;
                 }
+
+                // delete the file that was stored locally
+                File.Delete(localPath);
+                Console.WriteLine("Deleted local file");
             } else {
                 Console.WriteLine("No Success");
             }
-              // delete the file that was stored locally
-                File.Delete(localPath);
+
             return success;
         }
 

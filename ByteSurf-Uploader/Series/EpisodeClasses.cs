@@ -36,7 +36,7 @@ namespace JexFlix_Scraper.Series {
             public double rating { get; set; }
             public string imdb_id { get; set; }
             public int year { get; set; }
-            public DateTime released { get; set; }
+            public DateTime? released { get; set; }
             public int released_sec_ago { get; set; }
             public int last_seq { get; set; }
             public Images2 images { get; set; }
@@ -49,7 +49,7 @@ namespace JexFlix_Scraper.Series {
             public string title { get; set; }
             public string description { get; set; }
             public int? duration { get; set; }
-            public DateTime released { get; set; }
+            public DateTime? released { get; set; }
             public int released_sec_ago { get; set; }
             public object year { get; set; }
             public int seq { get; set; }
@@ -90,7 +90,7 @@ namespace JexFlix_Scraper.Series {
             public string title { get; set; }
             public string description { get; set; }
             public int? duration { get; set; }
-            public DateTime released { get; set; }
+            public DateTime? released { get; set; }
             public int released_sec_ago { get; set; }
             public object year { get; set; }
             public int seq { get; set; }

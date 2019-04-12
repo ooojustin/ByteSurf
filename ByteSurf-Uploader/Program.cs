@@ -12,7 +12,7 @@ class Program {
     [STAThread]
     static void Main(string[] args) {
 
-        MessageHandler.Start();
+     //   MessageHandler.Start();
 
         // Anime.Run();
 
@@ -27,9 +27,9 @@ class Program {
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
 
-        //Thread showThread = new Thread(() => Shows.Run());
-        //showThread.Start();
-        Twist.Run();
+        Thread showThread = new Thread(() => Shows.Run());
+        showThread.Start();
+        // Twist.Run();
         Console.ReadKey();
 
     }

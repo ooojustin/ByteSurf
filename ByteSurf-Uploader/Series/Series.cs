@@ -37,8 +37,8 @@ namespace JexFlix_Scraper.Shows {
             // establish post data
             NameValueCollection values = new NameValueCollection();
             values["ref"] = "";
-            values["email"] = "nex@weebware.net";
-            values["password"] = "fuckniggers69";
+            values["email"] = "justin@garofolo.net";
+            values["password"] = "D3MU&DvWm9%xf*z";
 
             // send request to store cookies from valid login
             web.UploadValues(FLIXIFY + "/login", values);
@@ -115,7 +115,7 @@ namespace JexFlix_Scraper.Shows {
 
                 // add the series, checks if exists server sided
                 try {
-                    web.UploadString("https://scraper.jexflix.com/add_series.php", JsonConvert.SerializeObject(series));
+                    web.UploadString("https://bytesurf.io/scraper/add_series.php", JsonConvert.SerializeObject(series));
                 } catch {
 
                 }
