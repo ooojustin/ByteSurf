@@ -27,7 +27,7 @@
 					<h6 class="footer__title">Contact</h6>
 					<ul class="footer__list">
 					    <li><a href="../discord">Discord</a></li>
-						<li><a href="mailto:support@jexflix.com">support@bytesurf.io</a></li>
+						<li><a href="mailto:support@bytesurf.io">support@bytesurf.io</a></li>
 					</ul>
 				</div>
 				<!-- end footer list -->
