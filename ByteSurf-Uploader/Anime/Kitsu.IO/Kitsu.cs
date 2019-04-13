@@ -53,14 +53,16 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         /// Finds the first TV show or the first hit.
         /// </summary>
         public static int GetFirstTVID(Media_Production Medias) {
-            foreach (Hit hit in Medias.hits) {
-                if (hit.subtype.ToLower().Contains("tv")) {
-                    return hit.id;
+            if (Medias.hits != null) {
+                foreach (Hit hit in Medias.hits) {
+                    if (hit.subtype.ToLower().Contains("tv")) {
+                        return hit.id;
+                    }
                 }
             }
             return 0;
         }
-
+	
         /// <summary>
         /// Automates the search for u given a query
         /// https://kitsu.io/api/edge/anime/11 this is an example of the json data it returns
