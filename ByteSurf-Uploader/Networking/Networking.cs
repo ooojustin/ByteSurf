@@ -69,12 +69,21 @@ namespace JexFlix_Scraper {
         }
 
         public static void OutputCookies(CookieContainer cookies) {
+            cookies.Add(new Cookie("test", "t", "/yeet", "www.google.com"));
+            cookies.Add(new Cookie("popp", "p", "/gay", "www.penguware.org"));
             Console.WriteLine("=== WRITING COOKIES ===");
+            Console.WriteLine("Total cookies: " + cookies.Count);
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance;
-            Hashtable table = (Hashtable)cookies.GetType().InvokeMember("m_domainTable", flags, null, cookies, new object[] { });
-            foreach (var key in table.Keys)
-                foreach (Cookie cookie in cookies.GetCookies(new Uri(string.Format("http://{0}/", key))))
-                    Console.WriteLine("{0} = {1} | {2}", cookie.Name, cookie.Value, cookie.Domain);
+            Hashtable table = (Hashtable)cookies.GetType().InvokeMember("m_domainTable", flags, null, cookies, null);
+            foreach (string key in table.Keys) {
+                var item = table[key];
+                var items = (ICollection)item.GetType().GetProperty("Values").GetGetMethod().Invoke(item, null);
+                foreach (CookieCollection cc in items) {
+                    foreach (Cookie cookie in cc) {
+                        Console.WriteLine("{0} = {1} | {2}", cookie.Name, cookie.Value, cookie.Domain);
+                    }
+                }
+            }
             Console.WriteLine("=== END COOKIES ===");
         }
 
