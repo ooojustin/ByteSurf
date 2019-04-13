@@ -161,7 +161,7 @@
 				<!-- end content -->
 
 				<!-- player -->
-				<div class="col-12 col-xl-6">
+				<div class="col-12">
 					<video controls crossorigin playsinline poster="<?=$preview?>" id="player">
 						<!-- Video files -->
 						
@@ -182,12 +182,10 @@
 						<a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
 					</video>
 				</div>
-				<!-- end player -->
-				
-				
-
+				<!-- end player -->	
+						
 				<!-- accordion -->
-				<div class="col-12 col-xl-6">
+				<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
 					<div class="accordion" id="accordion">
 						<div class="accordion__card">
 						    
