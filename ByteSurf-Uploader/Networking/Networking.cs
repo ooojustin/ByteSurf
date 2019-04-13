@@ -53,6 +53,7 @@ namespace JexFlix_Scraper {
             client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
             string response = client.GetStringAsync(domain).Result;
             cookies = ClearanceHandler._cookies;
+            OutputCookies(cookies);
             return response;
         }
 
@@ -69,8 +70,6 @@ namespace JexFlix_Scraper {
         }
 
         public static void OutputCookies(CookieContainer cookies) {
-            cookies.Add(new Cookie("test", "t", "/yeet", "www.google.com"));
-            cookies.Add(new Cookie("popp", "p", "/gay", "www.penguware.org"));
             Console.WriteLine("=== WRITING COOKIES ===");
             Console.WriteLine("Total cookies: " + cookies.Count);
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance;

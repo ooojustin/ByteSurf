@@ -32,8 +32,6 @@ namespace JexFlix_Scraper.Flixify {
             web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
             web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
 
-            Networking.OutputCookies(web.Cookies);
-
             // establish post data
             NameValueCollection values = new NameValueCollection();
             values["ref"] = "";
