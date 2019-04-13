@@ -71,6 +71,18 @@ $(document).ready(function() {
         if (progress_time == 0)
             return;
         
+        if (progress_season > -1 && progress_episode > -1) {
+            if (!value_exists(params, 's') || !value_exists(params, 'e') || params['s'] != progress_season || params['e'] != progress_episode) {
+                let new_url = 'https://bytesurf.io' + window.location.pathname + '?t=' + params['t'] + '&s=' + progress_season + '&e=' + progress_episode;
+                window.location.replace(new_url);
+            }
+        } else if (progress_episode > -1) {
+            if (!value_exists(params, 'e') || params['e'] != progress_episode) {
+                let new_url = 'https://bytesurf.io' + window.location.pathname + '?t=' + params['t'] + '&e=' + progress_episode;
+                window.location.replace(new_url);
+            }
+        }
+        
         let applyTime = window.setInterval(function() {
             if (player.readyState == 4) {
                 console.log('ready');
@@ -84,7 +96,7 @@ $(document).ready(function() {
 });
 
 function value_exists(params, key) {
-    return (key in params) && params['key'] > -1;
+    return (key in params);
 }
 
 function get_important_params() {
