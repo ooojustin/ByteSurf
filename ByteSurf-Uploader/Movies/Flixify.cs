@@ -1,10 +1,12 @@
 ﻿using BrotliSharpLib;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -21,12 +23,8 @@ namespace JexFlix_Scraper.Flixify {
 
         public static void Run(int genre_index) {
 
-            // note to self
-            // improve this stuff, lol
             CookieAwareWebClient web = new CookieAwareWebClient();
-
-            // bypass cloudflare so we can login to and access the website
-            string auth_token = Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
+            string authenticity_token = Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
 
             // initialize request headers
             web.Cookies = Cookies;
@@ -36,10 +34,10 @@ namespace JexFlix_Scraper.Flixify {
 
             // establish post data
             NameValueCollection values = new NameValueCollection();
-            values["authenticity_token"] = auth_token;
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
+            values["authenticity_token"] = authenticity_token;
             values["d"] = "57";
             values["t"] = "262";
 

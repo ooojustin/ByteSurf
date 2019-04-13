@@ -3,10 +3,13 @@ using JexFlix_Scraper.Anime.Misc;
 using JexFlix_Scraper.Flixify;
 using SafeRequest;
 using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace JexFlix_Scraper {
@@ -44,34 +47,27 @@ namespace JexFlix_Scraper {
         /// Bypass CloudFlare on a specified domain.
         /// https://github.com/elcattivo/CloudFlareUtilities
         /// </summary>
-        public static void BypassCloudFlare(string domain, out CookieContainer cookies) {
+        public static string BypassCloudFlare(string domain, out CookieContainer cookies) {
             ClearanceHandler handler = new ClearanceHandler();
             HttpClient client = new HttpClient(handler);
             client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
-            client.GetStringAsync(domain);
+            string response = client.GetStringAsync(domain).Result;
             cookies = ClearanceHandler._cookies;
+            return response;
         }
 
         /// <summary>
-        /// Bypass CloudFlare on flixify
-        /// https://github.com/elcattivo/CloudFlareUtilities
+        /// Bypass CloudFare + flixify security.
+        /// Returns flixify authenticity token.
         /// </summary>
         public static string BypassFlixify(string domain, out CookieContainer cookies) {
-            ClearanceHandler handler = new ClearanceHandler();
-            HttpClient client = new HttpClient(handler);
-            client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
-            string[] data = client.GetStringAsync(domain).Result.Split("\r\n".ToCharArray());
-            cookies = ClearanceHandler._cookies;
+            string response = BypassCloudFlare(domain, out cookies);
+            Regex r = new Regex("<input class='form-control' name='authenticity_token' type='hidden' value='.*'>");
+            Match m = r.Match(response);
+            string auth = m.Value.Split('\'')[7];
+            return auth;
+        }
 
-            string[] token = Array.Empty<string>();
-
-            foreach (string line in data) {
-                if (!line.Contains("authenticity_token"))
-                    continue;
-                token = line.Split('\'');
-            }
-
-            return token[7];
         }
 
         public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {

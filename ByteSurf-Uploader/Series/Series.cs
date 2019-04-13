@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static JexFlix_Scraper.Series.EpisodeClasses;
 using static JexFlix_Scraper.Series.PageClasses;
@@ -26,7 +27,7 @@ namespace JexFlix_Scraper.Shows {
         public static void Run() {
 
             CookieAwareWebClient web = new CookieAwareWebClient();
-            Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
+            string authenticity_token = Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
 
             // initialize request headers
             web.Cookies = Cookies;
@@ -39,6 +40,7 @@ namespace JexFlix_Scraper.Shows {
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
+            values["authenticity_token"] = authenticity_token;
 
             // send request to store cookies from valid login
             web.UploadValues(FLIXIFY + "/login", values);
