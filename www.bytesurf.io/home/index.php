@@ -2,7 +2,7 @@
     
     require '../inc/server.php';
     require '../inc/session.php';
-    require_subscription();
+    require_login();
     
     $trending = array(
 		'glass-2019',
@@ -71,23 +71,23 @@
     );
 
     $explore_anime = array(
-        'soredemo-machi-wa-mawatteiru', // 1
-        'soredemo-machi-wa-mawatteiru', // 2
-        'soredemo-machi-wa-mawatteiru', // 3
-        'soredemo-machi-wa-mawatteiru', // 4
-        'soredemo-machi-wa-mawatteiru', // 5
-        'soredemo-machi-wa-mawatteiru', // 6
-        'soredemo-machi-wa-mawatteiru', // 7
-        'soredemo-machi-wa-mawatteiru', // 8
-        'soredemo-machi-wa-mawatteiru', // 9
-        'soredemo-machi-wa-mawatteiru', // 10
-        'soredemo-machi-wa-mawatteiru', // 11
-        'soredemo-machi-wa-mawatteiru', // 12
-        'soredemo-machi-wa-mawatteiru', // 13
-        'soredemo-machi-wa-mawatteiru', // 14
-        'soredemo-machi-wa-mawatteiru', // 15
-        'soredemo-machi-wa-mawatteiru', // 16
-        'soredemo-machi-wa-mawatteiru', // 17
+        'another', // 1
+        'death-note', // 2
+        'guilty-crown', // 3
+        'kekkai-sensen', // 4
+        'kill-la-kill', // 5
+        'k-on', // 6
+        'mekaku-city-actors', // 7
+        'nagi-no-asukara', // 8
+        'nisekoi', // 9
+        'no-game-no-life', // 10
+        'chuunibyou-demo-koi-ga-shitai', // 11
+        'hyouka', // 12
+        'the-hentai-prince-and-the-stony-cat', // 13
+        'accel-world', // 14
+        'bakemonogatari', // 15
+        'black-bullet', // 16
+        'deadman-wonderland', // 17
         'soredemo-machi-wa-mawatteiru' // 18
     );
     
@@ -145,7 +145,7 @@
     <?= require '../inc/html/header.php';?>
 	<!-- end header -->
 	
-    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px; background: rgba(10, 10, 10, 0.6);"><b><span style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%); -webkit-text-fill-color: transparent; -webkit-background-clip: text;">We currently have <?=$movie_count?> movies, <?=$series_count?> TV shows, and <?=$anime_count?> animes. Refresh for the newest info.</span></b></div>
+    <div id="dabar" class="hide_on_mobile" style="margin-top: 80px; background: rgba(10, 10, 10, 0.6);"><b><span style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%); -webkit-text-fill-color: transparent; -webkit-background-clip: text;">We currently have <?=$movie_count?> movies, <?=$series_count?> series, and <?=$anime_count?> animes. Refresh for the newest info.</span></b></div>
 	<!-- home -->
 	<section class="home" style="margin-top: 0px;">
 		<!-- home bg -->
@@ -252,7 +252,7 @@
 
 									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">TV SERIES</a></li>
 
-									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">CARTOONS</a></li>
+									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">ANIME</a></li>
 								</ul>
 							</div>
 						</div>
@@ -396,7 +396,7 @@
 					            $data = get_anime_data($anime);
 					            $url = "../anime.php?t=" . $data['url'];
 					            $genres = json_decode($data['genres']);
-                                $rating = round($data['rating'], 1);
+                                $rating = round($data['rating'] / 10, 1);
 					    ?>
 					    
 						<!-- card -->

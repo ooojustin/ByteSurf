@@ -30,6 +30,7 @@
     $show_url_built = "https://bytesurf.io/show.php?t=" . $_GET['t'];
     
     if (isset($_GET['s']) && isset($_GET['e'])) {
+		$url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
         $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
         $specific_data_url = authenticate_cdn_url($specific_data_url . 'data.json', true);
         $specific_data_raw = get_request($specific_data_url);
@@ -37,6 +38,7 @@
         $title = $title . " - " . $specific_data['title'];
         $description = $specific_data['description'];
     } else {
+		$url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . 1 . "/" . 1 . "/";
         $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . 1 . "/" . 1 . "/";
         $specific_data_url = authenticate_cdn_url($specific_data_url . "data.json", true);
         $specific_data_raw = get_request($specific_data_url);
@@ -165,7 +167,7 @@
 						
                         <? foreach ($specific_data['qualities'] as $quality) { ?>
                          <source 
-                             src=<?= '"' . authenticate_cdn_url($specific_data_url . $quality['resolution'] . ".mp4") . '"' ?> 
+                             src=<?= '"' . authenticate_cdn_url($url . $quality['resolution'] . ".mp4") . '"' ?> 
                              type="video/mp4" 
                              size=<?= '"' . $quality['resolution'] . '"' ?>
                          />

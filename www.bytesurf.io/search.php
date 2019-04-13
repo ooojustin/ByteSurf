@@ -2,7 +2,7 @@
     
     require 'inc/server.php';
     require 'inc/session.php';
-    require_subscription();
+    require_login();
 
     // # of videos shown on each page
 	define('VIDEOS_PER_PAGE', 24);
