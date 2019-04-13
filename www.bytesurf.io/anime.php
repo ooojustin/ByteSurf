@@ -167,7 +167,7 @@
                         <? } ?>
                         
                         <!-- Fallback for browsers that don't support the <video> element -->
-                        <a href=<?= '"' . $episode_info['qualities'][0]['link'] . '"' ?> download>Download</a>
+                        <a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
                         
 					</video>
 				</div>
