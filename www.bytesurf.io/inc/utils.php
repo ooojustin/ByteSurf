@@ -459,6 +459,36 @@
 
 	}
 
+    function get_furthest_episode_link($user, $title, $type) {
+        
+        global $db;       
+        $season = -1;
+        $episode = -1;
+        
+        $get_show_logs = $db->prepare('SELECT * FROM progress_tracking WHERE username=:username AND title=:title');
+        $get_show_logs->bindValue(':username', $user);
+        $get_show_logs->bindValue(':title', $title);
+        $get_show_logs->execute();
+        $show_logs = $get_show_logs->fetchAll();
+        foreach ($show_logs as $log) {
+            if ($log['season'] >= $season && $log['episode'] >= $episode) {
+                $season = $log['season'];
+                $episode = $log['episode'];
+            }
+        }
+        
+        switch ($type) {
+            case 'show':
+                return sprintf('https://bytesurf.io/%s?t=%s&s=%s&e=%s', 'show.php', $title, $season, $episode);
+                break;
+            case 'anime':
+                return sprintf('https://bytesurf.io/%s?t=%s&e=%s', 'anime.php', $title, $episode);
+            default:
+                return 'Type unrecognized';
+        }
+        
+    }
+
 	// https://www.virendrachandak.com/techtalk/getting-real-client-ip-address-in-php-2/
 	function get_ip() {
     	$ipaddress = '';
