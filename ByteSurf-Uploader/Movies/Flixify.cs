@@ -26,7 +26,7 @@ namespace JexFlix_Scraper.Flixify {
             CookieAwareWebClient web = new CookieAwareWebClient();
 
             // bypass cloudflare so we can login to and access the website
-            Networking.BypassCloudFlare(FLIXIFY + "/login", out Cookies);
+            string auth_token = Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
 
             // initialize request headers
             web.Cookies = Cookies;
@@ -36,9 +36,12 @@ namespace JexFlix_Scraper.Flixify {
 
             // establish post data
             NameValueCollection values = new NameValueCollection();
+            values["authenticity_token"] = auth_token;
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
+            values["d"] = "57";
+            values["t"] = "262";
 
             // send request to store cookies from valid login
             web.UploadValues(FLIXIFY + "/login", values);

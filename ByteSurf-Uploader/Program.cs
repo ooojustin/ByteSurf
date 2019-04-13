@@ -18,8 +18,8 @@ class Program {
 
 
         //Flixify.Run();
-        // Thread t1 = new Thread(() => Flixify.Run(6));
-        //  t1.Start();
+         Thread t1 = new Thread(() => Flixify.Run(6));
+         t1.Start();
         // Thread t2 = new Thread(() => Flixify.Run(17));
         // t2.Start();
         //Thread t3 = new Thread(() => Flixify.Run(7));
@@ -27,8 +27,8 @@ class Program {
         //Thread t4 = new Thread(() => Flixify.Run(3));
         //t4.Start();
 
-        Thread showThread = new Thread(() => Shows.Run());
-        showThread.Start();
+        //Thread showThread = new Thread(() => Shows.Run());
+        //showThread.Start();
         // Twist.Run();
         Console.ReadKey();
 

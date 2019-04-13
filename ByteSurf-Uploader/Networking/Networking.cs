@@ -52,6 +52,28 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
         }
 
+        /// <summary>
+        /// Bypass CloudFlare on flixify
+        /// https://github.com/elcattivo/CloudFlareUtilities
+        /// </summary>
+        public static string BypassFlixify(string domain, out CookieContainer cookies) {
+            ClearanceHandler handler = new ClearanceHandler();
+            HttpClient client = new HttpClient(handler);
+            client.DefaultRequestHeaders.Add("User-Agent", USER_AGENT);
+            string[] data = client.GetStringAsync(domain).Result.Split("\r\n".ToCharArray());
+            cookies = ClearanceHandler._cookies;
+
+            string[] token = Array.Empty<string>();
+
+            foreach (string line in data) {
+                if (!line.Contains("authenticity_token"))
+                    continue;
+                token = line.Split('\'');
+            }
+
+            return token[7];
+        }
+
         public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
 
             // initialize webclient if we weren't provided with one
