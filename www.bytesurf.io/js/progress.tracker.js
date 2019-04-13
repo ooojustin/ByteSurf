@@ -21,6 +21,9 @@ function update_progress() {
     if (!is_media_type_valid(params['type']))
         return;
     
+    // set some vars based on type
+    populate_seasons_and_episodes(params, params['type']);
+    
     // add player time (seconds, as float) to params
     params['time'] = player.currentTime;
     
@@ -52,6 +55,9 @@ $(document).ready(function() {
     if (!is_media_type_valid(params['type']))
         return;
     
+    // set some vars based on type
+    populate_seasons_and_episodes(params, params['type']);
+    
     // generate url to get information from
     let query = jQuery.param(params);
     let url = 'https://bytesurf.io/inc/progress_tracker.php?action=get&' + query;
@@ -60,28 +66,14 @@ $(document).ready(function() {
     get_request(url, function(response) { 
         
         let data = response.split(',');
-        if (data.length != 4)
+        if (data.length != 2)
             return;
         
-        progress_season = data[0];
-        progress_episode = data[1];
-        progress_time = data[2];
-        progress_completed = data[3];
+        progress_time = data[0];
+        progress_completed = data[1];
         
         if (progress_time == 0)
             return;
-        
-        if (progress_season > -1 && progress_episode > -1) {
-            if (!value_exists(params, 's') || !value_exists(params, 'e') || params['s'] != progress_season || params['e'] != progress_episode) {
-                let new_url = 'https://bytesurf.io' + window.location.pathname + '?t=' + params['t'] + '&s=' + progress_season + '&e=' + progress_episode;
-                window.location.replace(new_url);
-            }
-        } else if (progress_episode > -1) {
-            if (!value_exists(params, 'e') || params['e'] != progress_episode) {
-                let new_url = 'https://bytesurf.io' + window.location.pathname + '?t=' + params['t'] + '&e=' + progress_episode;
-                window.location.replace(new_url);
-            }
-        }
         
         let applyTime = window.setInterval(function() {
             if (player.readyState == 4) {
@@ -95,8 +87,28 @@ $(document).ready(function() {
     
 });
 
-function value_exists(params, key) {
-    return (key in params);
+function populate_seasons_and_episodes(params, type) {
+    switch (type) {
+        case 'show':
+            if (!key_exists(params, 's'))
+                params['s'] = 1;
+            if (!key_exists(params, 'e'))
+                params['e'] = 1;
+            break;
+        case 'anime':
+            params['s'] = -1;
+            if (!key_exists(params, 'e'))
+                params['e'] = 1;
+            break;
+        case 'movie':
+            params['s'] = -1;
+            params['e'] = -1;
+            break;
+    }
+}
+
+function key_exists(arr, key) {
+    return (key in arr);
 }
 
 function get_important_params() {
