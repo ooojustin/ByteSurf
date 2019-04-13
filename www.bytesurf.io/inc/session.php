@@ -20,8 +20,9 @@
 
     // function to require a login
 	function require_login() {
+        $_SESSION['login_redirect'] = $GLOBALS['current_url'];
 		if (!is_logged_in()) {
-			header("location: https://bytesurf.io/login/");
+			header("location: https://bytesurf.io/login/?r=1");
         	die();
        	}
 	}

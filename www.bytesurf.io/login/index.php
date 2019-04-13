@@ -8,36 +8,39 @@
 		die();
 	}
 
-    if (empty($_POST['username']) || empty($_POST['password'])) {
+    // if username and password arent set, they're not trying to login
+    if (!isset($_POST['username']) || !isset($_POST['password']))
+        goto skip_login;
+
+    // try to login if username/password are provided and not empty
+    if (empty($_POST['username']) || empty($_POST['password']))
     	$issue = 'Please enter username/password.';
-    } else {
-    	if (login($_POST['username'], $_POST['password'])) {
+    else if (login($_POST['username'], $_POST['password'])) {
 
-    		// log login info into database
-    		global $db, $ip;
-    		$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
-    		$log_login->bindValue(':username', $_POST['username']);
-    		$log_login->bindValue(':ip_address', $ip);
-    		$log_login->bindValue(':timestamp', time());
-    		$log_login->execute();
+    	// log login info into database
+    	global $db, $ip;
+    	$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
+    	$log_login->bindValue(':username', $_POST['username']);
+    	$log_login->bindValue(':ip_address', $ip);
+    	$log_login->bindValue(':timestamp', time());
+    	$log_login->execute();
 
-    		// create session, proceed to home page
-       		$_SESSION['id'] = get_user($_POST['username'])['id'];
-       		header("location: ../home");
+    	// create session, proceed to home page/referrer page
+       	$_SESSION['id'] = get_user($_POST['username'])['id'];
+        $location = '../home';
+        
+        // redirect to a stored page, if necessary
+        if (isset($_GET['r']) && isset($_SESSION['login_redirect']))
+            $location = $_SESSION['login_redirect'];
+        
+        unset($_SESSION['login_redirect']);
+       	header("location: " . $location);
+       	die();
 
-       		die();
+    } else
+        $issue = 'Incorrect username/password.';
 
-    	} else
-    		$issue = 'Incorrect username/password.';
-    }
-
-    // if $_POST['username'] isn't set, they didnt post data from form
-    if (!isset($_POST['username']))
-    	unset($issue);
-
-    $redirect = '';
-    if (isset($_GET['r']))
-    	$redirect = '../' . $_GET['r'];
+    skip_login:
 
 ?>
 <!DOCTYPE html>
@@ -79,7 +82,7 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
-						<form action=<?='"'.$redirect.'"'?> method="post" class="sign__form">
+						<form action="" method="POST" class="sign__form">
 
 							<a href="#" class="sign__logo">
 								<img src="../img/logo.png" alt="">
