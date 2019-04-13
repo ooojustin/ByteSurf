@@ -3,7 +3,7 @@
     require '../inc/server.php';
     require '../inc/session.php';
     require '../inc/products.php';
-    require_subscription();
+    require_login();
    
 	global $user, $db;
    

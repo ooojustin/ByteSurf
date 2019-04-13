@@ -2,7 +2,7 @@
     
     require '../inc/server.php';
     require '../inc/session.php';
-    require_subscription();
+    require_login();
     
     $trending = array(
 		'glass-2019',
