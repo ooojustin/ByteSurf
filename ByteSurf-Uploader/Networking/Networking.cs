@@ -68,6 +68,14 @@ namespace JexFlix_Scraper {
             return auth;
         }
 
+        public static void OutputCookies(CookieContainer cookies) {
+            Console.WriteLine("=== WRITING COOKIES ===");
+            BindingFlags flags = BindingFlags.NonPublic | BindingFlags.GetField | BindingFlags.Instance;
+            Hashtable table = (Hashtable)cookies.GetType().InvokeMember("m_domainTable", flags, null, cookies, new object[] { });
+            foreach (var key in table.Keys)
+                foreach (Cookie cookie in cookies.GetCookies(new Uri(string.Format("http://{0}/", key))))
+                    Console.WriteLine("{0} = {1} | {2}", cookie.Name, cookie.Value, cookie.Domain);
+            Console.WriteLine("=== END COOKIES ===");
         }
 
         public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {
