@@ -72,6 +72,7 @@
     <script src="js/photoswipe.min.js"></script>
     <script src="js/photoswipe-ui-default.min.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/progress.tracker.js"></script>
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
