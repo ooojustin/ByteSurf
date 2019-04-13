@@ -20,7 +20,6 @@
 
     // function to require a login
 	function require_login() {
-		$_SESSION['last_page'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 		if (!is_logged_in()) {
 			header("location: https://bytesurf.io/login/");
         	die();

@@ -3,13 +3,6 @@
     require('../inc/server.php');
     require('../inc/session.php');
 
-	$started = @session_start();
-
-	if(!$started) {
-		session_regenerate_id(true); // replace the Session ID
-		session_start(); 
-	}
-
 	if (is_logged_in()) {
 		header("location: https://bytesurf.io/home/");
 		die();
@@ -30,11 +23,7 @@
 
     		// create session, proceed to home page
        		$_SESSION['id'] = get_user($_POST['username'])['id'];
-	   			
-			if (isset($_SESSION['last_page']))
-				header("location: " . $_SESSION['last_page']);
-			else
-				header("location: ../home");
+       		header("location: ../home");
 
        		die();
 
