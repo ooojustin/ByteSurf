@@ -446,7 +446,7 @@
 
 						<h3 class="faq__title">How can I contact you?</h3>
 
-						<p class="faq__text">The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.</p>
+						<p class="faq__text">You can come talk to us via <a href="https://discordapp.com/invite/A63TFhP">Discord</a>, send us an email at: support@jexflix.com or even a support ticket <a href="https://bytesurf.io/contact">here</a></p>
 
 					</div>
 
