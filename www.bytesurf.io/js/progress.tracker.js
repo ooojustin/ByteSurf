@@ -90,14 +90,14 @@ $(document).ready(function() {
 function populate_seasons_and_episodes(params, type) {
     switch (type) {
         case 'show':
-            if (!key_exists(params, 's'))
+            if (!array_key_exists('s', params))
                 params['s'] = 1;
-            if (!key_exists(params, 'e'))
+            if (!array_key_exists('e', params))
                 params['e'] = 1;
             break;
         case 'anime':
             params['s'] = -1;
-            if (!key_exists(params, 'e'))
+            if (!array_key_exists('e', params))
                 params['e'] = 1;
             break;
         case 'movie':
@@ -105,10 +105,6 @@ function populate_seasons_and_episodes(params, type) {
             params['e'] = -1;
             break;
     }
-}
-
-function key_exists(arr, key) {
-    return (key in arr);
 }
 
 function get_important_params() {
@@ -131,26 +127,4 @@ function get_important_params() {
     
     return params;
     
-}
-
-function is_media_type_valid(type) {
-    let types = ['movie', 'show', 'anime'];
-    return types.includes(type);
-}
-
-function get_media_type() {
-    let path = window.location.pathname;
-    let file_name = path.substring(path.lastIndexOf('/') + 1);
-    let type = file_name.replace('.php', '');
-    return type;
-}
-
-function get_request(url, callback) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", url, true); // true for asynchronous 
-    xmlHttp.send(null);
 }

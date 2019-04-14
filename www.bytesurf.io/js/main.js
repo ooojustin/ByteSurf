@@ -1,3 +1,34 @@
+// sends an async get request to a provided url
+// second parameter is a callback function with a response param
+function get_request(url, callback) {
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = function() { 
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+            callback(xmlHttp.responseText);
+    }
+    xmlHttp.open("GET", url, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
+
+// checks if a key exists in an array
+function array_key_exists(key, arr) {
+    return (key in arr);
+}
+
+// checks if a given media type is valid
+function is_media_type_valid(type) {
+    let types = ['movie', 'show', 'anime'];
+    return types.includes(type);
+}
+
+// returns the type of media (file name without .php extension)
+function get_media_type() {
+    let path = window.location.pathname;
+    let file_name = path.substring(path.lastIndexOf('/') + 1);
+    let type = file_name.replace('.php', '');
+    return type;
+}
+
 $(document).ready(function () {
 
 	"use strict"; // start of use strict
