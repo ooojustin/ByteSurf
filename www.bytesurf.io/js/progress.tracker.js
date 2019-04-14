@@ -33,7 +33,7 @@ function update_progress() {
     
     // build url with given parameters
     let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/progress_tracker.php?action=save&' + query;
+    let url = 'https://bytesurf.io/inc/updater.php?action=save_progress&' + query;
     
     // send web request (save progress) and store update time
     get_request(url, function(r) { });
@@ -47,7 +47,7 @@ $(document).ready(function() {
     let params = get_important_params();
     
     // make sure we have title
-    if (!('t' in params))
+    if (!array_key_exists('t', params))
         return;
 
     // get type, make sure it's valid
@@ -60,7 +60,7 @@ $(document).ready(function() {
     
     // generate url to get information from
     let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/progress_tracker.php?action=get&' + query;
+    let url = 'https://bytesurf.io/inc/updater.php?action=get_progress&' + query;
     
     // send request and parse response
     get_request(url, function(response) { 
@@ -105,26 +105,4 @@ function populate_seasons_and_episodes(params, type) {
             params['e'] = -1;
             break;
     }
-}
-
-function get_important_params() {
-    
-    // find season, episode, and title.
-    // put them into a key/value array that we can build a query from.
-    let find = ['s', 'e', 't'];
-    let params = { };
-         
-    // initialize URL and URLSearchParams objects so we can get params from URL
-    let url_obj = new URL(window.location.href);
-    let searchParams = new URLSearchParams(url_obj.search);
-    
-    // put items from url into our own array
-    find.forEach(function(f) {
-        if (searchParams.has(f)) {
-            params[f] = searchParams.get(f);
-        }
-    });
-    
-    return params;
-    
 }

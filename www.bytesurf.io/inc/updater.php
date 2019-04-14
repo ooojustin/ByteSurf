@@ -11,7 +11,7 @@
 
     switch ($_GET['action']) {
         
-        case 'save':
+        case 'save_progress':
             
             // require parameters for title, type, time, and completed
             $params = array('t', 'type', 'time', 'completed');
@@ -29,7 +29,7 @@
             save_progress($username, $_GET['t'], $_GET['type'], $_GET['time'], $completed, $_GET['s'], $_GET['e']);
             die('Saved progress successfully: ' . $_GET['time']);
             
-        case 'get':
+        case 'get_progress':
             
             // require parameters for title, type, season, and episode
             $params = array('t', 'type', 's', 'e');

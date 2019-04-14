@@ -29,6 +29,30 @@ function get_media_type() {
     return type;
 }
 
+// populates an array with important variables from the current request
+// includes season, episode, and title
+function get_important_params() {
+    
+    // find season, episode, and title.
+    // put them into a key/value array that we can build a query from.
+    let find = ['s', 'e', 't'];
+    let params = { };
+         
+    // initialize URL and URLSearchParams objects so we can get params from URL
+    let url_obj = new URL(window.location.href);
+    let searchParams = new URLSearchParams(url_obj.search);
+    
+    // put items from url into our own array
+    find.forEach(function(f) {
+        if (searchParams.has(f)) {
+            params[f] = searchParams.get(f);
+        }
+    });
+    
+    return params;
+    
+}
+
 $(document).ready(function () {
 
 	"use strict"; // start of use strict
