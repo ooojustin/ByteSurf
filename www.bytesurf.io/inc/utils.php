@@ -385,6 +385,77 @@
 		return $paid_users;
 
 	}
+
+    function is_favorited($type, $title) {
+        $favorites = get_favorites();
+        $item = sprintf('%s:%s', $type, $title);
+        return in_array($item, $favorites);
+    }
+
+	function get_favorites($get_data = false) {
+        
+        global $user;
+        if (!$user)
+            return array();
+
+        // get raw favorites info and make sure its not null
+        $favorites = $user['favorites'];
+        if (is_null($favorites))
+            return array();
+
+		// list of movie urls
+		$favorites = json_decode($favorites, true);
+
+		// return list of urls, if necessary
+		if (!$get_data)
+			return $favorites;
+
+		// otherwise, convert urls to an array of movies
+		$item_list = array();
+		foreach ($favorites as $favorite) {
+			$type = explode('|', $favorite)[0];
+			$item = get_content_data($type, $favorite);
+			$item['type'] = $type;
+			array_push($item_list, $item);
+		}
+
+		return $item_list;
+
+	}
+
+    function set_favorited($type, $title, $to_favorite) {
+        
+        global $user, $db;
+        if (!$user)
+            return;
+
+		// check if it's already favorited
+		$item = sprintf('%s:%s', $type, $title);
+		$was_favorited = is_favorited($type, $title);
+
+		// check if we don't need to update anything
+		$ignore_1 = $to_favorite && $was_favorited; // + +
+		$ignore_2 = !$to_favorite && !$was_favorited; // - -
+		if ($ignore_1 || $ignore_2)
+			return true;
+
+		// add item to array or remove it from array
+        $favorites = get_favorites();
+		if ($to_favorite)
+			array_push($favorites, $item);
+		else
+			unset($favorites[array_search($item, $favorites)]);
+
+		// encode data
+		$data = json_encode($favorites);
+
+		// update data in database
+		$update_favorites = $db->prepare('UPDATE users SET favorites=:favorites WHERE username=:username');
+		$update_favorites->bindValue(':favorites', $data);
+		$update_favorites->bindValue(':username', $user['username']);
+		return $update_favorites->execute();
+
+	}
     
     function get_paste($id) {
         $url = sprintf('https://pastebin.com/raw/%s', $id);
