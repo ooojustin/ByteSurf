@@ -33,6 +33,8 @@ namespace JexFlix_Scraper.Shows {
             // the following cookies should exist: __cfduid, pip, promo_id, session
             Networking.OutputCookies(web.Cookies);
 
+            Cookies = web.Cookies;
+
             NameValueCollection values = new NameValueCollection();
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
@@ -145,7 +147,7 @@ namespace JexFlix_Scraper.Shows {
             string response = null;
 
             web.FlixifyHeaders();
-            response = web.DownloadStringBrotli(url);
+            response = web.DownloadString(url);
 
             string raw = response;
             SeasonObject seasonData = JsonConvert.DeserializeObject<SeasonObject>(raw);
