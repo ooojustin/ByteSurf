@@ -223,11 +223,11 @@
 													<?php if ($episode['episode_title'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['episode_title']?></a></td>
 													<?php } else { ?>
-													<td><a href="<?=$episode_link?>" style="rgba(255,255,255,0.7)">-</a></td>
+													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7">-</a></td>
 													<?php } if ($episode['air_date'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['air_date']?></a></td>
 													<?php } else { ?>
-													<td><a href="<?=$episode_link?>" style="rgba(255,255,255,0.7)">-</a></td>
+													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7">-</a></td>
 													<?php } ?>
 													</tr>
 
