@@ -1,5 +1,4 @@
-
-window.setInterval(update_progress, 10000);
+window.setInterval(update_progress, 5000);
 var last_progress_update = 0;
 var progress_season, progress_episode, progress_time, progress_completed;
 
@@ -13,16 +12,8 @@ function update_progress() {
     if (player.currentTime == last_progress_update)
         return;
     
-    // get season/episode/title into array
+    // get season/episode/title/type into array
     let params = get_important_params();
-    
-    // determine type, make sure it's valid
-    params['type'] = get_media_type();
-    if (!is_media_type_valid(params['type']))
-        return;
-    
-    // set some vars based on type
-    populate_seasons_and_episodes(params, params['type']);
     
     // add player time (seconds, as float) to params
     params['time'] = player.currentTime;
@@ -43,20 +34,12 @@ function update_progress() {
 
 $(document).ready(function() {
     
-    // get season/episode/title into array
+    // get season/episode/title/type into array
     let params = get_important_params();
     
     // make sure we have title
     if (!array_key_exists('t', params))
         return;
-
-    // get type, make sure it's valid
-    params['type'] = get_media_type();
-    if (!is_media_type_valid(params['type']))
-        return;
-    
-    // set some vars based on type
-    populate_seasons_and_episodes(params, params['type']);
     
     // generate url to get information from
     let query = jQuery.param(params);
@@ -86,23 +69,3 @@ $(document).ready(function() {
     });
     
 });
-
-function populate_seasons_and_episodes(params, type) {
-    switch (type) {
-        case 'show':
-            if (!array_key_exists('s', params))
-                params['s'] = 1;
-            if (!array_key_exists('e', params))
-                params['e'] = 1;
-            break;
-        case 'anime':
-            params['s'] = -1;
-            if (!array_key_exists('e', params))
-                params['e'] = 1;
-            break;
-        case 'movie':
-            params['s'] = -1;
-            params['e'] = -1;
-            break;
-    }
-}

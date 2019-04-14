@@ -49,8 +49,32 @@ function get_important_params() {
         }
     });
     
+    // store type & update 's' & 'e' if necessary
+    params['type'] = get_media_type();
+    populate_seasons_and_episodes(params, params['type']);
+    
     return params;
     
+}
+
+function populate_seasons_and_episodes(params, type) {
+    switch (type) {
+        case 'show':
+            if (!array_key_exists('s', params))
+                params['s'] = 1;
+            if (!array_key_exists('e', params))
+                params['e'] = 1;
+            break;
+        case 'anime':
+            params['s'] = -1;
+            if (!array_key_exists('e', params))
+                params['e'] = 1;
+            break;
+        case 'movie':
+            params['s'] = -1;
+            params['e'] = -1;
+            break;
+    }
 }
 
 $(document).ready(function () {
