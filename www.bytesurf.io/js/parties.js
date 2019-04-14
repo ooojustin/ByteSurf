@@ -2,7 +2,7 @@ let url_obj = new URL(window.location.href);
 let searchParams = new URLSearchParams(url_obj.search);
 if (searchParams.has('party')) {
     var party = searchParams.get('party');
-    window.setInterval(update_party_send, 5000);
+    window.setInterval(update_party_send, 1000);
 }
 
 function update_party_send() {
@@ -37,6 +37,27 @@ function update_party_receive(data_raw) {
     
     let data = JSON.parse(data_raw);
     
-    console.log(JSON.stringify(data));
+    // if local user owns party, don't worry about syncing
+    if (data.owner == 'true')
+        return;
+    
+    // get the users in the party
+    let users = JSON.parse(data.users);
+    
+    // determine timestamp delta (will always be positive) & extra
+    let timestamp_delta = (Date.now() - data.timestamp) / 1000; // in seconds
+    let time_extrapolated = parseFloat(data.time) + timestamp_delta;
+    
+    // set player time again if we're over 1 second out of sync
+    let time_delta = Math.abs(time_extrapolated - player.currentTime);
+    if (time_delta > 1)
+        player.currentTime = time_extrapolated;
+    
+    // make sure we're playing or paused accordingly
+    let playing = data.playing == '1';
+    if (playing && player.paused)
+        player.play();
+    if (!playing && !player.paused)
+        player.pause();
     
 }
