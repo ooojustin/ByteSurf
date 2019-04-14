@@ -27,6 +27,8 @@ namespace JexFlix_Scraper.Flixify {
             web.InitializeHeaders();
             string response = web.DownloadStringBrotli(FLIXIFY + "login");
 
+            Cookies = web.Cookies;
+
             // the following cookies should exist: __cfduid, pip, promo_id, session
             Networking.OutputCookies(web.Cookies);
 
