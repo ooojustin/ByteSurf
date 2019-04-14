@@ -1,4 +1,5 @@
-﻿using CloudFlareUtilities;
+﻿using BrotliSharpLib;
+using CloudFlareUtilities;
 using JexFlix_Scraper.Anime.Misc;
 using JexFlix_Scraper.Flixify;
 using SafeRequest;
@@ -9,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -45,7 +47,6 @@ namespace JexFlix_Scraper {
 
         /// <summary>
         /// Bypass CloudFlare on a specified domain.
-        /// https://github.com/elcattivo/CloudFlareUtilities
         /// </summary>
         public static string BypassCloudFlare(string domain, out CookieContainer cookies) {
             ClearanceHandler handler = new ClearanceHandler();
@@ -55,18 +56,6 @@ namespace JexFlix_Scraper {
             cookies = ClearanceHandler._cookies;
             OutputCookies(cookies);
             return response;
-        }
-
-        /// <summary>
-        /// Bypass CloudFare + flixify security.
-        /// Returns flixify authenticity token.
-        /// </summary>
-        public static string BypassFlixify(string domain, out CookieContainer cookies) {
-            string response = BypassCloudFlare(domain, out cookies);
-            Regex r = new Regex("<input class='form-control' name='authenticity_token' type='hidden' value='.*'>");
-            Match m = r.Match(response);
-            string auth = m.Value.Split('\'')[7];
-            return auth;
         }
 
         public static void OutputCookies(CookieContainer cookies) {
@@ -84,6 +73,29 @@ namespace JexFlix_Scraper {
                 }
             }
             Console.WriteLine("=== END COOKIES ===");
+        }
+
+        public static string GetAuthenticityToken(this string data) {
+            Regex r = new Regex("<input class='form-control' name='authenticity_token' type='hidden' value='.*'>");
+            Match m = r.Match(data);
+            string auth = m.Value.Split('\'')[7];
+            return auth;
+        }
+
+        public static void InitializeHeaders(this WebClient web) {
+            web.Headers.Add("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3");
+            web.Headers.Add("accept-encoding", "gzip, deflate, br");
+            web.Headers.Add("accept-language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7");
+            web.Headers.Add("cache-control", "max-age=0");
+            web.Headers.Add("upgrade-insecure-requests", "1");
+            web.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36");
+        }
+
+        public static string DownloadStringBrotli(this CookieAwareWebClient web, string url) {
+            byte[] response_compressed = web.DownloadData(url);
+            byte[] response_decompressed = Brotli.DecompressBuffer(response_compressed, 0, response_compressed.Length);
+            string response = Encoding.Default.GetString(response_decompressed);
+            return response;
         }
 
         public static void ReuploadRemoteFile(string url, string directory, string file, string title, WebClient web = null) {

@@ -26,8 +26,9 @@ namespace JexFlix_Scraper.Shows {
 
         public static void Run() {
 
+            return;
             CookieAwareWebClient web = new CookieAwareWebClient();
-            string authenticity_token = Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
+            string authenticity_token = "";// Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
 
             // initialize request headers
             web.Cookies = Cookies;
