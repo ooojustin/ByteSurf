@@ -26,25 +26,30 @@ namespace JexFlix_Scraper.Shows {
 
         public static void Run() {
 
-            return;
             CookieAwareWebClient web = new CookieAwareWebClient();
-            string authenticity_token = "";// Networking.BypassFlixify(FLIXIFY + "/login", out Cookies);
+            web.InitializeHeaders();
+            string response = web.DownloadStringBrotli(FLIXIFY + "login");
 
-            // initialize request headers
-            web.Cookies = Cookies;
-            web.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
-            web.Headers.Add("Accept-Encoding", "gzip, deflate, br");
-            web.Headers.Add("Accept-Language", "en-US,en;q=0.9,ja;q=0.8");
+            // the following cookies should exist: __cfduid, pip, promo_id, session
+            Networking.OutputCookies(web.Cookies);
 
-            // establish post data
             NameValueCollection values = new NameValueCollection();
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
-            values["authenticity_token"] = authenticity_token;
+            values["authenticity_token"] = response.GetAuthenticityToken();
 
-            // send request to store cookies from valid login
-            web.UploadValues(FLIXIFY + "/login", values);
+            // these 2 probably don't matter, we still don't know what they do
+            values["d"] = "57";
+            values["t"] = "262";
+
+            web.InitializeHeaders();
+
+            // these make the request seem more natural
+            web.Headers.Add("Origin", "https://flixify.com");
+            web.Headers.Add("Referer", "https://flixify.com/login");
+
+            web.UploadValues(FLIXIFY + "login", values);
 
             InitializeScraper(web);
         }
@@ -137,12 +142,12 @@ namespace JexFlix_Scraper.Shows {
             web.Cookies = Cookies;
 
             string url = string.Format(GET_SEASONS, series);
-            byte[] response = null;
+            string response = null;
 
             web.FlixifyHeaders();
-            response = web.DownloadData(url);
+            response = web.DownloadStringBrotli(url);
 
-            string raw = Encoding.Default.GetString(response);
+            string raw = response;
             SeasonObject seasonData = JsonConvert.DeserializeObject<SeasonObject>(raw);
 
             SeriesList seriesList = new SeriesList();
