@@ -173,7 +173,8 @@
 					</video>
 				</div>
 				<!-- end player -->
-				</div>
+
+			</div>
 		</div>
 		<!-- end details content -->
 	</section>
@@ -201,23 +202,37 @@
 													$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];							
 													if ($episode['episode'] == $_GET['e']) {											
 												?>
-
 													<tr>
 													<th><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['episode']?><a></th>
+													<?php if ($episode['episode_title'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['episode_title']?></a></td>
+													<?php } else { ?>
+													<td><a href="<?=$episode_link?>" style="color:#ff5860">-</a></td>
+													<?php } if ($episode['air_date'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color:#ff5860"><?=$episode['air_date']?></a></td>
+													<?php } else { ?>
+													<td><a href="<?=$episode_link?>" style="color:#ff5860">-</a></td>
+													<?php } ?>
 													</tr>
 
 												<?php
 													} else {
 												?>																		
-													<tr>
+													<tr>										
 													<th><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['episode']?><a></th>
+													<?php if ($episode['episode_title'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['episode_title']?></a></td>
+													<?php } else { ?>
+													<td><a href="<?=$episode_link?>" style="rgba(255,255,255,0.7)">-</a></td>
+													<?php } if ($episode['air_date'] != "") { ?>
 													<td><a href="<?=$episode_link?>" style="color: rgba(255,255,255,0.7)"><?=$episode['air_date']?></a></td>
+													<?php } else { ?>
+													<td><a href="<?=$episode_link?>" style="rgba(255,255,255,0.7)">-</a></td>
+													<?php } ?>
 													</tr>
 
-												<? } } ?>
+												<? } 
+											} ?>
 											</tbody>
 										</table>
 									</div>
