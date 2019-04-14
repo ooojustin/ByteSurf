@@ -86,6 +86,7 @@ namespace JexFlix_Scraper.Flixify {
         public string thumbnail = string.Empty;
         public string preview = string.Empty;
         public List<Quality> qualities = new List<Quality>();
+        public List<Subs> subs = new List<Subs>();
         public List<string> genres;
         public string imdb_id = string.Empty;
         public int? year = 0;
@@ -95,5 +96,10 @@ namespace JexFlix_Scraper.Flixify {
     public class Quality {
         public int resolution;
         public string link;
+    }
+
+    public class Subs {
+        public string language;
+        public string url;
     }
 }

@@ -25,6 +25,7 @@
     $duration = intval($data['duration'] / 60);
     $qualities = authenticated_movie_links($data);
     $rating = $data['rating'];
+    $subs = json_decode($data['subtitles']);
 
 ?>
 <!DOCTYPE html>
@@ -103,8 +104,11 @@
             <? } ?>
 
             <!-- Caption files -->
-            <track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt" default>
-            <track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+            <? foreach ($subs as $sub) { ?>
+
+            <track kind="captions" label="English" srclang="<?=$sub->language?>" src="<?=authenticate_cdn_url($sub->url)?>" default>
+            
+            <? } ?>
 
             <!-- Fallback for browsers that don't support the <video> element -->
             <a href=<?= '"' . $qualities[0]->link . '"' ?> download>Download</a>
