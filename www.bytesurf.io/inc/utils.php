@@ -568,4 +568,21 @@
    			return $subject;
     }
 
+    function get_content_data($type, $url) {
+    	$func = get_content_data_function($type);
+    	$data = call_user_func($func, $url);
+    	return $data;
+    }
+
+    function get_content_data_function($type) {
+    	switch ($type) {
+    		case 'movie':
+    			return 'get_movie_data';
+    		case 'anime':
+    			return 'get_anime_data';
+    		case 'show':
+    			return 'get_series_data';
+    	}
+    }
+
 ?>
