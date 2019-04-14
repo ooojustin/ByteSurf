@@ -907,7 +907,7 @@ $(document).ready(function () {
 
 					'min': 0,
 
-					'max': 100
+					'max': 10
 
 				},
 
@@ -915,7 +915,7 @@ $(document).ready(function () {
 
 				connect: true,
 
-				start: [0.1, 100.0],
+				start: [0.1, 10.0],
 
 				format: wNumb({
 
