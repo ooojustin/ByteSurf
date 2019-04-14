@@ -29,11 +29,12 @@
     $spent = $data['balance'] - ($balance - $deposited);
     
     // add new row to database
-    $add_data = $db->prepare('INSERT INTO cdn_balance (timestamp, balance, deposited, spent) VALUES (?, ?, ?, ?)');
+    $add_data = $db->prepare('INSERT INTO cdn_balance (timestamp, balance, deposited, spent, date) VALUES (?, ?, ?, ?, ?)');
     $add_data->bindValue(1, $today->getTimestamp());
     $add_data->bindValue(2, $balance);
     $add_data->bindValue(3, $deposited);
     $add_data->bindValue(4, $spent);
+    $add_data->bindValue(5, $yesterday->format('F jS, Y'));
     $add_data->execute();
 
     // format numbers before sending email
