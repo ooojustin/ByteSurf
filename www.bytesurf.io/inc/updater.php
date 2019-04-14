@@ -88,11 +88,8 @@
     function get_progress($username, $title, $type, $season = -1, $episode = -1) {
         global $db;
         $get_progress = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode ORDER BY id DESC LIMIT 1');
+        bind_content_values($get_progress, $type, $title, $season, $episode);
         $get_progress->bindValue(':username', $username);
-        $get_progress->bindValue(':title', $title);
-        $get_progress->bindValue(':type', $type);
-        $get_progress->bindValue(':season', $season);
-        $get_progress->bindValue(':episode', $episode);
         $get_progress->execute();
         return $get_progress->fetch();
     }
@@ -104,14 +101,18 @@
         else
             $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, completed) VALUES (:username, :type, :title, :season, :episode, :time, :completed)';
         $save_progress = $db->prepare($query);
+        bind_content_values($save_progress, $type, $title, $season, $episode);
         $save_progress->bindValue(':username', $username);
-        $save_progress->bindValue(':title', $title);
-        $save_progress->bindValue(':type', $type);
         $save_progress->bindValue(':time', $time);
         $save_progress->bindValue(':completed', $completed);
-        $save_progress->bindValue(':season', $season);
-        $save_progress->bindValue(':episode', $episode);
         $save_progress->execute();
+    }
+
+    function bind_content_values($query, $type, $title, $season = -1, $episode = -1) {
+        $query->bindValue(':type', $type);
+        $query->bindValue(':title', $title);
+        $query->bindValue(':season', $season);
+        $query->bindValue(':episode', $episode);
     }
 
 ?>
