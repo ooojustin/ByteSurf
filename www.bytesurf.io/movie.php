@@ -25,7 +25,7 @@
     $duration = intval($data['duration'] / 60);
     $qualities = authenticated_movie_links($data);
     $rating = $data['rating'];
-    $subs = json_decode($data['subtitles']);
+    $subs = get_subtitles($data);
 
 ?>
 <!DOCTYPE html>
@@ -97,21 +97,27 @@
             <!-- Video files -->
             <? foreach ($qualities as $quality) { ?>
             <source 
-                src="<?= $quality->link ?>"
+                src="<?= $quality['link'] ?>"
                 type="video/mp4" 
-                size="<?= $quality->resolution ?>"
+                size="<?= $quality['resolution'] ?>"
             />
             <? } ?>
 
             <!-- Caption files -->
-            <? foreach ($subs as $sub) { ?>
-
-            <track kind="captions" label="English" srclang="<?=$sub->language?>" src="<?=authenticate_cdn_url($sub->url)?>" default>
-            
+            <? 
+            foreach ($subs as $sub) { 
+                $sub_end = isset($sub['default']) ? ' default' : '';
+            ?>        
+            <track 
+                kind="captions" 
+                label="<?=$sub['label']?>" 
+                srclang="<?=$sub['language']?>"
+                src="<?=authenticate_cdn_url($sub['url'])?>"
+            <?=$sub_end?>>
             <? } ?>
 
             <!-- Fallback for browsers that don't support the <video> element -->
-            <a href=<?= '"' . $qualities[0]->link . '"' ?> download>Download</a>
+            <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
         </video>
 
         </div>
@@ -280,3 +286,18 @@
 </div>
 </body>
 </html>
+<?
+  
+    function get_subtitles($data) {
+    
+        if (empty($data['subtitles']))
+            return array();
+        else
+            $subs = json_decode($data['subtitles'], true);
+    
+        $subs[0]['default'] = 'true';
+        return $subs;
+    
+    }
+    
+?>

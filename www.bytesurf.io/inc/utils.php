@@ -492,9 +492,9 @@
 	}
 
 	function authenticated_movie_links($data) {
-   		$qualities = json_decode($data['qualities']);
-    	foreach ($qualities as $quality)
-        	$quality->link = authenticate_cdn_url($quality->link);
+   		$qualities = json_decode($data['qualities'], true);
+    	foreach ($qualities as &$quality)
+        	$quality['link'] = authenticate_cdn_url($quality['link']);
       	return $qualities;
 	}
 
