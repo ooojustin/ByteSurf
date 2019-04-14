@@ -10,6 +10,25 @@
         die('Action not provided.');
 
     switch ($_GET['action']) {
+            
+        case 'toggle_favorite':
+            
+            // require parameters for title & type
+            $params = array('t', 'type');
+            require_get_params($params);
+            
+            // make sure type is valid
+            validate_type($_GET['type']);
+            
+            // determine whether or not it was favorited, and set to opposite
+            $favorited = is_favorited($_GET['type'], $_GET['t']);
+            $executed = set_favorited($_GET['type'], $_GET['t'], !$favorited);
+            
+            if ($executed)
+                die('Favorited: ' . strval(!$favorited));
+            else
+                die('Failed to execute query.');
+            
         
         case 'save_progress':
             
