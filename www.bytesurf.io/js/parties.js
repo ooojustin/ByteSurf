@@ -1,8 +1,56 @@
+const party_update_interval = 5;
+const max_time_delta = 0.1;
+    
 let url_obj = new URL(window.location.href);
 let searchParams = new URLSearchParams(url_obj.search);
 if (searchParams.has('party')) {
-    var party = searchParams.get('party');
-    window.setInterval(update_party_send, 1000);
+    
+    // get season/episode/title/type into array, set party property
+    var params = get_important_params();
+    params['party'] = searchParams.get('party');
+    
+    // start interval for updates
+    window.setInterval(update_party_send, party_update_interval * 1000);
+    
+}
+
+function ensure_party_link(data) {
+    
+    let correct = true;
+    
+    // make sure type, title, season, and episode all match
+    if (params['type'] != data.type)
+        correct = false;
+    else if (params['t'] != data.title)
+        correct = false;
+    else if (params['s'] != data.season)
+        correct = false;
+    else if (params['e'] != data.episode)
+        correct = false;
+    
+    if (!correct) {
+        
+        // store title and party in new url params
+        let params_new = { 't': data.title, 'party': params['party'] };
+        
+        // if its an anime, store the episode.
+        // if it's a show, store both episode and season.
+        if (data.type == 'anime' || data.type == 'show')
+            params_new['e'] = data.episode;
+        if (data.type == 'show')
+            params_new['s'] = data.season;
+        
+        // build new url from params
+        let query = jQuery.param(params_new);
+        let url = 'https://bytesurf.io/' + data.type + '.php?' + query;
+        
+        // redirect (simulate clicked link) to follow party host
+        window.location.href = url;
+        
+    }
+    
+    return true;
+    
 }
 
 function update_party_send() {
@@ -10,12 +58,6 @@ function update_party_send() {
     // make sure player object exists
     if (typeof player === 'undefined')
         return;
-    
-    // get season/episode/title/type into array
-    let params = get_important_params();
-    
-    // make sure we know the party id
-    params['party'] = party;
     
     // add player time (seconds, as float) and current unix timestamp (ms, for improved accuracy)
     params['time'] = player.currentTime;
@@ -41,6 +83,10 @@ function update_party_receive(data_raw) {
     if (data.owner == 'true')
         return;
     
+    // make sure party link is correct
+    if (!ensure_party_link(data))
+        return;
+    
     // get the users in the party
     let users = JSON.parse(data.users);
     
@@ -50,7 +96,7 @@ function update_party_receive(data_raw) {
     
     // set player time again if we're over 1 second out of sync
     let time_delta = Math.abs(time_extrapolated - player.currentTime);
-    if (time_delta > 1)
+    if (time_delta > max_time_delta)
         player.currentTime = time_extrapolated;
     
     // make sure we're playing or paused accordingly
