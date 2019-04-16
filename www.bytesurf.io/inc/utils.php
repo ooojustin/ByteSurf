@@ -296,6 +296,38 @@
 		return -1; // specified user is invalid
 	}
 
+    function get_active_party() {
+        if (!isset($_GET['party']))
+            return NULL;
+        return get_party($_GET['party']);   
+    }
+
+    function create_party() {
+        
+        global $db, $user;
+        if (!$user)
+            return NULL;
+        
+        $party = generate_split_string(3, 3);
+        
+        $create_party = $db->prepare('INSERT INTO paries (party, owner, users) VALUES (:party, :owner, :users)');
+        $create_party->bindValue(':party', $party);
+        $create_party->bindValue(':owner', $user['username']);
+        $create_party->bindValue(':users', '[]');
+        $create_party->execute();
+        
+        return $party;
+        
+    }
+    
+    function get_party($party) {
+        global $db;
+        $get_party = $db->prepare('SELECT * FROM parties WHERE party=:party ORDER BY id DESC LIMIT 1');
+        $get_party->bindValue(':party', $party);
+        $get_party->execute();
+        return $get_party->fetch();
+    }
+
 	// code to log sent emails
 	function log_email($address, $subject, $type) {
 		global $db;

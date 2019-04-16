@@ -132,14 +132,6 @@
             $_GET[$param] = $value;
     }
 
-    function get_party($party) {
-        global $db;
-        $get_party = $db->prepare('SELECT * FROM parties WHERE party=:party ORDER BY id DESC LIMIT 1');
-        $get_party->bindValue(':party', $party);
-        $get_party->execute();
-        return $get_party->fetch();
-    }
-
     function update_party_users($party, $users) {
         global $db;
         $update_party = $db->prepare('UPDATE parties SET users=:users WHERE party=:party');
