@@ -4,7 +4,7 @@ require '../inc/server.php';
 require '../inc/session.php';
 
 // die(json_encode(get_watching_list(true, false), 128));
-die(json_encode(get_watching_list(true, true), 128));
+// die(json_encode(get_watching_list(true, true), 128));
 
 require_login();
 
@@ -139,7 +139,12 @@ require_login();
 					<div class="row">
 						<?php
 						// Everything that we are currently watching but haven't finished.
-						
+						$watching_list = get_watching_list(false, false);
+
+						foreach ($watching_list as $watching) {
+
+						}
+
 						?>
 					</div>
 				</div>
