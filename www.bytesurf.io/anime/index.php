@@ -97,13 +97,6 @@ function generate_page_url($new_page)
 		return $current_url . '&' . $page_str_new;
 }
 
-function check_if_watched($anime, $episode)
-{
-	global $db;
-	// $get_watched = $db->prepare();
-}
-
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
