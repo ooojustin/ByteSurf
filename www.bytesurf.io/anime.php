@@ -37,15 +37,6 @@ function generate_mp4_link($res)
 	$url = sprintf($format, $_GET['t'], $_GET['e'], $res);
 	return $url;
 }
-
-function check_if_watched($anime, $episode)
-{
-	global $db;
-	// $get_watched = $db->prepare();
-	// Set width to 160 once if watched.
-	return false;
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
