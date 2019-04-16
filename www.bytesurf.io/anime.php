@@ -180,6 +180,11 @@
 		<!-- end details content -->
 	</section>
 	<!-- end details -->
+
+	<!-- filter btn -->
+	<button class="filter__btn" id ="catalog-submit" type="submit" style="width: 50px;">Watch</button>
+	<!-- end filter btn -->
+
 	<!-- content -->
 	<section class="content">
 		<!-- details content -->
