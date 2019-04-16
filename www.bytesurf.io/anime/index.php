@@ -315,8 +315,7 @@ function check_if_watched($anime, $episode)
 						// this can probably be done better but im keeping it this way until the backend code is done
 
 						if ($is_first_page) { ?>
-							<li class="paginator__item paginator__item--active"><a href="#"><?php echo $page
-																							?></a></li>
+							<li class="paginator__item paginator__item--active"><a href="#"><?php echo $page?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page + 1) . '"' ?>><?php echo $page + 1 ?></a></li>
 							<li class="paginator__item"><a href=<?php echo '"' . generate_page_url($page + 2) . '"' ?>><?php echo $page + 2 ?></a></li>
 							<script>
