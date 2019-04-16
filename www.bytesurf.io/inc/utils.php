@@ -419,7 +419,7 @@
 	}
 
     
-    function get_watching_list($completed = false) {
+    function get_watching_list($completed = false, $stringify = false) {
         
         global $user, $db;
         if (!$user)
@@ -428,8 +428,34 @@
         $get_watching = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND completed=:completed');
         $get_watching->bindValue(':username', $user['username']);
         $get_watching->bindValue(':completed', intval($completed));
-        $get_watching->execute();        
-        return $get_watching->fetchAll();
+        $get_watching->execute();
+        $list = $get_watching->fetchAll();
+        
+        // 'stringify' returns results in type:title format
+        if ($stringify) {
+            $list_str = array();
+            foreach ($list as $item) {
+                $item_str = sprintf('%s:%s', $item['type'], $item['title']);
+                array_push($list_str, $item_str);
+            }
+            return $list_str;
+        }
+        
+        // return normal list if we didn't need to stringify
+        return $list;
+        
+    }
+
+    function is_watched($type, $title) {
+        
+        global $user;
+        if (!$user)
+            return false;
+        
+        $list = get_watching_list(true, true);
+        $item = sprintf('%s:%s', $type, $title);
+        
+        return in_array($item, $list);
         
     }
 
