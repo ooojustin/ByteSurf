@@ -92,7 +92,7 @@
             
             // save current information to database
             $completed = $_GET['completed'] === 'true';
-            save_progress($username, $_GET['t'], $_GET['type'], $_GET['time'], $completed, $_GET['s'], $_GET['e']);
+            save_progress($username, $_GET['time'], $completed);
             die('Saved progress successfully: ' . $_GET['time']);
             
         case 'get_progress':
@@ -115,23 +115,6 @@
         
     }
 
-    function validate_type($type) {
-        $types = array('movie', 'show', 'anime');
-        if (!in_array($type, $types))
-            die('Invalid type provided: ' . $type);
-    }
-
-    function require_get_params($params) {
-        foreach ($params as $param)
-            if (!isset($_GET[$param]))
-                die('Missing provided parameter: ' . $param);
-    }
-
-    function default_get_param($param, $value) {
-        if (!isset($_GET[$param]))
-            $_GET[$param] = $value;
-    }
-
     function update_party_users($party, $users) {
         global $db;
         $update_party = $db->prepare('UPDATE parties SET users=:users WHERE party=:party');
@@ -150,15 +133,6 @@
         $update_party->bindValue(':playing', $playing);
         return $update_party->execute();
     }
-    
-    function get_progress($username) {
-        global $db;
-        $get_progress = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode ORDER BY id DESC LIMIT 1');
-        bind_content_values($get_progress);
-        $get_progress->bindValue(':username', $username);
-        $get_progress->execute();
-        return $get_progress->fetch();
-    }
 
     function save_progress($username, $time, $completed) {
         global $db;
@@ -172,14 +146,6 @@
         $save_progress->bindValue(':time', $time);
         $save_progress->bindValue(':completed', $completed);
         return $save_progress->execute();
-    }
-
-    // automatically binds type/s/e/t to a given statement (query object)
-    function bind_content_values($query) {
-        $query->bindValue(':type', $_GET['type']);
-        $query->bindValue(':title', $_GET['t']);
-        $query->bindValue(':season', $_GET['s']);
-        $query->bindValue(':episode', $_GET['e']);
     }
 
 ?>

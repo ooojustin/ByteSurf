@@ -418,6 +418,56 @@
 
 	}
 
+    
+    function get_watching_list($completed = false) {
+        
+        global $user, $db;
+        if (!$user)
+            return array();
+            
+        $get_watching = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND completed=:completed');
+        $get_watching->bindValue(':username', $user['username']);
+        $get_watching->bindValue(':completed', intval($completed));
+        $get_watching->execute();        
+        return $get_watching->fetchAll();
+        
+    }
+
+
+    // automatically binds type/s/e/t to a given statement (query object)
+    function bind_content_values($query) {
+        $query->bindValue(':type', $_GET['type']);
+        $query->bindValue(':title', $_GET['t']);
+        $query->bindValue(':season', $_GET['s']);
+        $query->bindValue(':episode', $_GET['e']);
+    }
+
+    function validate_type($type) {
+        $types = array('movie', 'show', 'anime');
+        if (!in_array($type, $types))
+            die('Invalid type provided: ' . $type);
+    }
+
+    function require_get_params($params) {
+        foreach ($params as $param)
+            if (!isset($_GET[$param]))
+                die('Missing required parameter: ' . $param);
+    }
+
+    function default_get_param($param, $value) {
+        if (!isset($_GET[$param]))
+            $_GET[$param] = $value;
+    }
+
+    function get_progress($username) {
+        global $db;
+        $get_progress = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode ORDER BY id DESC LIMIT 1');
+        bind_content_values($get_progress);
+        $get_progress->bindValue(':username', $username);
+        $get_progress->execute();
+        return $get_progress->fetch();
+    }
+
     function is_favorited($type, $title) {
         $favorites = get_favorites();
         $item = sprintf('%s:%s', $type, $title);
