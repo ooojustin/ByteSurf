@@ -201,6 +201,8 @@ function generate_mp4_link($res)
 											<th style="color:#ff5860">#</th>
 											<th style="color:#ff5860">Title</th>
 											<th style="color:#ff5860">Air Date</th>
+											<th style="color:#ff5860">Watched</th>
+
 										</tr>
 									</thead>
 									<tbody>
@@ -220,6 +222,7 @@ function generate_mp4_link($res)
 												<?php } else { ?>
 													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
 												<?php } ?>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">✔ ✘</a></td>
 											</tr>
 										<? } ?>
 									</tbody>

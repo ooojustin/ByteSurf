@@ -90,15 +90,15 @@ require_login();
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-2" aria-selected="false">Queue</a>
+								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Queue</a>
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-3" aria-selected="false">Favourites</a>
+								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Favourites</a>
 							</li>
 
 							<li class="nav-item">
-								<a class="nav-link" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-4" aria-selected="false">Watched</a>
+								<a class="nav-link" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">Watched</a>
 							</li>
 						</ul>
 						<!-- end content tabs nav -->
@@ -115,11 +115,11 @@ require_login();
 
 									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Watching</a></li>
 
-									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-2" aria-selected="true">Queue</a></li>
+									<li class="nav-item"><a class="nav-link active" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="true">Queue</a></li>
 
-									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-3" aria-selected="false">Favourites</a></li>
+									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Favourites</a></li>
 
-									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-4" aria-selected="false">Watched</a></li>
+									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">Watched</a></li>
 								</ul>
 							</div>
 						</div>
@@ -151,7 +151,7 @@ require_login();
 							}
 							if ($should_skip == true)
 								continue;
-					
+
 							$exist_check_array[$last_index] = $watching['title'];
 							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
 							$last_index = $last_index + 1;
@@ -175,18 +175,36 @@ require_login();
 										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], false) . '"' ?>><?php echo $watch_data['title'] ?></a></h3>
 										<span class="card__category">
 											<?php if ($furthest['type'] == "show") { ?>
-											<a>Season: <?php echo $furthest['season'] ?></a>
+												<a>Season: <?php echo $furthest['season'] ?></a>
 											<?php } ?>
 											<a>Episode: <?php echo $furthest['episode'] ?></a>
 										</span>
 									</div>
 								</div>
 							</div>
-							<?php
-						} ?>
+						<?php
+					} ?>
 					</div>
 				</div>
 
+				<!-- Queue -->
+				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+					<div class="row">
+
+					</div>
+				</div>
+
+				<!-- Favourites -->
+				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="3-tab">
+					<div class="row">
+					</div>
+				</div>
+
+				<!-- Watched -->
+				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="4-tab">
+					<div class="row">
+					</div>
+				</div>
 			</div>
 			<!-- end content tabs -->
 		</div>

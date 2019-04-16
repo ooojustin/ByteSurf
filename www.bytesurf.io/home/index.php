@@ -403,7 +403,7 @@
 						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 							<div class="card">
 								<div class="card__cover">
-									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
+									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="" style="width: 100%; height: 255px;">
 									<a href="<?=$url?>" class="card__play">
 										<i class="icon ion-ios-play"></i>
 									</a>
