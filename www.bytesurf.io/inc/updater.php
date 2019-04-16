@@ -80,7 +80,7 @@
         case 'save_progress':
             
             // require parameters for title, type, time, and completed
-            $params = array('s', 'e', 't', 'type', 'time', 'completed');
+            $params = array('s', 'e', 't', 'type', 'time', 'time_total', 'completed');
             require_get_params($params);
             
             // make sure type is valid
@@ -92,7 +92,7 @@
             
             // save current information to database
             $completed = $_GET['completed'] === 'true';
-            save_progress($username, $_GET['time'], $completed);
+            save_progress($username, $_GET['time'], $_GET['time_total'], $completed);
             die('Saved progress successfully: ' . $_GET['time']);
             
         case 'get_progress':
@@ -134,16 +134,17 @@
         return $update_party->execute();
     }
 
-    function save_progress($username, $time, $completed) {
+    function save_progress($username, $time, $time_total, $completed) {
         global $db;
         if (get_progress($username))
-            $query = 'UPDATE progress_tracker SET time=:time, completed=:completed WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode';
+            $query = 'UPDATE progress_tracker SET time=:time, time_total=:time_total, completed=:completed WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode';
         else
-            $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, completed) VALUES (:username, :type, :title, :season, :episode, :time, :completed)';
+            $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, time_total, completed) VALUES (:username, :type, :title, :season, :episode, :time, :time_total, :completed)';
         $save_progress = $db->prepare($query);
         bind_content_values($save_progress);
         $save_progress->bindValue(':username', $username);
         $save_progress->bindValue(':time', $time);
+        $save_progress->bindValue(':time_total', $time_total);
         $save_progress->bindValue(':completed', $completed);
         return $save_progress->execute();
     }

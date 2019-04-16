@@ -15,8 +15,9 @@ function update_progress() {
     // get season/episode/title/type into array
     let params = get_important_params();
     
-    // add player time (seconds, as float) to params
+    // add player time (seconds, as float) and total duration to params
     params['time'] = player.currentTime;
+    params['time_total'] = player.duration;
     
     // determine whether or not it's completed (last 5% of video)
     let completion_time = player.duration - (player.duration * 0.05);
