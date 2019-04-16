@@ -655,7 +655,9 @@
         $data = array('season' => -1, 'episode' => -1);        
         foreach (get_watching_list(true) as $item) {
             if ($item['title'] != $title || $item['type'] != $type)
-                continue;         
+                continue;
+            if ($item['completed'] == 0)
+                continue;
             if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode']) {
                 $data['season'] = $item['season'];
                 $data['episode'] = $item['episode'];
