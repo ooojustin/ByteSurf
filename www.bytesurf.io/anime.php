@@ -1,79 +1,89 @@
 <?php
 
-    require 'inc/server.php';
-    require 'inc/session.php';
-    require 'inc/imdb.php';
+require 'inc/server.php';
+require 'inc/session.php';
+require 'inc/imdb.php';
 
-    require_subscription();  
-	date_default_timezone_set('UTC'); 
+require_subscription();
+date_default_timezone_set('UTC');
 
-    // make sure the user has provided an anime
-    if (!isset($_GET['t']))
-		msg('Uh oh :(', 'Please specify an anime.');
+// make sure the user has provided an anime
+if (!isset($_GET['t']))
+	msg('Uh oh :(', 'Please specify an anime.');
 
-    // get data regarding current anime
-	$anime = get_anime_data($_GET['t']);
-    if (!$anime)
-        msg('Uh oh :(', 'We couldn\'t find that anime.');
+// get data regarding current anime
+$anime = get_anime_data($_GET['t']);
+if (!$anime)
+	msg('Uh oh :(', 'We couldn\'t find that anime.');
 
-    // retrieve raw anime data from cdn server
-    $url = authenticate_cdn_url($anime['data'], true);  
-    $data_raw = file_get_contents($url);
-    $data = json_decode($data_raw, true);
+// retrieve raw anime data from cdn server
+$url = authenticate_cdn_url($anime['data'], true);
+$data_raw = file_get_contents($url);
+$data = json_decode($data_raw, true);
 
-    $title = $data['title'];
-    $episodes = $data['episodeData'];
-    $poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
-    $cover = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['cover']));
+$title = $data['title'];
+$episodes = $data['episodeData'];
+$poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
+$cover = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['cover']));
 
-	if (!isset($_GET['e']))
-	    $_GET['e'] = 1;
+if (!isset($_GET['e']))
+	$_GET['e'] = 1;
 
-	$episode_info = $episodes[$_GET['e'] - 1];
+$episode_info = $episodes[$_GET['e'] - 1];
 
-	function generate_mp4_link($res) {
-        $format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
-        $url = sprintf($format, $_GET['t'], $_GET['e'], $res);
-        return $url;
-	}
+function generate_mp4_link($res)
+{
+	$format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
+	$url = sprintf($format, $_GET['t'], $_GET['e'], $res);
+	return $url;
+}
+
+function check_if_watched($anime, $episode)
+{
+	global $db;
+	// $get_watched = $db->prepare();
+	// Set width to 160 once if watched.
+	return false;
+}
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Font -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600%7CUbuntu:300,400,500,700" rel="stylesheet">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/bootstrap-reboot.min.css">
-    <link rel="stylesheet" href="css/bootstrap-grid.min.css">
-    <link rel="stylesheet" href="css/owl.carousel.min.css">
-    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
-    <link rel="stylesheet" href="css/nouislider.min.css">
-    <link rel="stylesheet" href="css/ionicons.min.css">
-    <link rel="stylesheet" href="css/plyr.css">
-    <link rel="stylesheet" href="css/photoswipe.css">
-    <link rel="stylesheet" href="css/default-skin.css">
-    <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-    
-    <!-- JS -->
-    <script src="js/jquery-3.3.1.min.js"></script>
-    <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/jquery.mousewheel.min.js"></script>
-    <script src="js/jquery.mCustomScrollbar.min.js"></script>
-    <script src="js/wNumb.js"></script>
-    <script src="js/nouislider.min.js"></script>
-    <script src="js/plyr.min.js"></script>
-    <script src="js/jquery.morelines.min.js"></script>
-    <script src="js/photoswipe.min.js"></script>
-    <script src="js/photoswipe-ui-default.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/progress.tracker.js"></script>
-    <script src="js/parties.js"></script>
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/bootstrap-reboot.min.css">
+	<link rel="stylesheet" href="css/bootstrap-grid.min.css">
+	<link rel="stylesheet" href="css/owl.carousel.min.css">
+	<link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
+	<link rel="stylesheet" href="css/nouislider.min.css">
+	<link rel="stylesheet" href="css/ionicons.min.css">
+	<link rel="stylesheet" href="css/plyr.css">
+	<link rel="stylesheet" href="css/photoswipe.css">
+	<link rel="stylesheet" href="css/default-skin.css">
+	<link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/main.css">
+
+	<!-- JS -->
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+	<script src="js/jquery.mousewheel.min.js"></script>
+	<script src="js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="js/wNumb.js"></script>
+	<script src="js/nouislider.min.js"></script>
+	<script src="js/plyr.min.js"></script>
+	<script src="js/jquery.morelines.min.js"></script>
+	<script src="js/photoswipe.min.js"></script>
+	<script src="js/photoswipe-ui-default.min.js"></script>
+	<script src="js/main.js"></script>
+	<script src="js/progress.tracker.js"></script>
+	<script src="js/parties.js"></script>
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
@@ -84,12 +94,13 @@
 	<meta name="author" content="Peter Pistachio">
 	<title>ByteSurf</title>
 </head>
+
 <body class="body">
-	
+
 	<!-- header -->
-	<?=require 'inc/html/header.php'?>
+	<?= require 'inc/html/header.php' ?>
 	<!-- end header -->
-	
+
 	<!-- details -->
 	<section class="section details">
 		<!-- details background -->
@@ -109,43 +120,43 @@
 
 				<!-- content -->
 				<div class="col-10">
-				<div class="card card--details card--series">
-					<div class="row">
-						<!-- card cover -->
-						<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
-							<div class="card__cover">
-								<img src="<?=$poster?>" alt="">
+					<div class="card card--details card--series">
+						<div class="row">
+							<!-- card cover -->
+							<div class="col-12 col-sm-4 col-md-4 col-lg-3 col-xl-3">
+								<div class="card__cover">
+									<img src="<?= $poster ?>" alt="">
+								</div>
 							</div>
-						</div>
-						<!-- end card cover -->
-						<!-- card content -->
-						<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
-							<div class="card__content">
-								<div class="card__wrap">
-									<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'] / 10, 1); ?></span>
-									<ul class="card__list">
-										<li>HD</li>
+							<!-- end card cover -->
+							<!-- card content -->
+							<div class="col-12 col-sm-8 col-md-8 col-lg-9 col-xl-9">
+								<div class="card__content">
+									<div class="card__wrap">
+										<span class="card__rate"><i class="icon ion-ios-star"></i><?php echo round($anime['rating'] / 10, 1); ?></span>
+										<ul class="card__list">
+											<li>HD</li>
+										</ul>
+									</div>
+
+									<ul class="card__meta">
+										<li><span>Genre:</span>
+											<?php
+											$genres_json = json_decode($anime['genres'], true);
+											foreach ($genres_json as $genre) {
+												?>
+												<a href="#"><?= ucwords($genre) ?></a>
+											<?php } ?>
+										</li>
+										<li><span>Release year: </span><?php echo $anime['release_date']; ?></li>
 									</ul>
-								</div>
 
-								<ul class="card__meta">
-									<li><span>Genre:</span>
-									<?php 							
-									$genres_json = json_decode($anime['genres'], true);
-									foreach ($genres_json as $genre) { 							
-									?>
-									<a href="#"><?=ucwords($genre)?></a>
-									<?php } ?>
-									</li>
-									<li><span>Release year: </span><?php echo $anime['release_date']; ?></li>
-								</ul>
-
-								<div class="card__description card__description--details">
-									<?php echo $data['synopsis']; ?>
+									<div class="card__description card__description--details">
+										<?php echo $data['synopsis']; ?>
+									</div>
 								</div>
 							</div>
-						</div>
-						<!-- end card content -->
+							<!-- end card content -->
 						</div>
 					</div>
 				</div>
@@ -153,28 +164,31 @@
 
 				<!-- player -->
 				<div class="col-12">
-					<video controls crossorigin playsinline poster="<?=$cover?>" id="player">
+					<video controls crossorigin playsinline poster="<?= $cover ?>" id="player">
 						<!-- Video files -->
 						<?
-							foreach($episode_info['qualities'] as $quality) {
-                                $res = $quality['resolution'];
-                                $url = generate_mp4_link($res);
-                                $url = authenticate_cdn_url($url);
-                        ?>
-                        <source 
-                            src="<?= $url ?>"
-                            type="video/mp4" 
-                            size="<?= $res ?>"
-                        />
-                        <? } ?>
-                        
-                        <!-- Fallback for browsers that don't support the <video> element -->
-                        <a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
-                        
+						foreach ($episode_info['qualities'] as $quality) {
+							$res = $quality['resolution'];
+							$url = generate_mp4_link($res);
+							$url = authenticate_cdn_url($url);
+							?>
+							<source src="<?= $url ?>" type="video/mp4" size="<?= $res ?>" />
+						<? } ?>
+
+						<!-- Fallback for browsers that don't support the <video> element -->
+						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
+
 					</video>
+
+		
+					<!-- Watched btn -->
+					<div style="float: right; padding-top: 10px;">
+						<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
+					</div>
+					<!-- end Watched btn -->
+
 				</div>
 				<!-- end player -->
-
 			</div>
 		</div>
 		<!-- end details content -->
@@ -186,43 +200,43 @@
 		<div class="container">
 			<div class="row">
 				<!-- accordion -->
-					<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
-						<div class="accordion" id="accordion">
-							<div class="accordion__card">
-									<div class="card-body">
-										<table class="accordion__list">
-											<thead>
-												<tr>
-												<th style="color:#ff5860">#</th>
-												<th style="color:#ff5860">Title</th>
-												<th style="color:#ff5860">Air Date</th>
-												</tr>
-											</thead>
-											<tbody>
-												<?php foreach($episodes as $episode) { 		
-													$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];	
-													$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';	
-												?>
-													<tr>
-													<th><a href="<?=$episode_link?>" style="color:<?=$color?>"><?=$episode['episode']?><a></th>
-													<?php if ($episode['episode_title'] != "") { ?>
-													<td><a href="<?=$episode_link?>" style="color:<?=$color?>"><?=$episode['episode_title']?></a></td>
-													<?php } else { ?>
-													<td><a href="<?=$episode_link?>" style="color:<?=$color?>">-</a></td>
-													<?php } if ($episode['air_date'] != "") { ?>
-													<td><a href="<?=$episode_link?>" style="color:<?=$color?>"><?=$episode['air_date']?></a></td>
-													<?php } else { ?>
-													<td><a href="<?=$episode_link?>" style="color:<?=$color?>">-</a></td>
-													<?php } ?>
-													</tr>
-
-											     <? } ?>
-											</tbody>
-										</table>
-									</div>
+				<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
+					<div class="accordion" id="accordion">
+						<div class="accordion__card">
+							<div class="card-body">
+								<table class="accordion__list">
+									<thead>
+										<tr>
+											<th style="color:#ff5860">#</th>
+											<th style="color:#ff5860">Title</th>
+											<th style="color:#ff5860">Air Date</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ($episodes as $episode) {
+											$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
+											$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
+											?>
+											<tr>
+												<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
+												<?php if ($episode['episode_title'] != "") { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode_title'] ?></a></td>
+												<?php } else { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
+												<?php }
+											if ($episode['air_date'] != "") { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['air_date'] ?></a></td>
+												<?php } else { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
+												<?php } ?>
+											</tr>
+										<? } ?>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
+				</div>
 				<!-- end accordion -->
 			</div>
 		</div>
@@ -230,7 +244,7 @@
 	</section>
 	<!-- end content -->
 	<!-- footer -->
-	<?=require 'inc/html/footer.php'?>
+	<?= require 'inc/html/footer.php' ?>
 	<!-- end footer -->
 	<!-- Root element of PhotoSwipe. Must have class pswp. -->
 	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -271,4 +285,5 @@
 		</div>
 	</div>
 </body>
+
 </html>
