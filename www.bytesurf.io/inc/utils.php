@@ -651,16 +651,13 @@
         }     
     }
 
-    function get_furthest_episode($title, $type, $completed) {         
+    function get_furthest_episode($title, $type, $completed = true) {         
         $data = array('season' => -1, 'episode' => -1);        
         foreach (get_watching_list($completed) as $item) {
             if ($item['title'] != $title || $item['type'] != $type)
                 continue;
-            if ($item['completed'] != $completed)
-                continue;
-            if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode']) {
+            if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode'])
                 $data = $item;
-            }          
         }     
         return $data;     
     }
