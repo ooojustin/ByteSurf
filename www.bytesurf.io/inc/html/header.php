@@ -37,6 +37,9 @@
 									<a href="../about" class="header__nav-link">About</a>
 								</li>
 
+								<li class="header__nav-item">
+									<a href="../watching" class="header__nav-link">Watching</a>
+								</li>
 
 							</ul>
 							<!-- end header nav -->
