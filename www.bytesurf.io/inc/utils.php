@@ -638,8 +638,8 @@
 
 	}
 
-    function get_furthest_episode_link($title, $type) {     
-        $data = get_furthest_episode($title, $type);
+    function get_furthest_episode_link($title, $type, $completed) {     
+        $data = get_furthest_episode($title, $type, $completed);
         switch ($type) {
             case 'show':
                 return sprintf('https://bytesurf.io/%s?t=%s&s=%s&e=%s', 'show.php', $title, $data['season'], $data['episode']);
@@ -651,20 +651,20 @@
         }     
     }
 
-    function get_furthest_episode($title, $type) {         
+    function get_furthest_episode($title, $type, $completed) {         
         $data = array('season' => -1, 'episode' => -1);        
-        foreach (get_watching_list(true) as $item) {
+        foreach (get_watching_list($completed) as $item) {
             if ($item['title'] != $title || $item['type'] != $type)
                 continue;
-            if ($item['completed'] == 0)
+            if ($item['completed'] != $completed)
                 continue;
             if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode']) {
-                $data['season'] = $item['season'];
-                $data['episode'] = $item['episode'];
+                $data = $item;
             }          
         }     
         return $data;     
     }
+
 
 	// https://www.virendrachandak.com/techtalk/getting-real-client-ip-address-in-php-2/
 	function get_ip() {
