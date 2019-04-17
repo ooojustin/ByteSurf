@@ -139,6 +139,7 @@ require_login();
 					<div class="row">
 						<?php
 						// Everything that we are currently watching but haven't finished.
+<<<<<<< HEAD
                         foreach (get_watching_list(false) as $watching) {
                             $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
 							$watch_data = get_content_data($watching['type'], $watching['title']);
@@ -148,16 +149,56 @@ require_login();
 									<div class="card__cover">
 										<img src="<?= authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
 										<a href="<?= get_furthest_episode_link($watching['title'], $watching['type'], false) ?>" class="card__play">
+=======
+						$watching_list = get_watching_list(false, false);
+						$exist_check_array = new SplFixedArray(1);
+						$last_index = 0;
+						foreach ($watching_list as $watching) {
+							$should_skip = false;
+							foreach ($exist_check_array as $existing_part) {
+								if ($existing_part == $watching['title']) {
+									$should_skip = true;
+								}
+							}
+							if ($should_skip == true)
+								continue;
+
+							$exist_check_array[$last_index] = $watching['title'];
+							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
+							$last_index = $last_index + 1;
+							// Get the episode with highest number
+							$furthest = get_furthest_episode($watching['title'], $watching['type'], false);
+							// Round to an integer
+							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0);
+							// Make an sql call to the database / Get the data
+							$watch_data = get_content_data($furthest['type'], $furthest['title']);
+
+							?>
+							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+								<div class="card">
+									<div class="card__cover">
+										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], false) . '"' ?> class="card__play">
+>>>>>>> parent of a69b43b... rewrote kites poop without using 'SplFixedArray'
 											<i class="icon ion-ios-play"></i>
 										</a>
 									</div>
 									<div class="card__content">
+<<<<<<< HEAD
 										<h3 class="card__title"><a href="<?= get_furthest_episode_link($watching['title'], $watching['type'], false) ?>"><?= $watch_data['title'] ?></a></h3>
 										<span class="card__category">
 											<?php if ($type == "show") { ?>
 												<a>Season: <?php echo $watching['season'] ?></a>
 											<?php } ?>
 											<a>Episode: <?php echo $watching['episode'] ?></a>
+=======
+										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], false) . '"' ?>><?php echo $watch_data['title'] ?></a></h3>
+										<span class="card__category">
+											<?php if ($furthest['type'] == "show") { ?>
+												<a>Season: <?php echo $furthest['season'] ?></a>
+											<?php } ?>
+											<a>Episode: <?php echo $furthest['episode'] ?></a>
+>>>>>>> parent of a69b43b... rewrote kites poop without using 'SplFixedArray'
 										</span>
 									</div>
 								</div>
