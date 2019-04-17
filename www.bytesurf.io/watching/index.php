@@ -200,21 +200,22 @@ require_login();
 						$last_index = 0;
 						foreach ($watched_list as $watched) {
 							$should_skip = false;
+							// comparison for extra titles we already displayed
 							foreach ($exist_check_array as $existing_part) {
 								if ($existing_part == $watched['title']) {
 									$should_skip = true;
 								}
 							}
-							if ($should_skip == true)
+							if ($should_skip == true) // skip extra titles
 								continue;
 
-							$exist_check_array[$last_index] = $watched['title'];
-							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
+							$exist_check_array[$last_index] = $watched['title']; // store title to ignore any extras
+							$exist_check_array->setSize(sizeof($exist_check_array) + 1); // increase size of array for new titles
 							$last_index = $last_index + 1;
 							// Get the episode with highest number
-							$furthest = get_furthest_episode($watched['title'], $watched['type'], true);
+							$furthest = get_furthest_episode($watched['title'], $watched['type'], true); // gets episode with highest count
 							// Round to an integer
-							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0);
+							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0); // calculates percentage of whats been watched
 							// Make an sql call to the database / Get the data
 							$watched_data = get_content_data($furthest['type'], $furthest['title']);
 							?>
