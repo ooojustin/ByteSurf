@@ -150,7 +150,7 @@ namespace JexFlix_Scraper.Flixify {
                 if (rootObject.item.certification != null)
                     data.certification = rootObject.item.certification;
 
-                if (rootObject.item.subtitles.eng == null)
+                if (rootObject.item.subtitles.eng != null)
                     data.subs.Add(new Subs { language = "en", url = Networking.CDN_URL + rootObject.item.url + "/en.vtt" });
 
                 // setup qualities
