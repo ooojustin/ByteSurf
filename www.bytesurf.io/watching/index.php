@@ -48,8 +48,6 @@ require_login();
 			<div class="row">
 				<div class="col-12">
 					<div class="section__wrap">
-						<!-- section title -->
-						<h2 class="section__title">Watching</h2>
 						<!-- end section title -->
 						<!-- breadcrumb -->
 						<ul class="breadcrumb">
