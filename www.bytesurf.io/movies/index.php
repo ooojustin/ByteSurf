@@ -7,6 +7,10 @@
     // # of videos shown on each page
 	define('VIDEOS_PER_PAGE', 24);
 
+	$get_movie_count = $db->prepare('SELECT * FROM movies');
+	$get_movie_count->execute();
+	$movie_count = $get_movie_count->rowCount();
+
     // all variables and their default values
     $GLOBALS['page'] = 1; // page #
     $vars = array(
@@ -65,26 +69,31 @@
 
 	   	global $db;
 
-	   	if (isset($vars['query'])) {
-	   		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(title) LIKE :query ORDER BY id DESC LIMIT :offset, :count');
-	   		$get_movies->bindValue(':query', $vars['query']);
-	   	} else {
-    		$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT :offset, :count');
-    		foreach ($vars as $var => $default)
-    			$get_movies->bindValue(':' . $var, $default);
-    	}
 
-    	$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
-    	$get_movies->bindValue(':offset', $movie_offset, PDO::PARAM_INT);
-    	$get_movies->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
+    	$get_movies = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max ORDER BY id DESC LIMIT :offset, :count');
+    	foreach ($vars as $var => $default)
+			$get_movies->bindValue(':' . $var, $default);
+			
+    	$get_movies_count = $db->prepare('SELECT * FROM `movies` WHERE LOWER(genres) LIKE :genre AND `qualities` LIKE :quality AND `rating` >= :imdb_min AND `rating` <= :imdb_max AND `year` >= :year_min AND `year` <= :year_max');
+    	foreach ($vars as $var => $default)
+    		$get_movies_count->bindValue(':' . $var, $default);
 
-    	$get_movies->execute();
+
+		$movie_offset = ($page - 1) * VIDEOS_PER_PAGE;
+		$get_movies->bindValue(':offset', $movie_offset, PDO::PARAM_INT);
+		$get_movies->bindValue(':count', VIDEOS_PER_PAGE, PDO::PARAM_INT);
+	
+		$get_movies->execute();
+		$get_movies_count->execute();
+	
+		global $pagecount;
+		$pagecount = $get_movies_count->rowCount() / VIDEOS_PER_PAGE;
+
     	$movies = $get_movies->fetchAll();
     	
     	return $movies;
 
-    }
-
+	}
   	//echo $get_movies->rowCount() . PHP_EOL;
     function generate_page_url($new_page) {
     	global $current_url, $page;
@@ -314,55 +323,24 @@
 				<? } ?>
 
 				<!-- paginator -->
-				<script>
-					// updates the front/back urls
-					function paginate(p1, p2) {
-						var paginators = document.getElementsByClassName('paginator__item');
-						var prev = document.getElementById("page-prev");
-						var next = document.getElementById("page-next");
-						prev.href = (paginators[p1]).children[0].href;
-						next.href = (paginators[p2]).children[0].href;
-					}
-				</script>
 				<div class="col-12">
-					<ul class="paginator">
-						<li class="paginator__item paginator__item--prev">
-							<a id="page-prev" href="#"><i class="icon ion-ios-arrow-back"></i></a>
-						</li>
+					<ul class="paginator" style="width: auto; box-shadow: 0 0 20px 0 rgba(0,0,0,0);">
 
 						<?
-							$is_first_page = $page == 1;
-							$is_last_page = count(get_movies($vars, $page + 1)) == 0;
-							// it's probably the last page if the number of videos on the next page is 0
-							// this can probably be done better but im keeping it this way until the backend code is done
-							if ($is_first_page) { ?>
-							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 2) . '"' ?>><?= $page + 2 ?></a></li>
-							<script>$(function () { paginate(1, 2) });</script>
-							<? } else if ($is_last_page) { ?>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 2) . '"' ?>><?= $page - 2 ?></a></li>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
-							<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
-							<script>$(function () { paginate(2, 3) });</script>
-							<? } else { ?>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page - 1) . '"' ?>><?= $page - 1 ?></a></li>
-							<li class="paginator__item paginator__item--active"><a href="#"><?= $page  ?></a></li>
-							<li class="paginator__item"><a href=<?= '"' . generate_page_url($page + 1) . '"' ?>><?= $page + 1 ?></a></li>
-							<script>$(function () { paginate(1, 3) });</script>
-							<? }
+						    $page = 1;
+						    if (isset($_GET['page'])) $page = $_GET['page'];
 						?>
 
-						<!--
-						old stuff before making this functional
-						<li class="paginator__item"><a href="#">1</a></li>
-						<li class="paginator__item paginator__item--active"><a href="#">2</a></li>
-						<li class="paginator__item"><a href="#">3</a></li>
-						-->
+						<? if ($page > 1) { ?><li class="paginator__item paginator__item--next"><a href="<?=generate_page_url($page - 1)?>"><i class="icon ion-ios-arrow-back"></i></a></li> <? } ?>
+						<? if ($page > 2) { ?><li class="paginator__item"><a href="<?=generate_page_url(intval(1))?>"><?=intval(1)?></a></li> <? } ?>
+						<? if ($page > 2) { ?> <li class="paginator__item"><a href="#">...</a></li> <? } ?>
+						<? if ($page > 1) { ?><li class="paginator__item"><a href="<?=generate_page_url($page - 1)?>"><?=$page - 1?></a></li> <? } ?>
+						<li class="paginator__item paginator__item--active"><a href="#"><?= $page ?></a></li>
+						<? if ($page < $pagecount) { ?> <li class="paginator__item"><a href="<?=generate_page_url($page + 1)?>"><?=$page + 1?></a></li> <? } ?>
+						<? if ($page < $pagecount) { ?> <li class="paginator__item"><a href="#">...</a></li> <? } ?>
+						<? if ($page < $pagecount) { ?> <li class="paginator__item"><a href="<?=generate_page_url(intval($pagecount))?>"><?=intval($pagecount)?></a></li> <? } ?>
+						<? if ($page < intval($pagecount + 1)) { ?><li class="paginator__item paginator__item--prev"><a href="<?=generate_page_url($page + 1)?>"><i class="icon ion-ios-arrow-forward"></i></a></li> <? } ?>
 
-						<li class="paginator__item paginator__item--next">
-							<a id="page-next" href="#"><i class="icon ion-ios-arrow-forward"></i></a>
-						</li>
 					</ul>
 				</div>
 				<!-- end paginator -->
