@@ -418,47 +418,32 @@
 
 	}
 
-    
-    function get_watching_list($completed = false, $stringify = false) {
-        
+    // returns an array of progress_tracker records, full list of all last completed/uncompleted episodes from diff shows
+    function get_progress_tracker_data($completed = false) {  
         global $user, $db;
         if (!$user)
-            return array();
-            
+            return array();        
         $get_watching = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND completed=:completed');
         $get_watching->bindValue(':username', $user['username']);
         $get_watching->bindValue(':completed', intval($completed));
         $get_watching->execute();
-        $list = $get_watching->fetchAll();
-        
-        // 'stringify' returns results in type:title format
-        if ($stringify) {
-            $list_str = array();
-            foreach ($list as $item) {
-                $item_str = sprintf('%s:%s', $item['type'], $item['title']);
-                array_push($list_str, $item_str);
-            }
-            return $list_str;
+        return $get_watching->fetchAll(); 
+    }
+
+    // returns an array of progress_tracker records
+    // same thing as get_progress_tracker_data but returns 1 record per show (highest season/episode)
+    function get_watching_list($completed = false) {      
+        $list = array();
+        foreach (get_progress_tracker_data($completed) as $watching) {
+            $title = $watching['title'];
+            $type = $watching['type'];
+            $item = sprintf('%s:%s', $watching['type'], $watching['title']);
+            if (array_key_exists($item, $list))
+                continue;
+            $list[$item] = get_furthest_episode($watching['title'], $watching['type'], false);
         }
-        
-        // return normal list if we didn't need to stringify
-        return $list;
-        
+        return $list;                        
     }
-
-    function is_watched($type, $title) {
-        
-        global $user;
-        if (!$user)
-            return false;
-        
-        $list = get_watching_list(true, true);
-        $item = sprintf('%s:%s', $type, $title);
-        
-        return in_array($item, $list);
-        
-    }
-
 
     // automatically binds type/s/e/t to a given statement (query object)
     function bind_content_values($query) {
@@ -651,9 +636,11 @@
         }     
     }
 
-    function get_furthest_episode($title, $type, $completed = true) {         
+    // returns the furthest episode that the user did/didn't complete (progress tracker record)
+    // returns the furthest episode that the user did/didn't complete (progress tracker record)
+    function get_furthest_episode($title, $type, $completed = false) {         
         $data = array('season' => -1, 'episode' => -1);        
-        foreach (get_watching_list($completed) as $item) {
+        foreach (get_progress_tracker_data($completed) as $item) {
             if ($item['title'] != $title || $item['type'] != $type)
                 continue;
             if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode'])
