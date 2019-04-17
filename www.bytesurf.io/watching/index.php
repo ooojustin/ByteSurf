@@ -203,9 +203,55 @@ require_login();
 				<!-- Watched -->
 				<div class="tab-pane fade show active" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
 					<div class="row">
-					<?php 
-					// Need to wait till I update all the databases with max episode number.
-					?>
+						
+					<?php
+						// Everything that we are currently watching but haven't finished.
+						$watching_list = get_watching_list(true);
+						$exist_check_array = new SplFixedArray(1);
+						$last_index = 0;
+						foreach ($watching_list as $watching) {
+							$should_skip = false;
+							foreach ($exist_check_array as $existing_part) {
+								if ($existing_part == $watching['title']) {
+									$should_skip = true;
+								}
+							}
+							if ($should_skip == true)
+								continue;
+
+							$exist_check_array[$last_index] = $watching['title'];
+							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
+							$last_index = $last_index + 1;
+							// Get the episode with highest number
+							$furthest = get_furthest_episode($watching['title'], $watching['type'], true);
+							// Round to an integer
+							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0);
+							// Make an sql call to the database / Get the data
+							$watch_data = get_content_data($furthest['type'], $furthest['title']);
+
+							?>
+							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+								<div class="card">
+									<div class="card__cover">
+										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], true) . '"' ?> class="card__play">
+											<i class="icon ion-ios-play"></i>
+										</a>
+									</div>
+									<div class="card__content">
+										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], true) . '"' ?>><?php echo $watch_data['title'] ?></a></h3>
+										<span class="card__category">
+											<?php if ($furthest['type'] == "show") { ?>
+												<a>Season: <?php echo $furthest['season'] ?></a>
+											<?php } ?>
+											<a>Episode: <?php echo $furthest['episode'] ?></a>
+										</span>
+									</div>
+								</div>
+							</div>
+						<?php
+					} ?>
+
 					</div>
 				</div>
 			</div>
