@@ -1,5 +1,4 @@
 <?php
-	
 
 	$started = @session_start();
 	if(!$started) {

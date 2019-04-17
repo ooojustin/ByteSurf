@@ -5,6 +5,7 @@ require 'inc/session.php';
 require 'inc/imdb.php';
 
 require_subscription();
+
 date_default_timezone_set('UTC');
 
 // make sure the user has provided an anime
@@ -39,8 +40,9 @@ function generate_mp4_link($res)
 }
 
 // Check if this anime and episode is watched
+$watched_list = get_progress_tracker_data(true);
 
-$watched_list = get_watching_list(true);
+$has_watched = false;
 
 foreach ($watched_list as $watched) {
 	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
@@ -182,13 +184,13 @@ foreach ($watched_list as $watched) {
 
 
 					<!-- Watched btn -->
-					<?php if (!$has_watched) { ?>
+					<?php if ($has_watched) { ?>
 						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
+							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
 						</div>
 					<?php } else { ?>
 						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 160px;">Remve from Watched</button>
+							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
 						</div>
 					<?php } ?>
 						<!-- end Watched btn -->

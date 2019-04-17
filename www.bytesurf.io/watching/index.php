@@ -77,11 +77,15 @@ require_login();
 	</section>
 	<!-- end page title -->
 
+	<!-- content -->
 	<section class="content">
 		<div class="content__head">
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">Watching</h2>
+						<!-- end content title -->
 
 						<!-- content tabs nav -->
 						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
@@ -112,19 +116,17 @@ require_login();
 
 							<div class="content__mobile-tabs-menu dropdown-menu" aria-labelledby="mobile-tabs">
 								<ul class="nav nav-tabs" role="tablist">
-
 									<li class="nav-item"><a class="nav-link active" id="1-tab" data-toggle="tab" href="#tab-1" role="tab" aria-controls="tab-1" aria-selected="true">Watching</a></li>
 
-									<li class="nav-item"><a class="nav-link active" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="true">Queue</a></li>
+									<li class="nav-item"><a class="nav-link" id="2-tab" data-toggle="tab" href="#tab-2" role="tab" aria-controls="tab-2" aria-selected="false">Queue</a></li>
 
 									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">Favourites</a></li>
 
-									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">Watched</a></li>
+									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">Watched </a></li>
 								</ul>
 							</div>
 						</div>
 						<!-- end content mobile tabs nav -->
-
 					</div>
 				</div>
 			</div>
@@ -134,12 +136,12 @@ require_login();
 			<!-- content tabs -->
 			<div class="tab-content" id="myTabContent">
 
-				<!-- Watching -->
-				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+				<div class="tab-pane fade" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
+
 						<?php
 						// Everything that we are currently watching but haven't finished.
-						$watching_list = get_watching_list(false);
+						$watching_list = get_progress_tracker_data(false);
 						$exist_check_array = new SplFixedArray(1);
 						$last_index = 0;
 						foreach ($watching_list as $watching) {
@@ -184,62 +186,63 @@ require_login();
 							</div>
 						<?php
 					} ?>
-					</div>
-				</div>
-
-				<!-- Queue -->
-				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
-					<div class="row">
 
 					</div>
 				</div>
 
-				<!-- Favourites -->
-				<div class="tab-pane fade show active" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
+
+
+
 					</div>
 				</div>
 
-				<!-- Watched -->
-				<div class="tab-pane fade show active" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
+				<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
 					<div class="row">
-						
-					<?php
+
+
+					</div>
+				</div>
+
+				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
+					<div class="row">
+
+						<?php
 						// Everything that we are currently watching but haven't finished.
-						$watching_list = get_watching_list(true);
+						$watched_list = get_progress_tracker_data(true);
 						$exist_check_array = new SplFixedArray(1);
 						$last_index = 0;
-						foreach ($watching_list as $watching) {
+						foreach ($watched_list as $watched) {
 							$should_skip = false;
 							foreach ($exist_check_array as $existing_part) {
-								if ($existing_part == $watching['title']) {
+								if ($existing_part == $watched['title']) {
 									$should_skip = true;
 								}
 							}
 							if ($should_skip == true)
 								continue;
 
-							$exist_check_array[$last_index] = $watching['title'];
+							$exist_check_array[$last_index] = $watched['title'];
 							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
 							$last_index = $last_index + 1;
 							// Get the episode with highest number
-							$furthest = get_furthest_episode($watching['title'], $watching['type'], true);
+							$furthest = get_furthest_episode($watched['title'], $watched['type'], true);
 							// Round to an integer
 							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0);
 							// Make an sql call to the database / Get the data
-							$watch_data = get_content_data($furthest['type'], $furthest['title']);
-
+							$watched_data = get_content_data($furthest['type'], $furthest['title']);
 							?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
-										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
-										<a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], true) . '"' ?> class="card__play">
+										<img src="<?php echo authenticate_cdn_url($watched_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href=<?php echo '"' . get_furthest_episode_link($watched_data['url'], $furthest['type'], true) . '"' ?> class="card__play">
 											<i class="icon ion-ios-play"></i>
 										</a>
 									</div>
 									<div class="card__content">
-										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], true) . '"' ?>><?php echo $watch_data['title'] ?></a></h3>
+										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watched_data['url'], $furthest['type'], true) . '"' ?>><?php echo $watched_data['title'] ?></a></h3>
 										<span class="card__category">
 											<?php if ($furthest['type'] == "show") { ?>
 												<a>Season: <?php echo $furthest['season'] ?></a>
@@ -254,10 +257,13 @@ require_login();
 
 					</div>
 				</div>
+
 			</div>
 			<!-- end content tabs -->
 		</div>
 	</section>
+	<!-- end content -->
+
 
 	<!-- catalog -->
 	<div class="catalog">
