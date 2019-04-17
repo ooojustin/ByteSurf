@@ -139,7 +139,7 @@ require_login();
 					<div class="row">
 						<?php
 						// Everything that we are currently watching but haven't finished.
-						$watching_list = get_watching_list(false, false);
+						$watching_list = get_watching_list(false);
 						$exist_check_array = new SplFixedArray(1);
 						$last_index = 0;
 						foreach ($watching_list as $watching) {
@@ -195,50 +195,17 @@ require_login();
 				</div>
 
 				<!-- Favourites -->
-				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="3-tab">
+				<div class="tab-pane fade show active" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
 					<div class="row">
 					</div>
 				</div>
 
 				<!-- Watched -->
-				<div class="tab-pane fade show active" id="tab-2" role="tabpanel" aria-labelledby="4-tab">
+				<div class="tab-pane fade show active" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
 					<div class="row">
-
-						<?php
-						// Everything that we are currently watched 
-						$watched_list = array();
-						foreach (get_watching_list(true) as $watched) {
-							$title = $watched['title'];
-							$type = $watched['type'];
-							if (array_key_exists($title, $watched_list))
-								continue;
-							$watched_list[$title] = get_furthest_episode($title, $type, false);
-							$watched_progress = round($watched_list[$title]['time'] / $watched_list[$title]['time_total'] * 100, 0);
-							$watch_data = get_content_data($type, $title);
-							?>
-							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
-								<div class="card">
-									<div class="card__cover">
-										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
-										<a href=<?php echo '"' . get_furthest_episode_link($title, $type, false) . '"' ?> class="card__play">
-											<i class="icon ion-ios-play"></i>
-										</a>
-									</div>
-									<div class="card__content">
-										<h3 class="card__title"><a href="<?= get_furthest_episode_link($title, $type, false) ?>"><?= $watch_data['title'] ?></a></h3>
-										<span class="card__category">
-											<?php if ($type == "show") { ?>
-												<a>Season: <?php echo $watched_list[$title]['season'] ?></a>
-											<?php } ?>
-											<a>Episode: <?php echo $watched_list[$title]['episode'] ?></a>
-										</span>
-									</div>
-								</div>
-							</div>
-						<?php
-					} ?>
-
-
+					<?php 
+					// Need to wait till I update all the databases with max episode number.
+					?>
 					</div>
 				</div>
 			</div>
