@@ -193,108 +193,108 @@ foreach ($watched_list as $watched) {
 							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
 						</div>
 					<?php } ?>
-						<!-- end Watched btn -->
+					<!-- end Watched btn -->
 
-					</div>
-					<!-- end player -->
 				</div>
+				<!-- end player -->
 			</div>
-			<!-- end details content -->
-		</section>
-		<!-- end details -->
-		<!-- content -->
-		<section class="content">
-			<!-- details content -->
-			<div class="container">
-				<div class="row">
-					<!-- accordion -->
-					<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
-						<div class="accordion" id="accordion">
-							<div class="accordion__card">
-								<div class="card-body">
-									<table class="accordion__list">
-										<thead>
+		</div>
+		<!-- end details content -->
+	</section>
+	<!-- end details -->
+	<!-- content -->
+	<section class="content">
+		<!-- details content -->
+		<div class="container">
+			<div class="row">
+				<!-- accordion -->
+				<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
+					<div class="accordion" id="accordion">
+						<div class="accordion__card">
+							<div class="card-body">
+								<table class="accordion__list">
+									<thead>
+										<tr>
+											<th style="color:#ff5860">#</th>
+											<th style="color:#ff5860">Title</th>
+											<th style="color:#ff5860">Air Date</th>
+											<th style="color:#ff5860">Watched</th>
+
+										</tr>
+									</thead>
+									<tbody>
+										<?php foreach ($episodes as $episode) {
+											$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
+											$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
+											?>
 											<tr>
-												<th style="color:#ff5860">#</th>
-												<th style="color:#ff5860">Title</th>
-												<th style="color:#ff5860">Air Date</th>
-												<th style="color:#ff5860">Watched</th>
-
+												<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
+												<?php if ($episode['episode_title'] != "") { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode_title'] ?></a></td>
+												<?php } else { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
+												<?php }
+											if ($episode['air_date'] != "") { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['air_date'] ?></a></td>
+												<?php } else { ?>
+													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
+												<?php } ?>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">✔ ✘</a></td>
 											</tr>
-										</thead>
-										<tbody>
-											<?php foreach ($episodes as $episode) {
-												$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
-												$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
-												?>
-												<tr>
-													<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
-													<?php if ($episode['episode_title'] != "") { ?>
-														<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode_title'] ?></a></td>
-													<?php } else { ?>
-														<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
-													<?php }
-												if ($episode['air_date'] != "") { ?>
-														<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['air_date'] ?></a></td>
-													<?php } else { ?>
-														<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
-													<?php } ?>
-													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">✔ ✘</a></td>
-												</tr>
-											<? } ?>
-										</tbody>
-									</table>
-								</div>
+										<? } ?>
+									</tbody>
+								</table>
 							</div>
 						</div>
 					</div>
-					<!-- end accordion -->
 				</div>
+				<!-- end accordion -->
 			</div>
-			<!-- end details content -->
-		</section>
-		<!-- end content -->
-		<!-- footer -->
-		<?= require 'inc/html/footer.php' ?>
-		<!-- end footer -->
-		<!-- Root element of PhotoSwipe. Must have class pswp. -->
-		<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-			<!-- Background of PhotoSwipe. 
+		</div>
+		<!-- end details content -->
+	</section>
+	<!-- end content -->
+	<!-- footer -->
+	<?= require 'inc/html/footer.php' ?>
+	<!-- end footer -->
+	<!-- Root element of PhotoSwipe. Must have class pswp. -->
+	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+		<!-- Background of PhotoSwipe. 
 			It's a separate element, as animating opacity is faster than rgba(). -->
-			<div class="pswp__bg"></div>
-			<!-- Slides wrapper with overflow:hidden. -->
-			<div class="pswp__scroll-wrap">
-				<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
-				<!-- don't modify these 3 pswp__item elements, data is added later on. -->
-				<div class="pswp__container">
-					<div class="pswp__item"></div>
-					<div class="pswp__item"></div>
-					<div class="pswp__item"></div>
-				</div>
-				<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-				<div class="pswp__ui pswp__ui--hidden">
-					<div class="pswp__top-bar">
-						<!--  Controls are self-explanatory. Order can be changed. -->
-						<div class="pswp__counter"></div>
-						<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-						<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-						<!-- Preloader -->
-						<div class="pswp__preloader">
-							<div class="pswp__preloader__icn">
-								<div class="pswp__preloader__cut">
-									<div class="pswp__preloader__donut"></div>
-								</div>
+		<div class="pswp__bg"></div>
+		<!-- Slides wrapper with overflow:hidden. -->
+		<div class="pswp__scroll-wrap">
+			<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+			<!-- don't modify these 3 pswp__item elements, data is added later on. -->
+			<div class="pswp__container">
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+			</div>
+			<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+			<div class="pswp__ui pswp__ui--hidden">
+				<div class="pswp__top-bar">
+					<!--  Controls are self-explanatory. Order can be changed. -->
+					<div class="pswp__counter"></div>
+					<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+					<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+					<!-- Preloader -->
+					<div class="pswp__preloader">
+						<div class="pswp__preloader__icn">
+							<div class="pswp__preloader__cut">
+								<div class="pswp__preloader__donut"></div>
 							</div>
 						</div>
 					</div>
-					<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-					<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-					<div class="pswp__caption">
-						<div class="pswp__caption__center"></div>
-					</div>
+				</div>
+				<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+				<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+				<div class="pswp__caption">
+					<div class="pswp__caption__center"></div>
 				</div>
 			</div>
 		</div>
-	</body>
+	</div>
+</body>
 
-	</html>
+</html>

@@ -35,19 +35,6 @@ require_login();
 	<meta name="keywords" content="">A
 	<meta name="author" content="Anthony Almond">
 	<title>Bytesurf</title>
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </head>
 
 <body class="body">
@@ -83,10 +70,6 @@ require_login();
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
-						<!-- content title -->
-						<h2 class="content__title">Watching</h2>
-						<!-- end content title -->
-
 						<!-- content tabs nav -->
 						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
 							<li class="nav-item">
@@ -264,19 +247,24 @@ require_login();
 	</section>
 	<!-- end content -->
 
-
-	<!-- catalog -->
-	<div class="catalog">
-		<div class="container">
-			<div class="row">
-
-			</div>
-		</div>
-	</div>
-	<!-- end catalog -->
 	<!-- footer -->
 	<?= require '../inc/html/footer.php' ?>
 	<!-- end footer -->
+
+	<!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
+
 </body>
 
 </html>
