@@ -440,7 +440,7 @@
             $item = sprintf('%s:%s', $watching['type'], $watching['title']);
             if (array_key_exists($item, $list))
                 continue;
-            $list[$item] = get_furthest_episode($watching['title'], $watching['type'], false);
+            $list[$item] = get_furthest_episode($watching['title'], $watching['type'], $completed);
         }
         return $list;                        
     }

@@ -123,55 +123,32 @@ require_login();
 
 				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
-
-						<?php
+						<?
 						// Everything that we are currently watching but haven't finished.
-						$watching_list = get_progress_tracker_data(false);
-						$exist_check_array = new SplFixedArray(1);
-						$last_index = 0;
-						foreach ($watching_list as $watching) {
-							$should_skip = false;
-							foreach ($exist_check_array as $existing_part) {
-								if ($existing_part == $watching['title']) {
-									$should_skip = true;
-								}
-							}
-							if ($should_skip == true)
-								continue;
-
-							$exist_check_array[$last_index] = $watching['title'];
-							$exist_check_array->setSize(sizeof($exist_check_array) + 1);
-							$last_index = $last_index + 1;
-							// Get the episode with highest number
-							$furthest = get_furthest_episode($watching['title'], $watching['type'], false);
-							// Round to an integer
-							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0);
-							// Make an sql call to the database / Get the data
-							$watch_data = get_content_data($furthest['type'], $furthest['title']);
-
-							?>
+                        foreach (get_watching_list(false) as $watching) {
+                            $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
+							$watch_data = get_content_data($watching['type'], $watching['title']);
+				        ?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
-										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
-										<a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], false) . '"' ?> class="card__play">
+										<img src="<?= authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href="<?= get_furthest_episode_link($watch_data['url'], $watching['type'], false) ?>" class="card__play">
 											<i class="icon ion-ios-play"></i>
 										</a>
 									</div>
 									<div class="card__content">
-										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watch_data['url'], $furthest['type'], false) . '"' ?>><?php echo $watch_data['title'] ?></a></h3>
+										<h3 class="card__title"><a href="<? get_furthest_episode_link($watch_data['url'], $watching['type'], false) ?>"><?= $watch_data['title'] ?></a></h3>
 										<span class="card__category">
-											<?php if ($furthest['type'] == "show") { ?>
-												<a>Season: <?php echo $furthest['season'] ?></a>
-											<?php } ?>
-											<a>Episode: <?php echo $furthest['episode'] ?></a>
+											<? if ($watching['type'] == "show") { ?>
+												<a>Season: <?= $watching['season'] ?></a>
+											<? } ?>
+											<a>Episode: <?= $watching['episode'] ?></a>
 										</span>
 									</div>
 								</div>
 							</div>
-						<?php
-					} ?>
-
+						<? } ?>
 					</div>
 				</div>
 
@@ -192,55 +169,32 @@ require_login();
 
 				<div class="tab-pane fade" id="tab-4" role="tabpanel" aria-labelledby="4-tab">
 					<div class="row">
-
-						<?php
-						// Everything that we are currently watching but haven't finished.
-						$watched_list = get_progress_tracker_data(true);
-						$exist_check_array = new SplFixedArray(1);
-						$last_index = 0;
-						foreach ($watched_list as $watched) {
-							$should_skip = false;
-							// comparison for extra titles we already displayed
-							foreach ($exist_check_array as $existing_part) {
-								if ($existing_part == $watched['title']) {
-									$should_skip = true;
-								}
-							}
-							if ($should_skip == true) // skip extra titles
-								continue;
-
-							$exist_check_array[$last_index] = $watched['title']; // store title to ignore any extras
-							$exist_check_array->setSize(sizeof($exist_check_array) + 1); // increase size of array for new titles
-							$last_index = $last_index + 1;
-							// Get the episode with highest number
-							$furthest = get_furthest_episode($watched['title'], $watched['type'], true); // gets episode with highest count
-							// Round to an integer
-							$watched_progress = round($furthest['time'] / $furthest['time_total'] * 100, 0); // calculates percentage of whats been watched
-							// Make an sql call to the database / Get the data
-							$watched_data = get_content_data($furthest['type'], $furthest['title']);
-							?>
+						<?
+						// Everything that we have already watched and finished.
+                        foreach (get_watching_list(true) as $watching) {
+                            $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
+							$watched_data = get_content_data($watching['type'], $watching['title']);
+				        ?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
-										<img src="<?php echo authenticate_cdn_url($watched_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
-										<a href=<?php echo '"' . get_furthest_episode_link($watched_data['url'], $furthest['type'], true) . '"' ?> class="card__play">
+										<img src="<?= authenticate_cdn_url($watched_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href="<?= get_furthest_episode_link($watched_data['url'], $watching['type'], true) ?>" class="card__play">
 											<i class="icon ion-ios-play"></i>
 										</a>
 									</div>
 									<div class="card__content">
-										<h3 class="card__title"><a href=<?php echo '"' . get_furthest_episode_link($watched_data['url'], $furthest['type'], true) . '"' ?>><?php echo $watched_data['title'] ?></a></h3>
+										<h3 class="card__title"><a href="<?= get_furthest_episode_link($watched_data['url'], $watching['type'], true) ?>"><?= $watched_data['title'] ?></a></h3>
 										<span class="card__category">
-											<?php if ($furthest['type'] == "show") { ?>
-												<a>Season: <?php echo $furthest['season'] ?></a>
-											<?php } ?>
-											<a>Episode: <?php echo $furthest['episode'] ?></a>
+											<? if ($watching['type'] == "show") { ?>
+												<a>Season: <?= $watching['season'] ?></a>
+											<? } ?>
+											<a>Episode: <?= $watching['episode'] ?></a>
 										</span>
 									</div>
 								</div>
 							</div>
-						<?php
-					} ?>
-
+						<? } ?>
 					</div>
 				</div>
 
