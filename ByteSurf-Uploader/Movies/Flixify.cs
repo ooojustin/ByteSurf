@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
@@ -100,42 +101,14 @@ namespace JexFlix_Scraper.Flixify {
             foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (Networking.FileExists(movie.url.Substring(8)))
+                if (Networking.FileExists(movie.url.Substring(8))) {
                     continue;
+                }
 
                 // stuff starts here to delete
 
-                //Web.FlixifyHeaders();
-                //byte[] response = Web.DownloadData(string.Format(MOVIES_URL_FOR_DOWNLOAD, movie.url));
-                //string new_raw = Encoding.Default.GetString(response);
-                //MovieData rootObject = JsonConvert.DeserializeObject<MovieData>(new_raw);
-
-                //string thumbnail_url = BASE_IMAGES_URL + rootObject.item.images.poster;
-                //string url_on_cdn = Networking.CDN_URL + rootObject.item.url + "/thumbnail.jpg";
-                //double? rating = rootObject.item.rating;
-                //string directory = rootObject.item.url;
-
-                //using (StreamWriter sw = File.AppendText("purgelist2k19.txt")) {
-                //    sw.WriteLine(url_on_cdn);
-                //}
-
-
-                //if (rootObject.item.images.poster != null)
-                //    Networking.ReuploadRemoteFile(FixExtension(FixThumbnailRes(thumbnail_url)), directory, "thumbnail.jpg", rootObject.item.title, web);
-
-                //Console.WriteLine(Convert.ToString(rating));
-
-                //NameValueCollection values = new NameValueCollection();
-                //values["rating"] = Convert.ToString(rating);
-                //values["url"] = rootObject.item.url.Substring(8);
-
-                //web.UploadValues("https://scraper.jexflix.com/add_rating.php", values);
-
-                //Console.WriteLine("Rating added to " + rootObject.item.title);
-
                 // stuff ends here to delete
 
-                //MessageHandler.Add(movie.title, "Beginning reupload process", ConsoleColor.White, ConsoleColor.Yellow);
                 Console.WriteLine("[" + movie.title + "] " + "Beginning reupload process");
 
                 Web.FlixifyHeaders();
@@ -177,6 +150,9 @@ namespace JexFlix_Scraper.Flixify {
                 if (rootObject.item.certification != null)
                     data.certification = rootObject.item.certification;
 
+                if (rootObject.item.subtitles.eng != null)
+                    data.subs.Add(new Subs { language = "en", url = Networking.CDN_URL + rootObject.item.url + "/en.vtt" });
+
                 // setup qualities
                 if (rootObject.item.download.download_720 != null)
                     data.qualities.Add(new Quality { resolution = 720, link = Networking.CDN_URL + rootObject.item.url + "/720.mp4" });
@@ -205,8 +181,8 @@ namespace JexFlix_Scraper.Flixify {
                 Console.WriteLine("[" + movie.title + "] " + "Completed reupload process");
 
             }
-
         }
+        
 
         public const string BASE_IMAGES_URL = "https://a.flixify.com";
         public const string BASE_URL = "https://flixify.com";
@@ -223,6 +199,8 @@ namespace JexFlix_Scraper.Flixify {
             string thumbnail_url = BASE_IMAGES_URL + data.item.images.poster;
 
             // make sure we dont try downloading files that dont exist
+            if (data.item.subtitles.eng != null)
+                Networking.ReuploadRemoteFile(BASE_IMAGES_URL + data.item.subtitles.eng[0].url, data.item.url, "en.vtt", data.item.title, web);
             if (data.item.images.preview_large != null)
                 Networking.ReuploadRemoteFile(FixExtension(preview_url), directory, "preview.jpg", data.item.title, web);
             if (data.item.images.poster != null)

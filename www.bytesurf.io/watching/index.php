@@ -139,31 +139,25 @@ require_login();
 					<div class="row">
 						<?php
 						// Everything that we are currently watching but haven't finished.
-						$watching_list = array();
-						foreach (get_watching_list(false) as $watching) {
-							$title = $watching['title'];
-							$type = $watching['type'];
-							if (array_key_exists($title, $watching_list))
-								continue;
-							$watching_list[$title] = get_furthest_episode($title, $type, false);
-							$watched_progress = round($watching_list[$title]['time'] / $watching_list[$title]['time_total'] * 100, 0);
-							$watch_data = get_content_data($type, $title);
-							?>
+                        foreach (get_watching_list(false) as $watching) {
+                            $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
+							$watch_data = get_content_data($watching['type'], $watching['title']);
+                        ?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
-										<img src="<?php echo authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
-										<a href=<?php echo '"' . get_furthest_episode_link($title, $type, false) . '"' ?> class="card__play">
+										<img src="<?= authenticate_cdn_url($watch_data['thumbnail']) ?>" alt="" style="width: 100%; height: 255px;">
+										<a href="<?= get_furthest_episode_link($watching['title'], $watching['type'], false) ?>" class="card__play">
 											<i class="icon ion-ios-play"></i>
 										</a>
 									</div>
 									<div class="card__content">
-										<h3 class="card__title"><a href="<?= get_furthest_episode_link($title, $type, false) ?>"><?= $watch_data['title'] ?></a></h3>
+										<h3 class="card__title"><a href="<?= get_furthest_episode_link($watching['title'], $watching['type'], false) ?>"><?= $watch_data['title'] ?></a></h3>
 										<span class="card__category">
 											<?php if ($type == "show") { ?>
-												<a>Season: <?php echo $watching_list[$title]['season'] ?></a>
+												<a>Season: <?php echo $watching['season'] ?></a>
 											<?php } ?>
-											<a>Episode: <?php echo $watching_list[$title]['episode'] ?></a>
+											<a>Episode: <?php echo $watching['episode'] ?></a>
 										</span>
 									</div>
 								</div>
