@@ -70,6 +70,10 @@ require_login();
 			<div class="container">
 				<div class="row">
 					<div class="col-12">
+						<!-- content title -->
+						<h2 class="content__title">Watching</h2>
+						<!-- end content title -->
+
 						<!-- content tabs nav -->
 						<ul class="nav nav-tabs content__tabs" id="content__tabs" role="tablist">
 							<li class="nav-item">
@@ -119,7 +123,7 @@ require_login();
 			<!-- content tabs -->
 			<div class="tab-content" id="myTabContent">
 
-				<div class="tab-pane fade" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+				<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
 					<div class="row">
 
 						<?php
