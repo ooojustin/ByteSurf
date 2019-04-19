@@ -49,7 +49,9 @@ foreach ($watched_list as $watched) {
 		$has_watched = true;
 }
 
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
