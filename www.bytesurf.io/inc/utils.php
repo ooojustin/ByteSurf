@@ -637,7 +637,6 @@
     }
 
     // returns the furthest episode that the user did/didn't complete (progress tracker record)
-    // returns the furthest episode that the user did/didn't complete (progress tracker record)
     function get_furthest_episode($title, $type, $completed = false) {         
         $data = array('season' => -1, 'episode' => -1);        
         foreach (get_progress_tracker_data($completed) as $item) {
@@ -647,6 +646,15 @@
                 $data = $item;
         }     
         return $data;     
+    }
+
+    function log_login($username) {
+        global $db, $ip;
+        $log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
+    	$log_login->bindValue(':username', $username);
+    	$log_login->bindValue(':ip_address', $ip);
+    	$log_login->bindValue(':timestamp', time());
+    	return $log_login->execute();    
     }
 
 
