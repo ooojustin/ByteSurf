@@ -105,25 +105,27 @@
 						<!-- authorization form -->
 						<form action="" method="GET" class="sign__form">
 
-							<a href="#" class="sign__logo">
+							<a href="#" style="margin-bottom: 20px" class="sign__logo">
 								<img src="../img/logo.png" alt="">
 							</a>
 
 							<? if (isset($issue)) { ?>
-							<div class="register-error">
+							<div class="register-error" style="margin-bottom: 15px">
 							    <span class="signin-error-text"><?= $issue ?></span>
 							</div>
 							<? } ?>
+                            
+                            <center style="max-width: 300px; margin-bottom: 15px;"><span class="sign__text">Please enter the 6 digit code from your authenticator app.</span></center>
                             
                             <? if (isset($_GET['r'])) { ?>
                             <input type="hidden" name="r" value="<?= htmlspecialchars($_GET['r']); ?>">
                             <? } ?>
 
 							<div class="sign__group">
-								<input type="text" class="sign__input" id="code" name="code" placeholder="ABC123">
+								<input type="text" class="sign__input" id="code" name="code" placeholder="ABC123" maxlength="6">
 							</div>
 							
-							<button class="sign__btn" type="submit">Authenticate</button>
+							<button style="margin-top: 0px" class="sign__btn" type="submit">Authenticate</button>
 							
 						</form>
 						<!-- end authorization form -->
