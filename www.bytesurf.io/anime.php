@@ -39,19 +39,28 @@ function generate_mp4_link($res)
 	return $url;
 }
 
+$submit_watched = $_GET['submit_watched'];
+
+switch ($submit_watched) {
+	case 1:
+		save_progress_entry(1, 1, 1);
+		break;
+	case 2:
+		delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
+		break;
+}
+
 // Check if this anime and episode is watched
 $watched_list = get_progress_tracker_data(true);
 
 $has_watched = false;
 
+
 foreach ($watched_list as $watched) {
 	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
 		$has_watched = true;
 }
-
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -89,7 +98,6 @@ foreach ($watched_list as $watched) {
 	<script src="js/main.js"></script>
 	<script src="js/progress.tracker.js"></script>
 	<script src="js/parties.js"></script>
-
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -184,17 +192,22 @@ foreach ($watched_list as $watched) {
 
 					</video>
 
-
 					<!-- Watched btn -->
-					<?php if ($has_watched) { ?>
-						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
-						</div>
-					<?php } else { ?>
-						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
-						</div>
-					<?php } ?>
+					<form action="" method="get">
+						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
+						<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']); ?>">
+						<input type="hidden" name="s" value="-1">
+						<input type="hidden" name="type" value="anime">
+						<?php if ($has_watched) { ?>
+							<div style="float: right; padding-top: 10px;">
+								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
+							</div>
+						<?php } else { ?>
+							<div style="float: right; padding-top: 10px;">
+								<button class="filter__btn" name="submit_watched" type="submit" value="1" id="submit_watched" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
+							</div>
+						<?php } ?>
+					</form>
 					<!-- end Watched btn -->
 
 				</div>
@@ -241,7 +254,14 @@ foreach ($watched_list as $watched) {
 												<?php } else { ?>
 													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
 												<?php } ?>
-												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">✔ ✘</a></td>
+												<?php
+												$has_watched = false;
+												foreach ($watched_list as $watched) {
+													if ($watched['title'] == $_GET['t'] && $watched['episode'] == $episode['episode'])
+														$has_watched = true;
+												}
+												?>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?php if ($has_watched) echo '✔'; else echo '✘'; ?></a></td>
 											</tr>
 										<? } ?>
 									</tbody>

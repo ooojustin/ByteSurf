@@ -9,6 +9,7 @@ require '../inc/session.php';
 require_login();
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -125,10 +126,10 @@ require_login();
 					<div class="row">
 						<?
 						// Everything that we are currently watching but haven't finished.
-                        foreach (get_watching_list(false) as $watching) {
-                            $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
+						foreach (get_watching_list(false) as $watching) {
+							$watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
 							$watch_data = get_content_data($watching['type'], $watching['title']);
-				        ?>
+							?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
@@ -171,10 +172,10 @@ require_login();
 					<div class="row">
 						<?
 						// Everything that we have already watched and finished.
-                        foreach (get_watching_list(true) as $watching) {
-                            $watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
+						foreach (get_watching_list(true) as $watching) {
+							$watched_progress = round($watching['time'] / $watching['time_total'] * 100, 0);
 							$watched_data = get_content_data($watching['type'], $watching['title']);
-				        ?>
+							?>
 							<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
 								<div class="card">
 									<div class="card__cover">
