@@ -211,6 +211,8 @@ foreach ($watched_list as $watched) {
 
 					<!-- Watched btn -->
 					<form action="" method="get">
+					<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']);?>">
+					<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']);?>">
 						<?php if ($has_watched) { ?>
 							<div style="float: right; padding-top: 10px;">
 								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
