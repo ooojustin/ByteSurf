@@ -746,8 +746,7 @@
     	}
 	}
 	
-	function delete_progress_entry($title, $type, $episode = -1, $season = -1)
-	{
+	function delete_progress_entry($title, $type, $episode = -1, $season = -1) {
 		global $db;
 		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type AND episode=:episode AND season=:season');
 		$remove_data->bindValue(':title', $title);
@@ -755,6 +754,23 @@
 		$remove_data->bindValue(':episode', $episode);
 		$remove_data->bindValue(':season', $season);
 		$remove_data->execute();
+	}
+
+	/*
+	// add player time (seconds, as float) and total duration to params
+    params['time'] = player.currentTime;
+    params['time_total'] = player.duration;
+    
+    // determine whether or not it's completed (last 5% of video)
+    let completion_time = player.duration - (player.duration * 0.05);
+    params['completed'] = (player.currentTime >= completion_time).toString();
+    
+    // build url with given parameters
+    let query = jQuery.param(params);
+	let url = 'https://bytesurf.io/inc/updater.php?action=save_progress&' + query;
+	*/
+	function save_progress_entry() {
+		
 	}
 
 ?>
