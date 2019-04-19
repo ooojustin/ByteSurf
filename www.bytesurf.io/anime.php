@@ -39,19 +39,43 @@ function generate_mp4_link($res)
 	return $url;
 }
 
+$submit_watched = $_GET['submit_watched'];
+
+switch ($submit_watched) {
+	case 1:
+
+		break;
+	case 2:
+		delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
+		break;
+}
+
 // Check if this anime and episode is watched
 $watched_list = get_progress_tracker_data(true);
 
 $has_watched = false;
 
+
 foreach ($watched_list as $watched) {
 	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
 		$has_watched = true;
+
+	/*
+	// add player time (seconds, as float) and total duration to params
+    params['time'] = player.currentTime;
+    params['time_total'] = player.duration;   
+    // determine whether or not it's completed (last 5% of video)
+    let completion_time = player.duration - (player.duration * 0.05);
+    params['completed'] = (player.currentTime >= completion_time).toString();   
+    // build url with given parameters
+    let query = jQuery.param(params);
+    let url = 'https://bytesurf.io/inc/updater.php?action=save_progress&' + query;
+    // send web request (save progress) and store update time
+	get_request(url, function(r) { });
+	*/
 }
 
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -186,15 +210,17 @@ foreach ($watched_list as $watched) {
 
 
 					<!-- Watched btn -->
-					<?php if ($has_watched) { ?>
-						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
-						</div>
-					<?php } else { ?>
-						<div style="float: right; padding-top: 10px;">
-							<button class="filter__btn" id="watched-submit" type="submit" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
-						</div>
-					<?php } ?>
+					<form action="" method="get">
+						<?php if ($has_watched) { ?>
+							<div style="float: right; padding-top: 10px;">
+								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
+							</div>
+						<?php } else { ?>
+							<div style="float: right; padding-top: 10px;">
+								<button class="filter__btn" name="submit_watched" type="submit" value="1" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
+							</div>
+						<?php } ?>
+					</form>
 					<!-- end Watched btn -->
 
 				</div>

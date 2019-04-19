@@ -247,7 +247,7 @@ function generate_page_url($new_page)
 								<!-- end filter item -->
 							</div>
 							<!-- filter btn -->
-							<button class="filter__btn" id="catalog-submit" type="submit">Add to Watched</button>
+							<button class="filter__btn" id ="catalog-submit" type="submit">apply filter</button>
 							<!-- end filter btn -->
 						</div>
 					</form>

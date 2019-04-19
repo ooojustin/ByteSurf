@@ -746,12 +746,14 @@
     	}
 	}
 	
-	function delete_progress_entry($title, $type)
+	function delete_progress_entry($title, $type, $episode = -1, $season = -1)
 	{
 		global $db;
-		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type');
+		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type AND episode=:episode AND season=:season');
 		$remove_data->bindValue(':title', $title);
 		$remove_data->bindValue(':type', $type);
+		$remove_data->bindValue(':episode', $episode);
+		$remove_data->bindValue(':season', $season);
 		$remove_data->execute();
 	}
 
