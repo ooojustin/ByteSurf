@@ -60,7 +60,6 @@ foreach ($watched_list as $watched) {
 	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
 		$has_watched = true;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -192,7 +191,7 @@ foreach ($watched_list as $watched) {
 						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
 
 					</video>
-		
+
 					<!-- Watched btn -->
 					<form action="" method="get">
 						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
@@ -255,7 +254,14 @@ foreach ($watched_list as $watched) {
 												<?php } else { ?>
 													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
 												<?php } ?>
-												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">✔ ✘</a></td>
+												<?php
+												$has_watched = false;
+												foreach ($watched_list as $watched) {
+													if ($watched['title'] == $_GET['t'] && $watched['episode'] == $episode['episode'])
+														$has_watched = true;
+												}
+												?>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?php if ($has_watched) echo '✔'; else echo '✘'; ?></a></td>
 											</tr>
 										<? } ?>
 									</tbody>
