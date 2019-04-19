@@ -43,7 +43,7 @@ $submit_watched = $_GET['submit_watched'];
 
 switch ($submit_watched) {
 	case 1:
-
+		save_progress_entry(1, 1, 1);
 		break;
 	case 2:
 		delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
@@ -59,20 +59,6 @@ $has_watched = false;
 foreach ($watched_list as $watched) {
 	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
 		$has_watched = true;
-
-	/*
-	// add player time (seconds, as float) and total duration to params
-    params['time'] = player.currentTime;
-    params['time_total'] = player.duration;   
-    // determine whether or not it's completed (last 5% of video)
-    let completion_time = player.duration - (player.duration * 0.05);
-    params['completed'] = (player.currentTime >= completion_time).toString();   
-    // build url with given parameters
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=save_progress&' + query;
-    // send web request (save progress) and store update time
-	get_request(url, function(r) { });
-	*/
 }
 
 ?>
@@ -113,7 +99,6 @@ foreach ($watched_list as $watched) {
 	<script src="js/main.js"></script>
 	<script src="js/progress.tracker.js"></script>
 	<script src="js/parties.js"></script>
-
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -209,17 +194,23 @@ foreach ($watched_list as $watched) {
 					</video>
 
 
+					$query->bindValue(':type', $_GET['type']);
+        $query->bindValue(':season', $_GET['s']);
+		
 					<!-- Watched btn -->
 					<form action="" method="get">
-					<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']);?>">
-					<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']);?>">
+						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
+						<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']); ?>">
+						<input type="hidden" name="s" value="-1">
+						<input type="hidden" name="type" value="anime">
+
 						<?php if ($has_watched) { ?>
 							<div style="float: right; padding-top: 10px;">
 								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
 							</div>
 						<?php } else { ?>
 							<div style="float: right; padding-top: 10px;">
-								<button class="filter__btn" name="submit_watched" type="submit" value="1" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
+								<button class="filter__btn" name="submit_watched" type="submit" value="1" id="submit_watched" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
 							</div>
 						<?php } ?>
 					</form>

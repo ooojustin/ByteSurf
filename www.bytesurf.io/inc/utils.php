@@ -756,5 +756,20 @@
 		$remove_data->execute();
 	}
 
+	// Taken from updater.php
+	function save_progress_entry($time, $time_total, $completed) {
+        global $user, $db;
+        if (get_progress($user['username']))
+            $query = 'UPDATE progress_tracker SET time=:time, time_total=:time_total, completed=:completed WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode';
+        else
+            $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, time_total, completed) VALUES (:username, :type, :title, :season, :episode, :time, :time_total, :completed)';
+        $save_progress = $db->prepare($query);
+        bind_content_values($save_progress);
+        $save_progress->bindValue(':username', $user['username']);
+        $save_progress->bindValue(':time', $time);
+        $save_progress->bindValue(':time_total', $time_total);
+        $save_progress->bindValue(':completed', $completed);
+        return $save_progress->execute();
+	}
 
 ?>
