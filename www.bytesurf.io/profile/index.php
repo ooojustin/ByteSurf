@@ -261,6 +261,31 @@
 							</form>
 						</div>
 						<!-- end password form -->
+                        
+                        <!-- 2 factor authentication -->
+                        <div class="col-12 col-lg-12">
+                            <?
+                                $enabled = !is_null($user['2fa']);
+                                $btn_two_factor_auth = $enabled ? 'Disable' : 'Enable';                 
+                            ?>
+							<form action="2fa.php" method="post" class="profile__form">
+								<div class="row">
+
+									<div class="col-12">
+										<h4 class="profile__title">Two Factor Authentication</h4>
+									</div>
+                                    
+                                    <input type="hidden" name="action" value="<?= strtolower($btn_two_factor_auth) ?>">
+                                    
+                                    <div class="col-12">
+										<button class="profile__btn" type="submit" style="width: 100%;"><?= $btn_two_factor_auth ?></button>
+									</div>
+                                    
+								</div>
+							</form>
+						</div>
+                        <!-- end 2 factor authentication -->
+                        
 					</div>
 				</div>
 
