@@ -17,23 +17,37 @@
     	$issue = 'Please enter username/password.';
     else if (login($_POST['username'], $_POST['password'])) {
 
-    	// log login info into database
     	global $db, $ip;
-    	$log_login = $db->prepare('INSERT INTO logins (username, ip_address, timestamp) VALUES (:username, :ip_address, :timestamp)');
-    	$log_login->bindValue(':username', $_POST['username']);
-    	$log_login->bindValue(':ip_address', $ip);
-    	$log_login->bindValue(':timestamp', time());
-    	$log_login->execute();
 
-    	// create session, proceed to home page/referrer page
-       	$_SESSION['id'] = get_user($_POST['username'])['id'];
-        $location = '../home';
+    	// determine user info and check if 2fa is enabled
+        $user = get_user($_POST['username']);
+        $skip_2fa = is_null($user['2fa']);
         
-        // redirect to a stored page, if necessary
-        if (isset($_GET['r']) && isset($_SESSION['login_redirect']))
-            $location = $_SESSION['login_redirect'];
+        if ($skip_2fa) {
+            
+            // log login info into the database
+            log_login($_POST['username']);
+            
+            $_SESSION['id'] = $user['id'];
+            $location = '../home';
         
-        unset($_SESSION['login_redirect']);
+            // redirect to a stored page, if necessary
+            if (isset($_GET['r']) && isset($_SESSION['login_redirect'])) {
+                $location = $_SESSION['login_redirect'];
+                unset($_SESSION['login_redirect']);
+            }
+        
+        } else {
+            
+            $_SESSION['id_pending'] = $user['id'];
+            $location = '2fa.php';
+            
+            // make sure we let the 2fa page we need to redirect
+            if (isset($_GET['r']) && isset($_SESSION['login_redirect']))
+                $location .= '?r=' . $_GET['r'];
+            
+        }
+        
        	header("location: " . $location);
        	die();
 
