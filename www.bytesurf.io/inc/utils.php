@@ -744,6 +744,15 @@
     		case 'show':
     			return 'get_series_data';
     	}
-    }
+	}
+	
+	function delete_progress_entry($title, $type)
+	{
+		global $db;
+		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type');
+		$remove_data->bindValue(':title', $title);
+		$remove_data->bindValue(':type', $type);
+		$remove_data->execute();
+	}
 
 ?>
