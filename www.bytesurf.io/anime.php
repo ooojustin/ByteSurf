@@ -192,10 +192,6 @@ foreach ($watched_list as $watched) {
 						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
 
 					</video>
-
-
-					$query->bindValue(':type', $_GET['type']);
-        $query->bindValue(':season', $_GET['s']);
 		
 					<!-- Watched btn -->
 					<form action="" method="get">
@@ -203,7 +199,6 @@ foreach ($watched_list as $watched) {
 						<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']); ?>">
 						<input type="hidden" name="s" value="-1">
 						<input type="hidden" name="type" value="anime">
-
 						<?php if ($has_watched) { ?>
 							<div style="float: right; padding-top: 10px;">
 								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
