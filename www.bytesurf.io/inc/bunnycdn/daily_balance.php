@@ -47,10 +47,14 @@
     $deposited_diff = percent_diff_html($data['deposited'], $deposited);
     $spent_diff = percent_diff_html($data['spent'], $spent);
 
+    // determine how many days our balance will last us
+    $days_left = $bcdn->get_balance_remainder_estimate();
+    $days_left = number_format($days_left, 2);
+
     // send email notification to support email
     // send_email($subject, $message, $from_email, $from_name, $to_email, $to_name, $reply_to = NULL, $reply_to_name = NULL)
     $subject = 'Daily CDN Balance Update - ' . $yesterday->format('F jS, Y'); // ex: January 1st, 2019
-    $message = sprintf(get_paste('KmHqPUvY'), $balance, $balance_diff, $deposited, $deposited_diff, $spent, $spent_diff, $today->getTimestamp());
+    $message = sprintf(get_paste('KmHqPUvY'), $balance, $balance_diff, $deposited, $deposited_diff, $spent, $spent_diff, $days_left, $today->getTimestamp());
     send_email($subject, $message, 'cdn@bytesurf.io', 'ByteSurf CDN', 'support@bytesurf.io', 'ByteSurf Staff');
 
     die('Executed: ' . $today->getTimestamp());
