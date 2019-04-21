@@ -12,6 +12,10 @@
     if (!isset($_POST['username']) || !isset($_POST['password']))
         goto skip_login;
 
+    // verify request token
+    if (!verify_request_token($_POST['v']))
+        msg('Failed', 'Unable to verify request.');
+
     // try to login if username/password are provided and not empty
     if (empty($_POST['username']) || empty($_POST['password']))
     	$issue = 'Please enter username/password.';
@@ -121,6 +125,8 @@
 								<label for="remember">Remember Me</label>
 							</div>
 							
+                            <input type="hidden" name="v" value="<?= generate_request_token(); ?>">
+                            
 							<button class="sign__btn" type="submit">Sign in</button>
 
 							<span class="sign__text">Don't have an account? <a href="../register">Sign up!</a></span>

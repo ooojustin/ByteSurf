@@ -11,6 +11,10 @@
 	if (!isset($_POST['username']))
 		goto skip_create_account;
 
+    // verify request token
+    if (!verify_request_token($_POST['v']))
+        msg('Failed', 'Unable to verify request.');
+
 	// a list of blacklisted usernames, cuz y not
 	$blacklisted = array('mailer', 'admin', 'penguware', 'weebware');
 
@@ -150,6 +154,8 @@
 								<input id="remember" name="remember" type="checkbox" checked="checked">
 								<label for="remember">I agree to the <a href="#">Privacy Policy</a></label>
 							</div>
+                            
+                            <input type="hidden" name="v" value="<?= generate_request_token(); ?>">
 							
 							<button class="sign__btn" type="submit">Sign up</button>
 
