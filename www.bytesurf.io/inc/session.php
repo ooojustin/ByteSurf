@@ -1,4 +1,7 @@
 <?php
+    
+    define('ONE_MONTH', 2629746); // one month in seconds
+    session_set_cookie_params(ONE_MONTH); // cookie lifetime = 1 month 
 
 	$started = @session_start();
 	if(!$started) {
