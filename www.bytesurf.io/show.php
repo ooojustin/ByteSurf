@@ -29,28 +29,28 @@
     $genres = json_decode($data['genres']);    
     $show_url_built = "https://bytesurf.io/show.php?t=" . $_GET['t'];
     
-    if (isset($_GET['s']) && isset($_GET['e'])) {
-		$url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
-        $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
-        $specific_data_url = authenticate_cdn_url($specific_data_url . 'data.json', true);
-        $specific_data_raw = get_request($specific_data_url);
-        $specific_data = json_decode($specific_data_raw, true);
+    // determine whether or not an episode was specified and set default s/e vars
+    $is_specific_episode = isset($_GET['s']) && isset($_GET['e']);
+    default_get_param('s', 1);
+    default_get_param('e', 1);
+
+    // download episode data json
+    $url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
+    $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
+    $specific_data_url = authenticate_cdn_url($specific_data_url . 'data.json', true);
+    $specific_data_raw = get_request($specific_data_url);
+    $specific_data = json_decode($specific_data_raw, true);
+    
+    // if s/e were set, adjust title and description to be specific to episode instead of series
+    if ($is_specific_episode) {
         $title = $title . " - " . $specific_data['title'];
         $description = $specific_data['description'];
-    } else {
-		$url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . 1 . "/" . 1 . "/";
-        $specific_data_url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . 1 . "/" . 1 . "/";
-        $specific_data_url = authenticate_cdn_url($specific_data_url . "data.json", true);
-        $specific_data_raw = get_request($specific_data_url);
-        $specific_data = json_decode($specific_data_raw, true);
     }
     
 	
 ?>
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">    
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
