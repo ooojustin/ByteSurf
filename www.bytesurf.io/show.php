@@ -50,7 +50,8 @@
     // get episode sub files
     if (array_key_exists('subs', $specific_data)) {
         $subs = $specific_data['subs'];
-        $subs[0]['default'] = 'true';
+        if (count($subs) > 0)
+            $subs[0]['default'] = 'true';
     } else
         $subs = array();
         
