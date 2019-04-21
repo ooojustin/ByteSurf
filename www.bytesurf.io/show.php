@@ -46,8 +46,11 @@
         $title = $title . " - " . $specific_data['title'];
         $description = $specific_data['description'];
     }
-    
-	
+
+    // get episode sub files
+    $subs = array_key_exists('subs', $specific_data) ? $specific_data['subs'] : array();
+    $subs[0]['default'] = 'true';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">    
@@ -168,16 +171,24 @@
 						
                         <? foreach ($specific_data['qualities'] as $quality) { ?>
                          <source 
-                             src=<?= '"' . authenticate_cdn_url($url . $quality['resolution'] . ".mp4") . '"' ?> 
+                             src="<?= authenticate_cdn_url($url . $quality['resolution'] . ".mp4") ?>" 
                              type="video/mp4" 
-                             size=<?= '"' . $quality['resolution'] . '"' ?>
+                             size="<?= $quality['resolution'] ?>"
                          />
                          <? } ?>
 
-						<!-- Caption files -->
-						<track kind="captions" label="English" srclang="en" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.en.vtt"
-						    default>
-						<track kind="captions" label="Français" srclang="fr" src="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-HD.fr.vtt">
+				        <!-- Caption files -->
+                        <? 
+                        foreach ($subs as $sub) { 
+                            $sub_end = isset($sub['default']) ? ' default' : '';
+                        ?>        
+                        <track 
+                            kind="captions" 
+                            label="<?=$sub['language']?>" 
+                            srclang="<?=$sub['language']?>"
+                            src="<?= authenticate_cdn_url('https://cdn.bytesurf.io/' . $sub['url']) ?>"
+                        <?=$sub_end?>>
+                        <? } ?>
 
 						<!-- Fallback for browsers that don't support the <video> element -->
 						<a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
