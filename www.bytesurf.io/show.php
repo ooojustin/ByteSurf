@@ -48,9 +48,12 @@
     }
 
     // get episode sub files
-    $subs = array_key_exists('subs', $specific_data) ? $specific_data['subs'] : array();
-    $subs[0]['default'] = 'true';
-
+    if (array_key_exists('subs', $specific_data)) {
+        $subs = $specific_data['subs'];
+        $subs[0]['default'] = 'true';
+    } else
+        $subs = array();
+        
 ?>
 <!DOCTYPE html>
 <html lang="en">    
