@@ -1,13 +1,12 @@
 const party_update_interval = 5;
 const max_time_delta = 0.1;
-    
-let url_obj = new URL(window.location.href);
-let searchParams = new URLSearchParams(url_obj.search);
-if (searchParams.has('party')) {
+
+// note 'var party' must be set somewhere earlier in javascript
+if (typeof party !== 'undefined') {
     
     // get season/episode/title/type into array, set party property
     var params = get_important_params();
-    params['party'] = searchParams.get('party');
+    params['party'] = party;
     
     // start interval for updates
     window.setInterval(update_party_send, party_update_interval * 1000);
@@ -30,8 +29,8 @@ function ensure_party_link(data) {
     
     if (!correct) {
         
-        // store title and party in new url params
-        let params_new = { 't': data.title, 'party': params['party'] };
+        // store title in new url params
+        let params_new = { 't': data.title };
         
         // if its an anime, store the episode.
         // if it's a show, store both episode and season.

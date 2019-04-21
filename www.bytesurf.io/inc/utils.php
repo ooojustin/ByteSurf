@@ -328,6 +328,15 @@
         return $get_party->fetch();
     }
 
+    function define_party_js() {
+        
+        if (!isset($_SESSION['party']))
+            return;
+        
+        echo sprintf("<script>var party = '%s';</script>", $_SESSION['party']);
+        
+    }
+
 	// code to log sent emails
 	function log_email($address, $subject, $type) {
 		global $db;

@@ -64,6 +64,9 @@
     <script src="js/photoswipe-ui-default.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/progress.tracker.js"></script>
+    
+    <!-- JS Party System -->
+    <? define_party_js(); ?>
     <script src="js/parties.js"></script>
 
 	<!-- Favicons -->
