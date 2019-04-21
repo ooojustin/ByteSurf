@@ -70,4 +70,30 @@
 		return ($expires == -1) ? 'Lifetime' : get_time_string($expires);
 	}
 
+    // generate and set a request auth token
+    // stores raw version in $_SESSION['token'], returns encryption version
+    function generate_request_token() {
+        $token_raw = generate_split_string(3, 3);
+        $token = base64_encode($token_raw);
+        $_SESSION['token'] = $token_raw;
+        return $token;
+    }
+
+    // provide encoded token from client
+    // decodes it and compares it to session var
+    function verify_request_token($token) {
+        
+        if (!isset($token) || !isset($_SESSION['token']))
+            return false;
+        
+        // determine decrypted token & what to compare it to
+        $token_correct = $_SESSION['token'];
+        $token_raw = base64_decode($token);
+        
+        // unset token, return whether or not it was correct
+        unset($_SESSION['token']);
+        return $token_correct == $token_raw;
+        
+    }
+
 ?>
