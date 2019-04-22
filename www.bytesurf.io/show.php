@@ -54,6 +54,11 @@
             $subs[0]['default'] = 'true';
     } else
         $subs = array();
+
+    // default 'watched' button text/value
+    $watched = is_watched();
+    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
         
 ?>
 <!DOCTYPE html>
@@ -197,9 +202,11 @@
                         <?=$sub_end?>>
                         <? } ?>
 
-						<!-- Fallback for browsers that don't support the <video> element -->
-						<a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>Download</a>
 					</video>
+                    
+                    <span style="float: right; padding-top: 10px; padding-bottom: 20px;">
+				        <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+				    </span>
 				</div>
 				<!-- end player -->	
 						
