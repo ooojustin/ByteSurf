@@ -11,6 +11,28 @@
 
     switch ($_GET['action']) {
             
+        case 'remove_from_watched':
+            
+            // require parameters for bind_content_values
+            $params = array('s', 'e', 't', 'type');
+            require_get_params($params);
+            
+            // delete saved progress data from database
+            delete_progress_entry();
+            
+            break;
+        
+        case 'add_to_watched':
+            
+            // require parameters for bind_content_values
+            $params = array('s', 'e', 't', 'type');
+            require_get_params($params);
+            
+            // mark episode as complpeted
+            save_progress_entry(0, 0, true);
+            
+            break;
+            
         case 'party_update':
             
             // require a myriad of parameters, lol
