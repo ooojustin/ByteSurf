@@ -84,6 +84,15 @@ function populate_seasons_and_episodes(params, type) {
     }
 }
 
+// onclick="toggle_watched(this)" <--- add to a button :D
+function toggle_watched(btn) {  
+    send_update(btn.value, get_important_params(), function(r) {
+        let data = r.split(':');
+        btn.value = data[0];
+        btn.innerHTML = data[1];
+    });
+}
+
 $(document).ready(function () {
 
 	"use strict"; // start of use strict

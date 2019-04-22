@@ -20,7 +20,8 @@
             // delete saved progress data from database
             delete_progress_entry();
             
-            break;
+            // die with new button value & text    
+            die('add_to_watched:ADD TO WATCHED');
         
         case 'add_to_watched':
             
@@ -31,7 +32,8 @@
             // mark episode as complpeted
             save_progress_entry(0, 0, true);
             
-            break;
+            // die with new button value & text
+            die('remove_from_watched:REMOVE FROM WATCHED');
             
         case 'party_update':
             
