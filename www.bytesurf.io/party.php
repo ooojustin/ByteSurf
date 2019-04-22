@@ -13,13 +13,17 @@
     switch ($_GET['action']) {
             
         case 'create':
+            
             $party_id = create_party();
-            die('Party created: ' . $party_id);
+            $join_url = 'https://bytesurf.io/party.php?action=join&p=' . $party_id;
+            
             break;
             
         case 'leave';
+            
             unset($_SESSION['party']);
-            die('Left party.');
+            msg('Left Party', 'You can go back to browsing ByteSurf alone :(', 'GO HOME', 'https://bytesurf.io/home');
+            
             break;
             
         case 'join':
@@ -37,9 +41,13 @@
             $_SESSION['party'] = $_GET['p'];
             
             // redirect to current link
-            // ...
+            if ($url = get_active_party_url()) {
+                header('location: ' . $url);
+                die();
+            }
             
-            die('Party joined.');
+            // output a basic message if we couldnt redirect to a party url
+            msg('Party Joined', 'You have joined a party successfully. When the host begins to watch a video, you can be redirected there automatically by clicking any movie, show, or anime.', 'CONTINUE', 'https://bytesurf.io/home');
             
             break;
             
@@ -81,6 +89,8 @@
 	<script src="../js/photoswipe-ui-default.min.js"></script>
 	<script src="../js/main.js"></script>
     
+    <!-- C
+    
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -88,7 +98,7 @@
 	<meta name="description" content="">
 	<meta name="keywords" content="">
 	<meta name="author" content="Peter Pistachio">
-	<title>ByteSurf - 2FA</title>
+	<title>ByteSurf - Party System [beta]</title>
 
 </head>
 <body class="body">
@@ -98,30 +108,34 @@
 			<div class="row">
 				<div class="col-12">
 					<div class="sign__content">
-						<!-- authorization form -->
-						<form action="" method="GET" class="sign__form">
-
-							<a href="#" style="margin-bottom: 20px" class="sign__logo">
+				        
+                        <!-- CREATE PARTY -->
+                        <? if ($_GET['action'] == 'create') { ?>
+						<form action="#" method="GET" class="sign__form" style="width: 70%">
+							<a href="#" style="margin-bottom: 20px;" class="sign__logo">
 								<img src="../img/logo_party.png" alt="">
 							</a>
-
-							<? if (isset($issue)) { ?>
-							<div class="register-error" style="margin-bottom: 15px">
-							    <span class="signin-error-text"><?= $issue ?></span>
-							</div>
-							<? } ?>
-                            
-                            <center style="max-width: 300px; margin-bottom: 15px;"><span class="sign__text">Please enter the 6 digit code from your authenticator app.</span></center>
-                            
-
-							<div class="sign__group">
-								<input type="text" class="sign__input" id="code" name="code" placeholder="ABC123" maxlength="6">
-							</div>
-							
-							<button style="margin-top: 0px" class="sign__btn" type="submit">Authenticate</button>
-                            
+                            <script>
+                                function copy_link() {
+                                    let txt = document.getElementById("join_url");
+                                    txt.select();
+                                    document.execCommand("copy");
+                                    alert('Party URL has been copied to clipboard.');
+                                }
+                                function go_home() {
+                                    window.location.href = "https://bytesurf.io/home";
+                                }
+                            </script>
+                            <center style="margin-bottom: 15px;"><span class="sign__text">Party created. Give this link to others to allow them to join your party.</span></center>
+							<div class="sign__group" style="width: 95%">
+								<input type="text" style="width: 100%; text-align: center;" class="sign__input" id="join_url" name="join_url" value="<?= $join_url ?>" readonly>
+							</div>					
+							<button style="margin-top: 0px" onclick="copy_link()" class="sign__btn" type="button">COPY LINK</button>
+                            <button style="margin-top: 15px" onclick="go_home()" class="sign__btn" type="button">CONTINUE</button>
 						</form>
-						<!-- end authorization form -->
+						<? } ?>
+                        <!-- END CREATE PARTY -->
+                        
 					</div>
 				</div>
 			</div>
