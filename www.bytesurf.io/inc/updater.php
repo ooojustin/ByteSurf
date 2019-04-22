@@ -92,7 +92,7 @@
             
             // save current information to database
             $completed = $_GET['completed'] === 'true';
-            save_progress($username, $_GET['time'], $_GET['time_total'], $completed);
+            save_progress_entry($_GET['time'], $_GET['time_total'], $completed);
             die('Saved progress successfully: ' . $_GET['time']);
             
         case 'get_progress':
@@ -132,21 +132,6 @@
         $update_party->bindValue(':time', $time);
         $update_party->bindValue(':playing', $playing);
         return $update_party->execute();
-    }
-
-    function save_progress($username, $time, $time_total, $completed) {
-        global $db;
-        if (get_progress($username))
-            $query = 'UPDATE progress_tracker SET time=:time, time_total=:time_total, completed=:completed WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode';
-        else
-            $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, time_total, completed) VALUES (:username, :type, :title, :season, :episode, :time, :time_total, :completed)';
-        $save_progress = $db->prepare($query);
-        bind_content_values($save_progress);
-        $save_progress->bindValue(':username', $username);
-        $save_progress->bindValue(':time', $time);
-        $save_progress->bindValue(':time_total', $time_total);
-        $save_progress->bindValue(':completed', $completed);
-        return $save_progress->execute();
     }
 
 ?>
