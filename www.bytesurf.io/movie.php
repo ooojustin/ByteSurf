@@ -27,6 +27,11 @@
     $rating = $data['rating'];
     $subs = get_subtitles($data);
 
+    // default 'watched' button text/value
+    $watched = is_watched($_GET['t'], get_file_name());
+    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -124,6 +129,9 @@
             <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
         </video>
 
+            <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+				<button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+            </span>
         </div>
         <!-- end player -->
     </div>
