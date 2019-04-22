@@ -24,20 +24,33 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             // Fetch entire list of anime data
             List<TwistAnimeData> AnimeData = TwistAPI.GetTwistAnime();
 
+             AnimeData.Reverse();
+
             foreach (TwistAnimeData Anime in AnimeData) {
+
+                if (Anime.title.ToLower().Contains("naruto"))
+                    continue;
+
+                if (Anime.title.ToLower().Contains("one piece"))
+                    continue;
+
+                if (Anime.title.ToLower().Contains("bleach"))
+                    continue;
+
+                if (Anime.title.ToLower().Contains("hunter x hunter") && !Anime.title.ToLower().Contains("2011"))
+                    continue;
                 // Setup Object used to upload.
                 JexUpload UploadData = new JexUpload();
                 UploadData.episodeData = new List<EpisodeData>();
                 // Setup new API infomation
-                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.title);
+                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.slug.slug);
 
                 // Skip animes we can't update!
                 if (KitsuAnimeInfo == null) {
                     MessageHandler.Add(Anime.title, "Skipping! Fail to fetch Kitsu Information \n", ConsoleColor.Red, ConsoleColor.White);
                     continue;
                 } else
-                    MessageHandler.Add(Anime.title, "Now Scraping! \n", ConsoleColor.Magenta, ConsoleColor.White);
-
+                    MessageHandler.Add(Anime.title + " | Kitsu: " +KitsuAPI.GetTitle(KitsuAnimeInfo), "Now Scraping! \n", ConsoleColor.Magenta, ConsoleColor.White);
 
                 // Get episode with slug
                 List<EpisodeInfo> TwistEpisodes = TwistAPI.GetTwistEpisodes(Anime.slug.slug);
