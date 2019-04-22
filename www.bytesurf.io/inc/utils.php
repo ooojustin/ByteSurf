@@ -586,74 +586,73 @@
         return $get_progress->fetch();
     }
 
-    function is_favorited($type, $title) {
-        $favorites = get_favorites();
+    function is_queued($type, $title) {
+        $queue = get_queue();
         $item = sprintf('%s:%s', $type, $title);
-        return in_array($item, $favorites);
+        return in_array($item, $queue);
     }
 
-	function get_favorites($get_data = false) {
+	function get_queue($get_data = false) {
         
         global $user;
         if (!$user)
             return array();
 
-        // get raw favorites info and make sure its not null
-        $favorites = $user['favorites'];
-        if (is_null($favorites))
+        // get raw queue info and make sure its not null
+        $queue = $user['queue'];
+        if (is_null($queue))
             return array();
 
 		// list of movie urls
-		$favorites = json_decode($favorites, true);
+		$queue = json_decode($queue, true);
 
 		// return list of urls, if necessary
 		if (!$get_data)
-			return $favorites;
+			return $queue;
 
-		// otherwise, convert urls to an array of movies
+		// otherwise, convert urls to an array of movies/animes/shows
 		$item_list = array();
-		foreach ($favorites as $favorite) {
-			$type = explode('|', $favorite)[0];
-			$item = get_content_data($type, $favorite);
-			$item['type'] = $type;
+		foreach ($queue as $queue_item) {
+            $data = explode('|', $queue_item);
+			$item = get_content_data($data[0], $data[1]);
+			$item['type'] = $data[0];
 			array_push($item_list, $item);
 		}
-
 		return $item_list;
 
 	}
 
-    function set_favorited($type, $title, $to_favorite) {
+    function set_queued($type, $title, $to_queue) {
         
         global $user, $db;
         if (!$user)
             return;
 
-		// check if it's already favorited
+		// check if it's already queued
 		$item = sprintf('%s:%s', $type, $title);
-		$was_favorited = is_favorited($type, $title);
+		$was_queued = is_queued($type, $title);
 
 		// check if we don't need to update anything
-		$ignore_1 = $to_favorite && $was_favorited; // + +
-		$ignore_2 = !$to_favorite && !$was_favorited; // - -
+		$ignore_1 = $to_queue && $was_queued; // + +
+		$ignore_2 = !$to_queue && !$was_queued; // - -
 		if ($ignore_1 || $ignore_2)
 			return true;
 
 		// add item to array or remove it from array
-        $favorites = get_favorites();
-		if ($to_favorite)
-			array_push($favorites, $item);
+        $queue = get_queue();
+		if ($to_queue)
+			array_push($queue, $item);
 		else
-			unset($favorites[array_search($item, $favorites)]);
+			unset($queue[array_search($item, $queue)]);
 
 		// encode data
-		$data = json_encode($favorites);
+		$data = json_encode($queue);
 
 		// update data in database
-		$update_favorites = $db->prepare('UPDATE users SET favorites=:favorites WHERE username=:username');
-		$update_favorites->bindValue(':favorites', $data);
-		$update_favorites->bindValue(':username', $user['username']);
-		return $update_favorites->execute();
+		$update_queue = $db->prepare('UPDATE users SET queue=:queue WHERE username=:username');
+		$update_queue->bindValue(':queue', $data);
+		$update_queue->bindValue(':username', $user['username']);
+		return $update_queue->execute();
 
 	}
     

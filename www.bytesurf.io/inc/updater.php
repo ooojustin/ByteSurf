@@ -17,6 +17,9 @@
             $params = array('s', 'e', 't', 'type');
             require_get_params($params);
             
+            // make sure type is valid
+            validate_type($_GET['type']);
+            
             // delete saved progress data from database
             delete_progress_entry();
             
@@ -28,6 +31,9 @@
             // require parameters for bind_content_values
             $params = array('s', 'e', 't', 'type');
             require_get_params($params);
+            
+            // make sure type is valid
+            validate_type($_GET['type']);
             
             // mark episode as complpeted
             save_progress_entry(0, 0, true);
@@ -82,7 +88,7 @@
             die($data);
             
             
-        case 'toggle_favorite':
+        case 'toggle_queued':
             
             // require parameters for title & type
             $params = array('t', 'type');
@@ -92,11 +98,11 @@
             validate_type($_GET['type']);
             
             // determine whether or not it was favorited, and set to opposite
-            $favorited = is_favorited($_GET['type'], $_GET['t']);
-            $executed = set_favorited($_GET['type'], $_GET['t'], !$favorited);
+            $queued = is_queued($_GET['type'], $_GET['t']);
+            $executed = set_queued($_GET['type'], $_GET['t'], !$queued);
             
             if ($executed)
-                die('Favorited: ' . strval(!$favorited));
+                die('Queued: ' . strval(!$queued));
             else
                 die('Failed to execute query.');
             
