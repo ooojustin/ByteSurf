@@ -39,23 +39,10 @@
 	   return $url;
     }
 
-    $submit_watched = $_GET['submit_watched'];
-    switch ($submit_watched) {
-	   case 1:
-		  save_progress_entry(1, 1, 1);
-		  break;
-	   case 2:
-        delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
-        break;
-    }
-
-    // Check if this anime and episode is watched
-    $watched_list = get_progress_tracker_data(true);
-    $has_watched = false;
-    foreach ($watched_list as $watched) {
-        if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
-            $has_watched = true;
-    }
+    // default 'watched' button text/value
+    $watched = is_watched($_GET['t'], 'anime', -1, $_GET['e']);
+    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
 
 ?>
 <!DOCTYPE html>
@@ -126,8 +113,8 @@
 				<!-- title -->
 				<div class="col-12">
 					<h1 class="details__title"><?= $title ?></h1>
-					<h1 class="details__devices" style="color: #fff"><?php echo 'Episode ' . $_GET['e']; ?></h1>
-					<h1 class="details__devices" style="color: #fff"><?php echo  $episode_info['episode_title']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?= 'Episode ' . $_GET['e']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?=  $episode_info['episode_title']; ?></h1>
 				</div>
 				<!-- end title -->
 
@@ -193,24 +180,9 @@
 
 					</video>
 
-					<!-- Watched btn -->
-					<form action="" method="get">
-						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
-						<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']); ?>">
-						<input type="hidden" name="s" value="-1">
-						<input type="hidden" name="type" value="anime">
-						<?php if ($has_watched) { ?>
-							<div style="float: right; padding-top: 10px;">
-								<button class="filter__btn" name="submit_watched" type="submit" value="2" style="font-size: 10px; height: 35px; width: 160px;">Remove from Watched</button>
-							</div>
-						<?php } else { ?>
-							<div style="float: right; padding-top: 10px;">
-								<button class="filter__btn" name="submit_watched" type="submit" value="1" id="submit_watched" style="font-size: 10px; height: 35px; width: 120px;">Add to Watched</button>
-							</div>
-						<?php } ?>
-					</form>
-					<!-- end Watched btn -->
-
+                    <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+				        <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+                    </span>
 				</div>
 				<!-- end player -->
 			</div>
@@ -221,50 +193,41 @@
 	<!-- content -->
 	<section class="content">
 		<!-- details content -->
-		<div class="container">
-			<div class="row">
+        <div class="container">
+            <div class="row">
 				<!-- accordion -->
-				<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
-					<div class="accordion" id="accordion">
-						<div class="accordion__card">
-							<div class="card-body">
-								<table class="accordion__list">
-									<thead>
-										<tr>
-											<th style="color:#ff5860">#</th>
+                <div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
+                    <div class="accordion" id="accordion">
+                        <div class="accordion__card">
+                            <div class="card-body">
+                                <table class="accordion__list">
+                                    <thead>
+                                        <tr>
+                                            <th style="color:#ff5860">#</th>
 											<th style="color:#ff5860">Title</th>
 											<th style="color:#ff5860">Air Date</th>
 											<th style="color:#ff5860">Watched</th>
-
-										</tr>
-									</thead>
+                                        </tr>
+                                    </thead>
 									<tbody>
-										<?php foreach ($episodes as $episode) {
-											$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
-											$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
-											?>
-											<tr>
-												<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
-												<?php if ($episode['episode_title'] != "") { ?>
-													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode_title'] ?></a></td>
-												<?php } else { ?>
-													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
-												<?php }
-											if ($episode['air_date'] != "") { ?>
-													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['air_date'] ?></a></td>
-												<?php } else { ?>
-													<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>">-</a></td>
-												<?php } ?>
-												<?php
-												$has_watched = false;
-												foreach ($watched_list as $watched) {
-													if ($watched['title'] == $_GET['t'] && $watched['episode'] == $episode['episode'])
-														$has_watched = true;
-												}
-												?>
-												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?php if ($has_watched) echo '✔'; else echo '✘'; ?></a></td>
-											</tr>
-										<? } ?>
+								        <?php 
+                                            $watched_list = get_progress_tracker_data(true);
+                                            $watched_list_str = stringify_progress_tracker_data($watched_list);
+                                            foreach ($episodes as $episode) {
+                                                $episode_title = empty($episode['episode_title']) ? '-' : $episode['episode_title'];
+                                                $air_date = empty($episode['air_date']) ? '-' : $episode['air_date'];
+                                                $episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
+								                $color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
+                                                $item_str = sprintf('%s:%s:%s:%s', 'anime', $_GET['t'], -1, $episode['episode']);
+                                                $episode_watched = in_array($item_str, $watched_list_str);
+                                        ?>
+                                        <tr>
+                                            <th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
+                                            <td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_title ?></a></td>
+											<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $air_date ?></a></td>  
+								            <td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_watched ? '✔' : '✘' ?></a></td>
+								        </tr>
+                                        <? } ?>
 									</tbody>
 								</table>
 							</div>

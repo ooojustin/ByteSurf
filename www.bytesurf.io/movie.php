@@ -28,7 +28,7 @@
     $subs = get_subtitles($data);
 
     // default 'watched' button text/value
-    $watched = is_watched($_GET['t'], get_file_name());
+    $watched = is_watched($_GET['t'], 'movie');
     $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
     $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
 
