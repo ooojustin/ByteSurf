@@ -27,7 +27,7 @@ function ensure_party_link(data) {
     else if (params['e'] != data.episode)
         correct = false;
     
-    if (!correct) {
+    /*if (!correct) {
         
         // store title in new url params
         let params_new = { 't': data.title };
@@ -45,7 +45,14 @@ function ensure_party_link(data) {
         
         // redirect (simulate clicked link) to follow party host
         window.location.href = url;
+        return false;
         
+    }*/
+    
+    // NOTE: refreshing the page will force php to calculate new page url
+    if (!correct) {
+        location.reload();
+        return false;
     }
     
     return true;
