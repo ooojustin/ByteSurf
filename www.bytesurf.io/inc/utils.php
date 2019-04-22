@@ -9,10 +9,12 @@
 	// clients ip address
 	$GLOBALS['ip'] = get_ip();
 
-	function msg($title, $message) {
+	function msg($title, $message, $btn_text = 'GO BACK', $btn_link = NULL) {
 		$_SESSION['msg'] = array(
 			'title' => $title,
-			'message' => $message
+			'message' => $message,
+            'btn_text' => $btn_text,
+            'btn_link' => $btn_link
 		);
 		header('location: https://bytesurf.io/msg');
 		die();
