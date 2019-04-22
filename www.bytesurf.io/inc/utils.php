@@ -508,7 +508,7 @@
         $get_watching->bindValue(':username', $user['username']);
         $get_watching->bindValue(':completed', intval($completed));
         $get_watching->execute();
-        return $get_watching->fetchAll(); 
+        return $get_watching->fetchAll();
     }
 
     // returns an array of progress_tracker records
@@ -526,6 +526,17 @@
         return $list;                        
     }
 
+    // puts progress tracker data into strings (format - type:title:season:episode)
+    // works on get_progress_tracker_data or get_watching_list
+    function stringify_progress_tracker_data($list) {
+        $list_str = array();
+        foreach ($list as $item) {
+            $item_str = sprintf('%s:%s:%s:%s', $item['type'], $item['title'], $item['season'], $item['episode']);
+            array_push($list_str, $item_str);
+        }
+        return $list_str;
+    }
+    
     // automatically binds type/s/e/t to a given statement (query object)
     function bind_content_values($query) {
         $query->bindValue(':type', $_GET['type']);
