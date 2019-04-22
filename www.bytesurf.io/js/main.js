@@ -93,6 +93,13 @@ function toggle_watched(btn) {
     });
 }
 
+// toggles whether or not the current video is queued
+function toggle_queued() {
+    send_update('toggle_queued', get_important_params(), function(r) {
+        console.log(r);
+    });
+}
+
 $(document).ready(function () {
 
 	"use strict"; // start of use strict
