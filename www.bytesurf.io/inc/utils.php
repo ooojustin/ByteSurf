@@ -537,6 +537,21 @@
         return $list_str;
     }
     
+    // checks if a specified episode was watched
+    function is_watched($title = NULL, $type = NULL, $season = -1, $episode = -1) {
+        if (is_null($title)) {
+            $title = $_GET['t'];
+            $type = get_file_name();
+            $season = $_GET['s'];
+            $episode = $_GET['e'];
+        }
+        $item_str = sprintf('%s:%s:%s:%s', $type, $title, $season, $episode);
+        $watched_list = get_progress_tracker_data(true, true);
+        $watched_list_str = stringify_progress_tracker_data($watched_list);
+        $watched = in_array($item_str, $watched_list_str);
+        return $watched;
+    }
+
     // automatically binds type/s/e/t to a given statement (query object)
     function bind_content_values($query) {
         $query->bindValue(':type', $_GET['type']);
