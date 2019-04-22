@@ -297,9 +297,9 @@
 	}
 
     function get_active_party() {
-        if (!isset($_GET['party']))
+        if (!isset($_SESSION['party']))
             return NULL;
-        return get_party($_GET['party']);   
+        return get_party($_SESSION['party']);   
     }
 
     function create_party() {
@@ -310,12 +310,13 @@
         
         $party = generate_split_string(3, 3);
         
-        $create_party = $db->prepare('INSERT INTO paries (party, owner, users) VALUES (:party, :owner, :users)');
+        $create_party = $db->prepare('INSERT INTO parties (party, owner, users) VALUES (:party, :owner, :users)');
         $create_party->bindValue(':party', $party);
         $create_party->bindValue(':owner', $user['username']);
         $create_party->bindValue(':users', '[]');
         $create_party->execute();
         
+        $_SESSION['party'] = $party;
         return $party;
         
     }
@@ -327,14 +328,83 @@
         $get_party->execute();
         return $get_party->fetch();
     }
-
-    function define_party_js() {
+    
+    function get_active_party_url() {
         
-        if (!isset($_SESSION['party']))
+        // get party data, make sure it's valid
+        $party = get_active_party();
+        if (!$party || empty($party['title']))
+            return false;
+        
+        // build array of url params
+        $params = array('t' => $party['title']);
+        if ($party['type'] == 'anime' || $party['type'] == 'show')
+            $params['e'] = $params['episode'];
+        if ($party['type'] == 'show')
+            $params['s'] = $party['season'];
+        
+        // build query and generate url
+        $query = http_build_query($params);
+        $url = sprintf('https://bytesurf.io/%s.php?%s', $party['type'], $query);
+        
+        return $url;
+        
+    }
+
+    function initialize_party_system($public_html = '') {
+        
+        // make sure the user is in a valid party
+        $party = get_active_party();
+        if (!$party)
             return;
         
-        echo sprintf("<script>var party = '%s';</script>", $_SESSION['party']);
+        // set type & s & e, so we can compare to values in row
+        $_GET['type'] = get_file_name();
+        default_get_param('s', -1);
+        default_get_param('e', -1);
         
+        // determine whether or not we're on the correct page
+        $correct = true;
+        if ($_GET['type'] != $party['type'])
+            $correct = false;
+        else if ($_GET['t'] != $party['title'])
+            $correct = false;
+        else if ($_GET['s'] != $party['season'])
+            $correct = false;
+        else if ($_GET['e'] != $party['episode'])
+            $correct = false;
+        
+        // if we're not on the right page (and we don't own the party), redirect
+        if (!$correct && !is_party_owner()) {
+            if ($correct_url = get_active_party_url()) {
+                header('location: ' . $correct_url);
+                die();
+            }
+        }
+        
+        // define party variable
+        echo '<script>var party = "' . $_SESSION['party'] . '";</script>' . "\r\n";
+        
+        // include party script
+        echo '<script src="' . $public_html . 'js/parties.js"></script>';
+        
+        
+    }
+
+    // returns whether or not logged in user is the party owner
+    function is_party_owner($username = NULL) {
+        global $user;
+        $username = $username ?: $user['username'];
+        $owner = get_active_party()['owner'];
+        return strtolower($username) == strtolower($owner);
+    }
+
+    // returns the file name of the current url
+    // results in the type (ex: /show.php = show, /movie.php = movie, /anime.php = anime)
+    function get_file_name() {
+        $path = parse_url($GLOBALS['current_url'])['path'];
+        $pathinfo = pathinfo($path);
+        return $pathinfo['filename'];
     }
 
 	// code to log sent emails
