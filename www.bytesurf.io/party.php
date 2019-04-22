@@ -30,12 +30,18 @@
             
             // make sure we have party set in url
             if (!isset($_GET['p']))
-                msg('Failed', 'Party ID not specified :(');
+                msg('Failed', 'Party ID not specified :(', 'GO HOME', 'https://bytesurf.io/home');
             
             // make sure the party is valid
             $party = get_party($_GET['p']);
             if (!$party)
-                msg('Failed', 'Specified party ID was invalid :(');
+                msg('Failed', 'Specified party ID was invalid :(', 'GO HOME', 'https://bytesurf.io/home');
+            
+            // make sure the host is still running the party
+            $timestamp_ms = round(microtime(true) * 1000);
+            $update_delta = $timestamp_ms - $party['timestamp'];
+            if ($update_delta > 60000)
+                msg('Failed', 'That party is inactive. Create your own, or join another one.', 'GO HOME', 'https://bytesurf.io/home');
                 
             // join the party
             $_SESSION['party'] = $_GET['p'];
