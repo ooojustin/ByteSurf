@@ -1,65 +1,62 @@
 <?php
 
-require 'inc/server.php';
-require 'inc/session.php';
-require 'inc/imdb.php';
+    require 'inc/server.php';
+    require 'inc/session.php';
+    require 'inc/imdb.php';
+    require_subscription();
 
-require_subscription();
+    date_default_timezone_set('UTC');
 
-date_default_timezone_set('UTC');
+    // make sure the user has provided an anime
+    if (!isset($_GET['t']))
+        msg('Uh oh :(', 'Please specify an anime.');
 
-// make sure the user has provided an anime
-if (!isset($_GET['t']))
-	msg('Uh oh :(', 'Please specify an anime.');
+    // get data regarding current anime
+    $anime = get_anime_data($_GET['t']);
+    if (!$anime)
+        msg('Uh oh :(', 'We couldn\'t find that anime.');
 
-// get data regarding current anime
-$anime = get_anime_data($_GET['t']);
-if (!$anime)
-	msg('Uh oh :(', 'We couldn\'t find that anime.');
+    // retrieve raw anime data from cdn server
+    $url = authenticate_cdn_url($anime['data'], true);
+    $data_raw = file_get_contents($url);
+    $data = json_decode($data_raw, true);
 
-// retrieve raw anime data from cdn server
-$url = authenticate_cdn_url($anime['data'], true);
-$data_raw = file_get_contents($url);
-$data = json_decode($data_raw, true);
+    // establish anime title/episodes/image links
+    $title = $data['title'];
+    $episodes = $data['episodeData'];
+    $poster = authenticate_cdn_url($data['poster']);
+    $cover = authenticate_cdn_url($data['cover']);
+    
+    // if episode isn't set, default it to 1
+    default_get_param('e', 1);
 
-$title = $data['title'];
-$episodes = $data['episodeData'];
-$poster = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['poster']));
-$cover = authenticate_cdn_url(str_replace('cdn.jexflix.com', 'cdn.bytesurf.io', $data['cover']));
+    // get current episode info (note: index = episode # - 1)
+    $episode_info = $episodes[$_GET['e'] - 1];
 
-if (!isset($_GET['e']))
-	$_GET['e'] = 1;
+    function generate_mp4_link($res) {
+       $format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
+	   $url = sprintf($format, $_GET['t'], $_GET['e'], $res);
+	   return $url;
+    }
 
-$episode_info = $episodes[$_GET['e'] - 1];
+    $submit_watched = $_GET['submit_watched'];
+    switch ($submit_watched) {
+	   case 1:
+		  save_progress_entry(1, 1, 1);
+		  break;
+	   case 2:
+        delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
+        break;
+    }
 
-function generate_mp4_link($res)
-{
-	$format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
-	$url = sprintf($format, $_GET['t'], $_GET['e'], $res);
-	return $url;
-}
+    // Check if this anime and episode is watched
+    $watched_list = get_progress_tracker_data(true);
+    $has_watched = false;
+    foreach ($watched_list as $watched) {
+        if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
+            $has_watched = true;
+    }
 
-$submit_watched = $_GET['submit_watched'];
-
-switch ($submit_watched) {
-	case 1:
-		save_progress_entry(1, 1, 1);
-		break;
-	case 2:
-		delete_progress_entry($_GET['t'], 'anime', $_GET['e']);
-		break;
-}
-
-// Check if this anime and episode is watched
-$watched_list = get_progress_tracker_data(true);
-
-$has_watched = false;
-
-
-foreach ($watched_list as $watched) {
-	if ($watched['title'] == $_GET['t'] && $watched['episode'] == $_GET['e'])
-		$has_watched = true;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -110,8 +107,8 @@ foreach ($watched_list as $watched) {
 	<meta name="keywords" content="">
 	<meta name="author" content="Peter Pistachio">
 	<title>ByteSurf</title>
+    
 </head>
-
 <body class="body">
 
 	<!-- header -->
