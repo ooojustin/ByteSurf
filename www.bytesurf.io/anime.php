@@ -98,9 +98,9 @@ foreach ($watched_list as $watched) {
 	<script src="js/main.js"></script>
 	<script src="js/progress.tracker.js"></script>
     
-    <!-- JS Party System -->
-    <? define_party_js(); ?>
-    <script src="js/parties.js"></script>
+    <!-- PARTY SYSTEM -->
+    <? initialize_party_system(); ?>
+    <!-- END PARTY SYSTEM -->
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
