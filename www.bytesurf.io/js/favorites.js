@@ -12,12 +12,8 @@ function toggle_favorited() {
     if (!is_media_type_valid(params['type']))
         return 'failed';
     
-    // build query and url
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=toggle_favorite&' + query;
-    
     // send request
-    get_request(url, function(r) {
+    send_update('toggle_favorite', params, function(r) {
         console.log(r);
     });
     

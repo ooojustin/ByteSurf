@@ -72,12 +72,8 @@ function update_party_send() {
     // determine whether or not the client is playing
     params['playing'] = (!player.paused).toString();
     
-    // build url with given parameters
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=party_update&' + query;
-    
-    // send web request (save progress) and store update time
-    get_request(url, update_party_receive);
+    // send update with action, params, and callback
+    send_update('party_update', params, update_party_receive);
     
 }
 

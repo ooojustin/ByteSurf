@@ -10,6 +10,13 @@ function get_request(url, callback) {
     xmlHttp.send(null);
 }
 
+function send_update(action, params, callback) {
+    let query = jQuery.param(params);
+    let url = 'https://bytesurf.io/inc/updater.php?action=';
+    url += action + '&' + query;
+    get_request(url, callback);
+}
+
 // checks if a key exists in an array
 function array_key_exists(key, arr) {
     return (key in arr);
