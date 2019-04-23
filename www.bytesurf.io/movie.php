@@ -90,11 +90,11 @@
 <body class="body">
 
 	<!-- header -->
-    <?= require 'inc/html/header.php' ?>
+    <? require 'inc/html/header.php' ?>
 	<!-- end header -->
     
     <!-- party dialog -->
-    <?= $party ? require 'inc/html/party_modal.php' : ''; ?>
+    <? $party ? require 'inc/html/party_modal.php' : ''; ?>
     <!-- end party dialog -->
 
 <!-- details -->
@@ -261,7 +261,7 @@
 <!-- end similar movies -->
 
 	<!-- footer -->
-    <?=require 'inc/html/footer.php'?>
+    <? require 'inc/html/footer.php' ?>
 	<!-- end footer -->
 
 <!-- Root element of PhotoSwipe. Must have class pswp. -->

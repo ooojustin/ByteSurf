@@ -391,10 +391,10 @@
         }
         
         // define party variable
-        echo '<script>var party = "' . $_SESSION['party'] . '";</script>' . "\r\n";
+        echo '<script>var party = "' . $_SESSION['party'] . '";</script>' . PHP_EOL;
         
         // include party script
-        echo '<script src="' . $public_html . 'js/parties.js"></script>';
+        echo '<script src="' . $public_html . 'js/parties.js"></script>' . PHP_EOL;
         
         
     }

@@ -50,7 +50,6 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -103,11 +102,11 @@
 <body class="body">
 
 	<!-- header -->
-	<?= require 'inc/html/header.php' ?>
+	<? require 'inc/html/header.php' ?>
 	<!-- end header -->
     
     <!-- party dialog -->
-    <?= $party ? require 'inc/html/party_modal.php' : ''; ?>
+    <? $party ? require 'inc/html/party_modal.php' : ''; ?>
     <!-- end party dialog -->
 
 	<!-- details -->
@@ -257,9 +256,11 @@
 				<!-- end accordion -->
 
 				<!-- end content -->
+                
 				<!-- footer -->
-				<?= require 'inc/html/footer.php' ?>
+				<? require 'inc/html/footer.php' ?>
 				<!-- end footer -->
+                
 				<!-- Root element of PhotoSwipe. Must have class pswp. -->
 				<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 					<!-- Background of PhotoSwipe. 
