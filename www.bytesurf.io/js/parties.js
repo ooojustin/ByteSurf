@@ -1,5 +1,5 @@
-const party_update_interval = 5;
-const max_time_delta = 0.1;
+var party_update_interval = 5;
+var max_time_delta = 0.05;
 
 // note 'var party' must be set somewhere earlier in javascript
 if (typeof party !== 'undefined') {
@@ -116,11 +116,13 @@ function update_party_receive(data_raw) {
     
     // set player time again if we're too out of sync
     let time_delta = Math.abs(time_extrapolated - player.currentTime);
-    if (time_delta > max_time_delta)
+    if (time_delta > max_time_delta) {
         player.currentTime = time_extrapolated;
+        max_time_delta += 0.05; // increase max delta, so we'll eventually stop adjusting
+    }
     
     // update desync text
-    document.getElementById('party-desync').innerHTML = time_delta.toFixed(4) + "s";
+    document.getElementById('party-desync').innerHTML = time_delta.toFixed(4) + "s (now) / " + max_time_delta.toFixed(2) + "s (max)";
     
     // make sure we're playing or paused accordingly
     let playing = data.playing == '1';
