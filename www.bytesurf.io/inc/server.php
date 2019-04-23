@@ -6,8 +6,9 @@
 	define("SERVER", "localhost");
 	define("SENDGRID_API_KEY", "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"); // NOTE: SET THIS
 
-	require dirname(__FILE__) . "/sendgrid/sendgrid-php.php";
-	require dirname(__FILE__) . "/utils.php";
+	require dirname(__FILE__) . "/sendgrid/sendgrid-php.php"; // email sending api
+    require dirname(__FILE__) . '/chrome_php.php'; // log to chrome console - https://craig.is/writing/chrome-logger 
+	require dirname(__FILE__) . "/utils.php"; // general utility funcs
 
 	$db_username = "bytesurf_db";
 	$db_password = "ad!lb36IUL2mFDf*C75X0#db";
