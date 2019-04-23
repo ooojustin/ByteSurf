@@ -28,6 +28,9 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
+                if (Anime.ongoing == 0)
+                    continue;
+
                 if (Anime.title.ToLower().Contains("naruto"))
                     continue;
 
@@ -228,9 +231,18 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     dbinfo.url = UploadData.url;
                     dbinfo.thumbnail = UploadData.poster;
                     dbinfo.episode_data = CDNLink;
-                    dbinfo.similar = JsonConvert.SerializeObject(KitsuAPI.GetSynonyms(KitsuAnimeInfo));
-                    dbinfo.genres = JsonConvert.SerializeObject(KitsuAPI.GetGenres(KitsuAnimeInfo));
+                    List<string> Kitsusynonyms = KitsuAPI.GetSynonyms(KitsuAnimeInfo);
+                    if (!Kitsusynonyms.Any())
+                        Kitsusynonyms.Add("");
+                    dbinfo.similar = JsonConvert.SerializeObject(Kitsusynonyms);
+                    List<string> KitsuGenres = KitsuAPI.GetGenres(KitsuAnimeInfo);
+                    if (!KitsuGenres.Any())
+                        KitsuGenres.Add("");
+                    dbinfo.genres = JsonConvert.SerializeObject(KitsuGenres);
                     dbinfo.rating = KitsuAPI.GetRating(KitsuAnimeInfo);
+                    if (dbinfo.rating == null) {
+                        dbinfo.rating = "50";
+                    }
                     dbinfo.release = KitsuAPI.GetAirDate(KitsuAnimeInfo);
                     dbinfo.duration = KitsuAPI.EpisodeDuration(KitsuAnimeInfo);
                     dbinfo.age_class = KitsuAPI.GetAgeClass(KitsuAnimeInfo);

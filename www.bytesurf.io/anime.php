@@ -81,6 +81,7 @@ foreach ($watched_list as $watched) {
 	<link rel="stylesheet" href="css/photoswipe.css">
 	<link rel="stylesheet" href="css/default-skin.css">
 	<link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 	<link rel="stylesheet" href="css/main.css">
 
 	<!-- JS -->
@@ -97,10 +98,10 @@ foreach ($watched_list as $watched) {
 	<script src="js/photoswipe-ui-default.min.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/progress.tracker.js"></script>
-    
-    <!-- PARTY SYSTEM -->
-    <? initialize_party_system(); ?>
-    <!-- END PARTY SYSTEM -->
+
+	<!-- PARTY SYSTEM -->
+	<? initialize_party_system(); ?>
+	<!-- END PARTY SYSTEM -->
 
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
@@ -196,6 +197,42 @@ foreach ($watched_list as $watched) {
 
 					</video>
 
+					<!-- Queue btn -->
+					<form action="" method="get">
+						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
+						<input type="hidden" name="t" value="<?php echo htmlspecialchars($_GET['t']); ?>">
+						<input type="hidden" name="s" value="-1">
+						<input type="hidden" name="type" value="anime">
+
+						<style>
+							.btn {
+								background-color: DodgerBlue;
+								border: none;
+								color: white;
+								padding: 12px 16px;
+								font-size: 16px;
+								cursor: pointer;
+							}
+
+							/* Darker background on mouse-over */
+							.btn:hover {
+								background-color: RoyalBlue;
+							}
+						</style>
+
+						<?php if ($has_watched) { ?>
+							<div style="float: right; padding-top: 10px; padding-left: 10px;">
+								<button class="filter__btn btn" name="submit_queue" type="submit" value="2" style="font-size: 10px; height: 35px; width: 85px; display: block;"><i class="fas fa-bookmark"></i> Queue</button>
+							</div>
+						<?php } else { ?>
+							<div style="float: right; padding-top: 10px; padding-left: 10px;">
+								<button class="filter__btn btn" name="submit_queue" type="submit" value="1" id="submit_queue" style="font-size: 10px; height: 35px; width: 85px; display: block;"><i class="fas fa-bookmark"></i> Queue</button>
+							</div>
+						<?php } ?>
+					</form>
+
+					<!-- End Queue Button -->
+
 					<!-- Watched btn -->
 					<form action="" method="get">
 						<input type="hidden" name="e" value="<?php echo htmlspecialchars($_GET['e']); ?>">
@@ -265,7 +302,8 @@ foreach ($watched_list as $watched) {
 														$has_watched = true;
 												}
 												?>
-												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?php if ($has_watched) echo '✔'; else echo '✘'; ?></a></td>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?php if ($has_watched) echo '✔';
+																												else echo '✘'; ?></a></td>
 											</tr>
 										<? } ?>
 									</tbody>
@@ -275,52 +313,49 @@ foreach ($watched_list as $watched) {
 					</div>
 				</div>
 				<!-- end accordion -->
-			</div>
-		</div>
-		<!-- end details content -->
-	</section>
-	<!-- end content -->
-	<!-- footer -->
-	<?= require 'inc/html/footer.php' ?>
-	<!-- end footer -->
-	<!-- Root element of PhotoSwipe. Must have class pswp. -->
-	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-		<!-- Background of PhotoSwipe. 
+
+				<!-- end content -->
+				<!-- footer -->
+				<?= require 'inc/html/footer.php' ?>
+				<!-- end footer -->
+				<!-- Root element of PhotoSwipe. Must have class pswp. -->
+				<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+					<!-- Background of PhotoSwipe. 
 			It's a separate element, as animating opacity is faster than rgba(). -->
-		<div class="pswp__bg"></div>
-		<!-- Slides wrapper with overflow:hidden. -->
-		<div class="pswp__scroll-wrap">
-			<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
-			<!-- don't modify these 3 pswp__item elements, data is added later on. -->
-			<div class="pswp__container">
-				<div class="pswp__item"></div>
-				<div class="pswp__item"></div>
-				<div class="pswp__item"></div>
-			</div>
-			<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-			<div class="pswp__ui pswp__ui--hidden">
-				<div class="pswp__top-bar">
-					<!--  Controls are self-explanatory. Order can be changed. -->
-					<div class="pswp__counter"></div>
-					<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-					<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-					<!-- Preloader -->
-					<div class="pswp__preloader">
-						<div class="pswp__preloader__icn">
-							<div class="pswp__preloader__cut">
-								<div class="pswp__preloader__donut"></div>
+					<div class="pswp__bg"></div>
+					<!-- Slides wrapper with overflow:hidden. -->
+					<div class="pswp__scroll-wrap">
+						<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+						<!-- don't modify these 3 pswp__item elements, data is added later on. -->
+						<div class="pswp__container">
+							<div class="pswp__item"></div>
+							<div class="pswp__item"></div>
+							<div class="pswp__item"></div>
+						</div>
+						<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+						<div class="pswp__ui pswp__ui--hidden">
+							<div class="pswp__top-bar">
+								<!--  Controls are self-explanatory. Order can be changed. -->
+								<div class="pswp__counter"></div>
+								<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+								<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+								<!-- Preloader -->
+								<div class="pswp__preloader">
+									<div class="pswp__preloader__icn">
+										<div class="pswp__preloader__cut">
+											<div class="pswp__preloader__donut"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+							<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+							<div class="pswp__caption">
+								<div class="pswp__caption__center"></div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-				<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-				<div class="pswp__caption">
-					<div class="pswp__caption__center"></div>
-				</div>
-			</div>
-		</div>
-	</div>
 </body>
 
 </html>

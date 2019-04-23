@@ -25,7 +25,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         public static WebClient WebClientBypass() {
             WebClient webClient = new WebClient();
             webClient.Proxy = null;
-            webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36"); webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
+            webClient.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36");
             webClient.Headers.Add("x-access-token", "1rj2vRtegS8Y60B3w3qNZm5T2Q0TN2NR");
             return webClient;
         }
@@ -37,6 +37,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             using (WebClient wc = WebClientBypass()) {
                 try {
                     string raw = wc.DownloadString(API_LINK);
+                    Console.WriteLine(raw);
                     return JsonConvert.DeserializeObject<List<TwistAnimeData>>(raw, General.DeserializeSettings);
                 } catch (WebException ex) {
                     Console.WriteLine("[GetTwistAnime] " + ex.Message);
