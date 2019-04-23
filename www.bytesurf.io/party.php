@@ -57,8 +57,7 @@
                 msg('Failed', 'Specified party ID was invalid :(', 'GO HOME', 'https://bytesurf.io/home');
             
             // make sure the host is still running the party
-            $timestamp_ms = round(microtime(true) * 1000);
-            $update_delta = $timestamp_ms - $party['timestamp'];
+            $update_delta = time_ms() - $party['timestamp'];
             if ($update_delta > 60000)
                 msg('Failed', 'That party is inactive. Create your own, or join another one.', 'GO HOME', 'https://bytesurf.io/home');
                 

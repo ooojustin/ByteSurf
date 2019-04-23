@@ -316,11 +316,12 @@
         // params for bind_content_values
         $params = array('t' => $title ?: '', 'type' => $type ?: '', 's' => $season, 'e' => $episode);
         
-        $create_party = $db->prepare('INSERT INTO parties (party, owner, users, type, title, season, episode) VALUES (:party, :owner, :users, :type, :title, :season, :episode)');
+        $create_party = $db->prepare('INSERT INTO parties (party, owner, users, type, title, season, episode, timestamp) VALUES (:party, :owner, :users, :type, :title, :season, :episode, :timestamp)');
         bind_content_values($create_party, $params);
         $create_party->bindValue(':party', $party);
         $create_party->bindValue(':owner', $user['username']);
         $create_party->bindValue(':users', '[]');
+        $create_party->bindValue(':timestamp', time_ms());
         $create_party->execute();
         
         $_SESSION['party'] = $party;
@@ -895,5 +896,10 @@
         $save_progress->bindValue(':completed', $completed);
         return $save_progress->execute();
 	}
+    
+    // works like time(), but returns timestamp in milliseconds
+    function time_ms() {
+        return round(microtime(true) * 1000);
+    }
 
 ?>

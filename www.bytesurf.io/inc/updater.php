@@ -48,7 +48,7 @@
             require_get_params($params);
             
             // Make sure our timestamp is in sync with the clients (ms, 5 seconds)
-            $timestamp_ms = round(microtime(true) * 1000);
+            $timestamp_ms = time_ms();
             $request_delta = abs($timestamp_ms - $_GET['timestamp']);
             if ($request_delta > 5000)
                 die('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
