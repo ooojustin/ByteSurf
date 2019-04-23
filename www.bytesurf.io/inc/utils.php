@@ -304,15 +304,20 @@
         return get_party($_SESSION['party']);   
     }
 
-    function create_party() {
+    function create_party($title = NULL, $type = NULL, $season = -1, $episode = -1) {
         
         global $db, $user;
         if (!$user)
             return NULL;
         
+        // generate party indenfitier
         $party = generate_split_string(3, 3);
         
-        $create_party = $db->prepare('INSERT INTO parties (party, owner, users) VALUES (:party, :owner, :users)');
+        // params for bind_content_values
+        $params = array('t' => $title ?: '', 'type' => $type ?: '', 's' => $season, 'e' => $episode);
+        
+        $create_party = $db->prepare('INSERT INTO parties (party, owner, users, type, title, season, episode) VALUES (:party, :owner, :users, :type, :title, :season, :episode)');
+        bind_content_values($create_party, $params);
         $create_party->bindValue(':party', $party);
         $create_party->bindValue(':owner', $user['username']);
         $create_party->bindValue(':users', '[]');
@@ -361,9 +366,9 @@
             return;
         
         // set type & s & e, so we can compare to values in row
-        $_GET['type'] = get_file_name();
-        default_get_param('s', -1);
-        default_get_param('e', -1);
+        $_GET['type'] = get_type();
+        default_param('s', -1);
+        default_param('e', -1);
         
         // determine whether or not we're on the correct page
         $correct = true;
@@ -401,12 +406,13 @@
         return strtolower($username) == strtolower($owner);
     }
 
-    // returns the file name of the current url
-    // results in the type (ex: /show.php = show, /movie.php = movie, /anime.php = anime)
-    function get_file_name() {
-        $path = parse_url($GLOBALS['current_url'])['path'];
-        $pathinfo = pathinfo($path);
-        return $pathinfo['filename'];
+    // returns the type of content, based on current url
+    // (ex: /show.php = show, /movie.php = movie, /anime.php = anime)
+    function get_type($url = NULL) {
+        $url = $url ?: $GLOBALS['current_url'];
+        $path = parse_url($url, PHP_URL_PATH);
+        $type = pathinfo($path, PATHINFO_FILENAME);
+        return $type;
     }
 
 	// code to log sent emails
@@ -508,7 +514,7 @@
         $get_watching->bindValue(':username', $user['username']);
         $get_watching->bindValue(':completed', intval($completed));
         $get_watching->execute();
-        return $get_watching->fetchAll(); 
+        return $get_watching->fetchAll();
     }
 
     // returns an array of progress_tracker records
@@ -526,18 +532,47 @@
         return $list;                        
     }
 
-    // automatically binds type/s/e/t to a given statement (query object)
-    function bind_content_values($query) {
-        $query->bindValue(':type', $_GET['type']);
-        $query->bindValue(':title', $_GET['t']);
-        $query->bindValue(':season', $_GET['s']);
-        $query->bindValue(':episode', $_GET['e']);
+    // puts progress tracker data into strings (format - type:title:season:episode)
+    // works on get_progress_tracker_data or get_watching_list
+    function stringify_progress_tracker_data($list) {
+        $list_str = array();
+        foreach ($list as $item) {
+            $item_str = sprintf('%s:%s:%s:%s', $item['type'], $item['title'], $item['season'], $item['episode']);
+            array_push($list_str, $item_str);
+        }
+        return $list_str;
+    }
+    
+    // checks if a specified episode was watched
+    function is_watched($title = NULL, $type = NULL, $season = -1, $episode = -1) {
+        if (is_null($title)) {
+            $title = $_GET['t'];
+            $type = get_type();
+            $season = $_GET['s'];
+            $episode = $_GET['e'];
+        }
+        $item_str = sprintf('%s:%s:%s:%s', $type, $title, $season, $episode);
+        $watched_list = get_progress_tracker_data(true, true);
+        $watched_list_str = stringify_progress_tracker_data($watched_list);
+        $watched = in_array($item_str, $watched_list_str);
+        return $watched;
     }
 
-    function validate_type($type) {
+    // automatically binds type/s/e/t to a given statement (query object)
+    function bind_content_values($query, $arr = NULL) {
+        $arr = is_null($arr) ? $_GET : $arr;
+        $query->bindValue(':type', $arr['type']);
+        $query->bindValue(':title', $arr['t']);
+        $query->bindValue(':season', $arr['s']);
+        $query->bindValue(':episode', $arr['e']);
+    }
+
+    function validate_type($type, $die_if_invalid = false) {
         $types = array('movie', 'show', 'anime');
-        if (!in_array($type, $types))
+        $valid = in_array($type, $types);
+        if (!$valid && $die_if_invalid)
             die('Invalid type provided: ' . $type);
+        return $valid;
     }
 
     function require_get_params($params) {
@@ -546,9 +581,13 @@
                 die('Missing required parameter: ' . $param);
     }
 
-    function default_get_param($param, $value) {
-        if (!isset($_GET[$param]))
-            $_GET[$param] = $value;
+    function default_param($param, $value, &$arr = NULL) {
+        $use_get = is_null($arr);
+        $arr = $use_get ? $_GET : $arr;
+        if (!isset($arr[$param]))
+            $arr[$param] = $value;
+        if ($use_get)
+            $_GET = $arr;
     }
 
     function get_progress($username) {
@@ -560,74 +599,73 @@
         return $get_progress->fetch();
     }
 
-    function is_favorited($type, $title) {
-        $favorites = get_favorites();
+    function is_queued($type, $title) {
+        $queue = get_queue();
         $item = sprintf('%s:%s', $type, $title);
-        return in_array($item, $favorites);
+        return in_array($item, $queue);
     }
 
-	function get_favorites($get_data = false) {
+	function get_queue($get_data = false) {
         
         global $user;
         if (!$user)
             return array();
 
-        // get raw favorites info and make sure its not null
-        $favorites = $user['favorites'];
-        if (is_null($favorites))
+        // get raw queue info and make sure its not null
+        $queue = $user['queue'];
+        if (is_null($queue))
             return array();
 
 		// list of movie urls
-		$favorites = json_decode($favorites, true);
+		$queue = json_decode($queue, true);
 
 		// return list of urls, if necessary
 		if (!$get_data)
-			return $favorites;
+			return $queue;
 
-		// otherwise, convert urls to an array of movies
+		// otherwise, convert urls to an array of movies/animes/shows
 		$item_list = array();
-		foreach ($favorites as $favorite) {
-			$type = explode('|', $favorite)[0];
-			$item = get_content_data($type, $favorite);
-			$item['type'] = $type;
+		foreach ($queue as $queue_item) {
+            $data = explode('|', $queue_item);
+			$item = get_content_data($data[0], $data[1]);
+			$item['type'] = $data[0];
 			array_push($item_list, $item);
 		}
-
 		return $item_list;
 
 	}
 
-    function set_favorited($type, $title, $to_favorite) {
+    function set_queued($type, $title, $to_queue) {
         
         global $user, $db;
         if (!$user)
             return;
 
-		// check if it's already favorited
+		// check if it's already queued
 		$item = sprintf('%s:%s', $type, $title);
-		$was_favorited = is_favorited($type, $title);
+		$was_queued = is_queued($type, $title);
 
 		// check if we don't need to update anything
-		$ignore_1 = $to_favorite && $was_favorited; // + +
-		$ignore_2 = !$to_favorite && !$was_favorited; // - -
+		$ignore_1 = $to_queue && $was_queued; // + +
+		$ignore_2 = !$to_queue && !$was_queued; // - -
 		if ($ignore_1 || $ignore_2)
 			return true;
 
 		// add item to array or remove it from array
-        $favorites = get_favorites();
-		if ($to_favorite)
-			array_push($favorites, $item);
+        $queue = get_queue();
+		if ($to_queue)
+			array_push($queue, $item);
 		else
-			unset($favorites[array_search($item, $favorites)]);
+			unset($queue[array_search($item, $queue)]);
 
 		// encode data
-		$data = json_encode($favorites);
+		$data = json_encode($queue);
 
 		// update data in database
-		$update_favorites = $db->prepare('UPDATE users SET favorites=:favorites WHERE username=:username');
-		$update_favorites->bindValue(':favorites', $data);
-		$update_favorites->bindValue(':username', $user['username']);
-		return $update_favorites->execute();
+		$update_queue = $db->prepare('UPDATE users SET queue=:queue WHERE username=:username');
+		$update_queue->bindValue(':queue', $data);
+		$update_queue->bindValue(':username', $user['username']);
+		return $update_queue->execute();
 
 	}
     
@@ -835,13 +873,10 @@
     	}
 	}
 	
-	function delete_progress_entry($title, $type, $episode = -1, $season = -1) {
+	function delete_progress_entry() {
 		global $db;
 		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type AND episode=:episode AND season=:season');
-		$remove_data->bindValue(':title', $title);
-		$remove_data->bindValue(':type', $type);
-		$remove_data->bindValue(':episode', $episode);
-		$remove_data->bindValue(':season', $season);
+		bind_content_values($remove_data);
 		$remove_data->execute();
 	}
 

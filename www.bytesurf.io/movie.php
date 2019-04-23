@@ -50,6 +50,14 @@ foreach ($watched_list as $watched) {
         $has_watched = true;
 }
 
+    // default 'watched' button text/value
+    $watched = is_watched($_GET['t'], 'movie');
+    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
+
+    // get user party
+    $party = get_active_party();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -104,11 +112,71 @@ foreach ($watched_list as $watched) {
 
 </head>
 
-<body class="body">
-
-    <!-- header -->
+	<!-- header -->
     <?= require 'inc/html/header.php' ?>
-    <!-- end header -->
+	<!-- end header -->
+    
+    <!-- party dialog -->
+    <?= $party ? require 'inc/html/party_modal.php' : ''; ?>
+    <!-- end party dialog -->
+
+<!-- details -->
+<section class="section details">
+    <!-- details background -->
+    <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
+    <!-- end details background -->
+<div class="container">
+
+    <div class="row">
+
+        <!-- player -->
+        <div class="col-12">
+        <video controls crossorigin playsinline poster="<?=$preview?>" id="player">
+
+            <!-- Video files -->
+            <? foreach ($qualities as $quality) { ?>
+            <source 
+                src="<?= $quality['link'] ?>"
+                type="video/mp4" 
+                size="<?= $quality['resolution'] ?>"
+            />
+            <? } ?>
+
+            <!-- Caption files -->
+            <? 
+            foreach ($subs as $sub) { 
+                $sub_end = isset($sub['default']) ? ' default' : '';
+            ?>        
+            <track 
+                kind="captions" 
+                label="<?=$sub['label']?>" 
+                srclang="<?=$sub['language']?>"
+                src="<?=authenticate_cdn_url($sub['url'])?>"
+            <?=$sub_end?>>
+            <? } ?>
+
+            <!-- Fallback for browsers that don't support the <video> element -->
+            <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
+        </video>
+
+            <!-- party dialog btn -->
+            <? if ($party) { ?>
+            <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+				<button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;">OPEN PARTY</button>
+            </span>
+            <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
+            <? } ?>
+            <!-- end party dialog btn -->
+            
+            <!-- watched btn -->
+            <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+				<button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+            </span>
+            <!-- end watched btn -->
+            
+        </div>
+        <!-- end player -->
+    </div>
 
     <!-- details -->
     <section class="section details">

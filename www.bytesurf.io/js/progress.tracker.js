@@ -23,12 +23,8 @@ function update_progress() {
     let completion_time = player.duration - (player.duration * 0.05);
     params['completed'] = (player.currentTime >= completion_time).toString();
     
-    // build url with given parameters
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=save_progress&' + query;
-    
-    // send web request (save progress) and store update time
-    get_request(url, function(r) { });
+    // send update to save progress to server
+    send_update('save_progress', params, function(r) { });
     last_progress_update = player.currentTime;
         
 }
@@ -42,12 +38,8 @@ $(document).ready(function() {
     if (!array_key_exists('t', params))
         return;
     
-    // generate url to get information from
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=get_progress&' + query;
-    
     // send request and parse response
-    get_request(url, function(response) { 
+    send_update('get_progress', params, function(response) { 
         
         let data = response.split(',');
         if (data.length != 2)

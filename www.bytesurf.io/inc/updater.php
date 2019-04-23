@@ -11,6 +11,36 @@
 
     switch ($_GET['action']) {
             
+        case 'remove_from_watched':
+            
+            // require parameters for bind_content_values
+            $params = array('s', 'e', 't', 'type');
+            require_get_params($params);
+            
+            // make sure type is valid
+            validate_type($_GET['type'], true);
+            
+            // delete saved progress data from database
+            delete_progress_entry();
+            
+            // die with new button value & text    
+            die('add_to_watched:ADD TO WATCHED');
+        
+        case 'add_to_watched':
+            
+            // require parameters for bind_content_values
+            $params = array('s', 'e', 't', 'type');
+            require_get_params($params);
+            
+            // make sure type is valid
+            validate_type($_GET['type'], true);
+            
+            // mark episode as complpeted
+            save_progress_entry(0, 0, true);
+            
+            // die with new button value & text
+            die('remove_from_watched:REMOVE FROM WATCHED');
+            
         case 'party_update':
             
             // require a myriad of parameters, lol
@@ -24,7 +54,7 @@
                 die('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // get the party, ensure it's valid
             $party = get_party($_GET['party']);
@@ -58,21 +88,21 @@
             die($data);
             
             
-        case 'toggle_favorite':
+        case 'toggle_queued':
             
             // require parameters for title & type
             $params = array('t', 'type');
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // determine whether or not it was favorited, and set to opposite
-            $favorited = is_favorited($_GET['type'], $_GET['t']);
-            $executed = set_favorited($_GET['type'], $_GET['t'], !$favorited);
+            $queued = is_queued($_GET['type'], $_GET['t']);
+            $executed = set_queued($_GET['type'], $_GET['t'], !$queued);
             
             if ($executed)
-                die('Favorited: ' . strval(!$favorited));
+                die('Queued: ' . strval(!$queued));
             else
                 die('Failed to execute query.');
             
@@ -84,15 +114,15 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // set season and episode to -1 if they're not provided
-            default_get_param('s', -1);
-            default_get_param('e', -1);
+            default_param('s', -1);
+            default_param('e', -1);
             
             // save current information to database
             $completed = $_GET['completed'] === 'true';
-            save_progress($username, $_GET['time'], $_GET['time_total'], $completed);
+            save_progress_entry($_GET['time'], $_GET['time_total'], $completed);
             die('Saved progress successfully: ' . $_GET['time']);
             
         case 'get_progress':
@@ -102,7 +132,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // get progress row from database
             $progress = get_progress($username, $_GET['t'], $_GET['type'], $_GET['s'], $_GET['e']);
@@ -132,21 +162,6 @@
         $update_party->bindValue(':time', $time);
         $update_party->bindValue(':playing', $playing);
         return $update_party->execute();
-    }
-
-    function save_progress($username, $time, $time_total, $completed) {
-        global $db;
-        if (get_progress($username))
-            $query = 'UPDATE progress_tracker SET time=:time, time_total=:time_total, completed=:completed WHERE username=:username AND title=:title AND type=:type AND season=:season AND episode=:episode';
-        else
-            $query = 'INSERT INTO progress_tracker (username, type, title, season, episode, time, time_total, completed) VALUES (:username, :type, :title, :season, :episode, :time, :time_total, :completed)';
-        $save_progress = $db->prepare($query);
-        bind_content_values($save_progress);
-        $save_progress->bindValue(':username', $username);
-        $save_progress->bindValue(':time', $time);
-        $save_progress->bindValue(':time_total', $time_total);
-        $save_progress->bindValue(':completed', $completed);
-        return $save_progress->execute();
     }
 
 ?>

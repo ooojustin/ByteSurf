@@ -14,8 +14,27 @@
             
         case 'create':
             
-            $party_id = create_party();
+            // try to create a party using referrer link
+            $ref = $_SERVER['HTTP_REFERER'] ?: null;
+            if (!is_null($ref)) {
+                $ref_type = get_type($ref);
+                if (validate_type($ref_type)) {
+                    $ref_query = parse_url($ref, PHP_URL_QUERY);
+                    parse_str($ref_query, $ref_params);
+                    if (isset($ref_params['t'])) {
+                        default_param('s', -1, $ref_params);
+                        default_param('e', -1, $ref_params);
+                        $party_id = create_party($ref_params['t'], $ref_type, $ref_params['s'], $ref_params['e']);
+                    }
+                }
+            }
+            
+            // create party normally
+            if (!isset($party_id))
+                $party_id = create_party();
+            
             $join_url = 'https://bytesurf.io/party.php?action=join&p=' . $party_id;
+            $continue_url = get_active_party_url() ?: 'https://bytesurf.io/home';
             
             break;
             
@@ -128,8 +147,8 @@
                                     document.execCommand("copy");
                                     alert('Party URL has been copied to clipboard.');
                                 }
-                                function go_home() {
-                                    window.location.href = "https://bytesurf.io/home";
+                                function continue_to_party() {
+                                    window.location.href = "<?= $continue_url ?>";
                                 }
                             </script>
                             <center style="margin-bottom: 15px;"><span class="sign__text">Party created. Give this link to others to allow them to join your party.</span></center>
@@ -137,7 +156,7 @@
 								<input type="text" style="width: 100%; text-align: center;" class="sign__input" id="join_url" name="join_url" value="<?= $join_url ?>" readonly>
 							</div>					
 							<button style="margin-top: 0px" onclick="copy_link()" class="sign__btn" type="button">COPY LINK</button>
-                            <button style="margin-top: 15px" onclick="go_home()" class="sign__btn" type="button">CONTINUE</button>
+                            <button style="margin-top: 15px" onclick="continue_to_party()" class="sign__btn" type="button">CONTINUE</button>
 						</form>
 						<? } ?>
                         <!-- END CREATE PARTY -->
