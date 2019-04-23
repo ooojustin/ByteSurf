@@ -28,7 +28,7 @@
     $cover = authenticate_cdn_url($data['cover']);
     
     // if episode isn't set, default it to 1
-    default_get_param('e', 1);
+    default_param('e', 1);
 
     // get current episode info (note: index = episode # - 1)
     $episode_info = $episodes[$_GET['e'] - 1];

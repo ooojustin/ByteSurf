@@ -18,7 +18,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // delete saved progress data from database
             delete_progress_entry();
@@ -33,7 +33,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // mark episode as complpeted
             save_progress_entry(0, 0, true);
@@ -54,7 +54,7 @@
                 die('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // get the party, ensure it's valid
             $party = get_party($_GET['party']);
@@ -95,7 +95,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // determine whether or not it was favorited, and set to opposite
             $queued = is_queued($_GET['type'], $_GET['t']);
@@ -114,11 +114,11 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // set season and episode to -1 if they're not provided
-            default_get_param('s', -1);
-            default_get_param('e', -1);
+            default_param('s', -1);
+            default_param('e', -1);
             
             // save current information to database
             $completed = $_GET['completed'] === 'true';
@@ -132,7 +132,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type']);
+            validate_type($_GET['type'], true);
             
             // get progress row from database
             $progress = get_progress($username, $_GET['t'], $_GET['type'], $_GET['s'], $_GET['e']);

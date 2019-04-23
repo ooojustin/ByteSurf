@@ -304,15 +304,20 @@
         return get_party($_SESSION['party']);   
     }
 
-    function create_party() {
+    function create_party($title = NULL, $type = NULL, $season = -1, $episode = -1) {
         
         global $db, $user;
         if (!$user)
             return NULL;
         
+        // generate party indenfitier
         $party = generate_split_string(3, 3);
         
-        $create_party = $db->prepare('INSERT INTO parties (party, owner, users) VALUES (:party, :owner, :users)');
+        // params for bind_content_values
+        $params = array('t' => $title ?: '', 'type' => $type ?: '', 's' => $season, 'e' => $episode);
+        
+        $create_party = $db->prepare('INSERT INTO parties (party, owner, users, type, title, season, episode) VALUES (:party, :owner, :users, :type, :title, :season, :episode)');
+        bind_content_values($create_party, $params);
         $create_party->bindValue(':party', $party);
         $create_party->bindValue(':owner', $user['username']);
         $create_party->bindValue(':users', '[]');
@@ -361,9 +366,9 @@
             return;
         
         // set type & s & e, so we can compare to values in row
-        $_GET['type'] = get_file_name();
-        default_get_param('s', -1);
-        default_get_param('e', -1);
+        $_GET['type'] = get_type();
+        default_param('s', -1);
+        default_param('e', -1);
         
         // determine whether or not we're on the correct page
         $correct = true;
@@ -401,12 +406,13 @@
         return strtolower($username) == strtolower($owner);
     }
 
-    // returns the file name of the current url
-    // results in the type (ex: /show.php = show, /movie.php = movie, /anime.php = anime)
-    function get_file_name() {
-        $path = parse_url($GLOBALS['current_url'])['path'];
-        $pathinfo = pathinfo($path);
-        return $pathinfo['filename'];
+    // returns the type of content, based on current url
+    // (ex: /show.php = show, /movie.php = movie, /anime.php = anime)
+    function get_type($url = NULL) {
+        $url = $url ?: $GLOBALS['current_url'];
+        $path = parse_url($url, PHP_URL_PATH);
+        $type = pathinfo($path, PATHINFO_FILENAME);
+        return $type;
     }
 
 	// code to log sent emails
@@ -541,7 +547,7 @@
     function is_watched($title = NULL, $type = NULL, $season = -1, $episode = -1) {
         if (is_null($title)) {
             $title = $_GET['t'];
-            $type = get_file_name();
+            $type = get_type();
             $season = $_GET['s'];
             $episode = $_GET['e'];
         }
@@ -553,17 +559,20 @@
     }
 
     // automatically binds type/s/e/t to a given statement (query object)
-    function bind_content_values($query) {
-        $query->bindValue(':type', $_GET['type']);
-        $query->bindValue(':title', $_GET['t']);
-        $query->bindValue(':season', $_GET['s']);
-        $query->bindValue(':episode', $_GET['e']);
+    function bind_content_values($query, $arr = NULL) {
+        $arr = is_null($arr) ? $_GET : $arr;
+        $query->bindValue(':type', $arr['type']);
+        $query->bindValue(':title', $arr['t']);
+        $query->bindValue(':season', $arr['s']);
+        $query->bindValue(':episode', $arr['e']);
     }
 
-    function validate_type($type) {
+    function validate_type($type, $die_if_invalid = false) {
         $types = array('movie', 'show', 'anime');
-        if (!in_array($type, $types))
+        $valid = in_array($type, $types);
+        if (!$valid && $die_if_invalid)
             die('Invalid type provided: ' . $type);
+        return $valid;
     }
 
     function require_get_params($params) {
@@ -572,9 +581,12 @@
                 die('Missing required parameter: ' . $param);
     }
 
-    function default_get_param($param, $value) {
-        if (!isset($_GET[$param]))
-            $_GET[$param] = $value;
+    function default_param($param, $value, &$arr = NULL) {
+        $arr = is_null($arr) ? $_GET : $arr;
+        if (!isset($arr[$param])) {
+            $arr[$param] = $value;
+            chrome_php::log($arr);
+        }
     }
 
     function get_progress($username) {

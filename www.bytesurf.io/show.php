@@ -31,8 +31,8 @@
     
     // determine whether or not an episode was specified and set default s/e vars
     $is_specific_episode = isset($_GET['s']) && isset($_GET['e']);
-    default_get_param('s', 1);
-    default_get_param('e', 1);
+    default_param('s', 1);
+    default_param('e', 1);
 
     // download episode data json
     $url = "https://cdn.bytesurf.io/shows/" . $data['url'] . "/" . $_GET['s'] . "/" . $_GET['e'] . "/";
