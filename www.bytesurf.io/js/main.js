@@ -601,3 +601,33 @@ $(document).ready(function () {
 	})
     
 });
+
+function initialize_modal_box(modal_id, button_id, close_name) {
+    
+    // Get the modal
+    var modal_box = document.getElementById(modal_id);
+
+    // Get the button that opens the modal
+    var modal_btn = document.getElementById(button_id);
+
+    // Get the <span> element that closes the modal
+    var close_span = document.getElementsByClassName(close_name)[0];
+
+    // When the user clicks the button, open the modal 
+    modal_btn.onclick = function() {
+        modal_box.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    close_span.onclick = function() {
+        modal_box.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal_box) {
+            modal_box.style.display = "none";
+        }
+    }
+    
+}
