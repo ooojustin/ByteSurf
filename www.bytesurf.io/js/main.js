@@ -602,7 +602,7 @@ $(document).ready(function () {
     
 });
 
-function initialize_modal_box(modal_id, button_id, close_name) {
+function initialize_modal_box(modal_id, button_id) {
     
     // Get the modal
     var modal_box = document.getElementById(modal_id);
@@ -611,7 +611,7 @@ function initialize_modal_box(modal_id, button_id, close_name) {
     var modal_btn = document.getElementById(button_id);
 
     // Get the <span> element that closes the modal
-    var close_span = document.getElementsByClassName(close_name)[0];
+    var close_span = document.getElementsByClassName('modal-close')[0];
 
     // When the user clicks the button, open the modal 
     modal_btn.onclick = function() {

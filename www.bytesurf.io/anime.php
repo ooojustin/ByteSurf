@@ -44,6 +44,9 @@
     $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
     $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
 
+    // get user party
+    $party = get_active_party();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -101,6 +104,10 @@
 	<!-- header -->
 	<?= require 'inc/html/header.php' ?>
 	<!-- end header -->
+    
+    <!-- party dialog -->
+    <?= $party ? file_get_contents('inc/html/party_modal.php') : ''; ?>
+    <!-- end party dialog -->
 
 	<!-- details -->
 	<section class="section details">
@@ -179,10 +186,22 @@
 						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
 
 					</video>
-
+                    
+                    <!-- party dialog btn -->
+                    <? if ($party) { ?>
+                    <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+				        <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;">OPEN PARTY</button>
+                    </span>
+                    <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
+                    <? } ?>
+                    <!-- end party dialog btn -->
+                    
+                    <!-- watched btn -->
                     <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
 				        <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
                     </span>
+                    <!-- end watched btn -->
+                    
 				</div>
 				<!-- end player -->
 			</div>

@@ -4965,7 +4965,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 	/* Hidden by default */
 	position: fixed;
 	/* Stay in place */
-	z-index: 1;
+	z-index: 100;
 	/* Sit on top */
 	left: 0;
 	top: 0;
@@ -4983,7 +4983,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 	/* Fade in the background */
 	-webkit-animation-duration: 0.4s;
 	animation-name: modalFadeIn;
-	animation-duration: 0.4s
+	animation-duration: 0.4s;
 }
 
 .modal-content {
