@@ -8,11 +8,16 @@ if (typeof party !== 'undefined') {
     var params = get_important_params();
     params['party'] = party;
     
-    // start interval for updates
-    window.setInterval(update_party_send, party_update_interval * 1000);
+    // output/check type
+    console.log('type: ' + params['type']);
+    if (is_media_type_valid(params['type'])) {
     
-    // execute without waiting, first time
-    update_party_send();
+        // start interval for updates
+        window.setInterval(update_party_send, party_update_interval * 1000);
+    
+        // execute without waiting, first time
+        update_party_send();
+    }
     
 }
 

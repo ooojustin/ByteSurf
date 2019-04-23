@@ -104,6 +104,9 @@
 	$get_series_count = $db->prepare('SELECT * FROM series');
 	$get_series_count->execute();
 	$series_count = $get_series_count->rowCount();
+
+    // $party = get_active_party();
+    $party = false;
     
 ?>
 
@@ -128,7 +131,25 @@
 	<link rel="stylesheet" href="../css/photoswipe.css">
 	<link rel="stylesheet" href="../css/default-skin.css">
 	<link rel="stylesheet" href="../css/main.css">
+    
+    <!-- JS -->
+	<script src="../js/jquery-3.3.1.min.js"></script>
+	<script src="../js/bootstrap.bundle.min.js"></script>
+	<script src="../js/owl.carousel.min.js"></script>
+	<script src="../js/jquery.mousewheel.min.js"></script>
+	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
+	<script src="../js/wNumb.js"></script>
+	<script src="../js/nouislider.min.js"></script>
+	<script src="../js/plyr.min.js"></script>
+	<script src="../js/jquery.morelines.min.js"></script>
+	<script src="../js/photoswipe.min.js"></script>
+	<script src="../js/photoswipe-ui-default.min.js"></script>
+	<script src="../js/main.js"></script>
 
+    <!-- PARTY SYSTEM -->
+	<? initialize_party_system('../'); ?>
+	<!-- END PARTY SYSTEM -->
+    
 	<!-- Favicons -->
 	<link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
 	<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
@@ -141,9 +162,14 @@
 </head>
 
 <body class="body">
+    
 	<!-- header -->
     <?= require '../inc/html/header.php';?>
 	<!-- end header -->
+    
+    <!-- party dialog -->
+    <? $party ? require '../inc/html/party_modal.php' : ''; ?>
+    <!-- end party dialog -->
 	
     <div id="dabar" class="hide_on_mobile" style="margin-top: 80px; background: rgba(10, 10, 10, 0.6);"><b><span style="background-image: -webkit-linear-gradient(0deg, #ff55a5 0%, #ff5860 100%); -webkit-text-fill-color: transparent; -webkit-background-clip: text;">We currently have <?=$movie_count?> movies, <?=$series_count?> series, and <?=$anime_count?> animes. Refresh for the newest info.</span></b></div>
 	<!-- home -->
@@ -157,6 +183,17 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
+                    
+                    <!-- party dialog btn -->
+                    <? if ($party) { ?>
+                    <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+				        <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;">OPEN PARTY</button>
+                    </span>
+                    <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
+                    <br>
+                    <? } ?>
+                    <!-- end party dialog btn -->
+                    
 					<h1 class="home__title"><b>TRENDING</b></h1>
 
 					<button class="home__nav home__nav--prev" type="button">
@@ -434,18 +471,5 @@
     <?= require '../inc/html/footer.php';?>
 	<!-- end footer -->
 
-	<!-- JS -->
-	<script src="../js/jquery-3.3.1.min.js"></script>
-	<script src="../js/bootstrap.bundle.min.js"></script>
-	<script src="../js/owl.carousel.min.js"></script>
-	<script src="../js/jquery.mousewheel.min.js"></script>
-	<script src="../js/jquery.mCustomScrollbar.min.js"></script>
-	<script src="../js/wNumb.js"></script>
-	<script src="../js/nouislider.min.js"></script>
-	<script src="../js/plyr.min.js"></script>
-	<script src="../js/jquery.morelines.min.js"></script>
-	<script src="../js/photoswipe.min.js"></script>
-	<script src="../js/photoswipe-ui-default.min.js"></script>
-	<script src="../js/main.js"></script>
 </body>
 </html>
