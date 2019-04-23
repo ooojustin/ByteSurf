@@ -3,15 +3,10 @@
    <div class="modal-content">
       <div class="modal-header">
          <span class="modal-close">&times;</span>
-         <h2>Modal Header</h2>
+         <h2 style="font-weight: 300; margin-bottom: 0;">Party #<?= $party['party'] ?></h2>
       </div>
       <div class="modal-body">
-         <p>Some text in the Modal Body</p>
-         <p>Some other text...</p>
-         <p>Some more text...</p>
-      </div>
-      <div class="modal-footer">
-         <h3>Modal Footer</h3>
+          <p>Coming soon...</p>
       </div>
    </div>
 </div>

@@ -120,7 +120,7 @@
 	<!-- end header -->
 
     <!-- party dialog -->
-    <?= $party ? file_get_contents('inc/html/party_modal.php') : ''; ?>
+    <?= $party ? require 'inc/html/party_modal.php' : ''; ?>
     <!-- end party dialog -->
     
 	<!-- details -->

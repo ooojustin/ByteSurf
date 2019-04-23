@@ -582,11 +582,12 @@
     }
 
     function default_param($param, $value, &$arr = NULL) {
-        $arr = is_null($arr) ? $_GET : $arr;
-        if (!isset($arr[$param])) {
+        $use_get = is_null($arr);
+        $arr = $use_get ? $_GET : $arr;
+        if (!isset($arr[$param]))
             $arr[$param] = $value;
-            chrome_php::log($arr);
-        }
+        if ($use_get)
+            $_GET = $arr;
     }
 
     function get_progress($username) {
