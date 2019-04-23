@@ -11,6 +11,9 @@ if (typeof party !== 'undefined') {
     // start interval for updates
     window.setInterval(update_party_send, party_update_interval * 1000);
     
+    // execute without waiting, first time
+    update_party_send();
+    
 }
 
 function ensure_party_link(data) {
@@ -81,6 +84,24 @@ function update_party_receive(data_raw) {
     
     let data = JSON.parse(data_raw);
     
+    // get the users in the party, display them
+    let users = JSON.parse(data.users);
+    let users_txt = '';
+    for(user in users) {
+        let user_time = users[user];
+        if (Date.now() - user_time > 10000)
+            continue;
+        users_txt += user + ', ';
+    }
+    if (users_txt.length > 0)
+        users_txt = users_txt.substring(0, users_txt.length - 2);
+    
+    // update elements displayed in party modal dialog
+    if (document.getElementById('party-modal')) {
+        document.getElementById('party-users').innerHTML = users_txt;
+        document.getElementById('party-status').innerHTML = (data.playing == 1) ? 'Playing' : 'Paused';
+    }
+    
     // if local user owns party, don't worry about syncing
     if (data.owner == 'true')
         return;
@@ -89,17 +110,17 @@ function update_party_receive(data_raw) {
     if (!ensure_party_link(data))
         return;
     
-    // get the users in the party
-    let users = JSON.parse(data.users);
-    
     // determine timestamp delta (will always be positive) & extra
     let timestamp_delta = (Date.now() - data.timestamp) / 1000; // in seconds
     let time_extrapolated = parseFloat(data.time) + timestamp_delta;
     
-    // set player time again if we're over 1 second out of sync
+    // set player time again if we're too out of sync
     let time_delta = Math.abs(time_extrapolated - player.currentTime);
     if (time_delta > max_time_delta)
         player.currentTime = time_extrapolated;
+    
+    // update desync text
+    document.getElementById('party-desync').innerHTML = time_delta.toFixed(4) + "s";
     
     // make sure we're playing or paused accordingly
     let playing = data.playing == '1';

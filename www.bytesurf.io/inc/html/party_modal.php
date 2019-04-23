@@ -1,4 +1,5 @@
 <?php
+    $is_owner = strtolower($party['owner']) == strtolower($GLOBALS['user']['username']);
     $party_id = $party['party'];
     $join_url = 'https://bytesurf.io/party.php?action=join&p=' . $party['party'];
     $leave_url = 'https://bytesurf.io/party.php?action=leave';
@@ -41,7 +42,11 @@
         
         <!-- body -->
         <div class="modal-body">
-            <center><p style="margin-top: 10px;">JOIN LINK</p></center>
+            <p style="margin-bottom: 0px;"><b>Owner:</b> <?= $party['owner'] ?></p>
+            <p style="margin-bottom: 0px;"><b>Users:</b> <span id="party-users">...</span></p>
+            <? if (!$is_owner) { ?><p style="margin-bottom: 0px;"><b>Desync:</b> <span id="party-desync">...</span></p><? } ?>
+            <p style="margin-bottom: 0px;"><b>Status:</b> <span id="party-status">...</span></p>
+            <center><p>JOIN LINK</p></center>
             <div class="sign__group" style="width: 100%; margin-bottom: 5px;">
                 <input type="text" style="width: 100%; text-align: center; background-color: #2b2b31; border-radius: 4px;" class="sign__input" id="join_url" value="<?= $join_url ?>" readonly>
             </div>
