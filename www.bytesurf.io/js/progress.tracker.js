@@ -41,6 +41,8 @@ $(document).ready(function() {
     // send request and parse response
     send_update('get_progress', params, function(response) { 
         
+        console.log('get_progress: ' + response);
+        
         let data = response.split(',');
         if (data.length != 2)
             return;

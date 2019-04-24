@@ -190,29 +190,27 @@
 						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
 
 					</video>
-
-					<!-- party btn -->
-					<?
-					$party_btn_action = $party ? 'OPEN' : 'CREATE';
-					$party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
-					$party_a_onclick = $party ? 'return false;' : '';
-					?>
-					<span style="float: left; padding-top: 10px; padding-bottom: 10px;">
-						<a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
-							<button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
-						</a>
-					</span>
-					<script>
-						initialize_modal_box('party-modal', 'party-modal-btn');
-					</script>
-					<!-- end party btn -->
-
-					<!-- watched btn -->
-					<span style="float: right; padding-top: 10px; padding-bottom: 10px;">
-						<button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
-					</span>
-					<!-- end watched btn -->
-
+                    
+                    <!-- party btn -->
+                    <? 
+                        $party_btn_action = $party ? 'OPEN' : 'CREATE';
+                        $party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
+                        $party_a_onclick = $party ? 'return false;' : '';
+                    ?>
+                    <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+                        <a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
+                            <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
+                        </a>
+                    </span>
+                    <? if ($party) { ?><script>initialize_modal_box('party-modal', 'party-modal-btn');</script><? } ?>
+                    <!-- end party btn -->
+                    
+                    <!-- watched btn -->
+                    <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+				        <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+                    </span>
+                    <!-- end watched btn -->
+                    
 				</div>
 				<!-- end player -->
 			</div>
