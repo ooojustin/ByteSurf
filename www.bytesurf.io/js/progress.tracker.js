@@ -55,7 +55,6 @@ $(document).ready(function() {
         
         let applyTime = window.setInterval(function() {
             if (player.readyState == 4) {
-                console.log('ready');
                 player.currentTime = progress_time;
                 window.clearInterval(applyTime);
             }

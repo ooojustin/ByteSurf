@@ -17,12 +17,12 @@
     if (!isset($_GET['action']))
         die_gz('Action not provided.');
 
-    $post_data = file_get_contents('php://input');;
-    if (empty($post_data))
-        die_gz('POST data not provided.');
+    $payload = file_get_contents('php://input');;
+    if (empty($payload))
+        die_gz('Reqest payload is empty.');
 
-    $params_decompressed = gzuncompress($post_data);
-    $_GET = array_merge(json_decode($params_decompressed, true), $_GET);
+    $payload_uncompressed = gzuncompress($payload);
+    $_GET = array_merge(json_decode($payload_uncompressed, true), $_GET);
 
     switch ($_GET['action']) {
             
@@ -59,7 +59,7 @@
         case 'party_update':
             
             // require a myriad of parameters, lol
-            $params = array('party', 's', 'e', 't', 'type', 'time', 'timestamp', 'playing');
+            $params = array('s', 'e', 't', 'type', 'time', 'timestamp', 'playing');
             require_get_params($params);
             
             // Make sure our timestamp is in sync with the clients (ms, 5 seconds)
@@ -72,7 +72,7 @@
             validate_type($_GET['type'], true);
             
             // get the party, ensure it's valid
-            $party = get_party($_GET['party']);
+            $party = get_active_party();
             if (!$party)
                 die_gz('Provided party invalid.');
             
@@ -86,16 +86,16 @@
                     unset($users[$user]);
                 
             // send updated user information to database
-            update_party_users($_GET['party'], $users);
+            update_party_users($party['party'], $users);
             
             $owner = strtolower($username) == strtolower($party['owner']);
             if ($owner) {
                 $playing = $_GET['playing'] == 'true';
-                update_party($_GET['party'], $_GET['timestamp'], $_GET['time'], $playing);
+                update_party($party['party'], $_GET['timestamp'], $_GET['time'], $playing);
             }
             
             // update party information, after queries
-            $party = get_party($_GET['party']);
+            $party = get_party($party['party']);
             
             // return information to client
             $party['owner'] = $owner ? 'true' : 'false';

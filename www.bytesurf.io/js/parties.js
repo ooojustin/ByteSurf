@@ -1,26 +1,25 @@
 var party_update_interval = 5;
 var max_time_delta = 0.1;
 
-// note 'var party' must be set somewhere earlier in javascript
-if (typeof party !== 'undefined') {
-    
-    // get season/episode/title/type into array, set party property
-    var params = get_important_params();
-    params['party'] = party;
-    
-    // output/check type
-    console.log('type: ' + params['type']);
-    if (is_media_type_valid(params['type'])) {
-    
-        // start interval for updates
-        window.setInterval(update_party_send, party_update_interval * 1000);
-    
-        // execute without waiting, first time
-        update_party_send();
-    }
-    
-}
+/*
+=========== WARNING ===========
+Only include this script via HTML if $_SESSION['party'] is set.
+*/
 
+// get season/episode/title/type into array
+var params = get_important_params();
+    
+// output/check type
+console.log('type: ' + params['type']);
+if (is_media_type_valid(params['type'])) {
+    
+    // start interval for updates
+    window.setInterval(update_party_send, party_update_interval * 1000);
+
+    // execute without waiting, first time
+    update_party_send();
+}
+    
 function ensure_party_link(data) {
     
     let correct = true;
