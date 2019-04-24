@@ -3,26 +3,38 @@ function arraybuffer_to_string(buffer) {
     return String.fromCharCode.apply(null, new Uint16Array(buffer));
 }
 
-// sends an async get request to a provided url
-// second parameter is a callback function with a response param
-function get_request(url, callback, type = 'text') {
+function send_web_request(method, url, params, callback, type = 'text') {
+    
+    // convert params to string, if needed
+    if (Array.isArray(params))
+        params = jQuery.param(params);
+        
+    // determine post body to send
+    let send_data = null
+    if (method == 'POST')
+        send_data = params;
+    
+    // append params to end of url if sending get request
+    if (method == 'GET')
+        url += '?' + params;
+    
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.response);
     }
-    xmlHttp.open("GET", url, true); // true for asynchronous 
+    xmlHttp.open(method, url, true); // true for asynchronous 
     xmlHttp.responseType = type;
-    xmlHttp.send(null);
+    xmlHttp.send(send_data);
+    
 }
 
 // sends parameters to the updater.php script with a specified action
 // receives compressed data, calls callback with decompressed data
 function send_update(action, params, callback) {
-    let query = jQuery.param(params);
-    let url = 'https://bytesurf.io/inc/updater.php?action=';
-    url += action + '&' + query;
-    get_request(url, function(compressed) {
+    let url = 'https://bytesurf.io/inc/updater.php?action=' + action;
+    params = pako.deflate(JSON.stringify(params));
+    send_web_request('POST', url, params, function(compressed) {
         try {
             var decompressed = pako.inflate(compressed);
             var decompressed_str = arraybuffer_to_string(decompressed);
