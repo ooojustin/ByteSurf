@@ -199,7 +199,7 @@
                             <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
                         </a>
                     </span>
-                    <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
+                    <? if ($party) { ?><script>initialize_modal_box('party-modal', 'party-modal-btn');</script><? } ?>
                     <!-- end party btn -->
                     
                     <!-- watched btn -->
