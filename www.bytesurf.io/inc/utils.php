@@ -396,6 +396,27 @@
         
         
     }
+    
+    // updates 'users' colum in a specified party (from an array, key = usernae & value = timestamp)
+    function update_party_users($party, $users) {
+        global $db;
+        $update_party = $db->prepare('UPDATE parties SET users=:users WHERE party=:party');
+        $update_party->bindValue(':users', json_encode($users));
+        $update_party->bindValue(':party', $party);
+        return $update_party->execute();
+    }
+
+    // updates timestamp/time/playing from the host of a party
+    function update_party($party, $timestamp, $time, $playing) {
+        global $db;
+        $update_party = $db->prepare('UPDATE parties SET type=:type, title=:title, season=:season, episode=:episode, timestamp=:timestamp, time=:time, playing=:playing WHERE party=:party');
+        bind_content_values($update_party);
+        $update_party->bindValue(':party', $party);
+        $update_party->bindValue(':timestamp', $timestamp);
+        $update_party->bindValue(':time', $time);
+        $update_party->bindValue(':playing', $playing);
+        return $update_party->execute();
+    }
 
     // returns whether or not logged in user is the party owner
     function is_party_owner($username = NULL) {
