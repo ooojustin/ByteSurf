@@ -1,55 +1,57 @@
 <?php
 
-    require 'inc/server.php';
-    require 'inc/session.php';
-    require 'inc/imdb.php';
-    require_subscription();
+	require 'inc/server.php';
+	require 'inc/session.php';
+	require 'inc/imdb.php';
+	require_subscription();
 
-    date_default_timezone_set('UTC');
+	date_default_timezone_set('UTC');
 
-    // make sure the user has provided an anime
-    if (!isset($_GET['t']))
-        msg('Uh oh :(', 'Please specify an anime.');
+	// make sure the user has provided an anime
+	if (!isset($_GET['t']))
+		msg('Uh oh :(', 'Please specify an anime.');
 
-    // get data regarding current anime
-    $anime = get_anime_data($_GET['t']);
-    if (!$anime)
-        msg('Uh oh :(', 'We couldn\'t find that anime.');
+	// get data regarding current anime
+	$anime = get_anime_data($_GET['t']);
+	if (!$anime)
+		msg('Uh oh :(', 'We couldn\'t find that anime.');
 
-    // retrieve raw anime data from cdn server
-    $url = authenticate_cdn_url($anime['data'], true);
-    $data_raw = file_get_contents($url);
-    $data = json_decode($data_raw, true);
+	// retrieve raw anime data from cdn server
+	$url = authenticate_cdn_url($anime['data'], true);
+	$data_raw = file_get_contents($url);
+	$data = json_decode($data_raw, true);
 
-    // establish anime title/episodes/image links
-    $title = $data['title'];
-    $episodes = $data['episodeData'];
-    $poster = authenticate_cdn_url($data['poster']);
-    $cover = authenticate_cdn_url($data['cover']);
-    
-    // if episode isn't set, default it to 1
-    default_param('e', 1);
+	// establish anime title/episodes/image links
+	$title = $data['title'];
+	$episodes = $data['episodeData'];
+	$poster = authenticate_cdn_url($data['poster']);
+	$cover = authenticate_cdn_url($data['cover']);
 
-    // get current episode info (note: index = episode # - 1)
-    $episode_info = $episodes[$_GET['e'] - 1];
+	// if episode isn't set, default it to 1
+	default_param('e', 1);
 
-    function generate_mp4_link($res) {
-       $format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
-	   $url = sprintf($format, $_GET['t'], $_GET['e'], $res);
-	   return $url;
-    }
+	// get current episode info (note: index = episode # - 1)
+	$episode_info = $episodes[$_GET['e'] - 1];
 
-    // default 'watched' button text/value
-    $watched = is_watched($_GET['t'], 'anime', -1, $_GET['e']);
-    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
-    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
+	function generate_mp4_link($res)
+	{
+		$format = "https://cdn.bytesurf.io/anime/%s/%s/%s.mp4";
+		$url = sprintf($format, $_GET['t'], $_GET['e'], $res);
+		return $url;
+	}
 
-    // get user party
-    $party = get_active_party();
+	// default 'watched' button text/value
+	$watched = is_watched($_GET['t'], 'anime', -1, $_GET['e']);
+	$watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+	$watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
+
+	// get user party
+	$party = get_active_party();
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -82,7 +84,7 @@
 	<script src="js/jquery.morelines.min.js"></script>
 	<script src="js/photoswipe.min.js"></script>
 	<script src="js/photoswipe-ui-default.min.js"></script>
-    <script src="js/pako.min-1.0.10.js"></script>
+	<script src="js/pako.min-1.0.10.js"></script>
 	<script src="js/main.js"></script>
 	<script src="js/progress.tracker.js"></script>
 
@@ -98,17 +100,18 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Peter Pistachio">
 	<title>ByteSurf</title>
-    
+
 </head>
+
 <body class="body">
 
 	<!-- header -->
 	<? require 'inc/html/header.php' ?>
 	<!-- end header -->
-    
-    <!-- party dialog -->
-    <? $party ? require 'inc/html/party_modal.php' : ''; ?>
-    <!-- end party dialog -->
+
+	<!-- party dialog -->
+	<? $party ? require 'inc/html/party_modal.php' : ''; ?>
+	<!-- end party dialog -->
 
 	<!-- details -->
 	<section class="section details">
@@ -122,7 +125,7 @@
 				<div class="col-12">
 					<h1 class="details__title"><?= $title ?></h1>
 					<h1 class="details__devices" style="color: #fff"><?= 'Episode ' . $_GET['e']; ?></h1>
-					<h1 class="details__devices" style="color: #fff"><?=  $episode_info['episode_title']; ?></h1>
+					<h1 class="details__devices" style="color: #fff"><?= $episode_info['episode_title']; ?></h1>
 				</div>
 				<!-- end title -->
 
@@ -187,27 +190,29 @@
 						<a href="<?= generate_mp4_link($episode_info['qualities'][0]['resolution']) ?>" download>Download</a>
 
 					</video>
-                    
-                    <!-- party btn -->
-                    <? 
-                        $party_btn_action = $party ? 'OPEN' : 'CREATE';
-                        $party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
-                        $party_a_onclick = $party ? 'return false;' : '';
-                    ?>
-                    <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
-                        <a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
-                            <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
-                        </a>
-                    </span>
-                    <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
-                    <!-- end party btn -->
-                    
-                    <!-- watched btn -->
-                    <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
-				        <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
-                    </span>
-                    <!-- end watched btn -->
-                    
+
+					<!-- party btn -->
+					<?
+					$party_btn_action = $party ? 'OPEN' : 'CREATE';
+					$party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
+					$party_a_onclick = $party ? 'return false;' : '';
+					?>
+					<span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+						<a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
+							<button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
+						</a>
+					</span>
+					<script>
+						initialize_modal_box('party-modal', 'party-modal-btn');
+					</script>
+					<!-- end party btn -->
+
+					<!-- watched btn -->
+					<span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+						<button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+					</span>
+					<!-- end watched btn -->
+
 				</div>
 				<!-- end player -->
 			</div>
@@ -218,41 +223,41 @@
 	<!-- content -->
 	<section class="content">
 		<!-- details content -->
-        <div class="container">
-            <div class="row">
+		<div class="container">
+			<div class="row">
 				<!-- accordion -->
-                <div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
-                    <div class="accordion" id="accordion">
-                        <div class="accordion__card">
-                            <div class="card-body">
-                                <table class="accordion__list">
-                                    <thead>
-                                        <tr>
-                                            <th style="color:#ff5860">#</th>
+				<div class="col-12 col-lg-6" style="max-width: 100%; flex: 100%">
+					<div class="accordion" id="accordion">
+						<div class="accordion__card">
+							<div class="card-body">
+								<table class="accordion__list">
+									<thead>
+										<tr>
+											<th style="color:#ff5860">#</th>
 											<th style="color:#ff5860">Title</th>
 											<th style="color:#ff5860">Air Date</th>
 											<th style="color:#ff5860">Watched</th>
-                                        </tr>
-                                    </thead>
+										</tr>
+									</thead>
 									<tbody>
-								        <?php 
-                                            $watched_list = get_progress_tracker_data(true);
-                                            $watched_list_str = stringify_progress_tracker_data($watched_list);
-                                            foreach ($episodes as $episode) {
-                                                $episode_title = empty($episode['episode_title']) ? '-' : $episode['episode_title'];
-                                                $air_date = empty($episode['air_date']) ? '-' : $episode['air_date'];
-                                                $episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
-								                $color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
-                                                $item_str = sprintf('%s:%s:%s:%s', 'anime', $_GET['t'], -1, $episode['episode']);
-                                                $episode_watched = in_array($item_str, $watched_list_str);
-                                        ?>
-                                        <tr>
-                                            <th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
-                                            <td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_title ?></a></td>
-											<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $air_date ?></a></td>  
-								            <td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_watched ? '✔' : '✘' ?></a></td>
-								        </tr>
-                                        <? } ?>
+										<?php
+										$watched_list = get_progress_tracker_data(true);
+										$watched_list_str = stringify_progress_tracker_data($watched_list);
+										foreach ($episodes as $episode) {
+											$episode_title = empty($episode['episode_title']) ? '-' : $episode['episode_title'];
+											$air_date = empty($episode['air_date']) ? '-' : $episode['air_date'];
+											$episode_link = "https://bytesurf.io/anime.php?t=" . $_GET['t'] . '&e='	. $episode['episode'];
+											$color = ($episode['episode'] == $_GET['e']) ? '#ff5860' : 'rgba(255,255,255,0.7)';
+											$item_str = sprintf('%s:%s:%s:%s', 'anime', $_GET['t'], -1, $episode['episode']);
+											$episode_watched = in_array($item_str, $watched_list_str);
+											?>
+											<tr>
+												<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_title ?></a></td>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $air_date ?></a></td>
+												<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_watched ? '✔' : '✘' ?></a></td>
+											</tr>
+										<? } ?>
 									</tbody>
 								</table>
 							</div>
@@ -261,50 +266,51 @@
 				</div>
 				<!-- end accordion -->
 
-				<!-- end content -->
-                
-				<!-- footer -->
-				<? require 'inc/html/footer.php' ?>
-				<!-- end footer -->
-                
-				<!-- Root element of PhotoSwipe. Must have class pswp. -->
-				<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-					<!-- Background of PhotoSwipe. 
+	</section>
+	<!-- end content -->
+
+	<!-- footer -->
+	<? require 'inc/html/footer.php' ?>
+	<!-- end footer -->
+
+	<!-- Root element of PhotoSwipe. Must have class pswp. -->
+	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+		<!-- Background of PhotoSwipe. 
 			It's a separate element, as animating opacity is faster than rgba(). -->
-					<div class="pswp__bg"></div>
-					<!-- Slides wrapper with overflow:hidden. -->
-					<div class="pswp__scroll-wrap">
-						<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
-						<!-- don't modify these 3 pswp__item elements, data is added later on. -->
-						<div class="pswp__container">
-							<div class="pswp__item"></div>
-							<div class="pswp__item"></div>
-							<div class="pswp__item"></div>
-						</div>
-						<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-						<div class="pswp__ui pswp__ui--hidden">
-							<div class="pswp__top-bar">
-								<!--  Controls are self-explanatory. Order can be changed. -->
-								<div class="pswp__counter"></div>
-								<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-								<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-								<!-- Preloader -->
-								<div class="pswp__preloader">
-									<div class="pswp__preloader__icn">
-										<div class="pswp__preloader__cut">
-											<div class="pswp__preloader__donut"></div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
-							<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
-							<div class="pswp__caption">
-								<div class="pswp__caption__center"></div>
+		<div class="pswp__bg"></div>
+		<!-- Slides wrapper with overflow:hidden. -->
+		<div class="pswp__scroll-wrap">
+			<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+			<!-- don't modify these 3 pswp__item elements, data is added later on. -->
+			<div class="pswp__container">
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+				<div class="pswp__item"></div>
+			</div>
+			<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+			<div class="pswp__ui pswp__ui--hidden">
+				<div class="pswp__top-bar">
+					<!--  Controls are self-explanatory. Order can be changed. -->
+					<div class="pswp__counter"></div>
+					<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+					<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+					<!-- Preloader -->
+					<div class="pswp__preloader">
+						<div class="pswp__preloader__icn">
+							<div class="pswp__preloader__cut">
+								<div class="pswp__preloader__donut"></div>
 							</div>
 						</div>
 					</div>
 				</div>
+				<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+				<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+				<div class="pswp__caption">
+					<div class="pswp__caption__center"></div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 
 </html>
