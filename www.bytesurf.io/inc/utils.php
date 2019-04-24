@@ -569,22 +569,19 @@
         $query->bindValue(':episode', $arr['e']);
     }
 
-    function validate_type($type, $die_if_invalid = false, $compress = false) {
+    function validate_type($type, $die_if_invalid = false) {
         $types = array('movie', 'show', 'anime');
         $valid = in_array($type, $types);
         $msg = 'Invalid type provided: ' . $type;
         if (!$valid && $die_if_invalid)
-            if ($compress)
-                die_gz($msg);
-            else
-                die($msg);
+            die_gz($msg);
         return $valid;
     }
 
     function require_get_params($params) {
         foreach ($params as $param)
             if (!isset($_GET[$param]))
-                die('Missing required parameter: ' . $param);
+                die_gz('Missing required parameter: ' . $param);
     }
 
     function default_param($param, $value, &$arr = NULL) {

@@ -4,10 +4,27 @@
     require 'session.php';
     require_subscription();
 
+    /*
+        1.) decompress post body (gz)
+        2.) decode decompressed data to array (json)
+        3.) add results to $_GET (use array_merge func)
+        4.) evaluate action & request with $_GET params
+        5.) output compressed result (gz)
+    */
+
     $username = $GLOBALS['user']['username'];
     
     if (!isset($_GET['action']))
         die_gz('Action not provided.');
+
+    try {
+        $params_compressed = file_get_contents('php://input');
+        $params_decompressed = gzuncompress($params_compressed);
+    } catch (Exception $e) {
+        die_gz('Decompression error: ' . $e->getMessage());
+    }
+
+    $_GET = array_merge(json_decode($params_decompressed, true), $_GET);
 
     switch ($_GET['action']) {
             
@@ -18,7 +35,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // delete saved progress data from database
             delete_progress_entry();
@@ -33,7 +50,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // mark episode as complpeted
             save_progress_entry(0, 0, true);
@@ -54,7 +71,7 @@
                 die_gz('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // get the party, ensure it's valid
             $party = get_party($_GET['party']);
@@ -95,7 +112,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // determine whether or not it was favorited, and set to opposite
             $queued = is_queued($_GET['type'], $_GET['t']);
@@ -114,7 +131,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // set season and episode to -1 if they're not provided
             default_param('s', -1);
@@ -132,7 +149,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true, true);
+            validate_type($_GET['type'], true);
             
             // get progress row from database
             $progress = get_progress($username, $_GET['t'], $_GET['type'], $_GET['s'], $_GET['e']);

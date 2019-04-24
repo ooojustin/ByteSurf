@@ -142,7 +142,7 @@
 	<script src="../js/plyr.min.js"></script>
 	<script src="../js/jquery.morelines.min.js"></script>
 	<script src="../js/photoswipe.min.js"></script>
-    <script src="js/pako.min-1.0.10.js"></script>
+    <script src="../js/pako.min-1.0.10.js"></script>
 	<script src="../js/photoswipe-ui-default.min.js"></script>
 	<script src="../js/main.js"></script>
 
