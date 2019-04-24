@@ -1,12 +1,18 @@
+// converts a given arraybuffer to a string
+function arraybuffer_to_string(buffer) {
+    return String.fromCharCode.apply(null, new Uint16Array(buffer));
+}
+
 // sends an async get request to a provided url
 // second parameter is a callback function with a response param
-function get_request(url, callback) {
+function get_request(url, callback, type = 'text') {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() { 
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
+            callback(xmlHttp.response);
     }
     xmlHttp.open("GET", url, true); // true for asynchronous 
+    xmlHttp.responseType = type;
     xmlHttp.send(null);
 }
 
