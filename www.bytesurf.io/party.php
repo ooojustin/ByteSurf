@@ -22,6 +22,7 @@
                     $ref_query = parse_url($ref, PHP_URL_QUERY);
                     parse_str($ref_query, $ref_params);
                     if (isset($ref_params['t'])) {
+                        chrome_php::log('REF LINK PARAMS: ' . json_encode($ref_params, JSON_PRETTY_PRINT));
                         default_param('s', -1, $ref_params);
                         default_param('e', -1, $ref_params);
                         $party_id = create_party($ref_params['t'], $ref_type, $ref_params['s'], $ref_params['e']);

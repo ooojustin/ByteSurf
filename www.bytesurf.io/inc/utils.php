@@ -346,10 +346,10 @@
         
         // build array of url params
         $params = array('t' => $party['title']);
-        if ($party['type'] == 'anime' || $party['type'] == 'show')
-            $params['e'] = $params['episode'];
         if ($party['type'] == 'show')
             $params['s'] = $party['season'];
+        if ($party['type'] == 'anime' || $party['type'] == 'show')
+            $params['e'] = $party['episode'];
         
         // build query and generate url
         $query = http_build_query($params);

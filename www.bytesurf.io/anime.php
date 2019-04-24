@@ -187,14 +187,19 @@
 
 					</video>
                     
-                    <!-- party dialog btn -->
-                    <? if ($party) { ?>
+                    <!-- party btn -->
+                    <? 
+                        $party_btn_action = $party ? 'OPEN' : 'CREATE';
+                        $party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
+                        $party_a_onclick = $party ? 'return false;' : '';
+                    ?>
                     <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
-				        <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;">OPEN PARTY</button>
+                        <a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
+                            <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
+                        </a>
                     </span>
                     <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
-                    <? } ?>
-                    <!-- end party dialog btn -->
+                    <!-- end party btn -->
                     
                     <!-- watched btn -->
                     <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
