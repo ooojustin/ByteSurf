@@ -86,12 +86,12 @@
                     unset($users[$user]);
                 
             // send updated user information to database
-            update_party_users($party['party'], $users);
+            update_party_users($users);
             
             $owner = strtolower($username) == strtolower($party['owner']);
             if ($owner) {
                 $playing = $_GET['playing'] == 'true';
-                update_party($party['party'], $_GET['timestamp'], $_GET['time'], $playing);
+                update_party($_GET['timestamp'], $_GET['time'], $playing);
             }
             
             // update party information, after queries
