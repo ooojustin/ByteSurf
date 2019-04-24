@@ -396,6 +396,33 @@
         
         
     }
+
+    // sends a chat message to an active party
+    function send_party_chat_message($message) {
+        
+        // make sure we're in a party
+        $party = get_active_party();
+        if (!$party)
+            return false;
+        
+        // make sure we're logged in
+        global $user;
+        if (!$user)
+            return false;
+        
+        // make sure message is a reasonable size
+        if (strlen($message) > 1024)
+            return false;
+        
+        global $db;
+        $send_message = $db->prepare('INSERT INTO parties_chat (party, username, message, timestamp) VALUES (:party, :username, :message, :timestamp)');
+        $send_message->bindValue(':party', $party['party']);
+        $send_message->bindValue(':username', $user['username']);
+        $send_message->bindValue(':message', $message);
+        $send_message->bindValue(':timestamp', time());
+        return $send_message->execute();
+        
+    }
     
     // updates 'users' colum in a specified party (from an array, key = usernae & value = timestamp)
     function update_party_users($party, $users) {
