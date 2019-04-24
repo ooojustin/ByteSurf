@@ -18,7 +18,7 @@
         die_gz('Action not provided.');
 
     $post_data = file_get_contents('php://input');;
-    if (empty($post_Data))
+    if (empty($post_data))
         die_gz('POST data not provided.');
 
     $params_decompressed = gzuncompress($post_data);

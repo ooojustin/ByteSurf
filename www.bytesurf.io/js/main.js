@@ -38,10 +38,10 @@ function send_update(action, params, callback) {
         try {
             var decompressed = pako.inflate(compressed);
             var decompressed_str = arraybuffer_to_string(decompressed);
-            callback(decompressed_str);
         } catch (err) {
             console.log('send_update decompression error: ' + err);
         }
+        callback(decompressed_str);
     }, 'arraybuffer');
 }
 
