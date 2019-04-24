@@ -1,5 +1,5 @@
 var party_update_interval = 5;
-var max_time_delta = 0.05;
+var max_time_delta = 0.1;
 
 // note 'var party' must be set somewhere earlier in javascript
 if (typeof party !== 'undefined') {
@@ -101,10 +101,13 @@ function update_party_receive(data_raw) {
     if (users_txt.length > 0)
         users_txt = users_txt.substring(0, users_txt.length - 2);
     
+    //determine whether or not host is playing
+    let owner_playing = data.playing == 1;
+    
     // update elements displayed in party modal dialog
     if (document.getElementById('party-modal')) {
         document.getElementById('party-users').innerHTML = users_txt;
-        document.getElementById('party-status').innerHTML = (data.playing == 1) ? 'Playing' : 'Paused';
+        document.getElementById('party-status').innerHTML = (owner_playing) ? 'Playing' : 'Paused';
     }
     
     // if local user owns party, don't worry about syncing
@@ -122,8 +125,15 @@ function update_party_receive(data_raw) {
     // set player time again if we're too out of sync
     let time_delta = Math.abs(time_extrapolated - player.currentTime);
     if (time_delta > max_time_delta) {
+        
+        // make adjustment to player time
         player.currentTime = time_extrapolated;
-        max_time_delta += 0.05; // increase max delta, so we'll eventually stop adjusting
+        
+        // if owner is playing & they didn't skip (huge delta) increase maximum
+        // this is to prevent really long periods of the browser trying to load & catch up
+        if (owner_playing && time_delta < 10)
+            max_time_delta += 0.05;
+        
     }
     
     // update desync text
