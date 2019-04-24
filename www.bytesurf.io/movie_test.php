@@ -84,7 +84,7 @@ $party = get_active_party();
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 
     <meta name="description" content="">
-    <meta name="keywords" content="">A
+    <meta name="keywords" content="">
     <meta name="author" content="Peter Pistachio">
     <title>ByteSurf</title>
 
@@ -92,17 +92,30 @@ $party = get_active_party();
 
 <body class="body">
 
-    <!-- header -->
-    <? require 'inc/html/header.php' ?>
-    <!-- end header -->
-
-    <!-- party dialog -->
-    <? $party ? require 'inc/html/party_modal.php' : ''; ?>
-    <!-- end party dialog -->
 
     <div style="width: 100%; overflow: hidden;">
 
         <div style="width: 80%; float: left;">
+
+            <style>
+                .header {
+                    margin-right: 20%;
+                }
+
+                .accordion {
+                    max-height: 100%;
+                    height: 100%;
+                }
+            </style>
+
+            <!-- header -->
+            <? require 'inc/html/header.php' ?>
+            <!-- end header -->
+
+            <!-- party dialog -->
+            <? $party ? require 'inc/html/party_modal.php' : ''; ?>
+            <!-- end party dialog -->
+
             <!-- details -->
             <section class="section details">
                 <!-- details background -->
@@ -270,24 +283,144 @@ $party = get_active_party();
 
         <!-- chat -->
         <div style="margin-left: 80%;">
-            <section class="section details">
-                <div class="container">
-                    <div class="row" style="position: fixed; height: 100%">
-                        <div class="col-12 col-lg-6" style="max-width: 100%;flex: none;">
-                            <div class="accordion" id="accordion">
-                                <div class="accordion__card">
-                                    <table class="accordion__list">
-                                        <tbody>
+            <div class="container">
+                <div class="row" style="position: fixed; height: 100%; z-index: 200;">
+                    <div class="col-12 col-lg-6" style="max-width: 100%;flex: none;">
+                        <div class="accordion" id="accordion">
+                            <div class="accordion__card">
+                                <table class="accordion__list">
+                                    <tbody>
+                                        <tr>
                                             <td>Kite</td>
                                             <td>Hello World</td>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Kite</td>
+                                            <td>Hello World</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
         <!-- end chat -->
     </div>
