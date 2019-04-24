@@ -25,6 +25,10 @@
                         chrome_php::log('REF LINK PARAMS: ' . json_encode($ref_params, JSON_PRETTY_PRINT));
                         default_param('s', -1, $ref_params);
                         default_param('e', -1, $ref_params);
+                        if ($ref_type == 'anime' || $ref_type == 'show')
+                            default_param('e', 1, $ref_params);
+                        if ($ref_type == 'show')
+                            default_param('s', 1, $ref_params);
                         $party_id = create_party($ref_params['t'], $ref_type, $ref_params['s'], $ref_params['e']);
                     }
                 }
