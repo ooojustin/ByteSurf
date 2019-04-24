@@ -569,11 +569,15 @@
         $query->bindValue(':episode', $arr['e']);
     }
 
-    function validate_type($type, $die_if_invalid = false) {
+    function validate_type($type, $die_if_invalid = false, $compress = false) {
         $types = array('movie', 'show', 'anime');
         $valid = in_array($type, $types);
+        $msg = 'Invalid type provided: ' . $type;
         if (!$valid && $die_if_invalid)
-            die('Invalid type provided: ' . $type);
+            if ($compress)
+                die_gz($msg);
+            else
+                die($msg);
         return $valid;
     }
 
@@ -901,6 +905,13 @@
     // works like time(), but returns timestamp in milliseconds
     function time_ms() {
         return round(microtime(true) * 1000);
+    }
+
+    // exits script with gz compressed text
+    function die_gz($txt) {
+        // docs: https://www.php.net/manual/en/function.gzcompress.php
+        // note: 9 = highest level of compression
+        die(gzcompress($txt, 9));
     }
 
 ?>

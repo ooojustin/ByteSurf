@@ -7,7 +7,7 @@
     $username = $GLOBALS['user']['username'];
     
     if (!isset($_GET['action']))
-        die('Action not provided.');
+        die_gz('Action not provided.');
 
     switch ($_GET['action']) {
             
@@ -18,13 +18,13 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // delete saved progress data from database
             delete_progress_entry();
             
             // die with new button value & text    
-            die('add_to_watched:ADD TO WATCHED');
+            die_gz('add_to_watched:ADD TO WATCHED');
         
         case 'add_to_watched':
             
@@ -33,13 +33,13 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // mark episode as complpeted
             save_progress_entry(0, 0, true);
             
             // die with new button value & text
-            die('remove_from_watched:REMOVE FROM WATCHED');
+            die_gz('remove_from_watched:REMOVE FROM WATCHED');
             
         case 'party_update':
             
@@ -51,15 +51,15 @@
             $timestamp_ms = time_ms();
             $request_delta = abs($timestamp_ms - $_GET['timestamp']);
             if ($request_delta > 5000)
-                die('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
+                die_gz('Request time delta exceeded limit (5000 ms) = ' . $request_delta);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // get the party, ensure it's valid
             $party = get_party($_GET['party']);
             if (!$party)
-                die('Provided party invalid.');
+                die_gz('Provided party invalid.');
             
             // update current user information
             $users = empty($party['users']) ? array() : json_decode($party['users'], true);
@@ -85,7 +85,7 @@
             // return information to client
             $party['owner'] = $owner ? 'true' : 'false';
             $data = json_encode($party);
-            die($data);
+            die_gz($data);
             
             
         case 'toggle_queued':
@@ -95,16 +95,16 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // determine whether or not it was favorited, and set to opposite
             $queued = is_queued($_GET['type'], $_GET['t']);
             $executed = set_queued($_GET['type'], $_GET['t'], !$queued);
             
             if ($executed)
-                die('Queued: ' . strval(!$queued));
+                die_gz('Queued: ' . strval(!$queued));
             else
-                die('Failed to execute query.');
+                die_gz('Failed to execute query.');
             
         
         case 'save_progress':
@@ -114,7 +114,7 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // set season and episode to -1 if they're not provided
             default_param('s', -1);
@@ -123,7 +123,7 @@
             // save current information to database
             $completed = $_GET['completed'] === 'true';
             save_progress_entry($_GET['time'], $_GET['time_total'], $completed);
-            die('Saved progress successfully: ' . $_GET['time']);
+            die_gz('Saved progress successfully: ' . $_GET['time']);
             
         case 'get_progress':
             
@@ -132,16 +132,16 @@
             require_get_params($params);
             
             // make sure type is valid
-            validate_type($_GET['type'], true);
+            validate_type($_GET['type'], true, true);
             
             // get progress row from database
             $progress = get_progress($username, $_GET['t'], $_GET['type'], $_GET['s'], $_GET['e']);
             
             // return progress (season, episode, time, completed)
             if ($progress)
-                die(sprintf('%s,%s', $progress['time'], $progress['completed']));
+                die_gz(sprintf('%s,%s', $progress['time'], $progress['completed']));
             else
-                die('0,0');
+                die_gz('0,0');
         
     }
 
