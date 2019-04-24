@@ -105,8 +105,7 @@
 	$get_series_count->execute();
 	$series_count = $get_series_count->rowCount();
 
-    // $party = get_active_party();
-    $party = false;
+    $party = get_active_party();
     
 ?>
 
@@ -182,19 +181,32 @@
 
 		<div class="container">
 			<div class="row">
-				<div class="col-12">
-                    
-                    <!-- party dialog btn -->
+                
+                <!-- party dialog btn -->
+                <div class="col-12">
                     <? if ($party) { ?>
-                    <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
-				        <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;">OPEN PARTY</button>
+                    <span style="float: left;">
+				        <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 25px;">OPEN PARTY</button>
                     </span>
-                    <script>initialize_modal_box('party-modal', 'party-modal-btn');</script>
+                    <script>
+                        initialize_modal_box('party-modal', 'party-modal-btn');
+                        function party_modal_size() {
+                            var w = $('#title-trending').width();
+                            $('#party-modal-btn').width(w);
+                        }
+                        $(document).ready(function() {
+                            party_modal_size();
+                            $(window).resize(party_modal_size);
+                        });
+                    </script>
                     <br>
                     <? } ?>
-                    <!-- end party dialog btn -->
+                </div>
+                <!-- end party dialog btn -->
+                
+				<div class="col-12">
                     
-					<h1 class="home__title"><b>TRENDING</b></h1>
+                    <h1 class="home__title"><b id="title-trending">TRENDING</b></h1>
 
 					<button class="home__nav home__nav--prev" type="button">
 						<i class="icon ion-ios-arrow-round-back"></i>
@@ -202,6 +214,7 @@
 					<button class="home__nav home__nav--next" type="button">
 						<i class="icon ion-ios-arrow-round-forward"></i>
 					</button>
+                    
 				</div>
 
 				<div class="col-12">
