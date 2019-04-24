@@ -17,13 +17,11 @@
     if (!isset($_GET['action']))
         die_gz('Action not provided.');
 
-    try {
-        $params_compressed = file_get_contents('php://input');
-        $params_decompressed = gzuncompress($params_compressed);
-    } catch (Exception $e) {
-        die_gz('Decompression error: ' . $e->getMessage());
-    }
+    $post_data = file_get_contents('php://input');;
+    if (empty($post_Data))
+        die_gz('POST data not provided.');
 
+    $params_decompressed = gzuncompress($post_data);
     $_GET = array_merge(json_decode($params_decompressed, true), $_GET);
 
     switch ($_GET['action']) {
