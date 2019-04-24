@@ -102,12 +102,12 @@ function update_party_receive(data_raw) {
         users_txt = users_txt.substring(0, users_txt.length - 2);
     
     //determine whether or not host is playing
-    let owner_playing = data.playing == 1;
+    let playing = data.playing == 1;
     
     // update elements displayed in party modal dialog
     if (document.getElementById('party-modal')) {
         document.getElementById('party-users').innerHTML = users_txt;
-        document.getElementById('party-status').innerHTML = (owner_playing) ? 'Playing' : 'Paused';
+        document.getElementById('party-status').innerHTML = (playing) ? 'Playing' : 'Paused';
     }
     
     // if local user owns party, don't worry about syncing
@@ -131,7 +131,7 @@ function update_party_receive(data_raw) {
         
         // if owner is playing & they didn't skip (huge delta) increase maximum
         // this is to prevent really long periods of the browser trying to load & catch up
-        if (owner_playing && time_delta < 10)
+        if (playing && time_delta < 10)
             max_time_delta += 0.05;
         
     }
@@ -140,7 +140,6 @@ function update_party_receive(data_raw) {
     document.getElementById('party-desync').innerHTML = time_delta.toFixed(4) + "s (now) / " + max_time_delta.toFixed(2) + "s (max)";
     
     // make sure we're playing or paused accordingly
-    let playing = data.playing == '1';
     if (playing && player.paused)
         player.play();
     if (!playing && !player.paused)

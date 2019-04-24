@@ -383,7 +383,8 @@
             $correct = false;
         
         // if we're not on the right page (and we don't own the party), redirect
-        if (!$correct && !is_party_owner()) {
+        // note: only do this when 'type' is valid. this will allow the user to visit the home page normally, even in a party.
+        if (!$correct && !is_party_owner() && validate_type($_GET['type'])) {
             if ($correct_url = get_active_party_url()) {
                 header('location: ' . $correct_url);
                 die();
