@@ -16,11 +16,21 @@ function get_request(url, callback, type = 'text') {
     xmlHttp.send(null);
 }
 
+// sends parameters to the updater.php script with a specified action
+// receives compressed data, calls callback with decompressed data
 function send_update(action, params, callback) {
     let query = jQuery.param(params);
     let url = 'https://bytesurf.io/inc/updater.php?action=';
     url += action + '&' + query;
-    get_request(url, callback);
+    get_request(url, function(compressed) {
+        try {
+            var decompressed = pako.inflate(compressed);
+            var decompressed_str = arraybuffer_to_string(decompressed);
+            callback(decompressed_str);
+        } catch (err) {
+            console.log('send_update decompression error: ' + err);
+        }
+    }, 'arraybuffer');
 }
 
 // checks if a key exists in an array
