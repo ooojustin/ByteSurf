@@ -307,7 +307,7 @@ $party = get_active_party();
         <div style="margin-left: 70%;">
             <div class="container">
                 <!-- chat input-->
-                <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px;">
+                <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px; margin-left: 0px; margin-right: 0px;">
                     <div class="col-12">
                         <div class="header__search-content">
                             <input type="text" id="send_chatmsg" name="q" placeholder="Send a message...">
@@ -316,8 +316,8 @@ $party = get_active_party();
                     </div>
                 </div>
                 <!-- end chat input -->
-                <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px">
-                    <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none;">
+                <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; margin-left: 0px; margin-right: 0px;">
+                    <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none; padding-right: 0px;">
                         <div class="accordion" id="accordion">
                             <div class="accordion__card">
                                 <div class="card-body">
@@ -420,7 +420,7 @@ $party = get_active_party();
                     chat_input_row_el.style.top = calculated_len.toString() + "px";
 
                 }
-                chat_span_el.style.right = (elementWidth - 30).toString() + "px";
+                chat_span_el.style.right = (elementWidth).toString() + "px";
             }
         }
 
