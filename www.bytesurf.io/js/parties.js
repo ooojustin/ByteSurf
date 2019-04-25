@@ -1,10 +1,14 @@
-var party_update_interval = 5;
-var max_time_delta = 0.1;
-
 /*
 =========== WARNING ===========
 Only include this script via HTML if $_SESSION['party'] is set.
 */
+
+// ===== SETTINGS =====
+var party_update_interval = 5;
+var max_time_delta = 0.1;
+
+// ===== DON'T TOUCH THESE =====
+var last_message_id = -1;
 
 // get season/episode/title/type into array
 var params = get_important_params();
@@ -18,6 +22,7 @@ if (is_media_type_valid(params['type'])) {
 
     // execute without waiting, first time
     update_party_send();
+    
 }
     
 function ensure_party_link(data) {
@@ -66,6 +71,23 @@ function ensure_party_link(data) {
     
 }
 
+function interpret_party_message_data(data_raw) {
+    let data = JSON.parse(data_raw);
+    data.forEach(function(message) {
+        console.log('message from ' + message.username + ': ' + message.message);
+    });
+    if (data.length > 0)
+        last_message_id = data[0].id; 
+}
+
+function send_party_message(message) {
+    let params = { 'message' : message };
+    send_update('send_party_chat_message', params, function(r) {
+        let msg = (r == 'true') ? 'message sent!' : 'message failed to send';
+        console.log(msg);
+    });
+}
+
 function update_party_send() {
     
     // make sure player object exists
@@ -79,6 +101,9 @@ function update_party_send() {
     // determine whether or not the client is playing
     params['playing'] = (!player.paused).toString();
     
+    // tell server the id of the last message we've received
+    params['last_message_id'] = last_message_id;
+    
     // send update with action, params, and callback
     send_update('party_update', params, update_party_receive);
     
@@ -87,6 +112,9 @@ function update_party_send() {
 function update_party_receive(data_raw) {
     
     let data = JSON.parse(data_raw);
+    
+    // handle party messages
+    interpret_party_message_data(data.messages);
     
     // get the users in the party, display them
     let users = JSON.parse(data.users);
@@ -110,7 +138,7 @@ function update_party_receive(data_raw) {
     }
     
     // if local user owns party, don't worry about syncing
-    if (data.owner == 'true')
+    if (data.owner.startsWith('true'))
         return;
     
     // make sure party link is correct
