@@ -57,6 +57,7 @@ $party = get_active_party();
     <link rel="stylesheet" href="css/photoswipe.css">
     <link rel="stylesheet" href="css/default-skin.css">
     <link href="fonts/fontawesome-free-5.1.0-web/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
 
     <!-- JS -->
@@ -141,8 +142,8 @@ $party = get_active_party();
 
             <!-- watched btn -->
             <span id="span_chat" style="float: right; position: fixed; top: 50%; right: 27%; z-index: 5;">
-                <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 30px; height: 65px; width: 40px;">
-                    ></button> </span> <!-- end watched btn -->
+                <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 30px; height: 65px; width: 40px;"><i class="fas fa-arrow-right"></i></button>
+            </span> <!-- end watched btn -->
 
                         <!-- details -->
                         <section class="section details">
@@ -361,13 +362,13 @@ $party = get_active_party();
                 left_element.style.width = "100%";
                 left_element.style.cssFloat = "none";
                 document.getElementById("span_chat").style.right = "0px";
-                document.getElementById("chatbtn").innerHTML = "<";          
+                document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-left\"></i>";          
                 Globals.Opened = false;
             } else {
                 left_element.style.maxWidth = "70%";
                 left_element.style.width = "70%";
                 left_element.style.cssFloat = "left";
-                document.getElementById("chatbtn").innerHTML = ">";          
+                document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-right\"></i>";          
                 Globals.Opened = true;
             }
         }
