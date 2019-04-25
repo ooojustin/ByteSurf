@@ -141,7 +141,7 @@ $party = get_active_party();
 
             <!-- watched btn -->
             <span id="span_chat" style="float: right; position: fixed; top: 50%; right: 27%; z-index: 5;">
-                <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 10px; height: 35px; width: 40px;">
+                <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 30px; height: 65px; width: 40px;">
                     ></button> </span> <!-- end watched btn -->
 
                         <!-- details -->
@@ -372,8 +372,8 @@ $party = get_active_party();
             }
         }
 
-        function set_chat_elements(opened) {
-            if (opened) {
+        function set_chat_elements() {
+            if (Globals.Opened) {
                 var footer_element = document.getElementById("footer");
                 var col_element = document.getElementById("col_style");
                 var can_see = Utils.isElementInView(footer_element, false);
@@ -409,14 +409,18 @@ $party = get_active_party();
             }
         }
 
+        window.addEventListener("load", set_chat_elements);
+
         document.getElementById("chatbtn").addEventListener("click", toggle_chat);
 
+        document.getElementById("chatbtn").addEventListener("click", set_chat_elements);
+
         window.addEventListener("scroll", function() {
-            set_chat_elements(Globals.Opened);
+            set_chat_elements();
         }, false);
 
         window.addEventListener("resize", function() {
-            set_chat_elements(Globals.Opened);
+            set_chat_elements();
         }, false);
     </script>
 
