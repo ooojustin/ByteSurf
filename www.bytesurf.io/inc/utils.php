@@ -423,6 +423,20 @@
         return $send_message->execute();
         
     }
+
+    // gets new messages from a party
+    function get_party_chat_messages($last_id = -1, $count = NULL) {
+        global $db;
+        // get list of messages
+        $get_messages = $db->prepare('SELECT * FROM parties_chat WHERE party=:party AND id > :last_id ORDER BY id DESC');
+        $get_message->bindValue(':party', $_SESSION['party']);
+        $get_message->bindValue(':last_id', $last_id);
+        $messages = $get_messages->fetchAll();
+        // get the last 'count' elements from the messages if needed.
+        if (!is_null($count) && count($messages) > $count)
+            $messages = array_slice($messages, -$count, $count, true);
+        return $messages;
+    }
     
     // updates 'users' colum in a specified party (from an array, key = usernae & value = timestamp)
     function update_party_users($users) {
