@@ -304,8 +304,15 @@ $party = get_active_party();
 
         </div>
         
+        <? if ($party) { ?>
         <!-- party chat -->
         <script>
+            
+            function send_party_message() {
+                let message_textbox = document.getElementById('party_chat_message');
+                send_party_chat_message(message_textbox.value);
+                message_textbox.value = '';
+            }
             
             function toggle_chat() {
             
@@ -358,11 +365,21 @@ $party = get_active_party();
 
             }
 
-            document.getElementById("chatbtn").addEventListener("click", toggle_chat);
-            document.getElementById("chatbtn").addEventListener("click", set_chat_elements);
-            window.addEventListener("scroll", set_chat_elements, false);
-            window.addEventListener("resize", set_chat_elements, false);
-            window.addEventListener("load", set_chat_elements, false);
+            $(document).ready(function() {
+                
+                document.getElementById("chatbtn").addEventListener("click", toggle_chat);
+                document.getElementById("chatbtn").addEventListener("click", set_chat_elements);
+                window.addEventListener("scroll", set_chat_elements, false);
+                window.addEventListener("resize", set_chat_elements, false);
+                window.addEventListener("load", set_chat_elements, false);
+                
+                input.addEventListener("keyup", function(event) {
+                    if (event.keyCode !== 13)
+                        return;
+                    document.getElementById("party_chat_send").click();
+                });
+                
+            });
 
         </script>
         <div style="margin-left: 70%;">
@@ -371,8 +388,8 @@ $party = get_active_party();
                 <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px; margin-left: 0px; margin-right: 0px;">
                     <div class="col-12">
                         <div class="header__search-content">
-                            <input type="text" id="send_chatmsg" name="q" placeholder="Send a message...">
-                            <button type="submit">send</button>
+                            <input type="text" id="party_chat_message" placeholder="Send a message...">
+                            <button type="submit" id="party_chat_send" onclick="send_party_message">SEND</button>
                         </div>
                     </div>
                 </div>
@@ -383,22 +400,10 @@ $party = get_active_party();
                             <div class="accordion__card">
                                 <div class="card-body">
                                     <table class="accordion__list">
-                                        <tbody>
+                                        <tbody id="message_container">
                                             <tr>
-                                                <td>Kite</td>
-                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kite</td>
-                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kite</td>
-                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Kite</td>
-                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                                                <td>username</td>
+                                                <td>this is a test message</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -410,6 +415,7 @@ $party = get_active_party();
             </div>
         </div>
         <!-- end party chat -->
+        <? } ?>
         
     </div>
     <div id="footer">
