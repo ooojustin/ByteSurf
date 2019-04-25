@@ -101,12 +101,14 @@ function interpret_party_message_data(data_raw) {
     // loop through messages and handle them 
     data.forEach(function(message) {
         console.log('[' + message.timestamp + '] message from ' + message.username + ': ' + message.message);
+        let message_node = generate_message_node(message.username, message.message);
+        document.getElementById('message_container').appendNode(message_node);
     });
     
     // update last_message_id
     // note: sorted by 'id' descending, so first item = highest id
     if (data.length > 0)
-        last_message_id = data[0].id;
+        last_message_id = data[data.length - 1].id;
     
 }
 

@@ -439,9 +439,10 @@
     }
 
     // gets new messages from a party
+    // note: sorted from old -> new
     function get_party_chat_messages($last_id = -1) {
         global $db;
-        $get_messages = $db->prepare('SELECT * FROM parties_chat WHERE party = :party AND id > :last_id ORDER BY id DESC');
+        $get_messages = $db->prepare('SELECT * FROM parties_chat WHERE party = :party AND id > :last_id ORDER BY id ASC');
         $get_messages->bindValue(':party', $_SESSION['party']);
         $get_messages->bindValue(':last_id', $last_id);
         $get_messages->execute();
