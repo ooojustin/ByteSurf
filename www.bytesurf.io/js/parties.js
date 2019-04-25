@@ -72,6 +72,27 @@ function ensure_party_link(data) {
     
 }
 
+function generate_message_node(username, message_content) {
+    
+    // create row element (whole message)
+    let message_node = document.createElement('tr');
+    
+    // create data elements
+    let username_node = document.createElement('td');
+    let message_content_node = document.createElement('td');
+    
+    // store username/message in data e
+    username_node.appendChild(document.createTextNode(username));
+    message_content_node.appendChild(document.createTextNode(message_content));
+    
+    // insert data elements into row
+    message_node.appendChild(username_node);
+    message_node.appendChild(username_node);
+    
+    return message_node;
+    
+}
+
 function interpret_party_message_data(data_raw) {
     
     // parse message data
