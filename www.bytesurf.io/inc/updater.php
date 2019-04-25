@@ -70,7 +70,7 @@
         case 'party_update':
             
             // require a myriad of parameters, lol
-            $params = array('s', 'e', 't', 'type', 'time', 'timestamp', 'playing');
+            $params = array('s', 'e', 't', 'type', 'time', 'timestamp', 'playing', 'last_message_id');
             require_get_params($params);
             
             // Make sure our timestamp is in sync with the clients (ms, 5 seconds)
@@ -108,8 +108,13 @@
             // update party information, after queries
             $party = get_party($party['party']);
             
-            // return information to client
-            $party['owner'] = $owner ? 'true' : 'false';
+            // get messages
+            $messages = get_party_chat_messages($_GET['last_message_id']);
+            $party['messages'] = json_encode($messages);
+            
+            // return include bool value in owner message
+            $party['owner'] = ($owner ? 'true' : 'false') . ':' . $username;
+            
             $data = json_encode($party);
             die_gz($data);
             
