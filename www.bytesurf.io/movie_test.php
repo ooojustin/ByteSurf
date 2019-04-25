@@ -89,6 +89,10 @@ $party = get_active_party();
     <title>ByteSurf</title>
 
     <script>
+        var Globals = new(function() {
+            this.Opened = true;
+        })()
+
         function Utils() {}
         Utils.prototype = {
             constructor: Utils,
@@ -114,7 +118,7 @@ $party = get_active_party();
 
     <div style="width: 100%; overflow: hidden;">
 
-        <div style="width: 80%; float: left; max-width: 80%">
+        <div id="left_section" style="width: 70%; float: left; max-width: 70%">
 
             <style>
                 .header {
@@ -135,174 +139,179 @@ $party = get_active_party();
             <? $party ? require 'inc/html/party_modal.php' : ''; ?>
             <!-- end party dialog -->
 
-            <!-- details -->
-            <section class="section details">
-                <!-- details background -->
-                <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
-                <!-- end details background -->
-                <div class="container">
+            <!-- watched btn -->
+            <span id="span_chat" style="float: right; position: fixed; top: 50%; right: 27%; z-index: 5;">
+                <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 10px; height: 35px; width: 40px;">
+                    ></button> </span> <!-- end watched btn -->
 
-                    <div class="row">
+                        <!-- details -->
+                        <section class="section details">
+                            <!-- details background -->
+                            <!--<div class="details__bg" data-bg="img/home/home__bg.jpg"></div>-->
+                            <!-- end details background -->
+                            <div class="container">
 
-                        <!-- player -->
-                        <div class="col-12">
-                            <video controls crossorigin playsinline poster="<?= $preview ?>" id="player">
+                                <div class="row">
 
-                                <!-- Video files -->
-                                <? foreach ($qualities as $quality) { ?>
-                                    <source src="<?= $quality['link'] ?>" type="video/mp4" size="<?= $quality['resolution'] ?>" />
-                                <? } ?>
+                                    <!-- player -->
+                                    <div class="col-12">
+                                        <video controls crossorigin playsinline poster="<?= $preview ?>" id="player">
 
-                                <!-- Caption files -->
-                                <?
-                                foreach ($subs as $sub) {
-                                    $sub_end = isset($sub['default']) ? ' default' : '';
-                                    ?>
-                                    <track kind="captions" label="<?= $sub['label'] ?>" srclang="<?= $sub['language'] ?>" src="<?= authenticate_cdn_url($sub['url']) ?>" <?= $sub_end ?>>
-                                <? } ?>
+                                            <!-- Video files -->
+                                            <? foreach ($qualities as $quality) { ?>
+                                                <source src="<?= $quality['link'] ?>" type="video/mp4" size="<?= $quality['resolution'] ?>" />
+                                            <? } ?>
 
-                                <!-- Fallback for browsers that don't support the <video> element -->
-                                <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
-                            </video>
+                                            <!-- Caption files -->
+                                            <?
+                                            foreach ($subs as $sub) {
+                                                $sub_end = isset($sub['default']) ? ' default' : '';
+                                                ?>
+                                                <track kind="captions" label="<?= $sub['label'] ?>" srclang="<?= $sub['language'] ?>" src="<?= authenticate_cdn_url($sub['url']) ?>" <?= $sub_end ?>>
+                                            <? } ?>
 
-                            <!-- party btn -->
-                            <?
-                            $party_btn_action = $party ? 'OPEN' : 'CREATE';
-                            $party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
-                            $party_a_onclick = $party ? 'return false;' : '';
-                            ?>
-                            <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
-                                <a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
-                                    <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
-                                </a>
-                            </span>
-                            <? if ($party) { ?>
-                                <script>
-                                    initialize_modal_box('party-modal', 'party-modal-btn');
-                                </script>
-                            <? } ?>
-                            <!-- end party btn -->
+                                            <!-- Fallback for browsers that don't support the <video> element -->
+                                            <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
+                                        </video>
 
-                            <!-- watched btn -->
-                            <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
-                                <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
-                            </span>
-                            <!-- end watched btn -->
-
-                        </div>
-                        <!-- end player -->
-                    </div>
-
-                </div>
-
-
-
-
-            </section>
-            <!-- end details -->
-
-            <!-- content -->
-            <section class="content">
-                <!-- details content -->
-                <div class="container">
-
-                    <div class="row">
-                        <div class="col-12 col-lg-6 ">
-                            <div class="movie-disc">
-                                <div class="movie-cover-img">
-                                    <div class="card__cover cover-avatar-img">
-                                        <img src=<?= $thumbnail ?> alt="">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="col-12 col-lg-6 ">
-                            <div class="card__content">
-                                <div class="content-heading">
-                                    <h2 class="details__title"><?= $title ?></h2>
-                                </div>
-                                <div class="card__wrap">
-                                    <span class="card__rate"><i class="icon ion-ios-star"></i><?= $rating ?></span>
-
-                                    <ul class="card__list">
-                                        <li>HD</li>
-                                        <li><?= $certification ?></li>
-                                        <li><?= $year ?></li>
-                                        <li><?= $duration ?>min</li>
-                                    </ul>
-                                </div>
-
-                                <ul class="card__meta">
-                                    <li><span>Genre:</span> <a href="#">Action</a>
-                                        <a href="#">Triler</a></li>
-                                    <li><span>Release year:</span> 2017</li>
-                                    <li><span>Running time:</span> 120 min</li>
-                                    <li><span>Country:</span> <a href="#">USA</a></li>
-                                </ul>
-
-                                <span class="card__category">
-                                    <a href="https://bytesurf.io/contact/?q=problem&t=<?= $title ?>" target="blank">Report a Problem</a>
-                                </span>
-
-                                <div class="card__description card__description--details">
-                                    <p>
-                                        <?= $description ?>
-                                    </p>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- end details content -->
-            </section>
-            <!-- end content -->
-
-            <!-- similar movies -->
-            <section>
-                <div class="container-fluid">
-                    <div class="row>">
-                        <div class="col-12">
-                            <div class="owl-carousel">
-
-                                <?
-                                $similar = get_similar_movies($_GET['t']);
-                                foreach ($similar as $movie) {
-                                    $movie = get_movie_data($movie);
-                                    $thumbnail = authenticate_cdn_url($movie['thumbnail']);
-                                    $href = 'https://bytesurf.io/movie.php?t=' . $movie['url'];
-                                    ?>
-                                    <div class="card">
-                                        <div class="card__cover">
-                                            <img src=<?= '"' . $thumbnail . '"'; ?> alt="">
-                                            <a href=<?= '"' . $href . '"'; ?> class="card__play">
-                                                <i class="icon ion-ios-play"></i>
+                                        <!-- party btn -->
+                                        <?
+                                        $party_btn_action = $party ? 'OPEN' : 'CREATE';
+                                        $party_btn_link = $party ? '#' : 'https://bytesurf.io/party.php?action=create';
+                                        $party_a_onclick = $party ? 'return false;' : '';
+                                        ?>
+                                        <span style="float: left; padding-top: 10px; padding-bottom: 10px;">
+                                            <a href="<?= $party_btn_link ?>" onclick="<?= $party_a_onclick ?>">
+                                                <button class="filter__btn" id="party-modal-btn" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $party_btn_action ?> PARTY</button>
                                             </a>
-                                        </div>
-                                        <div class="card__content">
-                                            <h3 class="card__title"><a href=<?= '"' . $href . '"'; ?>><?= $movie['title'] ?></a></h3>
-                                            <span class="card__category">
-                                                <a href=<?= '"https://bytesurf.io.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year']    ?></a>
-                                            </span>
-                                            <span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
-                                        </div>
+                                        </span>
+                                        <? if ($party) { ?>
+                                            <script>
+                                                initialize_modal_box('party-modal', 'party-modal-btn');
+                                            </script>
+                                        <? } ?>
+                                        <!-- end party btn -->
+
+                                        <!-- watched btn -->
+                                        <span style="float: right; padding-top: 10px; padding-bottom: 10px;">
+                                            <button onclick="toggle_watched(this)" class="filter__btn" name="watchbtn" value="<?= $watched_btn_value ?>" type="button" style="font-size: 10px; height: 35px; width: 170px;"><?= $watched_btn_text ?></button>
+                                        </span>
+                                        <!-- end watched btn -->
+
                                     </div>
-                                <? } ?>
+                                    <!-- end player -->
+                                </div>
 
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!-- end similar movies -->
+
+
+
+
+                        </section>
+                        <!-- end details -->
+
+                        <!-- content -->
+                        <section class="content">
+                            <!-- details content -->
+                            <div class="container">
+
+                                <div class="row">
+                                    <div class="col-12 col-lg-6 ">
+                                        <div class="movie-disc">
+                                            <div class="movie-cover-img">
+                                                <div class="card__cover cover-avatar-img">
+                                                    <img src=<?= $thumbnail ?> alt="">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-12 col-lg-6 ">
+                                        <div class="card__content">
+                                            <div class="content-heading">
+                                                <h2 class="details__title"><?= $title ?></h2>
+                                            </div>
+                                            <div class="card__wrap">
+                                                <span class="card__rate"><i class="icon ion-ios-star"></i><?= $rating ?></span>
+
+                                                <ul class="card__list">
+                                                    <li>HD</li>
+                                                    <li><?= $certification ?></li>
+                                                    <li><?= $year ?></li>
+                                                    <li><?= $duration ?>min</li>
+                                                </ul>
+                                            </div>
+
+                                            <ul class="card__meta">
+                                                <li><span>Genre:</span> <a href="#">Action</a>
+                                                    <a href="#">Triler</a></li>
+                                                <li><span>Release year:</span> 2017</li>
+                                                <li><span>Running time:</span> 120 min</li>
+                                                <li><span>Country:</span> <a href="#">USA</a></li>
+                                            </ul>
+
+                                            <span class="card__category">
+                                                <a href="https://bytesurf.io/contact/?q=problem&t=<?= $title ?>" target="blank">Report a Problem</a>
+                                            </span>
+
+                                            <div class="card__description card__description--details">
+                                                <p>
+                                                    <?= $description ?>
+                                                </p>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- end details content -->
+                        </section>
+                        <!-- end content -->
+
+                        <!-- similar movies -->
+                        <section>
+                            <div class="container-fluid">
+                                <div class="row>">
+                                    <div class="col-12">
+                                        <div class="owl-carousel">
+
+                                            <?
+                                            $similar = get_similar_movies($_GET['t']);
+                                            foreach ($similar as $movie) {
+                                                $movie = get_movie_data($movie);
+                                                $thumbnail = authenticate_cdn_url($movie['thumbnail']);
+                                                $href = 'https://bytesurf.io/movie.php?t=' . $movie['url'];
+                                                ?>
+                                                <div class="card">
+                                                    <div class="card__cover">
+                                                        <img src=<?= '"' . $thumbnail . '"'; ?> alt="">
+                                                        <a href=<?= '"' . $href . '"'; ?> class="card__play">
+                                                            <i class="icon ion-ios-play"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="card__content">
+                                                        <h3 class="card__title"><a href=<?= '"' . $href . '"'; ?>><?= $movie['title'] ?></a></h3>
+                                                        <span class="card__category">
+                                                            <a href=<?= '"https://bytesurf.io.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year']    ?></a>
+                                                        </span>
+                                                        <span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
+                                                    </div>
+                                                </div>
+                                            <? } ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- end similar movies -->
 
         </div>
         <!-- chat -->
-        <div style="margin-left: 80%;">
+        <div style="margin-left: 70%;">
             <div class="container">
-                <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 360px; right: 0px; margin-top: 90px">
+                <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px">
                     <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none;">
                         <div class="accordion" id="accordion">
                             <div class="accordion__card">
@@ -326,7 +335,6 @@ $party = get_active_party();
                                                 <td>Kite</td>
                                                 <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
                                             </tr>
-
                                         </tbody>
                                     </table>
                                 </div>
@@ -346,46 +354,69 @@ $party = get_active_party();
 
 
     <script>
-        function set_chat_elements() {
-            var footer_element = document.getElementById("footer");
-            var col_element = document.getElementById("col_style");
-            var can_see = Utils.isElementInView(footer_element, false);
-            // Get variables of the element
-            var pageTop = $(window).scrollTop();
-            var pageBottom = pageTop + $(window).height();
-
-            var chatroom_row = document.getElementById("chatroom_row");
-            var elementTop = $(chatroom_row).offset().top;
-            var elementBottom = elementTop + $(chatroom_row).height();
-
-            var footer_top = $(footer_element).offset().top;
-
-            var footer_length = pageBottom - footer_top;
-
-
-            if (can_see) {
-                chatroom_row.style.position = "absolute";
-                chatroom_row.style.marginTop = (90 + pageTop).toString() + "px";
-                chatroom_row.style.height = (footer_top - elementTop - 1).toString() + "px";
-                chatroom_row.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
-                col_element.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
+        function toggle_chat() {
+            var left_element = document.getElementById("left_section");
+            if (Globals.Opened) {
+                left_element.style.maxWidth = "100%";
+                left_element.style.width = "100%";
+                left_element.style.cssFloat = "none";
+                document.getElementById("span_chat").style.right = "0px";
+                document.getElementById("chatbtn").innerHTML = "<";          
+                Globals.Opened = false;
             } else {
-                chatroom_row.style.position = "fixed";
-                chatroom_row.style.height = (pageBottom - 90).toString() + "px";
-                chatroom_row.style.maxHeight = (pageBottom - 90).toString() + "px";
-
-                chatroom_row.style.marginTop = "90px";
-                col_element.style.maxHeight = (pageBottom - 90).toString() + "px";
-
+                left_element.style.maxWidth = "70%";
+                left_element.style.width = "70%";
+                left_element.style.cssFloat = "left";
+                document.getElementById("chatbtn").innerHTML = ">";          
+                Globals.Opened = true;
             }
         }
 
+        function set_chat_elements(opened) {
+            if (opened) {
+                var footer_element = document.getElementById("footer");
+                var col_element = document.getElementById("col_style");
+                var can_see = Utils.isElementInView(footer_element, false);
+                // Get variables of the element
+                var pageTop = $(window).scrollTop();
+                var pageBottom = pageTop + $(window).height();
+
+                var chatroom_row = document.getElementById("chatroom_row");
+                var elementTop = $(chatroom_row).offset().top;
+                var elementWidth = $(chatroom_row).width();
+                var elementBottom = elementTop + $(chatroom_row).height();
+                var footer_top = $(footer_element).offset().top;
+                var footer_length = pageBottom - footer_top;
+                var chat_span_el = document.getElementById("span_chat");
+
+
+                if (can_see) {
+                    chatroom_row.style.position = "absolute";
+                    chatroom_row.style.marginTop = (90 + pageTop).toString() + "px";
+                    chatroom_row.style.height = (footer_top - elementTop - 1).toString() + "px";
+                    chatroom_row.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
+                    col_element.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
+                    chat_span_el.style.top = ((footer_top - elementTop - 1) / 2 + 90).toString() + "px";
+                } else {
+                    chatroom_row.style.position = "fixed";
+                    chatroom_row.style.height = (pageBottom - 90).toString() + "px";
+                    chatroom_row.style.maxHeight = (pageBottom - 90).toString() + "px";
+                    chatroom_row.style.marginTop = "90px";
+                    col_element.style.maxHeight = (pageBottom - 90).toString() + "px";
+                    chat_span_el.style.top = (pageBottom / 2).toString() + "px";
+                }
+                chat_span_el.style.right = (elementWidth - 30).toString() + "px";
+            }
+        }
+
+        document.getElementById("chatbtn").addEventListener("click", toggle_chat);
+
         window.addEventListener("scroll", function() {
-            set_chat_elements();
+            set_chat_elements(Globals.Opened);
         }, false);
 
         window.addEventListener("resize", function() {
-            set_chat_elements();
+            set_chat_elements(Globals.Opened);
         }, false);
     </script>
 
