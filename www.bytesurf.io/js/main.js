@@ -128,6 +128,47 @@ function toggle_queued() {
     });
 }
 
+// wrapper for javascript setInterval/clearInterval
+// based off: https://stackoverflow.com/a/2679208/5699643
+function IntervalHandler(fn, ms) {
+    
+    // interval handle
+    // false = not running
+    var timer = false;
+    
+    // start the interval if it's not already running
+    this.start = function (run_instantly = false) {
+        
+        if (this.isRunning())
+            return false;
+        
+        timer = setInterval(fn, ms);
+        
+        if (run_instantly)
+            fn();
+        
+    };
+    
+    // aborts the interval and resets timer
+    this.stop = function () {
+        clearInterval(timer);
+        timer = false;
+    };
+    
+    // simply stop/start the interval to reset timer
+    this.restart = function (run_instantly = false) {
+        this.stop();
+        this.start(run_instantly);
+    }
+    
+    // determines whether or not the current interval is running
+    this.isRunning = function () {
+        return timer !== false;
+    };
+    
+}
+
+
 $(document).ready(function () {
     
 	"use strict"; // start of use strict
