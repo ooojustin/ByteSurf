@@ -306,6 +306,16 @@ $party = get_active_party();
         <!-- chat -->
         <div style="margin-left: 70%;">
             <div class="container">
+                <!-- chat input-->
+                <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px;">
+                    <div class="col-12">
+                        <div class="header__search-content">
+                            <input type="text" id="send_chatmsg" name="q" placeholder="Send a message...">
+                            <button type="submit">send</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- end chat input -->
                 <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px">
                     <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none;">
                         <div class="accordion" id="accordion">
@@ -336,16 +346,6 @@ $party = get_active_party();
                         </div>
                     </div>
                 </div>
-                <!-- chat input
-                <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px;">
-                    <div class="col-12">
-                        <div class="header__search-content">
-                            <input type="text" id="send_chatmsg" name="q" placeholder="Send a message...">
-                            <button type="submit">send</button>
-                        </div>
-                    </div>
-                </div> -->
-                <!-- end chat input -->
 
             </div>
         </div>
@@ -361,18 +361,22 @@ $party = get_active_party();
     <script>
         function toggle_chat() {
             var left_element = document.getElementById("left_section");
+            // close
             if (Globals.Opened) {
                 left_element.style.maxWidth = "100%";
                 left_element.style.width = "100%";
                 left_element.style.cssFloat = "none";
                 document.getElementById("span_chat").style.right = "0px";
                 document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-left\"></i>";
+                document.getElementById("chatroom_input_row").style.position = "relative";
                 Globals.Opened = false;
             } else {
+                // opening
                 left_element.style.maxWidth = "70%";
                 left_element.style.width = "70%";
                 left_element.style.cssFloat = "left";
                 document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-right\"></i>";
+                document.getElementById("chatroom_input_row").style.position = "fixed";
                 Globals.Opened = true;
             }
         }
@@ -399,18 +403,21 @@ $party = get_active_party();
                 if (can_see) {
                     chatroom_row.style.position = "absolute";
                     chatroom_row.style.marginTop = (90 + pageTop).toString() + "px";
-                    chatroom_row.style.height = (footer_top - elementTop - 1).toString() + "px";
-                    chatroom_row.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
-                    col_element.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
-                    chat_span_el.style.top = ((footer_top - elementTop) / 2 + 90).toString() + "px";               
+                    var calculated_len = footer_top - elementTop - 1 - 60;
+                    chatroom_row.style.height = calculated_len.toString() + "px";
+                    chatroom_row.style.maxHeight = calculated_len.toString() + "px";
+                    col_element.style.maxHeight = calculated_len.toString() + "px";
+                    chat_span_el.style.top = (calculated_len / 2 + 90).toString() + "px";
+                    chat_input_row_el.style.top = calculated_len + "px"
                 } else {
                     chatroom_row.style.position = "fixed";
-                    chatroom_row.style.height = (pageBottom - 90).toString() + "px";
-                    chatroom_row.style.maxHeight = (pageBottom - 90).toString() + "px";
+                    var calculated_len = pageBottom - elementTop - 1 - 60;
+                    chatroom_row.style.height = calculated_len.toString() + "px";
+                    chatroom_row.style.maxHeight = calculated_len.toString() + "px";
                     chatroom_row.style.marginTop = "90px";
-                    col_element.style.maxHeight = (pageBottom - 90).toString() + "px";
-                    chat_span_el.style.top = (90 + ((pageBottom - 90) / 2)).toString() + "px";
+                    col_element.style.maxHeight = calculated_len.toString() + "px";
                     chat_span_el.style.top = ((pageBottom - elementTop) / 2 + 90).toString() + "px";
+                    chat_input_row_el.style.top = calculated_len.toString() + "px";
 
                 }
                 chat_span_el.style.right = (elementWidth - 30).toString() + "px";
