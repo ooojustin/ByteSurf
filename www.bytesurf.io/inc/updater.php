@@ -26,6 +26,17 @@
 
     switch ($_GET['action']) {
             
+        case 'send_party_chat_message':
+            
+            // require message parameter
+            require_get_params(array('message'));
+            
+            // send message
+            $sent = send_party_chat_message($_GET['message']);
+            
+            // output whether or not message was sent successfully
+            die_gz($sent ? 'true' : 'false');
+            
         case 'remove_from_watched':
             
             // require parameters for bind_content_values
