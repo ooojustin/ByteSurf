@@ -88,7 +88,7 @@ $party = get_active_party();
     <meta name="author" content="Peter Pistachio">
     <title>ByteSurf</title>
 
-    <script type="text/javascript">
+    <script>
         function Utils() {}
         Utils.prototype = {
             constructor: Utils,
@@ -114,11 +114,11 @@ $party = get_active_party();
 
     <div style="width: 100%; overflow: hidden;">
 
-        <div style="width: 80%; float: left;">
+        <div style="width: 80%; float: left; max-width: 80%">
 
             <style>
                 .header {
-                    margin-right: 20%;
+                    height: 90px;
                 }
 
                 .accordion {
@@ -299,22 +299,37 @@ $party = get_active_party();
             <!-- end similar movies -->
 
         </div>
-
         <!-- chat -->
         <div style="margin-left: 80%;">
             <div class="container">
-                <div class="row" style="position: fixed; height: 100%; z-index: 200;">
-                    <div class="col-12 col-lg-6" style="max-width: 100%;flex: none;">
+                <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 360px; right: 0px; margin-top: 90px">
+                    <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none;">
                         <div class="accordion" id="accordion">
                             <div class="accordion__card">
-                                <table class="accordion__list">
-                                    <tbody>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td id="visible">0</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                <div class="card-body">
+
+                                    <table class="accordion__list">
+                                        <tbody>
+                                            <tr>
+                                                <td>Kite</td>
+                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kite</td>
+                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kite</td>
+                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Kite</td>
+                                                <td>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -330,19 +345,47 @@ $party = get_active_party();
     </div>
 
 
-    <script type="text/javascript">
-        function ScrollEvent() {
-            var can_see = Utils.isElementInView(document.getElementById("footer"), false);
+    <script>
+        function set_chat_elements() {
+            var footer_element = document.getElementById("footer");
+            var col_element = document.getElementById("col_style");
+            var can_see = Utils.isElementInView(footer_element, false);
+            // Get variables of the element
+            var pageTop = $(window).scrollTop();
+            var pageBottom = pageTop + $(window).height();
+
+            var chatroom_row = document.getElementById("chatroom_row");
+            var elementTop = $(chatroom_row).offset().top;
+            var elementBottom = elementTop + $(chatroom_row).height();
+
+            var footer_top = $(footer_element).offset().top;
+
+            var footer_length = pageBottom - footer_top;
+
 
             if (can_see) {
-                document.getElementById("visible").innerHTML = "Yes";
+                chatroom_row.style.position = "absolute";
+                chatroom_row.style.marginTop = (90 + pageTop).toString() + "px";
+                chatroom_row.style.height = (footer_top - elementTop - 1).toString() + "px";
+                chatroom_row.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
+                col_element.style.maxHeight = (footer_top - elementTop - 1).toString() + "px";
             } else {
-                document.getElementById("visible").innerHTML = "No";
+                chatroom_row.style.position = "fixed";
+                chatroom_row.style.height = (pageBottom - 90).toString() + "px";
+                chatroom_row.style.maxHeight = (pageBottom - 90).toString() + "px";
+
+                chatroom_row.style.marginTop = "90px";
+                col_element.style.maxHeight = (pageBottom - 90).toString() + "px";
+
             }
         }
 
         window.addEventListener("scroll", function() {
-            ScrollEvent();
+            set_chat_elements();
+        }, false);
+
+        window.addEventListener("resize", function() {
+            set_chat_elements();
         }, false);
     </script>
 
