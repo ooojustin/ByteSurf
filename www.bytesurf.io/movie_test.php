@@ -88,10 +88,29 @@ $party = get_active_party();
     <meta name="author" content="Peter Pistachio">
     <title>ByteSurf</title>
 
+    <script type="text/javascript">
+        function Utils() {}
+        Utils.prototype = {
+            constructor: Utils,
+            isElementInView: function(element, fullyInView) {
+                var pageTop = $(window).scrollTop();
+                var pageBottom = pageTop + $(window).height();
+                var elementTop = $(element).offset().top;
+                var elementBottom = elementTop + $(element).height();
+
+                if (fullyInView === true) {
+                    return ((pageTop < elementTop) && (pageBottom > elementBottom));
+                } else {
+                    return ((elementTop <= pageBottom) && (elementBottom >= pageTop));
+                }
+            }
+        };
+        var Utils = new Utils();
+    </script>
+
 </head>
 
 <body class="body">
-
 
     <div style="width: 100%; overflow: hidden;">
 
@@ -292,127 +311,7 @@ $party = get_active_party();
                                     <tbody>
                                         <tr>
                                             <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Kite</td>
-                                            <td>Hello World</td>
+                                            <td id="visible">0</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -424,9 +323,28 @@ $party = get_active_party();
         </div>
         <!-- end chat -->
     </div>
-    <!-- footer -->
-    <? require 'inc/html/footer.php' ?>
-    <!-- end footer -->
+    <div id="footer">
+        <!-- footer -->
+        <? require 'inc/html/footer.php' ?>
+        <!-- end footer -->
+    </div>
+
+
+    <script type="text/javascript">
+        function ScrollEvent() {
+            var can_see = Utils.isElementInView(document.getElementById("footer"), false);
+
+            if (can_see) {
+                document.getElementById("visible").innerHTML = "Yes";
+            } else {
+                document.getElementById("visible").innerHTML = "No";
+            }
+        }
+
+        window.addEventListener("scroll", function() {
+            ScrollEvent();
+        }, false);
+    </script>
 
     <!-- Root   element of PhotoSwipe. Must have class pswp. -->
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
