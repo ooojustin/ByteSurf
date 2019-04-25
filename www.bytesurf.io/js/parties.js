@@ -86,15 +86,17 @@ function interpret_party_message_data(data_raw) {
     // note: sorted by 'id' descending, so first item = highest id
     if (data.length > 0)
         last_message_id = data[0].id;
+    
 }
 
-function send_party_message(message) {
+function send_party_chat_message(message) {
     let params = { 'message' : message };
     send_update('send_party_chat_message', params, function(raw) {
         let data = JSON.parse(raw);
-        let msg = data.sent ? 'message sent!' : 'message failed to send: ' + data.reason;
-        console.log(msg);
-        party_update_handler.restart(true); // restart interval so we can download message instantly
+        if (data.sent)
+            party_update_handler.restart(true); // restart interval so we can download message instantly
+        else
+            console.log('send_party_chat_message failed: ' + data.reason);
     });
 }
 
