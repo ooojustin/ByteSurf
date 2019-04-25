@@ -4798,7 +4798,7 @@ html:not([dir="rtl"]) .noUi-horizontal .noUi-handle {
 .cover-avatar-img::before {
 	content: '';
 	background: url("../img/movie-avatar-img-glare.png") no-repeat top left;
-	z-index: 999;
+	z-index: 99;
 	position: absolute;
 	display: block;
 	width: 100%;
