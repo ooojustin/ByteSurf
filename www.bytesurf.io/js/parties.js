@@ -72,18 +72,27 @@ function ensure_party_link(data) {
 }
 
 function interpret_party_message_data(data_raw) {
+    
+    // parse message data
     let data = JSON.parse(data_raw);
+    
+    // loop through messages and handle them 
     data.forEach(function(message) {
-        console.log('message from ' + message.username + ': ' + message.message);
+        console.log('[' + message.timestamp + '] message from ' + message.username + ': ' + message.message);
     });
+    
+    // update last_message_id
+    // note: sorted by 'id' descending, so first item = highest id
     if (data.length > 0)
-        last_message_id = data[0].id; 
+        last_message_id = data[0].id;
+    
 }
 
 function send_party_message(message) {
     let params = { 'message' : message };
-    send_update('send_party_chat_message', params, function(r) {
-        let msg = (r == 'true') ? 'message sent!' : 'message failed to send';
+    send_update('send_party_chat_message', params, function(raw) {
+        let data = JSON.parse(raw);
+        let msg = data.sent ? 'message sent!' : 'message failed to send: ' + data.reason;
         console.log(msg);
     });
 }

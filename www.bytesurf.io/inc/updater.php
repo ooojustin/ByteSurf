@@ -32,10 +32,10 @@
             require_get_params(array('message'));
             
             // send message
-            $sent = send_party_chat_message($_GET['message']);
+            $response = send_party_chat_message($_GET['message']);
             
             // output whether or not message was sent successfully
-            die_gz($sent ? 'true' : 'false');
+            die_gz(json_encode($response));
             
         case 'remove_from_watched':
             

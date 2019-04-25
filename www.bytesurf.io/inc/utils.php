@@ -403,25 +403,39 @@
         // make sure we're in a party
         $party = get_active_party();
         if (!$party)
-            return false;
+            return array('sent' => false, 'reason' => 'Not in a party.');
         
         // make sure we're logged in
         global $user;
         if (!$user)
-            return false;
+            return array('sent' => false, 'reason' => 'User not logged in.');
         
         // make sure message is a reasonable size
         if (strlen($message) > 1024)
-            return false;
+            return array('sent' => false, 'reason' => 'Message too long - max 1024 chars.');
         
+        // make sure the user hasn't sent a message within the past 500 ms
+        $last_message = last_sent_party_message();
+        if ($last_message && (time_ms() - $last_message['timestamp']) < 500)
+            return array('sent' => false, 'reason' => 'Wait 500 ms before sending another message.');
+            
         global $db;
         $send_message = $db->prepare('INSERT INTO parties_chat (party, username, message, timestamp) VALUES (:party, :username, :message, :timestamp)');
         $send_message->bindValue(':party', $party['party']);
         $send_message->bindValue(':username', $user['username']);
         $send_message->bindValue(':message', $message);
-        $send_message->bindValue(':timestamp', time());
-        return $send_message->execute();
+        $send_message->bindValue(':timestamp', time_ms());
+        $send_message->execute();
+        return array('sent' => true);
         
+    }
+
+    function last_sent_party_message() {
+        global $user, $db;
+        $get_message = $db->prepare('SELECT * FROM parties_chat WHERE username = :username ORDER BY id DESC LIMIT 1');
+        $get_message->bindValue(':username', $user['username']);
+        $get_message->execute();
+        return $get_message->fetch();
     }
 
     // gets new messages from a party
@@ -430,6 +444,7 @@
         $get_messages = $db->prepare('SELECT * FROM parties_chat WHERE party = :party AND id > :last_id ORDER BY id DESC');
         $get_messages->bindValue(':party', $_SESSION['party']);
         $get_messages->bindValue(':last_id', $last_id);
+        $get_messages->execute();
         return $get_messages->fetchAll();
     }
     
