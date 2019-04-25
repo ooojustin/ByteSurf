@@ -1,4 +1,4 @@
-window.setInterval(update_progress, 5000);
+window.setInterval(update_progress, 10000);
 var last_progress_update = 0;
 var progress_season, progress_episode, progress_time, progress_completed;
 

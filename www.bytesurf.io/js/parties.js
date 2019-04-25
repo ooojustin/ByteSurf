@@ -4,7 +4,7 @@ Only include this script via HTML if $_SESSION['party'] is set.
 */
 
 // ===== SETTINGS =====
-var party_update_interval = 5;
+const party_update_interval = 5;
 var max_time_delta = 0.1;
 
 // ===== DON'T TOUCH THESE =====
@@ -18,7 +18,8 @@ console.log('type: ' + params['type']);
 if (is_media_type_valid(params['type'])) {
     
     // start interval for updates
-    window.setInterval(update_party_send, party_update_interval * 1000);
+    var party_update_handler = new IntervalHandler(update_party_send, party_update_interval * 1000);
+    party_update_handler.start(true);
 
     // execute without waiting, first time
     update_party_send();
@@ -85,7 +86,6 @@ function interpret_party_message_data(data_raw) {
     // note: sorted by 'id' descending, so first item = highest id
     if (data.length > 0)
         last_message_id = data[0].id;
-    
 }
 
 function send_party_message(message) {
@@ -94,6 +94,7 @@ function send_party_message(message) {
         let data = JSON.parse(raw);
         let msg = data.sent ? 'message sent!' : 'message failed to send: ' + data.reason;
         console.log(msg);
+        party_update_handler.restart(true); // restart interval so we can download message instantly
     });
 }
 
