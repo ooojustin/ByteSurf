@@ -303,7 +303,68 @@ $party = get_active_party();
             <!-- end similar movies -->
 
         </div>
-        <!-- chat -->
+        
+        <!-- party chat -->
+        <script>
+            
+            function toggle_chat() {
+            
+                var left_element = document.getElementById("left_section");
+            
+                left_element.style.maxWidth = Globals.Opened ? "100%" : "70%";
+                left_element.style.width = Globals.Opened ? "100%" : "70%";
+                left_element.style.cssFloat = Globals.Opened ? "none" : "left";
+        
+                if (Globals.Opened)
+                    document.getElementById("span_chat").style.right = "0px";
+            
+                document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-" + (Globals.Opened ? "left" : "right") + "\"></i>";
+                document.getElementById("chatroom_input_row").style.position = Globals.Opened ? "relative" : "fixed";
+            
+                Globals.Opened = !Globals.Opened;
+            
+            }
+
+            function set_chat_elements() {
+
+                if (!Globals.Opened)
+                    return;
+
+                var footer_element = document.getElementById("footer");
+                var col_element = document.getElementById("col_style");
+                var can_see = Utils.isElementInView(footer_element, false);
+
+                var pageTop = $(window).scrollTop();
+                var pageBottom = pageTop + $(window).height();
+                var chatroom_row = document.getElementById("chatroom_row");
+
+                var elementTop = $(chatroom_row).offset().top;
+                var elementWidth = $(chatroom_row).width();
+                var elementBottom = elementTop + $(chatroom_row).height();
+                var footer_top = $(footer_element).offset().top;
+                var chat_span_el = document.getElementById("span_chat");
+                var chat_input_row_el = document.getElementById("chatroom_input_row");
+
+                var calculated_len = (can_see ? footer_top : pageBottom) - elementTop - 1 - 60;
+
+                chatroom_row.style.position = can_see ? "absolute" : "fixed";
+                chatroom_row.style.marginTop = can_see ? (90 + pageTop).toString() + "px" : "90px";
+                chatroom_row.style.height = calculated_len.toString() + "px";
+                chatroom_row.style.maxHeight = calculated_len.toString() + "px";
+                col_element.style.maxHeight = calculated_len.toString() + "px";
+                chat_span_el.style.top = ((can_see ? calculated_len : pageBottom - elementTop) / 2 + 90).toString() + "px";
+                chat_input_row_el.style.top = calculated_len.toString() + "px";
+                chat_span_el.style.right = (elementWidth).toString() + "px";
+
+            }
+
+            document.getElementById("chatbtn").addEventListener("click", toggle_chat);
+            document.getElementById("chatbtn").addEventListener("click", set_chat_elements);
+            window.addEventListener("scroll", set_chat_elements, false);
+            window.addEventListener("resize", set_chat_elements, false);
+            window.addEventListener("load", set_chat_elements, false);
+
+        </script>
         <div style="margin-left: 70%;">
             <div class="container">
                 <!-- chat input-->
@@ -346,10 +407,10 @@ $party = get_active_party();
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-        <!-- end chat -->
+        <!-- end party chat -->
+        
     </div>
     <div id="footer">
         <!-- footer -->
@@ -357,89 +418,6 @@ $party = get_active_party();
         <!-- end footer -->
     </div>
 
-
-    <script>
-        function toggle_chat() {
-            var left_element = document.getElementById("left_section");
-            // close
-            if (Globals.Opened) {
-                left_element.style.maxWidth = "100%";
-                left_element.style.width = "100%";
-                left_element.style.cssFloat = "none";
-                document.getElementById("span_chat").style.right = "0px";
-                document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-left\"></i>";
-                document.getElementById("chatroom_input_row").style.position = "relative";
-                Globals.Opened = false;
-            } else {
-                // opening
-                left_element.style.maxWidth = "70%";
-                left_element.style.width = "70%";
-                left_element.style.cssFloat = "left";
-                document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-right\"></i>";
-                document.getElementById("chatroom_input_row").style.position = "fixed";
-                Globals.Opened = true;
-            }
-        }
-
-        function set_chat_elements() {
-            if (Globals.Opened) {
-                var footer_element = document.getElementById("footer");
-                var col_element = document.getElementById("col_style");
-                var can_see = Utils.isElementInView(footer_element, false);
-                // Get variables of the element
-                var pageTop = $(window).scrollTop();
-                var pageBottom = pageTop + $(window).height();
-
-                var chatroom_row = document.getElementById("chatroom_row");
-                var elementTop = $(chatroom_row).offset().top;
-                var elementWidth = $(chatroom_row).width();
-                var elementBottom = elementTop + $(chatroom_row).height();
-                var footer_top = $(footer_element).offset().top;
-                var footer_length = pageBottom - footer_top;
-                var chat_span_el = document.getElementById("span_chat");
-
-                var chat_input_row_el = document.getElementById("chatroom_input_row");
-
-                if (can_see) {
-                    chatroom_row.style.position = "absolute";
-                    chatroom_row.style.marginTop = (90 + pageTop).toString() + "px";
-                    var calculated_len = footer_top - elementTop - 1 - 60;
-                    chatroom_row.style.height = calculated_len.toString() + "px";
-                    chatroom_row.style.maxHeight = calculated_len.toString() + "px";
-                    col_element.style.maxHeight = calculated_len.toString() + "px";
-                    chat_span_el.style.top = (calculated_len / 2 + 90).toString() + "px";
-                    chat_input_row_el.style.top = calculated_len + "px"
-                } else {
-                    chatroom_row.style.position = "fixed";
-                    var calculated_len = pageBottom - elementTop - 1 - 60;
-                    chatroom_row.style.height = calculated_len.toString() + "px";
-                    chatroom_row.style.maxHeight = calculated_len.toString() + "px";
-                    chatroom_row.style.marginTop = "90px";
-                    col_element.style.maxHeight = calculated_len.toString() + "px";
-                    chat_span_el.style.top = ((pageBottom - elementTop) / 2 + 90).toString() + "px";
-                    chat_input_row_el.style.top = calculated_len.toString() + "px";
-
-                }
-                chat_span_el.style.right = (elementWidth).toString() + "px";
-            }
-        }
-
-        window.addEventListener("load", function() {
-            set_chat_elements();
-        }, false);
-
-        document.getElementById("chatbtn").addEventListener("click", toggle_chat);
-
-        document.getElementById("chatbtn").addEventListener("click", set_chat_elements);
-
-        window.addEventListener("scroll", function() {
-            set_chat_elements();
-        }, false);
-
-        window.addEventListener("resize", function() {
-            set_chat_elements();
-        }, false);
-    </script>
 
     <!-- Root   element of PhotoSwipe. Must have class pswp. -->
     <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
