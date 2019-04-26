@@ -9,8 +9,7 @@ var max_time_delta = 0.1;
 
 // ===== DON'T TOUCH THESE =====
 var last_message_id = -1;
-
-// get season/episode/title/type into array
+var party_owner = '';
 var params = get_important_params();
     
 // output/check type
@@ -20,9 +19,6 @@ if (is_media_type_valid(params['type'])) {
     // start interval for updates
     var party_update_handler = new IntervalHandler(update_party_send, party_update_interval * 1000);
     party_update_handler.start(true);
-
-    // execute without waiting, first time
-    update_party_send();
     
 }
     
@@ -40,28 +36,6 @@ function ensure_party_link(data) {
     else if (params['e'] != data.episode)
         correct = false;
     
-    /*if (!correct) {
-        
-        // store title in new url params
-        let params_new = { 't': data.title };
-        
-        // if its an anime, store the episode.
-        // if it's a show, store both episode and season.
-        if (data.type == 'anime' || data.type == 'show')
-            params_new['e'] = data.episode;
-        if (data.type == 'show')
-            params_new['s'] = data.season;
-        
-        // build new url from params
-        let query = jQuery.param(params_new);
-        let url = 'https://bytesurf.io/' + data.type + '.php?' + query;
-        
-        // redirect (simulate clicked link) to follow party host
-        window.location.href = url;
-        return false;
-        
-    }*/
-    
     // NOTE: refreshing the page will force php to calculate new page url
     if (!correct) {
         location.reload();
@@ -72,7 +46,7 @@ function ensure_party_link(data) {
     
 }
 
-function generate_message_node(username, message_content) {
+function insert_message_node(username, message_content) {
     
     // create row element (whole message)
     let message_node = document.createElement('tr');
@@ -89,7 +63,8 @@ function generate_message_node(username, message_content) {
     message_node.appendChild(username_node);
     message_node.appendChild(username_node);
     
-    return message_node;
+    // add node to message container element (at the end)
+    document.getElementById('message_container').appendNode(message_node);
     
 }
 
@@ -101,8 +76,7 @@ function interpret_party_message_data(data_raw) {
     // loop through messages and handle them 
     data.forEach(function(message) {
         console.log('[' + message.timestamp + '] message from ' + message.username + ': ' + message.message);
-        let message_node = generate_message_node(message.username, message.message);
-        document.getElementById('message_container').appendNode(message_node);
+        insert_message_node(message.username, message.message);
     });
     
     // update last_message_id
@@ -151,6 +125,9 @@ function update_party_receive(data_raw) {
     // handle party messages
     interpret_party_message_data(data.messages);
     
+    // determine party owner
+    party_owner = data.owner.split(':')[1];
+    
     // get the users in the party, display them
     let users = JSON.parse(data.users);
     let users_txt = '';
@@ -195,6 +172,9 @@ function update_party_receive(data_raw) {
         // this is to prevent really long periods of the browser trying to load & catch up
         if (playing && time_delta < 10)
             max_time_delta += 0.05;
+        
+        // set time_delta to 0 because we just made an adjustment to playercurrentTime
+        time_delta = 0;
         
     }
     
