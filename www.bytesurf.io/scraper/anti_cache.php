@@ -8,7 +8,17 @@
     require '../inc/bunnycdn/bunnycdn.php';
 
     define('BUNNYCDN_USER_AGENT', 'ByteSurf.io Server');
-    $bcdn = new BunnyCDN($_GET['key'], BUNNYCDN_USER_AGENT);
-    
+    define('BUNNYCDN_API_KEY', '980938c9-68a9-47ed-8d4b-ea0f99892a75cea8726f-cbed-4272-a173-bb94d80044b9');
+
+    $bcdn = new BunnyCDN(BUNNYCDN_API_KEY, BUNNYCDN_USER_AGENT);
+
+    $url_to_purge = $_GET['p'];
+
+    if (strpos($url_to_purge, 'jexflix.b-cdn.net') !== false) {
+        $bcdn->purge_cache($url_to_purge);
+        die("Success");
+    } else {
+        die("Invalid URL Format");
+    }
 
 ?>
