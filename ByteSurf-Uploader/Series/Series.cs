@@ -1,4 +1,5 @@
 ﻿using JexFlix_Scraper.Flixify;
+using JexFlix_Scraper.Series;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,11 @@ namespace JexFlix_Scraper.Shows {
 
         private static CookieContainer Cookies = null;
 
-        private const string FLIXIFY = "https://flixify.com/";
+        private const string FLIXIFY = "https://calmx.site/";
         private const string SHOW_URL = FLIXIFY + "/shows?_t=nu7m7a&_u=ji9joxc5ip&add_mroot=1&description=1&o=t&p={0}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=shows";
         private const string GET_SEASONS = FLIXIFY + "{0}?_t=ijbgom&_u=ji9joxc5ip&add_mroot=1&add_sequels=1&cast=0&crew=0&description=1&episodes_list=0&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1";
         private const string GET_EPISODES = FLIXIFY + "{0}?_t=aml7bt&_u=ji9joxc5ip&add_mroot=1&add_sequels=1&cast=0&crew=0&description=1&episodes_list=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=0&slug=1 ";
+        private const string GET_EPISODE_SPECIFIC = FLIXIFY + "{0}?_t=jot7um&_u=ld475wbbcn&add_mroot=0&add_sequels=1&cast=0&crew=0&description=1&episodes_list=0&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=0&slug=1&sub=1";
 
         public static void Run() {
 
@@ -39,7 +41,7 @@ namespace JexFlix_Scraper.Shows {
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
-            values["authenticity_token"] = response.GetAuthenticityToken();
+            // values["authenticity_token"] = response.GetAuthenticityToken();
 
             // these 2 probably don't matter, we still don't know what they do
             values["d"] = "57";
@@ -48,8 +50,8 @@ namespace JexFlix_Scraper.Shows {
             web.InitializeHeaders();
 
             // these make the request seem more natural
-            web.Headers.Add("Origin", "https://flixify.com");
-            web.Headers.Add("Referer", "https://flixify.com/login");
+            web.Headers.Add("Origin", "https://calmx.site");
+            web.Headers.Add("Referer", "https://calmx.site/login");
 
             web.UploadValues(FLIXIFY + "login", values);
 
@@ -87,11 +89,6 @@ namespace JexFlix_Scraper.Shows {
             PageObject pageData = JsonConvert.DeserializeObject<PageObject>(raw);
 
             foreach (PageItem item in pageData.items) {
-
-                //if (!item.title.Contains("Walking")) {
-                //    Console.WriteLine("Skipping: " + item.title);
-                //    // continue;
-                //}
 
                 SeriesData series = new SeriesData();
                 series.title = item.title;
@@ -178,12 +175,19 @@ namespace JexFlix_Scraper.Shows {
             }
         }
 
-        public const string BASE_IMAGES_URL = "https://a.flixify.com";
-        public const string BASE_URL = "https://flixify.com";
+        public const string BASE_IMAGES_URL = "https://a.calmx.site";
+        public const string BASE_URL = "https://calmx.site";
 
         public static void ReuploadEpisodes(string season, int season_number, int episode, string title, EpisodeObject episodeData) {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
+
+            web.FlixifyHeaders();
+
+            string specific_episode_url = string.Format(GET_EPISODE_SPECIFIC, episodeData.episodes[episode].url);
+            string raw_data = web.DownloadString(specific_episode_url);
+
+            SubtitlesThing subClass = JsonConvert.DeserializeObject<SubtitlesThing>(raw_data);
 
             string season_directory = season + "/" + season_number;
 
@@ -223,6 +227,11 @@ namespace JexFlix_Scraper.Shows {
             if (episodeData.episodes[episode].download.download_1080 != null) {
                 episodeInfo.qualities.Add(new Qualities { resolution = 1080 });
                 Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_1080, directory, "1080.mp4", title + " - " + newEpisode.title, web);
+            }
+
+            if (subClass.item.subtitles.eng != null) {
+                episodeInfo.subs.Add(new UploadClasses.Subs { language = "en", url = directory + "/en.vtt" });
+                Networking.ReuploadRemoteFile(BASE_IMAGES_URL + subClass.item.subtitles.eng[0].url, directory, "en.vtt", title + " - " + newEpisode.title, web);
             }
 
             series.episodes.Add(newEpisode);

@@ -51,10 +51,16 @@ namespace JexFlix_Scraper.Series {
             public string description = string.Empty;
             public int released = 0;
             public List<Qualities> qualities = new List<Qualities>();
+            public List<Subs> subs = new List<Subs>();
         }
 
         public class Qualities {
             public int resolution;
+        }
+
+        public class Subs {
+            public string language;
+            public string url;
         }
     }
 }
