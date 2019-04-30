@@ -361,7 +361,7 @@ $party = get_active_party();
                     var calculated_len = (can_see ? footer_top : pageBottom) - elementTop - 1 - 60;
 
                     chatroom_row.style.position = can_see ? "absolute" : "fixed";
-                    chatroom_row.style.marginTop = can_see ? (90 + pageTop).toString() + "px" : "90px";
+                    chatroom_row.style.top = can_see ? (90 + pageTop).toString() + "px" : "90px";
                     chatroom_row.style.height = calculated_len.toString() + "px";
                     chatroom_row.style.maxHeight = calculated_len.toString() + "px";
                     col_element.style.maxHeight = calculated_len.toString() + "px";
@@ -399,7 +399,7 @@ $party = get_active_party();
                         </div>
                     </div>
                     <!-- end chat input -->
-                    <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; margin-left: 0px; margin-right: 0px;">
+                    <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; top: 90px; margin-left: 0px; margin-right: 0px;">
                         <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none; padding-right: 0px;">
                             <div class="accordion" id="accordion">
                                 <div class="accordion__card">
