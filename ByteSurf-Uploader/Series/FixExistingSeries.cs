@@ -15,8 +15,10 @@ using static JexFlix_Scraper.Series.PageClasses;
 using static JexFlix_Scraper.Series.SeasonClasses;
 using static JexFlix_Scraper.Series.UploadClasses;
 
-namespace JexFlix_Scraper.Shows {
-    class Shows {
+namespace JexFlix_Scraper.FixShows
+{
+    class FixShows
+    {
 
         private static CookieContainer Cookies = null;
 
@@ -26,7 +28,8 @@ namespace JexFlix_Scraper.Shows {
         private const string GET_EPISODES = FLIXIFY + "{0}?_t=aml7bt&_u=ji9joxc5ip&add_mroot=1&add_sequels=1&cast=0&crew=0&description=1&episodes_list=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=0&slug=1 ";
         private const string GET_EPISODE_SPECIFIC = FLIXIFY + "{0}?_t=jot7um&_u=ld475wbbcn&add_mroot=0&add_sequels=1&cast=0&crew=0&description=1&episodes_list=0&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=0&slug=1&sub=1";
 
-        public static void Run() {
+        public static void Run()
+        {
 
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.InitializeHeaders();
@@ -55,20 +58,30 @@ namespace JexFlix_Scraper.Shows {
 
             web.UploadValues(FLIXIFY + "login", values);
 
-            InitializeScraper(web);
+            InitializeScraper();
         }
 
-        public static void InitializeScraper(CookieAwareWebClient web) {
+        public static void InitializeScraper()
+        {
+
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            web.Cookies = Cookies;
+            web.FlixifyHeaders();
+
             // 100 pages, if theres more than 3000 results idc nobody is watching 90% of these shows anyways.
 
-            for (int page = 1; page <= 100; page++) {
-                web.FlixifyHeaders();
+            for (int page = 1; page <= 100; page++)
+            {
                 byte[] response = null;
 
-                try {
+                try
+                {
                     string url = string.Format(SHOW_URL, page);
+                    Console.WriteLine(url);
                     response = web.DownloadData(url);
-                } catch (WebException ex) {
+                }
+                catch (WebException ex)
+                {
                     // catch NotFound exception
                     // continue to next genre (out of videos)
                     HttpWebResponse webResponse = ex.Response as HttpWebResponse;
@@ -82,13 +95,22 @@ namespace JexFlix_Scraper.Shows {
 
         }
 
-        public static void ParseShows(string raw) {
+        public static void ParseShows(string raw)
+        {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 
             PageObject pageData = JsonConvert.DeserializeObject<PageObject>(raw);
 
-            foreach (PageItem item in pageData.items) {
+            foreach (PageItem item in pageData.items)
+            {
+
+                // we are fixing already existig things in here, for any reason. we want the show to exist
+                if (!Networking.SeriesExists(item.url.Substring(7)))
+                    continue;
+
+                // at this point we are at a show that we have, now we need to get the seasons
+                
 
                 SeriesData series = new SeriesData();
                 series.title = item.title;
@@ -111,21 +133,10 @@ namespace JexFlix_Scraper.Shows {
                 if (item.rating != null)
                     series.rating = item.rating;
 
-                // reupload preview, and thumbnail
                 string preview_url = BASE_IMAGES_URL + item.images.preview;
                 string thumbnail_url = BASE_IMAGES_URL + item.images.poster;
 
-                if (item.images.preview != null)
-                    Networking.ReuploadRemoteFile(FixPosterRes(preview_url), item.url, "preview.jpg", item.title, web);
-                if (item.images.poster != null)
-                    Networking.ReuploadRemoteFile(FixThumbnailRes(thumbnail_url), item.url, "thumbnail.jpg", item.title, web);
 
-                // add the series, checks if exists server sided
-                try {
-                    web.UploadString("https://bytesurf.io/scraper/add_series.php", JsonConvert.SerializeObject(series));
-                } catch {
-
-                }
                 string data_url = Networking.JsonData(series.url);
                 string ftp_directory = data_url.Substring(Networking.CDN_URL.Length, data_url.Length - Networking.CDN_URL.Length);
 
@@ -136,7 +147,8 @@ namespace JexFlix_Scraper.Shows {
             }
         }
 
-        public static void ParseSeasons(string series, string season_json, string item_url, string title) {
+        public static void ParseSeasons(string series, string season_json, string item_url, string title)
+        {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 
@@ -151,26 +163,16 @@ namespace JexFlix_Scraper.Shows {
 
             SeriesList seriesList = new SeriesList();
 
-            int season_number = 1;
-            foreach (SeasonItem season in seasonData.seasons) {
-                seriesList.seasons.Add(new SeasonData { title = season.title, season = season_number, description = season.description, released = season.released_sec_ago });
-                season_number++;
-            }
-            string path = Path.GetTempFileName();
-            File.WriteAllText(path, JsonConvert.SerializeObject(seriesList));
-            Networking.UploadFile(path, item_url, "data.json", seasonData.item.title);
-            File.Delete(path);
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int timestamp = (int)t.TotalSeconds;
 
-            // reset season number for use again here
-            season_number = 1;
-            foreach (SeasonItem season in seasonData.seasons) {
+            int season_number = 1;
+            foreach (SeasonItem season in seasonData.seasons)
+            {
                 int their_current_count = GetTheirEpisodeData(season.url).episodes.Count;
                 int our_current_count = GetOurEpisodeData(series, season_number).episodes.Count;
 
-                while (our_current_count < their_current_count) {
-                    ReuploadEpisodes(series, season_number, our_current_count, title, GetTheirEpisodeData(season.url));
-                    our_current_count++;
-                }
+                FixSeason(series, season_number, our_current_count, title, GetTheirEpisodeData(season.url));
                 season_number++;
             }
         }
@@ -178,7 +180,41 @@ namespace JexFlix_Scraper.Shows {
         public const string BASE_IMAGES_URL = "https://a.calmx.site";
         public const string BASE_URL = "https://calmx.site";
 
-        public static void ReuploadEpisodes(string season, int season_number, int episode, string title, EpisodeObject episodeData) {
+        public static void FixSeason(string season, int season_number, int episodes, string title, EpisodeObject episodeData)
+        {
+            CookieAwareWebClient web = new CookieAwareWebClient();
+            web.Cookies = Cookies;
+
+            EpisodeList series = new EpisodeList();
+
+            // loop through how many episodes we have for this show
+            for (int episode = 0; episode < episodes; episode++)
+            {
+                web.FlixifyHeaders();
+                string specific_episode_url = string.Format(GET_EPISODE_SPECIFIC, episodeData.episodes[episode].url);
+                string raw_data = web.DownloadString(specific_episode_url);
+
+                SubtitlesThing subClass = JsonConvert.DeserializeObject<SubtitlesThing>(raw_data);
+
+                TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+                int timestamp = (int)t.TotalSeconds;
+
+                Episode newEpisode = new Episode();
+                newEpisode.title = episodeData.episodes[episode].title;
+                newEpisode.episode = (episode + 1);
+                newEpisode.description = episodeData.episodes[episode].description;
+                newEpisode.released = (timestamp - episodeData.episodes[episode].released_sec_ago);
+
+                series.episodes.Add(newEpisode);
+            }
+
+            Console.WriteLine(JsonConvert.SerializeObject(series));
+
+            string season_directory = season + "/" + season_number;
+        }
+
+        public static void ReuploadEpisodes(string season, int season_number, int episode, string title, EpisodeObject episodeData)
+        {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 
@@ -193,11 +229,13 @@ namespace JexFlix_Scraper.Shows {
 
             EpisodeList series = null;
 
-            if (episode > 0) {
+            if (episode > 0)
+            {
                 string ftp_directory = season + "/" + season_number + "/data.json";
                 string raw = Networking.DownloadStringFTP(ftp_directory);
                 series = JsonConvert.DeserializeObject<EpisodeList>(raw);
-            } else series = new EpisodeList();
+            }
+            else series = new EpisodeList();
 
             TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
             int timestamp = (int)t.TotalSeconds;
@@ -217,22 +255,26 @@ namespace JexFlix_Scraper.Shows {
 
             string directory = season_directory + "/" + (episode + 1);
 
-            if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null) {
+            if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null)
+            {
                 episodeInfo.qualities.Add(new Qualities { resolution = 480 });
                 Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_480, directory, "480.mp4", title + " - " + newEpisode.title, web);
             }
 
-            if (episodeData.episodes[episode].download.download_720 != null) {
+            if (episodeData.episodes[episode].download.download_720 != null)
+            {
                 episodeInfo.qualities.Add(new Qualities { resolution = 720 });
                 Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_720, directory, "720.mp4", title + " - " + newEpisode.title, web);
             }
 
-            if (episodeData.episodes[episode].download.download_1080 != null) {
+            if (episodeData.episodes[episode].download.download_1080 != null)
+            {
                 episodeInfo.qualities.Add(new Qualities { resolution = 1080 });
                 Networking.ReuploadRemoteFile(BASE_URL + episodeData.episodes[episode].download.download_1080, directory, "1080.mp4", title + " - " + newEpisode.title, web);
             }
 
-            if (subClass.item.subtitles.eng != null) {
+            if (subClass.item.subtitles.eng != null)
+            {
                 episodeInfo.subs.Add(new UploadClasses.Subs { language = "en", url = directory + "/en.vtt" });
                 Networking.ReuploadRemoteFile(BASE_IMAGES_URL + subClass.item.subtitles.eng[0].url, directory, "en.vtt", title + " - " + newEpisode.title, web);
             }
@@ -253,12 +295,14 @@ namespace JexFlix_Scraper.Shows {
 
         }
 
-        public static EpisodeList GetOurEpisodeData(string series, int season) {
+        public static EpisodeList GetOurEpisodeData(string series, int season)
+        {
 
             string ftp_directory = series + "/" + season + "/data.json";
             string raw = Networking.DownloadStringFTP(ftp_directory);
 
-            if (raw == string.Empty) {
+            if (raw == string.Empty)
+            {
                 // we are on the first episode of this season, lets create a new object
                 return new EpisodeList();
             }
@@ -268,16 +312,19 @@ namespace JexFlix_Scraper.Shows {
             return episodes;
         }
 
-        public static string FixThumbnailRes(string url) {
+        public static string FixThumbnailRes(string url)
+        {
             return url.Replace("172x255", "370x549");
         }
 
-        public static string FixPosterRes(string url) {
+        public static string FixPosterRes(string url)
+        {
             return url.Replace("353x208", "10000x10000");
         }
 
 
-        public static EpisodeObject GetTheirEpisodeData(string season) {
+        public static EpisodeObject GetTheirEpisodeData(string season)
+        {
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
 

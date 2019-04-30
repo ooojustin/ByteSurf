@@ -6,20 +6,23 @@ using JexFlix_Scraper.Anime;
 using JexFlix_Scraper.Anime.Twist.Moe;
 using JexFlix_Scraper.Flixify;
 using JexFlix_Scraper.Shows;
+using JexFlix_Scraper.FixShows;
 
 class Program {
 
     [STAThread]
     static void Main(string[] args) {
 
-     //   MessageHandler.Start();
+        //   MessageHandler.Start();
 
         // Anime.Run();
 
 
+        FixShows.Run();
+
         //Flixify.Run();
-         Thread t1 = new Thread(() => Flixify.Run(6));
-         t1.Start();
+         //Thread t1 = new Thread(() => Flixify.Run(6));
+        // t1.Start();
         // Thread t2 = new Thread(() => Flixify.Run(17));
         // t2.Start();
         //Thread t3 = new Thread(() => Flixify.Run(7));
