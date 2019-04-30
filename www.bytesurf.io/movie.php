@@ -1,39 +1,39 @@
 <?php
 
-require 'inc/server.php';
-require 'inc/session.php';
-require 'inc/imdb.php';
-require_subscription();
+    require 'inc/server.php';
+    require 'inc/session.php';
+    require 'inc/imdb.php';
+    require_subscription();
 
-global $user;
+    global $user;
 
-if (!isset($_GET['t']))
-    msg('Error', 'Movie not specified.');
+    if (!isset($_GET['t']))
+        msg('Error', 'Movie not specified.');
 
-$data = get_movie_data($_GET['t']);
-if (!$data)
-    msg('Error', 'Movie not found.');
+    $data = get_movie_data($_GET['t']);
+    if (!$data)
+        msg('Error', 'Movie not found.');
 
-update_imdb_information($_GET['t']);
+    update_imdb_information($_GET['t']);
 
-$title = $data['title'];
-$description = $data['description'];
-$thumbnail = authenticate_cdn_url($data['thumbnail']);
-$preview = authenticate_cdn_url($data['preview']);
-$year = $data['year'];
-$certification = $data['certification'];
-$duration = intval($data['duration'] / 60);
-$qualities = authenticated_movie_links($data);
-$rating = $data['rating'];
-$subs = get_subtitles($data);
+    $title = $data['title'];
+    $description = $data['description'];
+    $thumbnail = authenticate_cdn_url($data['thumbnail']);
+    $preview = authenticate_cdn_url($data['preview']);
+    $year = $data['year'];
+    $certification = $data['certification'];
+    $duration = intval($data['duration'] / 60);
+    $qualities = authenticated_movie_links($data);
+    $rating = $data['rating'];
+    $subs = get_subtitles($data);
 
-// default 'watched' button text/value
-$watched = is_watched($_GET['t'], 'movie');
-$watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
-$watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
+    // default 'watched' button text/value
+    $watched = is_watched($_GET['t'], 'movie');
+    $watched_btn_text = $watched ? 'REMOVE FROM WATCHED' : 'ADD TO WATCHED';
+    $watched_btn_value = $watched ? 'remove_from_watched' : 'add_to_watched';
 
-// get user party
-$party = get_active_party();
+    // get user party
+    $party = get_active_party();
 
 ?>
 <!DOCTYPE html>
