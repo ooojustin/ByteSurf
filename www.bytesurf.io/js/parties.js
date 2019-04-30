@@ -61,10 +61,10 @@ function insert_message_node(username, message_content) {
     
     // insert data elements into row
     message_node.appendChild(username_node);
-    message_node.appendChild(username_node);
+    message_node.appendChild(message_content_node);
     
     // add node to message container element (at the end)
-    document.getElementById('message_container').appendNode(message_node);
+    document.getElementById('message_container').appendChild(message_node);
     
 }
 
