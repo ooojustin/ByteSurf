@@ -315,6 +315,7 @@
             <!-- party chat -->
             <script>
                 function send_party_message() {
+                    console.log('sent');
                     let message_textbox = document.getElementById('party_chat_message');
                     send_party_chat_message(message_textbox.value);
                     message_textbox.value = '';
@@ -379,13 +380,16 @@
                     window.addEventListener("resize", set_chat_elements, false);
                     window.addEventListener("load", set_chat_elements, false);
 
-                    input.addEventListener("keyup", function(event) {
-                        if (event.keyCode !== 13)
-                            return;
-                        document.getElementById("party_chat_send").click();
+                    document.getElementById("party_chat_send").addEventListener("click", send_party_message);
+                    document.getElementById("party_chat_message").addEventListener("keyup", function(event) {
+                        if (event.keyCode === 13) {
+                            event.preventDefault();
+                            document.getElementById("party_chat_send").click();
+                        }
                     });
 
                 });
+                
             </script>
             <div style="margin-left: 70%;">
                 <div class="container">
@@ -394,7 +398,7 @@
                         <div class="col-12">
                             <div class="header__search-content">
                                 <input type="text" id="party_chat_message" placeholder="Send a message...">
-                                <button type="submit" id="party_chat_send" onclick="send_party_message">SEND</button>
+                                <button type="submit" id="party_chat_send">SEND</button>
                             </div>
                         </div>
                     </div>
@@ -406,10 +410,6 @@
                                     <div class="card-body">
                                         <table class="accordion__list">
                                             <tbody id="message_container">
-                                                <tr>
-                                                    <td>username</td>
-                                                    <td>this is a test message</td>
-                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
