@@ -101,7 +101,7 @@ namespace JexFlix_Scraper.Flixify {
             foreach (Movie movie in serverData.items) {
 
                 // if it already exists on the server, go to next movie
-                if (Networking.FileExists(movie.url.Substring(8))) {
+                if (Networking.MovieExists(movie.url.Substring(8))) {
                     continue;
                 }
 
@@ -218,10 +218,10 @@ namespace JexFlix_Scraper.Flixify {
         /// </summary>
         public static void FlixifyHeaders(this WebClient web) {
             web.Headers.Clear(); // clear any existing headers
-            web.Headers.Add("Host", "flixify.com");
+            web.Headers.Add("Host", "calmx.site");
             web.Headers.Add("Accept", "application/json");
             web.Headers.Add("User-Agent", Networking.USER_AGENT);
-            web.Headers.Add("Referer", "https://flixify.com/movies?_rsrc=chrome/newtab");
+            web.Headers.Add("Referer", "https://calmx.site/movies?_rsrc=chrome/newtab");
         }
 
         /// <summary>

@@ -99,6 +99,7 @@
     <Compile Include="Series\PageClasses.cs" />
     <Compile Include="Series\Series.cs" />
     <Compile Include="Series\SeasonClasses.cs" />
+    <Compile Include="Series\FixExistingSeries.cs" />
     <Compile Include="Series\SpecificEpisodeForGaySubtitles.cs" />
     <Compile Include="Series\UploadClasses.cs" />
   </ItemGroup>

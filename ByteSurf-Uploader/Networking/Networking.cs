@@ -185,7 +185,7 @@ namespace JexFlix_Scraper {
             return request;
         }
 
-        public static bool FileExists(string title) {
+        public static bool MovieExists(string title) {
             SAFE_REQUEST.UserAgent = "jexflix-client";
             NameValueCollection values = new NameValueCollection();
             values["url"] = title;
@@ -196,6 +196,29 @@ namespace JexFlix_Scraper {
                     if (!response.status)
                         response = null;
                 } catch (Exception ex) {
+                    Console.WriteLine("[SafeRequest] " + ex.Message);
+                }
+            }
+            bool exists = response.GetData<bool>("exists");
+            return exists;
+        }
+
+        public static bool SeriesExists(string url)
+        {
+            SAFE_REQUEST.UserAgent = "jexflix-client";
+            NameValueCollection values = new NameValueCollection();
+            values["url"] = url;
+            Response response = null;
+            while (response == null)
+            {
+                try
+                {
+                    response = SAFE_REQUEST.Request("https://bytesurf.io/scraper/series_exists.php", values);
+                    if (!response.status)
+                        response = null;
+                }
+                catch (Exception ex)
+                {
                     Console.WriteLine("[SafeRequest] " + ex.Message);
                 }
             }
