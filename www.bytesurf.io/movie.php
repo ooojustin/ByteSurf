@@ -141,9 +141,11 @@
 
             
             <!-- toggle chat btn -->
+            <?php if ($party) { ?>
             <span id="span_chat" style="float: right; position: fixed; top: 50%; right: 27%; z-index: 5;">
                 <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 30px; height: 65px; width: 40px;"><i class="fas fa-arrow-right"></i></button>
             </span> 
+            <?php } ?>
             <!-- end toggle chat btn -->
             
             <!-- details -->
@@ -329,12 +331,14 @@
                     left_element.style.width = Globals.Opened ? "100%" : "70%";
                     left_element.style.cssFloat = Globals.Opened ? "none" : "left";
 
+                    
+
                     if (Globals.Opened)
                         document.getElementById("span_chat").style.right = "0px";
 
                     document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-" + (Globals.Opened ? "left" : "right") + "\"></i>";
                     document.getElementById("chatroom_input_row").style.position = Globals.Opened ? "relative" : "fixed";
-
+                    document.getElementById("chatroom_row").style.position = Globals.Opened ? "relative" : "fixed";
                     Globals.Opened = !Globals.Opened;
 
                 }
@@ -368,7 +372,7 @@
                     col_element.style.maxHeight = calculated_len.toString() + "px";
                     chat_span_el.style.top = ((can_see ? calculated_len : pageBottom - elementTop) / 2 + 90).toString() + "px";
                     chat_input_row_el.style.top = calculated_len.toString() + "px";
-                    chat_span_el.style.right = (elementWidth).toString() + "px";
+                    chat_span_el.style.right = (elementWidth - 15).toString() + "px";
 
                 }
 
@@ -395,7 +399,7 @@
                 <div class="container">
                     <!-- chat input-->
                     <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px; margin-left: 0px; margin-right: 0px;">
-                        <div class="col-12">
+                        <div class="col-12" style="padding-right: 0px;">
                             <div class="header__search-content">
                                 <input type="text" id="party_chat_message" placeholder="Send a message...">
                                 <button type="submit" id="party_chat_send">SEND</button>
