@@ -384,7 +384,7 @@
                 }
 
                 function set_timeoutfunction() {
-                    window.setTimeout("set_chat_elements();", 1);
+                    var loop = setInterval(set_chat_elements, 100);
                 }
 
                 $(document).ready(function() {
@@ -394,7 +394,7 @@
                     window.addEventListener("scroll", set_chat_elements, false);
                     window.addEventListener("resize", set_chat_elements, false);
                     window.addEventListener("load", set_chat_elements, false);
-                    //window.onload = set_timeoutfunction;
+                    window.onload = set_timeoutfunction;
 
                     document.getElementById("party_chat_send").addEventListener("click", send_party_message);
                     document.getElementById("party_chat_message").addEventListener("keyup", function(event) {
