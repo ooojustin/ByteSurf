@@ -118,7 +118,7 @@
 
     <div style="width: 100%; overflow: hidden;">
 
-        <div id="left_section" style="width: 70%; float: left; max-width: 70%">
+        <div id="left_section">
 
             <style>
                 .header {
@@ -339,6 +339,9 @@
                     document.getElementById("chatbtn").innerHTML = "<i class=\"fas fa-arrow-" + (Globals.Opened ? "left" : "right") + "\"></i>";
                     document.getElementById("chatroom_input_row").style.position = Globals.Opened ? "relative" : "fixed";
                     document.getElementById("chatroom_row").style.position = Globals.Opened ? "relative" : "fixed";
+                    document.getElementById("right_col_el").style.display = Globals.Opened ? "none" : "block";
+
+                    
                     Globals.Opened = !Globals.Opened;
 
                 }
@@ -350,6 +353,10 @@
 
                     var footer_element = document.getElementById("footer");
                     var col_element = document.getElementById("col_style");
+                    var left_section_element_style = document.getElementById("left_section").style;
+                    left_section_element_style.width = "70%";
+                    left_section_element_style.cssFloat = "left";
+                    left_section_element_style.maxWidth = "70%";
                     var can_see = Utils.isElementInView(footer_element, false);
 
                     var pageTop = $(window).scrollTop();
@@ -376,6 +383,10 @@
 
                 }
 
+                function set_timeoutfunction() {
+                    window.setTimeout("set_chat_elements();", 1);
+                }
+
                 $(document).ready(function() {
 
                     document.getElementById("chatbtn").addEventListener("click", toggle_chat);
@@ -383,6 +394,7 @@
                     window.addEventListener("scroll", set_chat_elements, false);
                     window.addEventListener("resize", set_chat_elements, false);
                     window.addEventListener("load", set_chat_elements, false);
+                    //window.onload = set_timeoutfunction;
 
                     document.getElementById("party_chat_send").addEventListener("click", send_party_message);
                     document.getElementById("party_chat_message").addEventListener("keyup", function(event) {
@@ -395,7 +407,7 @@
                 });
                 
             </script>
-            <div style="margin-left: 70%;">
+            <div id="right_col_el" style="margin-left: 70%;">
                 <div class="container">
                     <!-- chat input-->
                     <div class="row" id="chatroom_input_row" style="height: 1086px; position: fixed; max-width: 100%; width: 30%; right: 0px; margin-top: 90px; max-height: 1086px; margin-left: 0px; margin-right: 0px;">
