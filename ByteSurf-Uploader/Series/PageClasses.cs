@@ -26,7 +26,7 @@ namespace JexFlix_Scraper.Series {
             public double? rating { get; set; }
             public string imdb_id { get; set; }
             public int? year { get; set; }
-            public DateTime released { get; set; }
+            public DateTime? released { get; set; }
             public int released_sec_ago { get; set; }
             public int last_seq { get; set; }
             public Images images { get; set; }

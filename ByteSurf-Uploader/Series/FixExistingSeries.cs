@@ -66,12 +66,12 @@ namespace JexFlix_Scraper.FixShows
 
             CookieAwareWebClient web = new CookieAwareWebClient();
             web.Cookies = Cookies;
-            web.FlixifyHeaders();
 
             // 100 pages, if theres more than 3000 results idc nobody is watching 90% of these shows anyways.
 
             for (int page = 1; page <= 100; page++)
             {
+                web.FlixifyHeaders();
                 byte[] response = null;
 
                 try
@@ -90,12 +90,33 @@ namespace JexFlix_Scraper.FixShows
                 }
                 string raw = Encoding.Default.GetString(response);
                 ParseShows(raw);
-                Console.ReadKey();
+                //Console.ReadKey();
             }
 
         }
 
-        public static string[] skip = { "game-of-thrones", "the-big-bang-theory", "brooklyn-nine-nine", "swat", "the-blacklist", "doom-patrol", "the-flash", "modern-family", "young-sheldon", "ncis", "cobra-kai", "arrow", "seal-team", "greys-anatomy" };
+        public static string[] skip = {
+            "law-and-order-special-victims-unit",
+            "game-of-thrones",
+            "the-big-bang-theory",
+            "brooklyn-nine-nine",
+            "swat",
+            "the-blacklist",
+            "doom-patrol",
+            "the-flash",
+            "modern-family",
+            "young-sheldon",
+            "ncis",
+            "cobra-kai",
+            "arrow",
+            "seal-team",
+            "greys-anatomy",
+            "billions",
+            "supernatural",
+            "the-simpsons"
+        };
+       // public static string[] dont_skip = { "blue-bloods", "survivor", "whiskey-cavalier", "roswell-new-mexico", "the-office", "strike-back", "ncis-new-orleans", "veep" };
+
 
         public static void ParseShows(string raw)
         {
@@ -108,14 +129,19 @@ namespace JexFlix_Scraper.FixShows
             {
 
                 // we are fixing already existig things in here, for any reason. we want the show to exist
-                if (!Networking.SeriesExists(item.url.Substring(7)))
+                if (!Networking.SeriesExists(item.url.Substring(7))) {
+                    Console.WriteLine("skipping: " + item.url.Substring(7));
                     continue;
+                }
 
-                if (skip.Contains(item.url.Substring(7)))
+
+                if (skip.Contains(item.url.Substring(7))) {
+                    Console.WriteLine("skipping: " + item.url.Substring(7));
                     continue;
+                }
 
                 // at this point we are at a show that we have, now we need to get the seasons
-                
+
 
                 SeriesData series = new SeriesData();
                 series.title = item.title;
