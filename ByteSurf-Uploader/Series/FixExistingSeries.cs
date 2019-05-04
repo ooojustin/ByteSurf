@@ -95,7 +95,7 @@ namespace JexFlix_Scraper.FixShows
 
         }
 
-        public static string[] skip = { "game-of-thrones", "the-big-bang-theory", "brooklyn-nine-nine" };
+        public static string[] skip = { "game-of-thrones", "the-big-bang-theory", "brooklyn-nine-nine", "swat", "the-blacklist", "doom-patrol", "the-flash", "modern-family", "young-sheldon", "ncis", "cobra-kai", "arrow", "seal-team", "greys-anatomy" };
 
         public static void ParseShows(string raw)
         {
