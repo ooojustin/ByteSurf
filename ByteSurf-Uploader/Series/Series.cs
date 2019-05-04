@@ -151,9 +151,12 @@ namespace JexFlix_Scraper.Shows {
 
             SeriesList seriesList = new SeriesList();
 
+            TimeSpan t = DateTime.UtcNow - new DateTime(1970, 1, 1);
+            int timestamp = (int)t.TotalSeconds;
+
             int season_number = 1;
             foreach (SeasonItem season in seasonData.seasons) {
-                seriesList.seasons.Add(new SeasonData { title = season.title, season = season_number, description = season.description, released = season.released_sec_ago });
+                seriesList.seasons.Add(new SeasonData { title = season.title, season = season_number, description = season.description, released = (timestamp - season.released_sec_ago) });
                 season_number++;
             }
             string path = Path.GetTempFileName();

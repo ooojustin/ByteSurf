@@ -95,6 +95,8 @@ namespace JexFlix_Scraper.FixShows
 
         }
 
+        public static string[] skip = { "game-of-thrones", "the-big-bang-theory", "brooklyn-nine-nine" };
+
         public static void ParseShows(string raw)
         {
             CookieAwareWebClient web = new CookieAwareWebClient();
@@ -107,6 +109,9 @@ namespace JexFlix_Scraper.FixShows
 
                 // we are fixing already existig things in here, for any reason. we want the show to exist
                 if (!Networking.SeriesExists(item.url.Substring(7)))
+                    continue;
+
+                if (skip.Contains(item.url.Substring(7)))
                     continue;
 
                 // at this point we are at a show that we have, now we need to get the seasons
@@ -188,8 +193,7 @@ namespace JexFlix_Scraper.FixShows
             EpisodeList series = new EpisodeList();
 
             // loop through how many episodes we have for this show
-            for (int episode = 0; episode < episodes; episode++)
-            {
+            for (int episode = 0; episode < episodes; episode++) {
                 web.FlixifyHeaders();
                 string specific_episode_url = string.Format(GET_EPISODE_SPECIFIC, episodeData.episodes[episode].url);
                 string raw_data = web.DownloadString(specific_episode_url);
@@ -206,11 +210,46 @@ namespace JexFlix_Scraper.FixShows
                 newEpisode.released = (timestamp - episodeData.episodes[episode].released_sec_ago);
 
                 series.episodes.Add(newEpisode);
+
+                EpisodeInfo episodeInfo = new EpisodeInfo();
+                episodeInfo.title = episodeData.episodes[episode].title;
+                episodeInfo.episode = (episode + 1);
+                episodeInfo.description = episodeData.episodes[episode].description;
+                episodeInfo.released = (timestamp - episodeData.episodes[episode].released_sec_ago);
+
+
+                string directory = season + "/" + season_number + "/" + (episode + 1);
+
+                if (episodeData.episodes[episode].download.download_720 == null && episodeData.episodes[episode].download.download_1080 == null) {
+                    episodeInfo.qualities.Add(new Qualities { resolution = 480 });
+                }
+
+                if (episodeData.episodes[episode].download.download_720 != null) {
+                    episodeInfo.qualities.Add(new Qualities { resolution = 720 });
+                }
+
+                if (episodeData.episodes[episode].download.download_1080 != null) {
+                    episodeInfo.qualities.Add(new Qualities { resolution = 1080 });
+                }
+
+                if (subClass.item.subtitles.eng != null) {
+                    episodeInfo.subs.Add(new UploadClasses.Subs { language = "en", url = directory + "/en.vtt" });
+                    Networking.ReuploadRemoteFile(BASE_IMAGES_URL + subClass.item.subtitles.eng[0].url, directory, "en.vtt", title + " - " + newEpisode.title, web);
+                }
+
+                string temp_ep_path = Path.GetTempFileName();
+                File.WriteAllText(temp_ep_path, JsonConvert.SerializeObject(episodeInfo));
+                Networking.UploadFile(temp_ep_path, directory, "data.json", title + " - " + episodeInfo.title);
+                File.Delete(temp_ep_path);
+
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(series));
-
             string season_directory = season + "/" + season_number;
+
+            string path = Path.GetTempFileName();
+            File.WriteAllText(path, JsonConvert.SerializeObject(series));
+            Networking.UploadFile(path, season_directory, "data.json", title + " - " + episodeData.item.title);
+            File.Delete(path);
         }
 
         public static void ReuploadEpisodes(string season, int season_number, int episode, string title, EpisodeObject episodeData)

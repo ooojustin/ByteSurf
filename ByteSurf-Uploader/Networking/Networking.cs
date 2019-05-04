@@ -155,11 +155,8 @@ namespace JexFlix_Scraper {
             Console.WriteLine("[" + title + "] " + "Uploading: " + file);
             //MessageHandler.Add(title, "Uploading: " + file, ConsoleColor.White, ConsoleColor.Yellow);
             using (Stream fileStream = File.OpenRead(localPath)) {
-                Stream ftpStream = null;
-                while (ftpStream == null) {
-                    try { ftpStream = request.GetRequestStream(); } catch (WebException ex) { ftpStream = null; }
+                Stream ftpStream = request.GetRequestStream();
 
-                }
                 using (ftpStream) {
                     byte[] buffer = new byte[1024 * 1024];
                     double totalReadBytesCount = 0;
