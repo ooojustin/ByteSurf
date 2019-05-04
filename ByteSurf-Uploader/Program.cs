@@ -18,11 +18,11 @@ class Program {
         // Anime.Run();
 
 
-        FixShows.Run();
+        //FixShows.Run();
 
         //Flixify.Run();
-         //Thread t1 = new Thread(() => Flixify.Run(6));
-        // t1.Start();
+        Thread t1 = new Thread(() => Flixify.Run(6));
+        t1.Start();
         // Thread t2 = new Thread(() => Flixify.Run(17));
         // t2.Start();
         //Thread t3 = new Thread(() => Flixify.Run(7));

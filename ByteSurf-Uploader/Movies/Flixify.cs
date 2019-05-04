@@ -17,7 +17,7 @@ namespace JexFlix_Scraper.Flixify {
 
         private static CookieContainer Cookies = null;
 
-        private const string FLIXIFY = "https://flixify.com/";
+        private const string FLIXIFY = "https://calmx.site/";
         private const string MOVIES_URL = FLIXIFY + "movies?_t=limjml&_u=ji9joxc5ip&add_mroot=1&description=1&g={0}&o=t&p={1}&postersize=poster&previewsizes=%7B%22preview_list%22:%22big3-index%22,%22preview_grid%22:%22video-block%22%7D&slug=1&type=movies";
         private const string MOVIES_URL_FOR_DOWNLOAD = FLIXIFY + "{0}?_t=lmispq&_u=ji9joxc5ip&add_mroot=1&cast=0&crew=0&description=1&episodes_list=1&has_sequel=1&postersize=poster&previews=1&previewsizes=%7B%22preview_grid%22:%22video-block%22,%22preview_list%22:%22big3-index%22%7D&season_list=1&slug=1&sub=1";
 
@@ -37,7 +37,7 @@ namespace JexFlix_Scraper.Flixify {
             values["ref"] = "";
             values["email"] = "justin@garofolo.net";
             values["password"] = "D3MU&DvWm9%xf*z";
-            values["authenticity_token"] = response.GetAuthenticityToken();
+            //values["authenticity_token"] = response.GetAuthenticityToken();
 
             // these 2 probably don't matter, we still don't know what they do
             values["d"] = "57";
@@ -46,8 +46,8 @@ namespace JexFlix_Scraper.Flixify {
             web.InitializeHeaders();
 
             // these make the request seem more natural
-            web.Headers.Add("Origin", "https://flixify.com");
-            web.Headers.Add("Referer", "https://flixify.com/login");
+            web.Headers.Add("Origin", "https://calmx.site");
+            web.Headers.Add("Referer", "https://calmx.site/login");
 
             web.UploadValues(FLIXIFY + "login", values);
 
@@ -184,8 +184,8 @@ namespace JexFlix_Scraper.Flixify {
         }
         
 
-        public const string BASE_IMAGES_URL = "https://a.flixify.com";
-        public const string BASE_URL = "https://flixify.com";
+        public const string BASE_IMAGES_URL = "https://a.calmx.site";
+        public const string BASE_URL = "https://calmx.site";
 
         public static void ReuploadFiles(MovieData data) {
 
