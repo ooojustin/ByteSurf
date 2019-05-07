@@ -113,6 +113,32 @@
 	<meta name="keywords" content="">A
 	<meta name="author" content="Peter Pistachio">
 	<title>ByteSurf</title>
+	
+	<!-- chat js -->
+	<script>
+		var Globals = new(function() {
+			this.Opened = true;
+		})()
+
+		function Utils() {}
+		Utils.prototype = {
+			constructor: Utils,
+			isElementInView: function(element, fullyInView) {
+				var pageTop = $(window).scrollTop();
+				var pageBottom = pageTop + $(window).height();
+				var elementTop = $(element).offset().top;
+				var elementBottom = elementTop + $(element).height();
+
+				if (fullyInView === true) {
+					return ((pageTop < elementTop) && (pageBottom > elementBottom));
+				} else {
+					return ((elementTop <= pageBottom) && (elementBottom >= pageTop));
+				}
+			}
+		};
+		var Utils = new Utils();
+	</script>
+	<!-- end chat js -->
 </head>
 <body class="body">
 	
