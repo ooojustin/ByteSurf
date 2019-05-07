@@ -88,6 +88,7 @@
     <meta name="author" content="Peter Pistachio">
     <title>ByteSurf</title>
 
+    <!-- chat js -->
     <script>
         var Globals = new(function() {
             this.Opened = true;
@@ -111,6 +112,7 @@
         };
         var Utils = new Utils();
     </script>
+	<!-- end chat js -->
 
 </head>
 
@@ -123,11 +125,6 @@
             <style>
                 .header {
                     height: 90px;
-                }
-
-                .accordion {
-                    max-height: 100%;
-                    height: 100%;
                 }
             </style>
 
@@ -421,7 +418,7 @@
                     <!-- end chat input -->
                     <div class="row" id="chatroom_row" style="height: 100%; position: fixed; max-width: 100%; width: 30%; right: 0px; top: 90px; margin-left: 0px; margin-right: 0px;">
                         <div class="col-12 col-lg-6" id="col_style" style="max-width: 100%;flex: none; padding-right: 0px;">
-                            <div class="accordion" id="accordion">
+                            <div class="accordion" id="accordion" style="max-height: 100%; height: 100%;">
                                 <div class="accordion__card">
                                     <div class="card-body">
                                         <table class="accordion__list">
