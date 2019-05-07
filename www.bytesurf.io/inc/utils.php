@@ -569,8 +569,7 @@
 		while ($user = $get_referred_users->fetch()) {
 			$username = $user['username'];
 			$orders = get_orders($username);
-			if (count($orders) > 0)
-				$paid_users++;
+			$paid_users += intval(count($orders) > 0); // 1 or 0
 		}
 
 		return $paid_users;
