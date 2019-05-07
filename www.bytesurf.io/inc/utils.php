@@ -234,7 +234,7 @@
 		if (!$reseller)
 			return false;
 		$new_amount = $reseller['balance'] + $amount;
-		$update_balance = $db->prepare('UPDATE resellers SET balance=:balance WHERE username=:username');
+		$update_balance = $db->prepare('UPDATE resellers SET balance =: balance WHERE username =: username');
 		$update_balance->bindValue(':username', $username);
 		$update_balance->bindValue(':balance', $new_amount);
 		return $update_balance->execute();
@@ -245,6 +245,49 @@
 		$amount = -$amount;
 		return add_reseller_balance($username, $amount);
 	}
+
+    // add $ to an referrers account
+    function add_affiliate_balance($username, $amount) {
+        global $db;
+        $user = get_user($username);
+        if (!$user)
+            return false;
+        $new_amount = $user['affiliate_balance'] + $amount;
+        $update_balance = $db->prepare('UPDATE users SET affiliate_balance = :balance WHERE id = :id');
+        $update_balance->bindValue(':balance', $new_amount);
+        $update_balance->bindValue(':id', $user['id']);
+        return $update_balance->execute();
+    }
+
+    // remove $ from a referrers account
+    function withdraw_affiliate_balance($username, $amount, $btc_address) {
+        
+        // get user info
+        $user = get_user($username);
+        if (!$user)
+            return false;
+        
+        // make sure they have enough $ and it's >= $5 USD
+        if ($amount > $user['affiliate_balance'] || $user['affiliate_balance'] < 5)
+            return false;
+        
+        // make sure the provided btc address is valid
+        if (!validate_btc_address($btc_address))
+            return false;
+        
+        // log withdrawal
+        $log_withdrawal = $db->prepare('INSERT INTO affiliate_withdrawals (username, btc_address, amount, timestamp) VALUES (?, ?, ?, ?)');
+        $log_withdrawal->bindValue(1, $user['username']);
+        $log_withdrawal->bindValue(2, $btc_address);
+        $log_withdrawal->bindValue(3, $amount);
+        $log_withdrawal->bindValue(4, time());
+        
+        // actually send the user money
+        // todo...
+        
+        $log_withdrawal->execute();
+        
+    }
 
 	// gets the next reseller in the priority queue for a specified product price
 	function get_next_reseller($price) {
