@@ -384,7 +384,7 @@
 									<div class="col-12">
 										<div class="profile__group">
 											<label class="profile__label" for="username">Get rewarded when users sign up with your link!</label>
-											<input id="referral_link" type="text" class="profile__input" value="https://jexflix.com/register/?r=<?= $username ?>" disabled>
+											<input id="referral_link" type="text" class="profile__input" value="https://bytesurf.io/register/?r=<?= $username ?>" disabled>
 										</div>
 									</div>
 
@@ -447,7 +447,7 @@
 
 						<!-- reseller balance form -->
 						<div class="col-12 col-lg-6">
-							<form action="https://jexflix.com/pricing/purchase.php" method="get" class="profile__form">
+							<form action="https://bytesurf.io/pricing/purchase.php" method="get" class="profile__form">
 								<div class="row">
 									<div class="col-12">
 										<h4 class="profile__title">Balance: $<?= round($reseller['balance'], 2); ?></h4>

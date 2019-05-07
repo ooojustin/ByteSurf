@@ -107,7 +107,7 @@
 		</div>
 
         <!-- header search -->
-        <form action="https://jexflix.com/catalog" method="get" class="header__search">
+        <form action="https://bytesurf.io/catalog" method="get" class="header__search">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -188,7 +188,7 @@
 
 					<div class="faq">
 						<h3 class="faq__title">How can I contact you?</h3>
-						<p class="faq__text">You can come talk to us via <a href="https://discordapp.com/invite/A63TFhP">Discord</a>, send us an email at: support@jexflix.com or even a support ticket <a href="https://bytesurf.io/contact">here</a></p>
+						<p class="faq__text">You can come talk to us via <a href="https://discordapp.com/invite/A63TFhP">Discord</a>, send us an email at: support@bytesurf.io or even a support ticket <a href="https://bytesurf.io/contact">here</a></p>
 					</div>
 
 				</div>
@@ -263,7 +263,7 @@
 
 					    <li><a href="../discord">Discord</a></li>
 
-						<li><a href="mailto:support@jexflix.com">support@jexflix.com</a></li>
+						<li><a href="mailto:support@bytesurf.io">support@bytesurf.io</a></li>
 
 					</ul>
 
@@ -279,7 +279,7 @@
 
 					<div class="footer__copyright">
 
-						<small class="section__text">© 2019 jexflix. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Anthony Almond</a></small>
+						<small class="section__text">© 2019 bytesurf. Created by <a href="https://i.imgur.com/gEZ5bko.jpg" target="_blank">Peter Pistachio</a></small>
 
 
 

@@ -314,7 +314,7 @@
 						<div class="card__content">
 							<h3 class="card__title"><a href=<?= '"' . $url . '"' ?>><?= $movie['title'] ?></a></h3>
 							<span class="card__category">
-								<a href=<?= '"https://jexflix.com/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year'] 	?></a>
+								<a href=<?= '"https://bytesurf.io/catalog/?year_min=' . $movie['year'] . '&year_max=' . $movie['year'] . '"' ?>>Released: <?= $movie['year'] 	?></a>
 							</span>
 							<span class="card__rate"><i class="icon ion-ios-star"></i><?= $movie['rating'] ?></span>
 						</div>
