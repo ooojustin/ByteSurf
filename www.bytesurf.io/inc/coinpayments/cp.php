@@ -1,7 +1,5 @@
 <?php
 
-	// Data received when payment is created successfully: https://pastebin.com/i4TzNPgt
-
 	require dirname(__FILE__) . '/CoinpaymentsAPI.php';
 	require dirname(__FILE__) . '/utils.php';
 
@@ -53,5 +51,37 @@
 		return $payment['result']['status_url'];
 
 	}
+
+    // https://www.coinpayments.net/apidoc-create-withdrawal
+    function create_btc_withdrawal($username, $btc_address, $amount_USD, $note = '') {
+        
+        global $db, $cp;
+        
+        // establish variables to be sent to server
+        $data['amount'] = $amount_USD; // amount in USD
+        $data['currency'] = 'BTC';
+        $data['currency2'] = 'USD';
+        $data['address'] = $btc_address;
+        $data['ipn_url'] = IPN_URL;
+        $data['auto_confirm'] = 0; // it'll send us an email asking us to verify the amount, just in case!!!
+        $data['note'] = $note; // whatever we want
+        
+        // send the request, get response as response
+        $withdrawal = $cp->CreateWithdrawal($data);
+        
+        // make sure there wasn't an error
+		if ($withdrawal['error'] != 'ok')
+            return false;
+        
+        // insert withdrawal into database & return
+        $log_withdrawal = $db->prepare('INSERT INTO affiliate_withdrawals (cp_id, username, btc_address, amount, timestamp) VALUES (?, ?, ?, ?, ?)');
+        $log_withdrawal->bindValue(1, $withdrawal['result']['id']);
+        $log_withdrawal->bindValue(2, $username);
+        $log_withdrawal->bindValue(3, $btc_address);
+        $log_withdrawal->bindValue(4, $amount_USD);
+        $log_withdrawal->bindValue(5, time());
+        return $log_withdrawal->execute();
+        
+    }
 
 ?>

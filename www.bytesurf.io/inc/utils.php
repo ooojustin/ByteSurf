@@ -275,17 +275,9 @@
         if (!validate_btc_address($btc_address))
             return false;
         
-        // log withdrawal
-        $log_withdrawal = $db->prepare('INSERT INTO affiliate_withdrawals (username, btc_address, amount, timestamp) VALUES (?, ?, ?, ?)');
-        $log_withdrawal->bindValue(1, $user['username']);
-        $log_withdrawal->bindValue(2, $btc_address);
-        $log_withdrawal->bindValue(3, $amount);
-        $log_withdrawal->bindValue(4, time());
-        
-        // actually send the user money
-        // todo...
-        
-        $log_withdrawal->execute();
+        $note = 'Affiliate Withdrawal - ' . $username . ' - ' . $btc_address . ': $' . $amount;
+        $success = create_btc_withdrawal($username, $btc_address, $amount, $note);
+        return $success;
         
     }
 
