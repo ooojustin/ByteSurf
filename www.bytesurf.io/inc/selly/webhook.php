@@ -13,6 +13,7 @@
 	$invoice = get_order_pp($_GET['invoice']);
 	$product = $products[$invoice['product_number']];
 	$username = $invoice['username'];
+    $amount_usd = $invoice['amount'];
 
 	if ($data['status'] == 100) {
 
@@ -27,11 +28,11 @@
 		for ($i = 0; $i < $product['trial_keys']; $i++)
 			generate_trial_key($username, SECONDS_PER_DAY * 7);
 
-		// give referrer 1 week free (if applicable)
+		// give referrer 10% of the sale price (if applicable)
 		$referrer = get_user_registration($username)['referrer'];
 		$first_order = count(get_orders($username)) == 0;
 		if (!is_null($referrer) && get_user($referrer) && $first_order)
-            add_subscription_time($referrer, SECONDS_PER_DAY * 7);
+            add_affiliate_balance($referrer, $amount_usd * 0.10);
 
 		// remove credit from reseller account, update last_purchase
 		reseller_received_payment($invoice['reseller']);
