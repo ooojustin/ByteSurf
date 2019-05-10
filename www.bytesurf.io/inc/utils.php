@@ -259,26 +259,9 @@
         return $update_balance->execute();
     }
 
-    // remove $ from a referrers account
-    function withdraw_affiliate_balance($username, $amount, $btc_address) {
-        
-        // get user info
-        $user = get_user($username);
-        if (!$user)
-            return false;
-        
-        // make sure they have enough $ and it's >= $5 USD
-        if ($amount > $user['affiliate_balance'] || $user['affiliate_balance'] < 5)
-            return false;
-        
-        // make sure the provided btc address is valid
-        if (!validate_btc_address($btc_address))
-            return false;
-        
-        $note = 'Affiliate Withdrawal - ' . $username . ' - ' . $btc_address . ': $' . $amount;
-        $success = create_btc_withdrawal($username, $btc_address, $amount, $note);
-        return $success;
-        
+    function remove_affiliate_balance($username, $amount) {
+        $amount = -$amount;
+        return add_affiliate_balance($username, $amount);
     }
 
 	// gets the next reseller in the priority queue for a specified product price
