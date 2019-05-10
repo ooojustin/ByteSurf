@@ -33,6 +33,7 @@
     // get referral info
     $referred_users = get_referred_users($username);
     $referred_users_paid = get_referred_users($username, true);
+    $affiliate_balance = round($user['affiliate_balance'], 2, PHP_ROUND_HALF_DOWN);
 
     // update reseller info (NOTE: VALIDATE EMAIL ADDRESS)
     if (isset($_POST['selly_email']) && isset($_POST['selly_api_key'])) {
@@ -383,9 +384,13 @@
 
 									<div class="col-12">
 										<div class="profile__group">
-											<label class="profile__label" for="username">Get rewarded when users sign up with your link!</label>
+											<label class="profile__label">Get rewarded when users sign up with your link!</label>
 											<input id="referral_link" type="text" class="profile__input" value="https://bytesurf.io/register/?r=<?= $username ?>" disabled>
 										</div>
+									</div>
+                                    
+                                    <div class="col-12">
+										<label class="profile__label">When a user you referred makes a payment for the first time, you get 10% of the sale. Once you've earned $5.00, you can cash out automatically.</label>
 									</div>
 
 								</div>
@@ -407,6 +412,9 @@
 											<label class="profile__label"><b>Referred Users:</b> <?= $referred_users ?></label>
 											<br>
 											<label class="profile__label"><b>Paid Referrals:</b> <?= $referred_users_paid ?></label>
+                                            <br>
+											<label class="profile__label"><b>Earnings:</b> $<?= $affiliate_balance ?></label>
+                                            <a href="https://bytesurf.io/profile/withdraw.php"><button class="profile__btn" type="button" style="width: 100%;">Withdraw</button></a>
 										</div>
 									</div>
 
