@@ -11,15 +11,28 @@ var max_time_delta = 0.1;
 var last_message_id = -1;
 var party_owner = '';
 var params = get_important_params();
+var time_sync = { };
     
-// output/check type
+// make sure type is valid
 console.log('type: ' + params['type']);
 if (is_media_type_valid(params['type'])) {
     
-    // start interval for updates
-    var party_update_handler = new IntervalHandler(update_party_send, party_update_interval * 1000);
-    party_update_handler.start(true);
+    // determine server time desync      
+    send_update('time_sync', { client_time: Date.now() }, function (time_sync_raw) {
+        
+        // store time_sync info from server before starting party stuff
+        time_sync = JSON.parse(time_sync_raw);
     
+        // start interval for updates
+        var party_update_handler = new IntervalHandler(update_party_send, party_update_interval * 1000);
+        party_update_handler.start(true);
+        
+    });
+    
+}
+
+function time_acc() {
+    return Date.now() + time_sync.server_time_delta;
 }
     
 function ensure_party_link(data) {
@@ -105,7 +118,7 @@ function update_party_send() {
     
     // add player time (seconds, as float) and current unix timestamp (ms, for improved accuracy)
     params['time'] = player.currentTime;
-    params['timestamp'] = Date.now(); // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+    params['timestamp'] = time_acc();
     
     // determine whether or not the client is playing
     params['playing'] = (!player.paused).toString();
@@ -133,7 +146,7 @@ function update_party_receive(data_raw) {
     let users_txt = '';
     for(user in users) {
         let user_time = users[user];
-        if (Date.now() - user_time > 10000)
+        if (time_acc() - user_time > 10000)
             continue;
         users_txt += user + ', ';
     }
@@ -158,7 +171,7 @@ function update_party_receive(data_raw) {
         return;
     
     // determine timestamp delta (will always be positive) & extra
-    let timestamp_delta = (Date.now() - data.timestamp) / 1000; // in seconds
+    let timestamp_delta = (time_acc() - data.timestamp) / 1000; // in seconds
     let time_extrapolated = parseFloat(data.time) + timestamp_delta;
     
     // set player time again if we're too out of sync

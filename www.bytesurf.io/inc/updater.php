@@ -173,6 +173,21 @@
                 die_gz(sprintf('%s,%s', $progress['time'], $progress['completed']));
             else
                 die_gz('0,0');
+            
+        case 'time_sync':
+            
+            $data = array();
+            
+            // the time the client sent the request
+            $data['client_time'] = $_GET['client_time'];
+            
+            // the time the server received the request
+            $data['request_time'] = round($_SERVER['REQUEST_TIME_FLOAT'] * 1000);
+            
+            // the difference, aka time delta
+            $data['server_time_delta'] = $data['request_time'] - $data['client_time']; 
+                
+            die_gz(json_encode($data));
         
     }
 
