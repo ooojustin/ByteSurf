@@ -4,7 +4,7 @@ Only include this script via HTML if $_SESSION['party'] is set.
 */
 
 // ===== SETTINGS =====
-const party_update_interval = 5;
+const party_update_interval = 2;
 var max_time_delta = 0.1;
 
 // ===== DON'T TOUCH THESE =====

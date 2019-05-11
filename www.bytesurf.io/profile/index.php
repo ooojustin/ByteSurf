@@ -455,7 +455,7 @@
 
 						<!-- reseller balance form -->
 						<div class="col-12 col-lg-6">
-							<form action="https://bytesurf.io/pricing/purchase.php" method="get" class="profile__form">
+							<form action="https://bytesurf.io/pricing/purchase.php" method="get" class="profile__form" style="padding-bottom: 10px;">
 								<div class="row">
 									<div class="col-12">
 										<h4 class="profile__title">Balance: $<?= round($reseller['balance'], 2); ?></h4>
@@ -467,7 +467,7 @@
 										<div class="profile__group">	
 											<label class="profile__label" for="username">Amount</label>
 											<input id="reseller_deposit_amount" type="text" name="amount" class="profile__input" placeholder="Amount (USD)">
-											<button class="profile__btn" type="submit" style="width: 100%;">Deposit</button>
+											<button class="profile__btn" type="submit" style="width: 100%; margin-top: 30px;">Deposit</button>
 										</div>
 									</div>
 
