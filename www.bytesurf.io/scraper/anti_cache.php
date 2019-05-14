@@ -1,8 +1,12 @@
 <?php
 
     // This is a php file scrapers make a request to in
-    // order to upload their last episode for this series etc 
+    // order to upload their last episode for this series etc
     // and not be cached up in bunnycdn
+
+    // Usage Instructions
+    // Send a GET requests to scraper/anti_cache.php
+    // With the url to purge as p
 
     require '../inc/server.php';
     require '../inc/bunnycdn/bunnycdn.php';
