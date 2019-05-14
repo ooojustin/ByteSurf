@@ -28,20 +28,25 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
-                // if (Anime.ongoing == 0)
+                //if (Anime.ongoing == 0)
                 //    continue;
 
-                if (Anime.title.ToLower().Contains("naruto"))
+                //if (Anime.title.ToLower().Contains("naruto"))
+                //    continue;
+
+                //if (Anime.title.ToLower().Contains("one piece"))
+                //    continue;
+
+                //if (Anime.title.ToLower().Contains("bleach"))
+                //    continue;
+
+                //if (Anime.title.ToLower().Contains("hunter x hunter") && !Anime.title.ToLower().Contains("2011"))
+                //    continue;
+
+                // refactored blacklist to function
+                if (ShouldSkip(Anime.title))
                     continue;
 
-                if (Anime.title.ToLower().Contains("one piece"))
-                    continue;
-
-                if (Anime.title.ToLower().Contains("bleach"))
-                    continue;
-
-                if (Anime.title.ToLower().Contains("hunter x hunter") && !Anime.title.ToLower().Contains("2011"))
-                    continue;
                 // Setup Object used to upload.
                 JexUpload UploadData = new JexUpload();
                 UploadData.episodeData = new List<EpisodeData>();
@@ -276,7 +281,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         public static List<EpisodeData> GetAscending(List<EpisodeData> UnsortedList) {
             return UnsortedList.OrderBy(x => x.episode).ToList();
         }
-        //
 
         /// <summary>
         /// Function that makes a request to server to purge the json from cdn
@@ -292,6 +296,26 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                 Console.WriteLine("[PurgeCDNFile] " + ex.Message);
             }
             return "";
+        }
+
+        /// <summary>
+        /// Function that checks if the title passed through should be skipped
+        /// This title will be compared recursively against an array of blacklisted titles and whitelisted titles
+        /// </summary>
+        public static bool ShouldSkip(string title) {
+            string gtitle = title.ToLower();
+            // declare predefined blacklist
+            string[] blacklist = { "naruto", "one piece", "bleach", "hunter x hunter" };
+            // a whitelist that should be compared against incase of recurring titles that we want
+            string[] whitelist = { "2011" };
+            foreach (string btitle in blacklist) {
+                foreach (string wtitle in whitelist) {
+                    if (gtitle.Contains(btitle) && !gtitle.Contains(wtitle)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -1,7 +1,6 @@
 <?php
-
     require '../inc/server.php';
-    
+
     $post_body = file_get_contents('php://input');
     $data = json_decode($post_body, true);
 
@@ -16,11 +15,11 @@
     $certification = $data['certification'];
     $rating = $data['rating'];
     $dataurl = $data['dataurl'];
-    
+
     $checkExists = $db->prepare('SELECT * FROM series WHERE url=:url');
     $checkExists->bindValue(':url', $url);
     $checkExists->execute();
-    
+
     if ($checkExists->rowCount() > 0) die();
 
     $updateTable = $db->prepare("INSERT INTO series (title, url, thumbnail, preview, genres, data, description, year, imdb_id, certification, rating) VALUES (:title, :url, :thumbnail, :preview, :genres, :data, :description, :year, :imdb_id, :certification, :rating);");
