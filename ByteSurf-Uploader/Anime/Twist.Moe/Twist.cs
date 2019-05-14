@@ -287,7 +287,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         /// <summary>
         /// Function that makes a request to server to purge the json from cdn
         /// using API written by justin
-        /// </summary>
+        /// </summary>     
         public static string PurgeCDNJson(string slug) {
             string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}.json", slug, slug);
             // Make a request for the scraper

@@ -10,7 +10,6 @@
     // The url to purge should be in the frmat of jexflix.b-cdn.net / etc
     // There is no need for the authentication of the url
 
-    require '../inc/server.php';
     require '../inc/bunnycdn/bunnycdn.php';
 
     define('BUNNYCDN_USER_AGENT', 'ByteSurf.io Server');
@@ -18,9 +17,10 @@
 
     $bcdn = new BunnyCDN(BUNNYCDN_API_KEY, BUNNYCDN_USER_AGENT);
 
-    $url_to_purge = $_GET['p'];
+    $url_to_purge = str_replace('jexflix.b-cdn.net', 'cdn.bytesurf.io',  $_GET['p']);
 
     if (strpos($url_to_purge, 'jexflix.b-cdn.net') !== false) {
+        // calling this function crashes
         $bcdn->purge_cache($url_to_purge);
         die("Success");
     } else {
