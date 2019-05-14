@@ -28,8 +28,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
-                if (Anime.ongoing == 0)
-                    continue;
+                // if (Anime.ongoing == 0)
+                //    continue;
 
                 if (Anime.title.ToLower().Contains("naruto"))
                     continue;
