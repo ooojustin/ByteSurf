@@ -35,9 +35,6 @@ Password: EG7F-4*cH0ad4l
 
 Control Panel URL: https://host3.abelohost.com:2083/
 
-
-URL: https://host3.abelohost.com:2083/
-
 Email Address: peterpistachio@protonmail.com
 Password: N6ihVdB8JLhmFVy
 
