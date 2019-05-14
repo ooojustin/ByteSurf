@@ -291,7 +291,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         public static string PurgeCDNJson(string slug) {
             string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}.json", slug, slug);
             // Make a request for the scraper
-            string request = "https://scraper.jexflix.com/anti_cache.php?p=" + request_url;
+            string request = "https://bytesurf.io/scraper/anti_cache.php?p=" + request_url;
             try {
                 return General.GET(request);
             } catch (Exception ex) {
