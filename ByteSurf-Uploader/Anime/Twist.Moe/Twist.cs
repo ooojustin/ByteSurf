@@ -180,9 +180,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                                 // anime has been uploaded
                                 // add this to qualitity list
                                 EpData.qualities.Add(quality);
-                                // purge the file
-                                string res = PurgeCDNFile(UploadData.url, TwistEp.number.ToString());
-                                Console.WriteLine("[Purge] " + res); 
                             }
                         } catch (Exception ex) {
                             Console.WriteLine("[Anime Re-Upload Error] " + ex.Message);
@@ -212,7 +209,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         }
                     }
 
-                    Console.WriteLine("Preparing to upload .json");
                     // Upload the file to the CDN
                     retry_json:
                     try {
@@ -222,8 +218,9 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         Networking.ErrorLogging(null, ex, "Json CDN exception");
                         goto retry_json;
                     }
-
-                    Console.WriteLine("Json been uploaded");
+                    // purge the file
+                    string res = PurgeCDNJson(UploadData.url);
+                    Console.WriteLine("[Json Purge] " + res);
 
                     // Now update the link
                     string CDNLink = Networking.CDN_URL + "/anime/" + UploadData.url + "/" + UploadData.url + ".json";
@@ -282,11 +279,11 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         //
 
         /// <summary>
-        /// Function that makes a request to server to purge a file from cdn
+        /// Function that makes a request to server to purge the json from cdn
         /// using API written by justin
         /// </summary>
-        public static string PurgeCDNFile(string slug, string episode = "1", string res = "1080") {
-            string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}/{2}.mp4", slug, episode, res);
+        public static string PurgeCDNJson(string slug) {
+            string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}.json", slug, slug);
             // Make a request for the scraper
             string request = "https://scraper.jexflix.com/anti_cache.php?p=" + request_url;
             try {
