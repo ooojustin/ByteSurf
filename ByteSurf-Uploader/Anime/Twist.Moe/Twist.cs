@@ -177,7 +177,11 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                             Quality quality = new Quality();
                             quality.resolution = 1080;
                             if (Networking.BReuploadRemoteFile(VideoUrl, "/anime/" + UploadData.url + "/" + TwistEp.number.ToString(), 1080 + ".mp4", UploadData.title, General.GetWebClient(), KitsuAPI.GetSlug(KitsuAnimeInfo))) {
+                                // anime has been uploaded
+                                // add this to qualitity list
                                 EpData.qualities.Add(quality);
+                                // purge the file
+                                PurgeCDNFile(UploadData.url, TwistEp.number.ToString());
                             }
                         } catch (Exception ex) {
                             Console.WriteLine("[Anime Re-Upload Error] " + ex.Message);
