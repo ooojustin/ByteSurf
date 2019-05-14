@@ -420,7 +420,5 @@ namespace JexFlix_Scraper.Anime {
             str = System.Text.RegularExpressions.Regex.Replace(str, @"\s", "-"); // //Replace spaces by dashes
             return str;
         }
-
-
     }
 }

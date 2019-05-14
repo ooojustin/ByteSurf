@@ -24,7 +24,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             // Fetch entire list of anime data
             List<TwistAnimeData> AnimeData = TwistAPI.GetTwistAnime();
 
-             AnimeData.Reverse();
+            AnimeData.Reverse();
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
@@ -53,7 +53,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                     MessageHandler.Add(Anime.title, "Skipping! Fail to fetch Kitsu Information \n", ConsoleColor.Red, ConsoleColor.White);
                     continue;
                 } else
-                    MessageHandler.Add(Anime.title + " | Kitsu: " +KitsuAPI.GetTitle(KitsuAnimeInfo), "Now Scraping! \n", ConsoleColor.Magenta, ConsoleColor.White);
+                    MessageHandler.Add(Anime.title + " | Kitsu: " + KitsuAPI.GetTitle(KitsuAnimeInfo), "Now Scraping! \n", ConsoleColor.Magenta, ConsoleColor.White);
 
                 // Get episode with slug
                 List<EpisodeInfo> TwistEpisodes = TwistAPI.GetTwistEpisodes(Anime.slug.slug);
@@ -274,6 +274,22 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         public static List<EpisodeData> GetAscending(List<EpisodeData> UnsortedList) {
             return UnsortedList.OrderBy(x => x.episode).ToList();
         }
+        //
 
+        /// <summary>
+        /// Function that makes a request to server to purge a file from cdn
+        /// using API written by justin
+        /// </summary>
+        public static string PurgeCDNFile(string slug, string episode = "1", string res = "1080") {
+            string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}/{2}.mp4", slug, episode, res);
+            // Make a request for the scraper
+            string request = "https://scraper.jexflix.com/anti_cache.php?p=" + request_url;
+            try {
+                return General.GET(request);
+            } catch (Exception ex) {
+                Console.WriteLine("[PurgeCDNFile] " + ex.Message);
+            }
+            return "";
+        }
     }
 }
