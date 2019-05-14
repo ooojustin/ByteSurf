@@ -51,7 +51,7 @@
 		$log_imdb_update->bindValue(':url', $url);
 		$log_imdb_update->bindValue(':timestamp', time());
 		$log_imdb_update->execute();
-		
+
 	}
 
 	function needs_imdb_update($url) {

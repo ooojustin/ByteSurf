@@ -37,7 +37,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             using (WebClient wc = WebClientBypass()) {
                 try {
                     string raw = wc.DownloadString(API_LINK);
-                    Console.WriteLine(raw);
+                    // Console.WriteLine(raw);
                     return JsonConvert.DeserializeObject<List<TwistAnimeData>>(raw, General.DeserializeSettings);
                 } catch (WebException ex) {
                     Console.WriteLine("[GetTwistAnime] " + ex.Message);

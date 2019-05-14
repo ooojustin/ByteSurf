@@ -3,7 +3,7 @@
     require 'inc/server.php';
     require 'inc/session.php';
     require_subscription();
-    
+
     if (!isset($_SESSION['username'])) {
         header("location: /login");
         die();
@@ -12,5 +12,5 @@
         header("location: /home");
         die();
     }
-    
+
 ?>
