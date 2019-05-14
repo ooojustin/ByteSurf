@@ -24,6 +24,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             // Fetch entire list of anime data
             List<TwistAnimeData> AnimeData = TwistAPI.GetTwistAnime();
 
+            // flips list to last videos twist.moe uploads
+            // optional, comment out to disable
             AnimeData.Reverse();
 
             foreach (TwistAnimeData Anime in AnimeData) {
