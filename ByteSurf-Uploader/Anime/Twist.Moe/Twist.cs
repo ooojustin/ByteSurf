@@ -289,7 +289,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
         /// using API written by justin
         /// </summary>     
         public static string PurgeCDNJson(string slug) {
-            string request_url = string.Format("https://jexflix.b-cdn.net/anime/{0}/{1}.json", slug, slug);
+            string request_url = string.Format("https://cdn.bytesurf.io/anime/{0}/{1}.json", slug, slug);
             // Make a request for the scraper
             string request = "https://bytesurf.io/scraper/anti_cache.php?p=" + request_url;
             try {
