@@ -7,6 +7,8 @@
     // Usage Instructions
     // Send a GET requests to scraper/anti_cache.php
     // With the url to purge as p
+    // The url to purge should be in the frmat of jexflix.b-cdn.net / etc
+    // There is no need for the authentication of the url
 
     require '../inc/server.php';
     require '../inc/bunnycdn/bunnycdn.php';
