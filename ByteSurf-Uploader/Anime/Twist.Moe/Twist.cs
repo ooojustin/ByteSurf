@@ -182,7 +182,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                                 EpData.qualities.Add(quality);
                                 // purge the file
                                 string res = PurgeCDNFile(UploadData.url, TwistEp.number.ToString());
-                                Console.WriteLine("[Purge] " + res);  
+                                Console.WriteLine("[Purge] " + res); 
                             }
                         } catch (Exception ex) {
                             Console.WriteLine("[Anime Re-Upload Error] " + ex.Message);
