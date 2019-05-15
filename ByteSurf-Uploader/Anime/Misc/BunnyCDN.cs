@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,8 +18,16 @@ namespace JexFlix_Scraper.Anime.Misc
             POST
         }
 
-        private static void CreateAPIRequest(string path ,CDNMethod method = CDNMethod.POST) {
+        private static void CreateAPIRequest(string path, CDNMethod method = CDNMethod.POST, string data = "") {
+            try {
+                using (WebClient webClient = General.GetWebClient()) {
+                  //  return webClient.UploadString(url, post_param);
+                }
 
+            } catch (WebException ex) {
+               // return new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                // return "ERROR: " + ex.Message;
+            }
         }
         public static void PurgeCDNLink() {
 
