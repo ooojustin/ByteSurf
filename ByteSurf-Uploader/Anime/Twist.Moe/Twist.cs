@@ -300,6 +300,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             return "";
         }
 
+        public static string 
+
         /// <summary>
         /// Function that checks if the title passed through should be skipped
         /// This title will be compared recursively against an array of blacklisted titles and whitelisted titles

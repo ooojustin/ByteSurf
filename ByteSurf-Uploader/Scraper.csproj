@@ -79,6 +79,7 @@
     <Compile Include="Anime\MasterAnime\AniSearch.cs" />
     <Compile Include="Anime\MasterAnime\Scraper\MirrorParser.cs" />
     <Compile Include="Anime\MasterAnime\Scraper\ScriptEngine.cs" />
+    <Compile Include="Anime\Misc\BunnyCDN.cs" />
     <Compile Include="Anime\Misc\CaptchaBypass.cs" />
     <Compile Include="Anime\Misc\CloudflareHTTPClientWrapper.cs" />
     <Compile Include="Anime\Misc\General.cs" />
