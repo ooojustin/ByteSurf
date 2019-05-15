@@ -327,7 +327,7 @@ namespace JexFlix_Scraper {
 
                 // delete the file that was stored locally
                 File.Delete(localPath);
-                Console.WriteLine("Deleted local file");
+                // Console.WriteLine("Deleted local file");
             } else {
                 Console.WriteLine("No Success");
             }

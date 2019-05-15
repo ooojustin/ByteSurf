@@ -19,18 +19,28 @@ namespace JexFlix_Scraper.Anime.Misc
         }
 
         private static void CreateAPIRequest(string path, CDNMethod method = CDNMethod.POST, string data = "") {
-            try {
-                using (WebClient webClient = General.GetWebClient()) {
-                  //  return webClient.UploadString(url, post_param);
-                }
+            switch (method) {
+                case CDNMethod.POST:
+                    try {
+                        using (WebClient webClient = General.GetWebClient()) {
+                            //  return webClient.UploadString(url, post_param);
+                        }
 
-            } catch (WebException ex) {
-               // return new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                // return "ERROR: " + ex.Message;
+                    } catch (WebException ex) {
+                        string exception_raw = new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
+                        Console.WriteLine("[CreateAPIRequest] " + exception_raw);
+                        // return "ERROR: " + ex.Message;
+                    }
+
+                    return;
+                case CDNMethod.GET:
+
+                    return;
             }
+           
         }
-        public static void PurgeCDNLink() {
-
+        public static void PurgeCDNLink(string url) {
+            CreateAPIRequest("purge");
         }
     }
 }

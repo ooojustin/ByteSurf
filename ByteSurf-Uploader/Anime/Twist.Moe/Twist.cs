@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using static JexFlix_Scraper.Anime.Kitsu.IO.KitsuAPI;
 using static JexFlix_Scraper.Anime.Twist.Moe.TwistAPI;
 
-namespace JexFlix_Scraper.Anime.Twist.Moe {
-    class Twist {
+namespace JexFlix_Scraper.Anime.Twist.Moe
+{
+    class Twist
+    {
 
         public static void Run() {
             // Setup network stuff
@@ -30,8 +32,8 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
-                //if (Anime.ongoing == 0)
-                //    continue;
+                if (Anime.ongoing == 0)
+                    continue;
 
                 //if (Anime.title.ToLower().Contains("naruto"))
                 //    continue;
@@ -300,7 +302,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             return "";
         }
 
-        public static string 
 
         /// <summary>
         /// Function that checks if the title passed through should be skipped
