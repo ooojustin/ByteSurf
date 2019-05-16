@@ -289,10 +289,10 @@
 														$episode_watched = in_array($item_str, $watched_list_str);
 														?>
 														<tr>
-															<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_title ?></a></td>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $air_date ?></a></td>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_watched ? '✔' : '✘' ?></a></td>
+															<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode['episode'] ?><a></th>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode_title ?></a></td>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $air_date ?></a></td>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode_watched ? '✔' : '✘' ?></a></td>
 														</tr>
 													<?php } ?>
 												</tbody>
