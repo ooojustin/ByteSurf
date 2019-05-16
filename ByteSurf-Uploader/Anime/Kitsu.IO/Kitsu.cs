@@ -225,11 +225,13 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string EpisodeDuration(KitsuAnime.Anime anime) {
-            return anime.data.attributes.episodeLength.ToString();
+            string episode_duration = anime.data.attributes.episodeLength.ToString();
+            return episode_duration == null ? "" : episode_duration;
         }
 
         public static string GetAgeClass(KitsuAnime.Anime anime) {
-            return anime.data.attributes.ageRating;
+            string age_rating = anime.data.attributes.ageRating;
+            return age_rating == null ? "" : age_rating;
         }
 
         public class MediaPost {
