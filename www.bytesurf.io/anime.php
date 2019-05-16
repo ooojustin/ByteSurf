@@ -314,6 +314,28 @@
 				}
 			</style>
 
+			<script>
+				// Hides the header on fullscreen to provide support for mobile players
+				function HandleHeader(fullscreened) {
+					var header_element = document.getElementById("header");
+					header_element.style.display = fullscreened ? "none" : "block"; // remove header
+				}
+
+				function FullscreenActuator() {
+					// calculate video elements to determine if fullscreen
+					var page_height = $(window).height();
+					var video_height = $(document.getElementById("player")).height();
+					// in fullscreen
+					if (video_height >= (page_height - 30)) {
+						HandleHeader(true);
+					} else {
+						HandleHeader(false);
+					}
+				}
+
+				window.setInterval(FullscreenActuator, 100);
+			</script>
+
 			<?php if ($party) { ?>
 				<!-- party chat -->
 				<script>

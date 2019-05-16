@@ -86,11 +86,13 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetPoster(KitsuAnime.Anime anime) {
-            return anime.data.attributes.posterImage.original;
+            string poster = anime.data.attributes.posterImage.original;
+            return poster == null ? "" : poster;
         }
 
         public static string GetCover(KitsuAnime.Anime anime) {
-            return anime.data.attributes.coverImage.original;
+            string original_cover = anime.data.attributes.coverImage.original;
+            return original_cover == null ? "" : original_cover;
         }
 
         public static string GetRating(KitsuAnime.Anime anime) {

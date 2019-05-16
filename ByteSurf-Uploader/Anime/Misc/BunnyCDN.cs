@@ -19,6 +19,8 @@ namespace JexFlix_Scraper.Anime.Misc
         }
 
         private static void CreateAPIRequest(string path, CDNMethod method = CDNMethod.POST, string data = "") {
+            const string BASELINK = "";
+            string request_link = string.Format(BASELINK, path);
             switch (method) {
                 case CDNMethod.POST:
                     try {
@@ -34,13 +36,22 @@ namespace JexFlix_Scraper.Anime.Misc
 
                     return;
                 case CDNMethod.GET:
-
+                    request_link += data;
+                    try {
+                        General.GET(request_link);
+                    } catch (Exception ex) {
+                        Console.WriteLine("[CreateAPIRequest] " + ex.Message);
+                    }
                     return;
             }
            
         }
+        /// <summary>
+        /// BCDN is API takes the url purge link as a GET request, although
+        /// documentation says otherwise
+        /// </summary>
         public static void PurgeCDNLink(string url) {
-            CreateAPIRequest("purge");
+            CreateAPIRequest("purge", CDNMethod.GET, url);
         }
     }
 }
