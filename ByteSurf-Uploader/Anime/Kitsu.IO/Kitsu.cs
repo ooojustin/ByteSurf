@@ -108,8 +108,6 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 synList.Add(attributes.titles.en);
             if (!string.IsNullOrEmpty(attributes.titles.en_jp))
                 synList.Add(attributes.titles.en_jp);
-            if (!string.IsNullOrEmpty(attributes.titles.ja_jp))
-                synList.Add(attributes.titles.ja_jp);
             if (!string.IsNullOrEmpty(attributes.canonicalTitle))
                 synList.Add(attributes.canonicalTitle);
             if (attributes.abbreviatedTitles != null) {

@@ -28,12 +28,12 @@ namespace JexFlix_Scraper.Anime.Twist.Moe
 
             // flips list to last videos twist.moe uploads
             // optional, comment out to disable
-            AnimeData.Reverse();
+           // AnimeData.Reverse();
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
-                if (Anime.ongoing == 0)
-                    continue;
+               // if (Anime.ongoing == 0)
+                 //   continue;
 
                 //if (Anime.title.ToLower().Contains("naruto"))
                 //    continue;
