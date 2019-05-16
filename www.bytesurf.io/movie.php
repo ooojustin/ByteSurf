@@ -136,15 +136,15 @@
             <? $party ? require 'inc/html/party_modal.php' : ''; ?>
             <!-- end party dialog -->
 
-            
+
             <!-- toggle chat btn -->
             <?php if ($party) { ?>
             <span id="span_chat" style="float: right; position: fixed; top: 50%; right: 27%; z-index: 5;">
                 <button id="chatbtn" class="filter__btn" name="chatbtn" type="button" style="font-size: 30px; height: 65px; width: 40px;"><i class="fas fa-arrow-right"></i></button>
-            </span> 
+            </span>
             <?php } ?>
             <!-- end toggle chat btn -->
-            
+
             <!-- details -->
             <section class="section details">
                 <!-- details background -->
@@ -156,7 +156,7 @@
 
                         <!-- player -->
                         <div class="col-12">
-                            <video controls crossorigin playsinline poster="<?= $preview ?>" id="player">
+                            <video controls crossorigin poster="<?= $preview ?>" id="player">
 
                                 <!-- Video files -->
                                 <? foreach ($qualities as $quality) { ?>
@@ -328,7 +328,7 @@
                     left_element.style.width = Globals.Opened ? "100%" : "70%";
                     left_element.style.cssFloat = Globals.Opened ? "none" : "left";
 
-                    
+
 
                     if (Globals.Opened)
                         document.getElementById("span_chat").style.right = "0px";
@@ -338,7 +338,7 @@
                     document.getElementById("chatroom_row").style.position = Globals.Opened ? "relative" : "fixed";
                     document.getElementById("right_col_el").style.display = Globals.Opened ? "none" : "block";
 
-                    
+
                     Globals.Opened = !Globals.Opened;
 
                 }
@@ -402,7 +402,7 @@
                     });
 
                 });
-                
+
             </script>
             <div id="right_col_el" style="margin-left: 70%;">
                 <div class="container">

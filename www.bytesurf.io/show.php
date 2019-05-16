@@ -224,7 +224,7 @@
 
 						<!-- player -->
 						<div class="col-12">
-							<video controls crossorigin playsinline poster="<?= $preview ?>" id="player">
+							<video controls crossorigin poster="<?= $preview ?>" id="player">
 								<!-- Video files -->
 
 								<? foreach ($specific_data['qualities'] as $quality) { ?>
