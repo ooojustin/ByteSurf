@@ -55,7 +55,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe
                 JexUpload UploadData = new JexUpload();
                 UploadData.episodeData = new List<EpisodeData>();
                 // Setup new API infomation
-                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.slug.slug);
+                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.title);
 
                 // Skip animes we can't update!
                 if (KitsuAnimeInfo == null) {
