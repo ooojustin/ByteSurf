@@ -210,9 +210,10 @@
 
 							<!-- player -->
 							<div class="col-12">
-								<video controls crossorigin playsinline poster="<?= $cover ?>" id="player">
+								<video controls crossorigin poster="<?= $cover ?>" id="player">
 									<!-- Video files -->
 									<?php
+									// playsinline
 									foreach ($episode_info['qualities'] as $quality) {
 										$res = $quality['resolution'];
 										$url = generate_mp4_link($res);
