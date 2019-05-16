@@ -62,7 +62,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             }
             return 0;
         }
-	
+
         /// <summary>
         /// Automates the search for u given a query
         /// https://kitsu.io/api/edge/anime/11 this is an example of the json data it returns
@@ -178,6 +178,8 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
 
         public static string GetEpisodeAir(KitsuAnime.Anime anime, int episode) {
             var epdata = FetchEpisodePage(anime);
+            if ((epdata.data.Count() - 1) < 0)
+                return "";
             // Fetch the last episode
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
@@ -203,6 +205,9 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         public static string GetEpisodeTitle(KitsuAnime.Anime anime, int episode) {
             var epdata = FetchEpisodePage(anime);
             // Fetch the last episode
+            if ((epdata.data.Count() - 1) < 0)
+                return "";
+
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
             while (episode > last_ep.attributes.number) {
