@@ -94,7 +94,8 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetRating(KitsuAnime.Anime anime) {
-            return anime.data.attributes.averageRating;
+            string rating = anime.data.attributes.averageRating;
+            return rating == null ? "50" : rating;
         }
 
         public static string GetSlug(KitsuAnime.Anime anime) {
@@ -120,11 +121,13 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetSynopsis(KitsuAnime.Anime anime) {
-            return anime.data.attributes.synopsis;
+            string syns = anime.data.attributes.synopsis;
+            return syns == null ? "" : syns;
         }
 
         public static string GetTitle(KitsuAnime.Anime anime) {
-            return anime.data.attributes.titles.en_jp;
+            string jp_title = anime.data.attributes.titles.en_jp;
+            return jp_title == null ? "" : jp_title;
         }
 
         private static KitsuAnime.GenreData.Genres FetchGenrePage(KitsuAnime.Anime anime) {
@@ -221,7 +224,8 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetAirDate(KitsuAnime.Anime anime) {
-            return anime.data.attributes.startDate;
+            string air_date = anime.data.attributes.startDate;
+            return air_date == null ? "" : air_date;
         }
 
         public static string EpisodeDuration(KitsuAnime.Anime anime) {

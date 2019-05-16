@@ -251,9 +251,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe
                         KitsuGenres.Add("");
                     dbinfo.genres = JsonConvert.SerializeObject(KitsuGenres);
                     dbinfo.rating = KitsuAPI.GetRating(KitsuAnimeInfo);
-                    if (dbinfo.rating == null) {
-                        dbinfo.rating = "50";
-                    }
                     dbinfo.release = KitsuAPI.GetAirDate(KitsuAnimeInfo);
                     dbinfo.duration = KitsuAPI.EpisodeDuration(KitsuAnimeInfo);
                     dbinfo.age_class = KitsuAPI.GetAgeClass(KitsuAnimeInfo);
