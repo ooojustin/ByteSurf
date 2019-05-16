@@ -198,7 +198,7 @@
 												</ul>
 
 												<div class="card__description card__description--details">
-													<?php echo $data['synopsis']; ?>
+													<?php echo preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $data['synopsis']); ?>
 												</div>
 											</div>
 										</div>
