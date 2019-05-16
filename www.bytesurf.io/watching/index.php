@@ -144,7 +144,9 @@ require_login();
 											<? if ($watching['type'] == "show") { ?>
 												<a>Season: <?= $watching['season'] ?></a>
 											<? } ?>
-											<a>Episode: <?= $watching['episode'] ?></a>
+											<?php if ($watching['type'] != "movie") { ?>
+												<a>Episode: <?= $watching['episode'] ?></a>
+											<?php } ?>
 										</span>
 									</div>
 								</div>
@@ -190,7 +192,9 @@ require_login();
 											<? if ($watching['type'] == "show") { ?>
 												<a>Season: <?= $watching['season'] ?></a>
 											<? } ?>
-											<a>Episode: <?= $watching['episode'] ?></a>
+											<?php if ($watching['type'] != "movie") { ?>
+												<a>Episode: <?= $watching['episode'] ?></a>
+											<?php } ?>
 										</span>
 									</div>
 								</div>
