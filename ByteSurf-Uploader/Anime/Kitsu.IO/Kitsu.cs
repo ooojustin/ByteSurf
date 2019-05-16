@@ -76,7 +76,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 if (id == 0)
                     return null;
                 string raw = General.GET(string.Format(KITSU_ANIME_LINK, id.ToString()));
-                if (string.IsNullOrEmpty(raw))
+                if (string.IsNullOrEmpty(raw) || raw.Contains("404"))
                     return null;
                 return JsonConvert.DeserializeObject<KitsuAnime.Anime>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
