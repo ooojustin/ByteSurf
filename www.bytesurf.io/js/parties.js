@@ -91,17 +91,29 @@ function interpret_party_message_data(data_raw) {
 
     // parse message data
     let data = JSON.parse(data_raw);
+    let new_messages = 0;
 
     // loop through messages and handle them
     data.forEach(function(message) {
+
+        if (message.username == username && interpret_party_message_data.did_run)
+            return;
+
         insert_message_node(message.username, message.message);
+        new_messages++;
 
     });
+
+    if (new_messages > 0 && interpret_party_message_data.did_run)
+        document.getElementById('party_notification_sound').play();
 
     // update last_message_id
     // note: sorted by 'id' descending, so first item = highest id
     if (data.length > 0)
         last_message_id = data[data.length - 1].id;
+
+    // make sure we know this function has already executed at least once
+    interpret_party_message_data.did_run = true;
 
 }
 
@@ -110,7 +122,7 @@ function send_party_chat_message(message) {
     send_update('send_party_chat_message', params, function(raw) {
         let data = JSON.parse(raw);
         if (data.sent)
-            party_update_handler.restart(true); // restart interval so we can download message instantly
+            insert_message_node(username, message);
         else
             console.log('send_party_chat_message failed: ' + data.reason);
     });

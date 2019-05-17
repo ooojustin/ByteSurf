@@ -410,7 +410,7 @@
         }
 
 		// include notification sound for chat $get_messages
-		echo '<audio id="audiotag1" src="' . $public_html . 'audio/notification.wav" preload="auto"></audio>' . PHP_EOL;
+		echo '<audio id="party_notification_sound" src="' . $public_html . 'audio/notification.wav" preload="auto"></audio>' . PHP_EOL;
 
         // include party script
         echo '<script src="' . $public_html . 'js/parties.js"></script>' . PHP_EOL;
