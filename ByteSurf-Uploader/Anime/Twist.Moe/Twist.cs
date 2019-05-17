@@ -11,8 +11,10 @@ using System.Threading.Tasks;
 using static JexFlix_Scraper.Anime.Kitsu.IO.KitsuAPI;
 using static JexFlix_Scraper.Anime.Twist.Moe.TwistAPI;
 
-namespace JexFlix_Scraper.Anime.Twist.Moe {
-    class Twist {
+namespace JexFlix_Scraper.Anime.Twist.Moe
+{
+    class Twist
+    {
 
         public static void Run() {
             // Setup network stuff
@@ -26,12 +28,12 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
 
             // flips list to last videos twist.moe uploads
             // optional, comment out to disable
-            AnimeData.Reverse();
+           // AnimeData.Reverse();
 
             foreach (TwistAnimeData Anime in AnimeData) {
 
-                //if (Anime.ongoing == 0)
-                //    continue;
+               // if (Anime.ongoing == 0)
+                 //   continue;
 
                 //if (Anime.title.ToLower().Contains("naruto"))
                 //    continue;
@@ -53,7 +55,7 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                 JexUpload UploadData = new JexUpload();
                 UploadData.episodeData = new List<EpisodeData>();
                 // Setup new API infomation
-                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.slug.slug);
+                KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, Anime.title);
 
                 // Skip animes we can't update!
                 if (KitsuAnimeInfo == null) {
@@ -249,9 +251,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
                         KitsuGenres.Add("");
                     dbinfo.genres = JsonConvert.SerializeObject(KitsuGenres);
                     dbinfo.rating = KitsuAPI.GetRating(KitsuAnimeInfo);
-                    if (dbinfo.rating == null) {
-                        dbinfo.rating = "50";
-                    }
                     dbinfo.release = KitsuAPI.GetAirDate(KitsuAnimeInfo);
                     dbinfo.duration = KitsuAPI.EpisodeDuration(KitsuAnimeInfo);
                     dbinfo.age_class = KitsuAPI.GetAgeClass(KitsuAnimeInfo);
@@ -300,7 +299,6 @@ namespace JexFlix_Scraper.Anime.Twist.Moe {
             return "";
         }
 
-        public static string 
 
         /// <summary>
         /// Function that checks if the title passed through should be skipped

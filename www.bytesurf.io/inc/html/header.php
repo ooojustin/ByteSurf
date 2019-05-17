@@ -1,4 +1,4 @@
-	<header class="header">
+	<header class="header" id="header">
 		<div class="header__wrap">
 			<div class="container">
 				<div class="row">
@@ -46,7 +46,7 @@
 
 							<!-- header auth -->
 							<div class="header__auth">
-							    
+
 								<button class="header__search-btn" type="button">
 									<i class="icon ion-ios-search"></i>
 								</button>

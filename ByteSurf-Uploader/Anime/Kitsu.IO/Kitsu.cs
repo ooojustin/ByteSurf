@@ -62,7 +62,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
             }
             return 0;
         }
-	
+
         /// <summary>
         /// Automates the search for u given a query
         /// https://kitsu.io/api/edge/anime/11 this is an example of the json data it returns
@@ -76,7 +76,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 if (id == 0)
                     return null;
                 string raw = General.GET(string.Format(KITSU_ANIME_LINK, id.ToString()));
-                if (string.IsNullOrEmpty(raw))
+                if (string.IsNullOrEmpty(raw) || raw.Contains("404"))
                     return null;
                 return JsonConvert.DeserializeObject<KitsuAnime.Anime>(raw, General.DeserializeSettings);
             } catch (WebException ex) {
@@ -86,15 +86,18 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetPoster(KitsuAnime.Anime anime) {
-            return anime.data.attributes.posterImage.original;
+            string poster = anime.data.attributes.posterImage.original;
+            return poster == null ? "" : poster;
         }
 
         public static string GetCover(KitsuAnime.Anime anime) {
-            return anime.data.attributes.coverImage.original;
+            string original_cover = anime.data.attributes.coverImage.original;
+            return original_cover == null ? "" : original_cover;
         }
 
         public static string GetRating(KitsuAnime.Anime anime) {
-            return anime.data.attributes.averageRating;
+            string rating = anime.data.attributes.averageRating;
+            return rating == null ? "50" : rating;
         }
 
         public static string GetSlug(KitsuAnime.Anime anime) {
@@ -108,8 +111,6 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 synList.Add(attributes.titles.en);
             if (!string.IsNullOrEmpty(attributes.titles.en_jp))
                 synList.Add(attributes.titles.en_jp);
-            if (!string.IsNullOrEmpty(attributes.titles.ja_jp))
-                synList.Add(attributes.titles.ja_jp);
             if (!string.IsNullOrEmpty(attributes.canonicalTitle))
                 synList.Add(attributes.canonicalTitle);
             if (attributes.abbreviatedTitles != null) {
@@ -122,11 +123,13 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetSynopsis(KitsuAnime.Anime anime) {
-            return anime.data.attributes.synopsis;
+            string syns = anime.data.attributes.synopsis;
+            return syns == null ? "" : syns;
         }
 
         public static string GetTitle(KitsuAnime.Anime anime) {
-            return anime.data.attributes.titles.en_jp;
+            string jp_title = anime.data.attributes.titles.en_jp;
+            return jp_title == null ? "" : jp_title;
         }
 
         private static KitsuAnime.GenreData.Genres FetchGenrePage(KitsuAnime.Anime anime) {
@@ -177,6 +180,8 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
 
         public static string GetEpisodeAir(KitsuAnime.Anime anime, int episode) {
             var epdata = FetchEpisodePage(anime);
+            if ((epdata.data.Count() - 1) < 0)
+                return "";
             // Fetch the last episode
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
@@ -202,6 +207,9 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         public static string GetEpisodeTitle(KitsuAnime.Anime anime, int episode) {
             var epdata = FetchEpisodePage(anime);
             // Fetch the last episode
+            if ((epdata.data.Count() - 1) < 0)
+                return "";
+
             var last_ep = epdata.data[epdata.data.Count() - 1];
             // When episode is on the next page
             while (episode > last_ep.attributes.number) {
@@ -223,15 +231,18 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         public static string GetAirDate(KitsuAnime.Anime anime) {
-            return anime.data.attributes.startDate;
+            string air_date = anime.data.attributes.startDate;
+            return air_date == null ? "" : air_date;
         }
 
         public static string EpisodeDuration(KitsuAnime.Anime anime) {
-            return anime.data.attributes.episodeLength.ToString();
+            string episode_duration = anime.data.attributes.episodeLength.ToString();
+            return episode_duration == null ? "" : episode_duration;
         }
 
         public static string GetAgeClass(KitsuAnime.Anime anime) {
-            return anime.data.attributes.ageRating;
+            string age_rating = anime.data.attributes.ageRating;
+            return age_rating == null ? "" : age_rating;
         }
 
         public class MediaPost {

@@ -289,7 +289,7 @@ namespace JexFlix_Scraper.Anime.Misc {
 
                 } catch (WebException ex) {
                     return new StreamReader(ex.Response.GetResponseStream()).ReadToEnd();
-                }
+                }   
             }
 #else
             Console.WriteLine(SOLVE_CAPTCHA_URL + "?" + get_params);

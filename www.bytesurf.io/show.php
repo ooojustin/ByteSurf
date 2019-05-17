@@ -224,7 +224,7 @@
 
 						<!-- player -->
 						<div class="col-12">
-							<video controls crossorigin playsinline poster="<?= $preview ?>" id="player">
+							<video controls crossorigin poster="<?= $preview ?>" id="player">
 								<!-- Video files -->
 
 								<? foreach ($specific_data['qualities'] as $quality) { ?>
@@ -304,9 +304,9 @@
 														<? foreach ($season_data['episodes'] as $episodes) { ?>
 															<tr>
 																<? $url = $show_url_built . '&s=' . $seasons['season'] . '&e=' . $episodes['episode']; ?>
-																<th><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7)"><?= $episodes['episode'] ?><a></th>
-																<td><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7)"><?= $episodes['title'] ?></a></td>
-																<td><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7)"><?= date("F j, Y", time() - $episodes['released']) ?></a></td>
+																<th><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7); display: block;"><?= $episodes['episode'] ?><a></th>
+																<td><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7); display: block;"><?= $episodes['title'] ?></a></td>
+																<td><a href="<?= $url ?>" style="color: rgba(255,255,255,0.7); display: block;"><?= date("F j, Y", time() - $episodes['released']) ?></a></td>
 															</tr>
 															</a>
 														<? } ?>
@@ -475,7 +475,7 @@
 	<!-- Root element of PhotoSwipe. Must have class pswp. -->
 	<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 
-		<!-- Background of PhotoSwipe. 
+		<!-- Background of PhotoSwipe.
 		It's a separate element, as animating opacity is faster than rgba(). -->
 		<div class="pswp__bg"></div>
 

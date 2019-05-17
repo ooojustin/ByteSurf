@@ -24,7 +24,7 @@
     $has_anime = $get_anime->fetch();
     // https://phpdelusions.net/pdo_examples/check_email_exists NumRoms is superflous and not necessarily always available.
     if ($has_anime)
-        die();										
+        die("Anime Exists");
 
     $add_anime = $db->prepare('INSERT INTO anime (title, url, thumbnail, data, similar, genres, rating, release_date, duration, ageclass, cover) VALUES (:title, :url, :thumbnail, :data, :similar, :genres, :rating, :release_date, :duration, :ageclass, :cover);');
     $add_anime->bindValue(':title', $title);
@@ -39,4 +39,5 @@
     $add_anime->bindValue(':ageclass', $age_class);
     $add_anime->bindValue(':cover', $cover);
     $add_anime->execute();
+    die("Success");
 ?>

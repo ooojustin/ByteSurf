@@ -198,7 +198,7 @@
 												</ul>
 
 												<div class="card__description card__description--details">
-													<?php echo $data['synopsis']; ?>
+													<?php echo preg_replace('/[\x00-\x1F\x7F-\xFF]/', '', $data['synopsis']); ?>
 												</div>
 											</div>
 										</div>
@@ -210,9 +210,10 @@
 
 							<!-- player -->
 							<div class="col-12">
-								<video controls crossorigin playsinline poster="<?= $cover ?>" id="player">
+								<video controls crossorigin poster="<?= $cover ?>" id="player">
 									<!-- Video files -->
 									<?php
+									// playsinline
 									foreach ($episode_info['qualities'] as $quality) {
 										$res = $quality['resolution'];
 										$url = generate_mp4_link($res);
@@ -289,10 +290,10 @@
 														$episode_watched = in_array($item_str, $watched_list_str);
 														?>
 														<tr>
-															<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode['episode'] ?><a></th>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_title ?></a></td>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $air_date ?></a></td>
-															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>"><?= $episode_watched ? '✔' : '✘' ?></a></td>
+															<th><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode['episode'] ?><a></th>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode_title ?></a></td>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $air_date ?></a></td>
+															<td><a href="<?= $episode_link ?>" style="color:<?= $color ?>; display: block;"><?= $episode_watched ? '✔' : '✘' ?></a></td>
 														</tr>
 													<?php } ?>
 												</tbody>
@@ -312,6 +313,28 @@
 					height: 90px;
 				}
 			</style>
+
+			<script>
+				// Hides the header on fullscreen to provide support for mobile players
+				function HandleHeader(fullscreened) {
+					var header_element = document.getElementById("header");
+					header_element.style.display = fullscreened ? "none" : "block"; // remove header
+				}
+
+				function FullscreenActuator() {
+					// calculate video elements to determine if fullscreen
+					var page_height = $(window).height();
+					var video_height = $(document.getElementById("player")).height();
+					// in fullscreen
+					if (video_height >= (page_height - 30)) {
+						HandleHeader(true);
+					} else {
+						HandleHeader(false);
+					}
+				}
+
+				window.setInterval(FullscreenActuator, 100);
+			</script>
 
 			<?php if ($party) { ?>
 				<!-- party chat -->
