@@ -4,37 +4,44 @@ function arraybuffer_to_string(buffer) {
 }
 
 function send_web_request(method, url, params, callback, type = 'text') {
-    
+
     // convert params to string, if needed
     if (Array.isArray(params))
         params = jQuery.param(params);
-        
-    // determine post body to send
-    let send_data = null
-    if (method == 'POST')
-        send_data = params;
-    
-    // append params to end of url if sending get request
-    if (method == 'GET')
-        url += '?' + params;
-    
+
+    // determine data to sent (posy body or get query)
+    let send_data = null;
+    if (params != null) {
+        if (method == 'POST')
+            send_data = params;
+        else if (method == 'GET')
+            url += '?' + params;
+    }
+
     var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
+    xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.response);
     }
-    xmlHttp.open(method, url, true); // true for asynchronous 
+    xmlHttp.open(method, url, true); // true for asynchronous
     xmlHttp.responseType = type;
     xmlHttp.send(send_data);
-    
+
 }
 
 // sends parameters to the updater.php script with a specified action
 // receives compressed data, calls callback with decompressed data
 function send_update(action, params, callback) {
+
     let url = 'https://bytesurf.io/inc/updater.php?action=' + action;
-    params = pako.deflate(JSON.stringify(params));
-    send_web_request('POST', url, params, function(compressed) {
+    let method = 'GET';
+
+    if (params != null) {
+        params = pako.deflate(JSON.stringify(params));
+        method = 'POST';
+    }
+
+    send_web_request(method, url, params, function(compressed) {
         try {
             var decompressed = pako.inflate(compressed);
             var decompressed_str = arraybuffer_to_string(decompressed);
@@ -43,6 +50,7 @@ function send_update(action, params, callback) {
         }
         callback(decompressed_str);
     }, 'arraybuffer');
+
 }
 
 // checks if a key exists in an array
@@ -67,29 +75,29 @@ function get_media_type() {
 // populates an array with important variables from the current request
 // includes season, episode, and title
 function get_important_params() {
-    
+
     // find season, episode, and title.
     // put them into a key/value array that we can build a query from.
     let find = ['s', 'e', 't'];
     let params = { };
-         
+
     // initialize URL and URLSearchParams objects so we can get params from URL
     let url_obj = new URL(window.location.href);
     let searchParams = new URLSearchParams(url_obj.search);
-    
+
     // put items from url into our own array
     find.forEach(function(f) {
         if (searchParams.has(f)) {
             params[f] = searchParams.get(f);
         }
     });
-    
+
     // store type & update 's' & 'e' if necessary
     params['type'] = get_media_type();
     populate_seasons_and_episodes(params, params['type']);
-    
+
     return params;
-    
+
 }
 
 function populate_seasons_and_episodes(params, type) {
@@ -113,7 +121,7 @@ function populate_seasons_and_episodes(params, type) {
 }
 
 // onclick="toggle_watched(this)" <--- add to a button :D
-function toggle_watched(btn) {  
+function toggle_watched(btn) {
     send_update(btn.value, get_important_params(), function(r) {
         let data = r.split(':');
         btn.value = data[0];
@@ -131,52 +139,52 @@ function toggle_queued() {
 // wrapper for javascript setInterval/clearInterval
 // based off: https://stackoverflow.com/a/2679208/5699643
 function IntervalHandler(fn, ms) {
-    
+
     // interval handle
     // false = not running
     var timer = false;
-    
+
     // start the interval if it's not already running
     this.start = function (run_instantly = false) {
-        
+
         if (this.isRunning())
             return false;
-        
+
         timer = setInterval(fn, ms);
-        
+
         if (run_instantly)
             fn();
-        
+
     };
-    
+
     // aborts the interval and resets timer
     this.stop = function () {
         clearInterval(timer);
         timer = false;
     };
-    
+
     // simply stop/start the interval to reset timer
     this.restart = function (run_instantly = false) {
         this.stop();
         this.start(run_instantly);
     }
-    
+
     // determines whether or not the current interval is running
     this.isRunning = function () {
         return timer !== false;
     };
-    
+
 }
 
 
 $(document).ready(function () {
-    
+
 	"use strict"; // start of use strict
-    
+
 	/*==============================
 	Menu
 	==============================*/
-    
+
 	$('.header__btn').on('click', function () {
 		$(this).toggleClass('header__btn--active');
 		$('.header__nav').toggleClass('header__nav--active');
@@ -186,11 +194,11 @@ $(document).ready(function () {
 			$('.header__search').toggleClass('header__search--active');
 		}
 	});
-    
+
 	/*==============================
 	Search
 	==============================*/
-    
+
 	$('.header__search-btn').on('click', function () {
 		$(this).toggleClass('active');
 		$('.header__search').toggleClass('header__search--active');
@@ -200,11 +208,11 @@ $(document).ready(function () {
 			$('.body').toggleClass('body--active');
 		}
 	});
-    
+
 	/*==============================
 	Home
 	==============================*/
-    
+
 	$('.home__bg').owlCarousel({
 		animateOut: 'fadeOut',
 		animateIn: 'fadeIn',
@@ -217,7 +225,7 @@ $(document).ready(function () {
 		smartSpeed: 600,
 		margin: 0,
 	});
-    
+
 	$('.home__bg .item').each(function () {
 		if ($(this).attr("data-bg")) {
 			$(this).css({
@@ -228,7 +236,7 @@ $(document).ready(function () {
 			});
 		}
 	});
-    
+
 	$('.home__carousel').owlCarousel({
 		mouseDrag: false,
 		touchDrag: false,
@@ -256,41 +264,41 @@ $(document).ready(function () {
 			},
 		}
 	});
-    
+
 	$('.home__nav--next').on('click', function () {
 		$('.home__carousel, .home__bg').trigger('next.owl.carousel');
 	});
-    
+
 	$('.home__nav--prev').on('click', function () {
 		$('.home__carousel, .home__bg').trigger('prev.owl.carousel');
 	});
-    
+
 	$(window).on('resize', function () {
 		var itemHeight = $('.home__bg').height();
 		$('.home__bg .item').css("height", itemHeight + "px");
 	});
-    
+
 	$(window).trigger('resize');
-    
+
 	/*==============================
 	Tabs
 	==============================*/
-    
+
 	$('.content__mobile-tabs-menu li').each(function () {
 		$(this).attr('data-value', $(this).text().toLowerCase());
 	});
-    
+
 	$('.content__mobile-tabs-menu li').on('click', function () {
 		var text = $(this).text();
 		var item = $(this);
 		var id = item.closest('.content__mobile-tabs').attr('id');
 		$('#' + id).find('.content__mobile-tabs-btn input').val(text);
-        
+
 	});
 	/*==============================
 	Section bg
 	==============================*/
-    
+
 	$('.section--bg, .details__bg').each(function () {
 		if ($(this).attr("data-bg")) {
 			$(this).css({
@@ -301,11 +309,11 @@ $(document).ready(function () {
 			});
 		}
 	});
-    
+
 	/*==============================
 	Filter
 	==============================*/
-    
+
 	$('.filter__item-menu li').each(function () {
 		$(this).attr('data-value', $(this).text().toLowerCase());
 	});
@@ -315,11 +323,11 @@ $(document).ready(function () {
 		var id = item.closest('.filter__item').attr('id');
 		$('#' + id).find('.filter__item-btn input').val(text);
 	});
-    
+
 	/*==============================
 	Scroll bar
 	==============================*/
-    
+
 	$('.scrollbar-dropdown').mCustomScrollbar({
 		axis: "y",
 		scrollbarPosition: "outside",
@@ -330,11 +338,11 @@ $(document).ready(function () {
 		scrollbarPosition: "outside",
 		theme: "custom-bar2"
 	});
-    
+
 	/*==============================
 	Morelines
 	==============================*/
-    
+
 	$('.card__description--details').moreLines({
 		linecount: 6,
 		baseclass: 'b-description',
@@ -344,13 +352,13 @@ $(document).ready(function () {
 		buttontxtless: "",
 		animationspeed: 400
 	});
-    
+
 	/*==============================
 	Gallery
 	==============================*/
-    
+
 	var initPhotoSwipeFromDOM = function (gallerySelector) {
-		// parse slide data (url, title, size ...) from DOM elements 
+		// parse slide data (url, title, size ...) from DOM elements
 		// (children of gallerySelector)
 		var parseThumbnailElements = function (el) {
 			var thumbElements = el.childNodes,
@@ -362,7 +370,7 @@ $(document).ready(function () {
 				item;
 			for (var i = 0; i < numNodes; i++) {
 				figureEl = thumbElements[i]; // <figure> element
-				// include only element nodes 
+				// include only element nodes
 				if (figureEl.nodeType !== 1) {
 					continue;
 				}
@@ -387,12 +395,12 @@ $(document).ready(function () {
 			}
 			return items;
 		};
-        
+
 		// find nearest parent element
 		var closest = function closest(el, fn) {
 			return el && (fn(el) ? el : closest(el.parentNode, fn));
 		};
-        
+
 		// triggers when user clicks on thumbnail
 		var onThumbnailsClick = function (e) {
 			e = e || window.event;
@@ -428,7 +436,7 @@ $(document).ready(function () {
 			}
 			return false;
 		};
-        
+
 		// parse picture index and gallery index from URL (#&pid=1&gid=2)
 		var photoswipeParseHash = function () {
 			var hash = window.location.hash.substring(1),
@@ -452,7 +460,7 @@ $(document).ready(function () {
 			}
 			return params;
 		};
-        
+
 		var openPhotoSwipe = function (index, galleryElement, disableAnimation, fromURL) {
 			var pswpElement = document.querySelectorAll('.pswp')[0],
 				gallery,
@@ -478,7 +486,7 @@ $(document).ready(function () {
 			// PhotoSwipe opened from URL
 			if (fromURL) {
 				if (options.galleryPIDs) {
-					// parse real index when custom PIDs are used 
+					// parse real index when custom PIDs are used
 					// http://photoswipe.com/documentation/faq.html#custom-pid-in-url
 					for (var j = 0; j < items.length; j++) {
 						if (items[j].pid == index) {
@@ -518,11 +526,11 @@ $(document).ready(function () {
 	};
 	// execute above function
 	initPhotoSwipeFromDOM('.gallery');
-    
+
 	/*==============================
 	Player
 	==============================*/
-    
+
 	function initializePlayer() {
 		if ($('#player').length) {
 			const player = new Plyr('#player');
@@ -532,11 +540,11 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializePlayer());
-    
+
 	/*==============================
 	Range sliders
 	==============================*/
-    
+
 	/*1*/
 	function initializeFirstSlider() {
 		if ($('#filter__years').length) {
@@ -566,7 +574,7 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializeFirstSlider());
-    
+
 	/*2*/
 	function initializeSecondSlider() {
 		if ($('#filter__imbd').length) {
@@ -600,7 +608,7 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializeSecondSlider());
-    
+
 	/*3*/
 	function initializeThirdSlider() {
 		if ($('#slider__rating').length) {
@@ -627,7 +635,7 @@ $(document).ready(function () {
 		return false;
 	}
 	$(window).on('load', initializeThirdSlider());
-    
+
 	/*====================================details3.html============================================*/
 	$('.owl-carousel').owlCarousel({
 		mouseDrag: true,
@@ -660,7 +668,7 @@ $(document).ready(function () {
 			},
 		}
 	});
-    
+
     /* ======== FILTERING ======= */
 	document.getElementById("catalog-submit").addEventListener("click", function () {
 		document.getElementById("imdb_min").value = document.getElementById("filter__imbd-start").innerHTML;
@@ -668,11 +676,11 @@ $(document).ready(function () {
 		document.getElementById("year_min").value = document.getElementById("filter__years-start").innerHTML;
 		document.getElementById("year_max").value = document.getElementById("filter__years-end").innerHTML;
 	})
-    
+
 });
 
 function initialize_modal_box(modal_id, button_id) {
-    
+
     // Get the modal
     var modal_box = document.getElementById(modal_id);
 
@@ -682,7 +690,7 @@ function initialize_modal_box(modal_id, button_id) {
     // Get the <span> element that closes the modal
     var close_span = document.getElementsByClassName('modal-close')[0];
 
-    // When the user clicks the button, open the modal 
+    // When the user clicks the button, open the modal
     modal_btn.onclick = function() {
         modal_box.style.display = "block";
     }
@@ -698,5 +706,5 @@ function initialize_modal_box(modal_id, button_id) {
             modal_box.style.display = "none";
         }
     }
-    
+
 }

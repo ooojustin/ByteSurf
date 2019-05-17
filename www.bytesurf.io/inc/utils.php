@@ -1,8 +1,8 @@
 <?php
-	
+
 	// utils.php
 	// Functions used generally in other parts of the website.
-	
+
 	// https://stackoverflow.com/a/6768831/5699643
 	$GLOBALS['current_url'] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
@@ -83,22 +83,22 @@
 
 
 	function update_password($username, $old_password, $new_password) {
-	    global $db;    
+	    global $db;
 	    // check password is correct with login function
-	    if (!login($username, $old_password)) 
-	    	return false;    
+	    if (!login($username, $old_password))
+	    	return false;
 	    return update_password_nocheck($username, $new_password);
 	}
 
 
 	function update_password_nocheck($username, $new_password) {
-	    global $db;   
+	    global $db;
 	    $update_password = $db->prepare('UPDATE users SET password=:password WHERE username=:username');
 	    $update_password->bindValue(':username', $username);
 	    $update_password->bindValue(':password', password_hash($new_password, PASSWORD_BCRYPT));
 	    return $update_password->execute();
 	}
-	
+
 	function update_picture($username, $pfp) {
 		global $db;
 		$update_picture = $db->prepare('UPDATE users SET pfp=:pfp WHERE username=:username');
@@ -130,7 +130,7 @@
 
 		// set expiration time to current timestamp + subscription duration
 		update_expires($username, time() + $duration);
-		
+
 	}
 
 	function get_trial_key($trial_key) {
@@ -148,7 +148,7 @@
 		$get_trial_key->execute();
 		return $get_trial_key->rowCount() > 0;
 	}
-	
+
 	function generate_trial_key($username, $duration) {
 		global $db;
 		$trial_key = generate_split_string(5, 4);
@@ -164,9 +164,9 @@
 		$get_data = $db->prepare('SELECT * FROM users WHERE username=:username');
 		$get_data->bindValue(':username', $username);
 		$get_data->execute();
-		return $get_data->fetch(); 
+		return $get_data->fetch();
 	}
-	
+
 	function get_series_data($url) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM series WHERE url=:url');
@@ -174,21 +174,21 @@
     	$get_data->execute();
    		return $get_data->fetch();
 	}
-	
+
     function get_anime_data($url) {
         global $db;
         $get_data = $db->prepare('SELECT * FROM anime WHERE url=:url');
-        $get_data->bindValue(':url', $url);   
-        $get_data->execute();   
+        $get_data->bindValue(':url', $url);
+        $get_data->execute();
         return $get_data->fetch();
     }
-	
+
 	function get_user_by_id($id) {
 		global $db;
 		$get_data = $db->prepare('SELECT * FROM users WHERE id=:id');
 		$get_data->bindValue(':id', $id);
-		$get_data->execute(); 	
-		return $get_data->fetch(); 
+		$get_data->execute();
+		return $get_data->fetch();
 	}
 
 	function get_user_by_email($email) {
@@ -319,21 +319,21 @@
     function get_active_party() {
         if (!isset($_SESSION['party']))
             return NULL;
-        return get_party($_SESSION['party']);   
+        return get_party($_SESSION['party']);
     }
 
     function create_party($title = NULL, $type = NULL, $season = -1, $episode = -1) {
-        
+
         global $db, $user;
         if (!$user)
             return NULL;
-        
+
         // generate party indenfitier
         $party = generate_split_string(3, 3);
-        
+
         // params for bind_content_values
         $params = array('t' => $title ?: '', 'type' => $type ?: '', 's' => $season, 'e' => $episode);
-        
+
         $create_party = $db->prepare('INSERT INTO parties (party, owner, users, type, title, season, episode, timestamp) VALUES (:party, :owner, :users, :type, :title, :season, :episode, :timestamp)');
         bind_content_values($create_party, $params);
         $create_party->bindValue(':party', $party);
@@ -341,12 +341,12 @@
         $create_party->bindValue(':users', '[]');
         $create_party->bindValue(':timestamp', time_ms());
         $create_party->execute();
-        
+
         $_SESSION['party'] = $party;
         return $party;
-        
+
     }
-    
+
     function get_party($party) {
         global $db;
         $get_party = $db->prepare('SELECT * FROM parties WHERE party=:party ORDER BY id DESC LIMIT 1');
@@ -354,41 +354,41 @@
         $get_party->execute();
         return $get_party->fetch();
     }
-    
+
     function get_active_party_url() {
-        
+
         // get party data, make sure it's valid
         $party = get_active_party();
         if (!$party || empty($party['title']))
             return false;
-        
+
         // build array of url params
         $params = array('t' => $party['title']);
         if ($party['type'] == 'show')
             $params['s'] = $party['season'];
         if ($party['type'] == 'anime' || $party['type'] == 'show')
             $params['e'] = $party['episode'];
-        
+
         // build query and generate url
         $query = http_build_query($params);
         $url = sprintf('https://bytesurf.io/%s.php?%s', $party['type'], $query);
-        
+
         return $url;
-        
+
     }
 
     function initialize_party_system($public_html = '') {
-        
+
         // make sure the user is in a valid party
         $party = get_active_party();
         if (!$party)
             return;
-        
+
         // set type & s & e, so we can compare to values in row
         $_GET['type'] = get_type();
         default_param('s', -1);
         default_param('e', -1);
-        
+
         // determine whether or not we're on the correct page
         $correct = true;
         if ($_GET['type'] != $party['type'])
@@ -399,7 +399,7 @@
             $correct = false;
         else if ($_GET['e'] != $party['episode'])
             $correct = false;
-        
+
         // if we're not on the right page (and we don't own the party), redirect
         // note: only do this when 'type' is valid. this will allow the user to visit the home page normally, even in a party.
         if (!$correct && !is_party_owner() && validate_type($_GET['type'])) {
@@ -408,35 +408,38 @@
                 die();
             }
         }
-        
+
+		// include notification sound for chat $get_messages
+		echo '<audio id="audiotag1" src="' . $public_html . 'audio/notification.wav" preload="auto"></audio>' . PHP_EOL;
+
         // include party script
         echo '<script src="' . $public_html . 'js/parties.js"></script>' . PHP_EOL;
-        
-        
+
+
     }
 
     // sends a chat message to an active party
     function send_party_chat_message($message) {
-        
+
         // make sure we're in a party
         $party = get_active_party();
         if (!$party)
             return array('sent' => false, 'reason' => 'Not in a party.');
-        
+
         // make sure we're logged in
         global $user;
         if (!$user)
             return array('sent' => false, 'reason' => 'User not logged in.');
-        
+
         // make sure message is a reasonable size
         if (strlen($message) > 1024)
             return array('sent' => false, 'reason' => 'Message too long - max 1024 chars.');
-        
+
         // make sure the user hasn't sent a message within the past 500 ms
         $last_message = last_sent_party_message();
         if ($last_message && (time_ms() - $last_message['timestamp']) < 500)
             return array('sent' => false, 'reason' => 'Wait 500 ms before sending another message.');
-            
+
         global $db;
         $send_message = $db->prepare('INSERT INTO parties_chat (party, username, message, timestamp) VALUES (:party, :username, :message, :timestamp)');
         $send_message->bindValue(':party', $party['party']);
@@ -445,7 +448,7 @@
         $send_message->bindValue(':timestamp', time_ms());
         $send_message->execute();
         return array('sent' => true);
-        
+
     }
 
     function last_sent_party_message() {
@@ -466,7 +469,7 @@
         $get_messages->execute();
         return $get_messages->fetchAll();
     }
-    
+
     // updates 'users' colum in a specified party (from an array, key = usernae & value = timestamp)
     function update_party_users($users) {
         global $db;
@@ -548,7 +551,7 @@
 
 		// initialize sendgrid & email
 		$sendgrid = new \SendGrid(SENDGRID_API_KEY); // defined in server.php
-        $email = new \SendGrid\Mail\Mail(); 
+        $email = new \SendGrid\Mail\Mail();
 
         // default variables
         $email->setFrom($from_email, $from_name);
@@ -595,10 +598,10 @@
 	}
 
     // returns an array of progress_tracker records, full list of all last completed/uncompleted episodes from diff shows
-    function get_progress_tracker_data($completed = false) {  
+    function get_progress_tracker_data($completed = false) {
         global $user, $db;
         if (!$user)
-            return array();        
+            return array();
         $get_watching = $db->prepare('SELECT * FROM progress_tracker WHERE username=:username AND completed=:completed');
         $get_watching->bindValue(':username', $user['username']);
         $get_watching->bindValue(':completed', intval($completed));
@@ -608,7 +611,7 @@
 
     // returns an array of progress_tracker records
     // same thing as get_progress_tracker_data but returns 1 record per show (highest season/episode)
-    function get_watching_list($completed = false) {      
+    function get_watching_list($completed = false) {
         $list = array();
         foreach (get_progress_tracker_data($completed) as $watching) {
             $title = $watching['title'];
@@ -618,7 +621,7 @@
                 continue;
             $list[$item] = get_furthest_episode($watching['title'], $watching['type'], $completed);
         }
-        return $list;                        
+        return $list;
     }
 
     // puts progress tracker data into strings (format - type:title:season:episode)
@@ -631,7 +634,7 @@
         }
         return $list_str;
     }
-    
+
     // checks if a specified episode was watched
     function is_watched($title = NULL, $type = NULL, $season = -1, $episode = -1) {
         if (is_null($title)) {
@@ -696,7 +699,7 @@
     }
 
 	function get_queue($get_data = false) {
-        
+
         global $user;
         if (!$user)
             return array();
@@ -726,7 +729,7 @@
 	}
 
     function set_queued($type, $title, $to_queue) {
-        
+
         global $user, $db;
         if (!$user)
             return;
@@ -758,18 +761,18 @@
 		return $update_queue->execute();
 
 	}
-    
+
     function get_paste($id) {
         $url = sprintf('https://pastebin.com/raw/%s', $id);
         return file_get_contents($url);
     }
-	
+
     function output_page_header() {
     	$header_path = dirname(__FILE__) . '/html/header.html';
     	$header = file_get_contents($header_path);
     	echo $header;
     }
-    
+
     function output_page_footer() {
     	$header_path = dirname(__FILE__) . '/html/footer.html';
     	$header = file_get_contents($header_path);
@@ -806,12 +809,12 @@
 		$ip = $is_server_request ? get_server_ip() : $GLOBALS['ip'];
 		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
 		$base_url = 'https://cdn.bytesurf.io';
-        
+
         // determine the path of the file on the cdn server
         $path = parse_url($url, PHP_URL_PATH);
 
 		// set the time of expiry to one day from now
-		$expires = time() + (60 * 60 * 24); 
+		$expires = time() + (60 * 60 * 24);
 
 		// establish token data
 		$token_raw = $key . $path . $expires . $ip;
@@ -829,7 +832,7 @@
 
 	}
 
-    function get_furthest_episode_link($title, $type, $completed) {     
+    function get_furthest_episode_link($title, $type, $completed) {
         $data = get_furthest_episode($title, $type, $completed);
         switch ($type) {
             case 'show':
@@ -839,19 +842,19 @@
                 return sprintf('https://bytesurf.io/%s?t=%s&e=%s', 'anime.php', $title, $data['episode']);
             default:
                 return 'Type unrecognized';
-        }     
+        }
     }
 
     // returns the furthest episode that the user did/didn't complete (progress tracker record)
-    function get_furthest_episode($title, $type, $completed = false) {         
-        $data = array('season' => -1, 'episode' => -1);        
+    function get_furthest_episode($title, $type, $completed = false) {
+        $data = array('season' => -1, 'episode' => -1);
         foreach (get_progress_tracker_data($completed) as $item) {
             if ($item['title'] != $title || $item['type'] != $type)
                 continue;
             if ($item['season'] >= $data['season'] && $item['episode'] >= $data['episode'])
                 $data = $item;
-        }     
-        return $data;     
+        }
+        return $data;
     }
 
     function log_login($username) {
@@ -860,7 +863,7 @@
     	$log_login->bindValue(':username', $username);
     	$log_login->bindValue(':ip_address', $ip);
     	$log_login->bindValue(':timestamp', time());
-    	return $log_login->execute();    
+    	return $log_login->execute();
     }
 
 
@@ -959,7 +962,7 @@
     			return 'get_series_data';
     	}
 	}
-	
+
 	function delete_progress_entry() {
 		global $db;
 		$remove_data = $db->prepare('DELETE FROM progress_tracker WHERE title=:title AND type=:type AND episode=:episode AND season=:season');
@@ -982,7 +985,7 @@
         $save_progress->bindValue(':completed', $completed);
         return $save_progress->execute();
 	}
-    
+
     // works like time(), but returns timestamp in milliseconds
     function time_ms() {
         return round(microtime(true) * 1000);
@@ -996,50 +999,50 @@
     }
 
     function validate_btc_address($address){
-        
+
         $decoded = base58_decode($address);
-        
+
         $d1 = hash("sha256", substr($decoded,0,21), true);
         $d2 = hash("sha256", $d1, true);
-        
+
         // verify digest
         if(substr_compare($decoded, $d2, 21, 4))
             return false;
-        
+
         return true;
-        
+
     }
-    
+
     function base58_decode($input) {
-        
+
         $alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
         $out = array_fill(0, 25, 0);
-        
+
         for($i=0;$i<strlen($input);$i++){
-            
+
             if(($p=strpos($alphabet, $input[$i]))===false)
                 return false; // invalid character
-            
+
             $c = $p;
-            
+
             for ($j = 25; $j--; ) {
                 $c += (int)(58 * $out[$j]);
                 $out[$j] = (int)($c % 256);
                 $c /= 256;
                 $c = (int)$c;
             }
-            
+
             if($c != 0)
                 return false; // address is too long
-            
+
         }
-        
+
         $result = "";
         foreach($out as $val)
             $result .= chr($val);
- 
+
         return $result;
-        
+
     }
 
 ?>
