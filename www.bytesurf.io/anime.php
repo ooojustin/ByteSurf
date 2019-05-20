@@ -326,11 +326,7 @@
 					var page_height = $(window).height();
 					var video_height = $(document.getElementById("player")).height();
 					// in fullscreen
-					if (video_height >= (page_height - 30)) {
-						HandleHeader(true);
-					} else {
-						HandleHeader(false);
-					}
+					HandleHeader((video_height >= (page_height - 30)));
 				}
 
 				window.setInterval(FullscreenActuator, 100);
@@ -353,8 +349,6 @@
 						left_element.style.maxWidth = Globals.Opened ? "100%" : "70%";
 						left_element.style.width = Globals.Opened ? "100%" : "70%";
 						left_element.style.cssFloat = Globals.Opened ? "none" : "left";
-
-
 
 						if (Globals.Opened)
 							document.getElementById("span_chat").style.right = "0px";
