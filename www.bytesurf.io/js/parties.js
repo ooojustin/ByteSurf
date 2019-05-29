@@ -12,6 +12,7 @@ var last_message_id = -1;
 var username = '';
 var params = get_important_params();
 var time_sync = { };
+var users = { };
 
 // make sure type is valid
 console.log('type: ' + params['type']);
@@ -128,6 +129,36 @@ function send_party_chat_message(message) {
     });
 }
 
+function get_users_txt(data_raw) {
+
+    // store old user list
+    let users_old = users;
+    let users_txt = '';
+
+    // parse json data into new user list
+    users = JSON.parse(data_raw);
+
+    // loop through users
+    for (user in users) {
+
+        // skip the user if their last update was > 10 seconds ago
+        let user_time = users[user];
+        if (time_acc() - user_time > 10000)
+            continue;
+
+        // add users name to the text version (to show in UI)
+        users_txt += user + ', ';
+
+    }
+
+    // remove the last 2 characters (', ')
+    if (users_txt.length > 0)
+        users_txt = users_txt.substring(0, users_txt.length - 2);
+
+    return users_txt;
+
+}
+
 function update_party_send() {
 
     // make sure player object exists
@@ -157,16 +188,7 @@ function update_party_receive(data_raw) {
     interpret_party_message_data(data.messages);
 
     // get the users in the party, display them
-    let users = JSON.parse(data.users);
-    let users_txt = '';
-    for(user in users) {
-        let user_time = users[user];
-        if (time_acc() - user_time > 10000)
-            continue;
-        users_txt += user + ', ';
-    }
-    if (users_txt.length > 0)
-        users_txt = users_txt.substring(0, users_txt.length - 2);
+    let users_txt = get_users_txt(data.users);
 
     //determine whether or not host is playing
     let playing = data.playing == 1;
