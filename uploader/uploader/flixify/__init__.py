@@ -7,10 +7,32 @@ import urllib, time, json, requests
 # import uploader.utils module
 import utils
 
-class flixify:
+# base url of the flixify site
+SITE_URL = "https://calmx.site/"
 
-    # base url of the flixify site
-    SITE_URL = "https://calmx.site/"
+# list of genres on flixify
+GENRES = (
+    "animation",            # 0
+    "fantasy",              # 1
+    "science-fiction",      # 2
+    "music",                # 3
+    "documentary",          # 4
+    "western",              # 5
+    "action",               # 6
+    "comedy",               # 7
+    "drama",                # 8
+    "history",              # 9
+    "mystery",              # 10
+    "thriller",             # 11
+    "adventure",            # 12
+    "crime",                # 13
+    "family",               # 14
+    "horror",               # 15
+    "romance",              # 16
+    "war"                   # 17
+    )
+
+class flixify:
 
     def __init__(self, email, password):
 
@@ -24,7 +46,7 @@ class flixify:
 
         # load login page
         print("Loading Flixify...")
-        browser.get(self.SITE_URL + "login")
+        browser.get(SITE_URL + "login")
 
         # login to the website (set username and password, click submit)
         print("Logging in...")
@@ -89,7 +111,7 @@ class flixify:
         if genre: params['g'] = genre
 
         # return formatted url
-        return "{}/{}?{}".format(self.SITE_URL, type, urllib.parse.urlencode(params))
+        return "{}/{}?{}".format(SITE_URL, type, urllib.parse.urlencode(params))
 
     def download_data(self, type, page, genre = None):
         """
