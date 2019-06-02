@@ -52,13 +52,8 @@ class flixify:
         print("_t variable: " + self.var_t)
         print("_u variable: " + self.var_u)
 
-        cookies = browser.get_cookies()
+        self.session = utils.session_from_driver(browser)
         browser.quit()
-
-        self.session = requests.session()
-        for cookie_raw in cookies:
-            cookie = utils.generate_cookie(cookie_raw)
-            self.session.cookies.set_cookie(cookie)
 
     def build_get_url(self, type, page):
         """

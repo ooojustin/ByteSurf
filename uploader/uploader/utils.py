@@ -1,4 +1,5 @@
 import http.cookiejar
+import requests
 
 def generate_cookie(cookie_raw):
     """
@@ -40,3 +41,24 @@ def generate_cookie(cookie_raw):
         False)
 
     return cookie
+
+def session_from_driver(browser):
+    """
+    Creates a 'requests.Session' object to make requests from.
+    Automatically copies cookies from selenium driver into new session.
+
+    Parameters:
+        browser (selenium.webdriver): An instance of a selenium webdriver.
+
+    Returns:
+        requests.Session: A session containing cookies from the provided selenium.webdriver object.
+    """
+
+    cookies = browser.get_cookies()
+    session = requests.session()
+
+    for cookie_raw in cookies:
+        cookie = generate_cookie(cookie_raw)
+        session.cookies.set_cookie(cookie)
+
+    return session
