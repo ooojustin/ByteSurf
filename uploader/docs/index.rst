@@ -6,8 +6,13 @@ Created by Justin Garofolo, 2019
 Project repository: https://github.com/ooojustin/ByteSurf
 
 utils module
----------------
+------------
 .. automodule:: utils
+    :members:
+
+database module
+---------------
+.. automodule:: database
     :members:
 
 flixify module
