@@ -58,18 +58,20 @@ class flixify:
         self.session = utils.session_from_driver(browser)
         browser.quit()
 
-    def build_get_url(self, type, page):
+    def build_get_url(self, type, page, genre = None):
         """
         Builds a flixify api url from a type & page.
 
         Parameters:
             type (string): Type of content. ('movies' or 'shows')
             page (int): Page to get items from.
+            genre (string): Genre to get videos from.
 
         Returns:
             string: The url of the api to send a request to.
         """
 
+        # build standard parameters
         params = {
             "_t": self.var_t,
             "_u": self.var_u,
@@ -83,20 +85,26 @@ class flixify:
             "type": type
         }
 
+        # define genre, if specified
+        if genre: params['g'] = genre
+
+        # return formatted url
         return "{}/{}?{}".format(self.SITE_URL, type, urllib.parse.urlencode(params))
 
-    def download_data(self, type, page):
+    def download_data(self, type, page, genre = None):
         """
         Downloads json data from flixify api url, deserializes it into dict object.
 
         Parameters:
             type (string): Type of content. ('movies' or 'shows')
             page (int): Page to get items from.
+            genre (string): Genre to get videos from.
 
         Returns:
             dict: A dictionary containing values from the response. Example data from download_data('movies', 1): https://pastebin.com/wq7PvT7F
         """
 
+        # determine headers to send request with
         headers = {
             "User-Agent": self.user_agent,
             "Referer": self.referer_url,
@@ -104,7 +112,7 @@ class flixify:
             "TE": "Trailers"
         }
 
-        url = self.build_get_url(type, page)
+        url = self.build_get_url(type, page, genre)
         response = self.session.get(url, headers = headers)
         if response.status_code == 200:
             return json.loads(response.text)
