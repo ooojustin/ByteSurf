@@ -4,9 +4,8 @@ from selenium import webdriver
 # import general modules
 import urllib, time, json, requests
 
-# import my utils.py file & functions
+# import uploader.utils module
 import utils
-import pyperclip
 
 class flixify:
 
@@ -63,14 +62,14 @@ class flixify:
 
     def build_get_url(self, type, page):
         """
-        Builds a flixify API url from a type & page.
+        Builds a flixify api url from a type & page.
 
         Parameters:
             type (string): Type of content. ('movies' or 'shows')
             page (int): Page to get items from.
 
         Returns:
-            string: The URL of the API to send a request to.
+            string: The url of the api to send a request to.
         """
 
         params = {
@@ -90,7 +89,7 @@ class flixify:
 
     def download_data(self, type, page):
         """
-        Downloads json data from flixify API URL, deserializes it into dict object.
+        Downloads json data from flixify api url, deserializes it into dict object.
 
         Parameters:
             type (string): Type of content. ('movies' or 'shows')
@@ -109,7 +108,6 @@ class flixify:
 
         url = self.build_get_url(type, page)
         response = self.session.get(url, headers = headers)
-        pyperclip.copy(response.text)
         if response.status_code == 200:
             return json.loads(response.text)
         else: return false
@@ -121,5 +119,8 @@ def login(email, password):
     Parameters:
         email (string): Flixify account email.
         password (string): Flixify account password.
+
+    Returns:
+        flixify: Flixify class instance, with session.
     """
     return flixify(email, password)
