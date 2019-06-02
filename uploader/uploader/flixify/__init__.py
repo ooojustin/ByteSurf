@@ -39,7 +39,9 @@ class flixify:
         # initializes webdriver
         # note: firefox uses geckodriver, so it must be in PATH
         # https://github.com/mozilla/geckodriver
-        browser = webdriver.Firefox()
+        options = webdriver.firefox.options.Options()
+        options.set_headless(True)
+        browser = webdriver.Firefox(firefox_options = options)
 
         # store user-agent for future use
         self.user_agent = browser.execute_script("return navigator.userAgent")
