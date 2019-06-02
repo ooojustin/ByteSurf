@@ -110,11 +110,11 @@ class flixify:
         response = self.session.get(url, headers = headers)
         if response.status_code == 200:
             return json.loads(response.text)
-        else: return false
+        else: return False
 
 def login(email, password):
     """
-    Automatically sumit flixify login and create instance to download data.
+    Automatically submit flixify login and create instance to download data.
 
     Parameters:
         email (string): Flixify account email.
