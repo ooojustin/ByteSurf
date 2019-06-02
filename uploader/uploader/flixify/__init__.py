@@ -19,6 +19,9 @@ class flixify:
         # https://github.com/mozilla/geckodriver
         browser = webdriver.Firefox()
 
+        # store user-agent for future use
+        self.user_agent = browser.execute_script("return navigator.userAgent")
+
         # load login page
         print("Loading Flixify...")
         browser.get(self.SITE_URL + "login")
@@ -95,10 +98,10 @@ class flixify:
         """
 
         headers = {
-            "Accept": "application/json",
+            "User-Agent": self.user_agent,
             "Referer": self.referer_url,
-            "TE": "Trailers",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:67.0) Gecko/20100101 Firefox/67.0"
+            "Accept": "application/json",
+            "TE": "Trailers"
         }
 
         url = self.build_get_url(type, page)
