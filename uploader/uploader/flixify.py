@@ -39,16 +39,19 @@ class flixify:
         # initializes webdriver
         # note: firefox uses geckodriver, so it must be in PATH
         # https://github.com/mozilla/geckodriver
+        print("Initializing FireFox driver...", end = " ")
         options = webdriver.firefox.options.Options()
         options.set_headless(True)
         browser = webdriver.Firefox(firefox_options = options)
+        print("done")
 
         # store user-agent for future use
         self.user_agent = browser.execute_script("return navigator.userAgent")
 
         # load login page
-        print("Loading Flixify...")
+        print("Loading Flixify...", end = " ")
         browser.get(SITE_URL + "login")
+        print("done")
 
         # login to the website (set username and password, click submit)
         print("Logging in...")
