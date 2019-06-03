@@ -23,7 +23,7 @@ def generate_cookie(cookie_raw):
 
     # initialize Cookie object
     cookie = http.cookiejar.Cookie(
-        0,                   # version
+        0,                      # version
         cookie_raw['name'],     # name
         cookie_raw['value'],    # value
         None,                   # port
@@ -39,7 +39,7 @@ def generate_cookie(cookie_raw):
         "",                     # comment
         "",                     # comment_url
         None,                   # rest
-        False)
+        )
 
     return cookie
 
