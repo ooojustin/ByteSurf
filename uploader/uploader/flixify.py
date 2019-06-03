@@ -165,10 +165,16 @@ class flixify:
         # send & parse request
         response = self.session.get(url, headers = self.headers)
         if response.status_code == 200:
+
+            # parse movie data from response
             data = json.loads(response.text)
-            return data['item']
-        else:
-            return False
+            movie = data["item"]
+
+            # make any necessary modifications and return
+            movie["url_short"] = movie["url"].replace("/movies/", "")
+            return movie
+
+        else: return False
 
     def download_data(self, type, page, genre = None):
         """
