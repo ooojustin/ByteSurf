@@ -62,3 +62,21 @@ def session_from_driver(browser):
         session.cookies.set_cookie(cookie)
 
     return session
+
+def get_language_label(srclang):
+    """
+    Converts a srclang value (639-1) to a language name.
+    https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+
+    Parameters:
+        srclang (string): An ISO 639-1 language value.
+
+    Returns:
+        string: Name of the language.
+    """
+    labels = {
+        "en": "English",
+        "fr": "French",
+        # ...
+    }
+    return labels.get(srclang, "?")
