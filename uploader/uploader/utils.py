@@ -80,3 +80,20 @@ def get_language_label(srclang):
         # ...
     }
     return labels.get(srclang, "?")
+
+def download_file(url, path):
+    """
+    Downloads a file from a url.
+
+    Parameters:
+        url (string): The url of the file online.
+        path (string): Local path to download the file to.
+
+    Returns:
+        bool: A boolean indication of whether or not the download completed successfully.
+    """
+    response = requests.get(url)
+    if response.status_code != 200: return False
+    with open(path, 'wb') as file:
+        file.write(response.content)
+    return True

@@ -11,6 +11,9 @@ import utils
 SITE_URL = "https://calmx.site/"
 ASSETS_URL = "https://a.calmx.site/"
 
+# whether or not we should hide the browser window when logging in
+HIDE_BROWSER = True
+
 # list of genres on flixify
 GENRES = (
     "animation",            # 0
@@ -42,7 +45,7 @@ class flixify:
         # https://github.com/mozilla/geckodriver
         print("Initializing FireFox driver...", end = " ")
         options = webdriver.firefox.options.Options()
-        options.set_headless(True)
+        options.set_headless(HIDE_BROWSER)
         browser = webdriver.Firefox(firefox_options = options)
         print("done")
 
