@@ -7,8 +7,9 @@ import urllib, time, json, requests
 # import uploader.utils module
 import utils
 
-# base url of the flixify site
+# flixify urls
 SITE_URL = "https://calmx.site/"
+ASSETS_URL = "https://a.calmx.site/"
 
 # list of genres on flixify
 GENRES = (
