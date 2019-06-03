@@ -1,5 +1,6 @@
 import http.cookiejar
 import requests
+import pathlib
 
 def generate_cookie(cookie_raw):
     """
@@ -97,3 +98,16 @@ def download_file(url, path):
     with open(path, 'wb') as file:
         file.write(response.content)
     return True
+
+def get_extension(path):
+    """
+    Gets a file extension from a path.
+
+    Parameters:
+        path (string): The path/url to a file.
+
+    Returns:
+        string: The file extension. Example: get_extension('example/file.png') returns '.png'.
+    """
+    path = pathlib.Path(path)
+    return path.suffix
