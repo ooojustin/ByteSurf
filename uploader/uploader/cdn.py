@@ -1,4 +1,5 @@
 import os, json, flixify, requests, utils
+from clint.textui import progress
 
 access_key = "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03"
 
@@ -12,9 +13,25 @@ def reupload_file(url, putter):
     """
     filename = utils.get_file_name(putter)
     print("reuploading file: " + filename)
-    utils.download_file(url, filename)
+
+    # download file from spedcified url onto this machine
+    utils.download_file(url, filename, True)
+
+    # open a BufferedReader to read contents from the local file & upload them
     with open(filename,'rb') as file:
-        requests.put(putter, data = file, headers = { "AccessKey": access_key })
+
+        # determine the total number of chunks we're uploading
+        total_length = os.path.getsize(filename)
+        count = (total_length / 1024) + 1
+
+        # get 'chunks' iterator using the get_chunks function
+        chunks = utils.get_chunks(file, 1024)
+        chunker = progress.bar(chunks, expected_size = count, label = "uploading: ", filled_char = '=')
+
+        # pass iterator from progress.bar as data to upload chunked data
+        requests.put(putter, data = chunker, headers = { "AccessKey": access_key })
+
+    # delete the file locally, as it isn't needed anymore.
     os.remove(filename)
 
 def upload_movie(movie):
