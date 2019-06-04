@@ -124,3 +124,19 @@ def get_file_name(path):
     """
     path = pathlib.Path(path)
     return path.name
+
+def get_chunks(file, chunk_size = 1):
+    """
+    Moves the contents of a file into an iterator of chunked data.
+
+    Parameters:
+        file (BufferedReader): The file buffer, acquired via os.open().
+        chunk_size (int): The size of each chunk, in bytes.
+
+    Returns:
+        generator: An iterable container of chunks.
+    """
+    while True:
+        data = file.read(chunk_size)
+        if not data: break
+        yield data
