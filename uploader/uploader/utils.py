@@ -105,7 +105,7 @@ def download_file(url, path, show_progress = False):
 
             # get 'chunks' iterator using the iter_content function
             chunks = response.iter_content(1024)
-            chunker = progress.bar(chunks,  expected_size = count, label = "downloading: ", filled_char = '=')
+            chunker = progress.bar(chunks,  expected_size = count, label = "downloading: ")
 
             # loop through chunks, write them to file
             for chunk in chunker:

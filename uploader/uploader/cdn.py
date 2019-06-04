@@ -26,7 +26,7 @@ def reupload_file(url, putter):
 
         # get 'chunks' iterator using the get_chunks function
         chunks = utils.get_chunks(file, 1024)
-        chunker = progress.bar(chunks, expected_size = count, label = "uploading: ", filled_char = '=')
+        chunker = progress.bar(chunks, expected_size = count, label = "uploading: ")
 
         # pass iterator from progress.bar as data to upload chunked data
         requests.put(putter, data = chunker, headers = { "AccessKey": access_key })
@@ -111,4 +111,4 @@ def upload_movie(movie):
     # certification
     values.append(movie["certification"])
 
-    print(values)
+    print(json.dumps(values))
