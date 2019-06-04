@@ -111,3 +111,16 @@ def get_extension(path):
     """
     path = pathlib.Path(path)
     return path.suffix
+
+def get_file_name(path):
+    """
+    Gets the name of a file from a path.
+
+    Parameters:
+        path(string): The path/url to a file.
+
+    Returns:
+        string: The file name. Example: get_file_name('example/file.png') returns 'file.png'.
+    """
+    path = pathlib.Path(path)
+    return path.name
