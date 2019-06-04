@@ -1,6 +1,7 @@
 import http.cookiejar
 import requests
 import pathlib
+from clint.textui import progress
 
 def generate_cookie(cookie_raw):
     """
@@ -82,7 +83,7 @@ def get_language_label(srclang):
     }
     return labels.get(srclang, "?")
 
-def download_file(url, path):
+def download_file(url, path, show_progress = False):
     """
     Downloads a file from a url.
 
@@ -93,10 +94,27 @@ def download_file(url, path):
     Returns:
         bool: A boolean indication of whether or not the download completed successfully.
     """
-    response = requests.get(url)
+    response = requests.get(url, stream = show_progress)
     if response.status_code != 200: return False
     with open(path, 'wb') as file:
-        file.write(response.content)
+        if show_progress:
+
+            # determine the total number of chunks we're downloading
+            total_length = int(response.headers.get('content-length'))
+            count = (total_length / 1024) + 1
+
+            # get 'chunks' iterator using the iter_content function
+            chunks = response.iter_content(1024)
+            chunker = progress.bar(chunks,  expected_size = count, label = "downloading: ", filled_char = '=')
+
+            # loop through chunks, write them to file
+            for chunk in chunker:
+                if not chunk: break
+                file.write(chunk)
+                file.flush()
+
+        else: file.write(response.content)
+
     return True
 
 def get_extension(path):
