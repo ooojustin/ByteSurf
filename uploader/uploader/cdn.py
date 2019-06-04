@@ -1,30 +1,20 @@
-import ftplib, os, json, flixify, requests, utils
+import os, json, flixify, requests, utils
 
-cdn_url = "https://cdn.bytesurf.io/"
+access_key = "ce726c9e-edcc-4adb-839edc6148bb-7807-4e03"
 
-# initialize the ftp connection
-if os.path.isfile('database.cfg'):
-    print("Initiailizing ftp connection...", end = " ")
-    ftp_cfg = json.loads(open('ftp.cfg', 'r').read())
-    ftp = ftplib.FTP(
-        ftp_cfg['host'],
-        ftp_cfg['username'],
-        ftp_cfg['password']
-    )
-    print("done")
-
-def reupload_file(url, filename):
+def reupload_file(url, putter):
     """
-    Downloads a file from a url and uploads it to the current working directory of the ftp connection.
+    Downloads a file from a url and uploads it to the using bunnycdn storage API.
 
     Parameters:
         url (string): The url of the file online.
         filename (string): The name of file to reupload to.
     """
+    filename = utils.get_file_name(putter)
     print("reuploading file: " + filename)
     utils.download_file(url, filename)
     with open(filename,'rb') as file:
-        ftp.storbinary("STOR " + filename, file)
+        requests.put(putter, data = file, headers = { "AccessKey": access_key })
     os.remove(filename)
 
 def upload_movie(movie):
@@ -35,11 +25,9 @@ def upload_movie(movie):
         movie (dict): Movie data, retrieved from the flixify.get_movie_data function.
     """
 
-    # create dir on cdn server & enter it
-    path = movie["url"][1:]
-    ftp.mkd(path)
-    ftp.cwd(path)
-    path_url = cdn_url + path
+    path = movie["url"][1:] + "/"
+    path_url = "https://cdn.bytesurf.io/" + path
+    put_url = "https://storage.bunnycdn.com/jexflix/" + path
 
     # list of values to insert into new row in 'movies' table
     # title, url, description, duration, thumbnail, preview, qualities, genres, imdb_id, rating, year, subtitles, certification
@@ -53,8 +41,8 @@ def upload_movie(movie):
     def upload_image(name, file):
         image_url = flixify.ASSETS_URL[:-1] + movie["images"][name]
         image_file = file + utils.get_extension(image_url)
-        reupload_file(image_url, image_file)
-        values.append(path_url + "/" + image_file)
+        reupload_file(image_url, put_url + image_file)
+        values.append(path_url + image_file)
 
     upload_image("poster", "thumbnail")         # thumbnail
     upload_image("preview_large", "preview")    # preview
@@ -65,12 +53,12 @@ def upload_movie(movie):
 
         # reupload the file to our server
         file = str(resolution) + ".mp4"
-        reupload_file(url, file)
+        reupload_file(url, put_url + file)
 
         # create the quality dict (store resolution & link to file)
         quality = dict()
         quality["resolution"] = resolution
-        quality["link"] = path_url + "/" + file
+        quality["link"] = path_url + file
         qualities.append(quality)
 
     values.append(json.dumps(qualities))
@@ -92,13 +80,13 @@ def upload_movie(movie):
 
         # determine subtitle url on server
         url = flixify.ASSETS_URL[:-1] + sub["url"]
-        reupload_file(url, name + ".vtt")
+        reupload_file(url, put_url + name + ".vtt")
 
         # determine subtitle info to store in database, add to subtitles List
         subtitle = dict()
         subtitle["language"] = name
         subtitle["label"] = utils.get_language_label(name)
-        subtitle["url"] = cdn_url + path + "/{}.vtt".format(name)
+        subtitle["url"] = path_url + name + ".vtt"
         subtitles.append(subtitle)
 
     videos.append(json.dumps(subtitles))
