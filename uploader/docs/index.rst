@@ -15,11 +15,6 @@ database module
 .. automodule:: database
     :members:
 
-cdn module
-----------
-.. automodule:: cdn
-    :members:
-
 flixify module
 ---------------
 .. automodule:: flixify
