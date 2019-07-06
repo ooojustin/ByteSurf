@@ -1,14 +1,14 @@
 ### SUPPORT EMAIL
-Email: support@bytesurf.io
+Email: support@bytesurf.io  
 Password: q6CR3^Yb^SdU
 
 ### MEGA.NZ (BACKUPS)
-URL: https://mega.nz/
-Email: anthonyalmond@protonmail.com
+URL: https://mega.nz/  
+Email: anthonyalmond@protonmail.com  
 Password: 0j*enDQy5Cww3rL
 
 ### DATABASE ACCOUNT
-Database Name: bytesurf_db
+Database Name: bytesurf_db  
 Username: bytesurf_db  
 Password: ad!lb36IUL2mFDf*C75X0#db
 
@@ -30,12 +30,12 @@ Password: N6ihVdB8JLhmFVy
 
 Login Details
 
-Username: bytesurf
+Username: bytesurf  
 Password: EG7F-4*cH0ad4l
 
 Control Panel URL: https://host3.abelohost.com:2083/
 
-Email Address: peterpistachio@protonmail.com
+Email Address: peterpistachio@protonmail.com  
 Password: N6ihVdB8JLhmFVy
 
 To login, visit https://bill.abelohost.com/clientarea.php
