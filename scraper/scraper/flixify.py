@@ -12,7 +12,7 @@ SITE_URL = "https://calmx.site/"
 ASSETS_URL = "https://a.calmx.site/"
 
 # whether or not we should hide the browser window when logging in
-HIDE_BROWSER = False
+HIDE_BROWSER = True
 
 # list of genres on flixify
 GENRES = (
