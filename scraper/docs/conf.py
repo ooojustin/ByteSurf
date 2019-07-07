@@ -12,12 +12,12 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../uploader'))
+sys.path.insert(0, os.path.abspath('../scraper'))
 
 
 # -- Project information -----------------------------------------------------
 
-project = 'bytesurf-uploader'
+project = 'bytesurf-scraper'
 copyright = '2019, Justin Garofolo'
 author = 'Justin Garofolo'
 

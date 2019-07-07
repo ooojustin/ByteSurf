@@ -1,4 +1,4 @@
-bytesurf-uploader's documentation
+bytesurf-scraper's documentation
 =================================
 
 Created by Justin Garofolo, 2019
