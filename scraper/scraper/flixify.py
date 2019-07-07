@@ -130,6 +130,32 @@ class flixify:
         # return formatted url
         return "{}/{}?{}".format(SITE_URL, type, urllib.parse.urlencode(params))
 
+    @staticmethod
+    def process_movie_data(movie):
+        """
+        Processing of movie data before returning it in get_movie_data() function.
+
+        Parameters:
+            movie (dict): Full movie data from flixify. See flixify.get_movie_data().
+        Returns:
+            dict: Modified movie data.
+        """
+
+        # store the slug (last part of the url)
+        movie["slug"] = movie["url"].replace("/movies/", "")
+
+        # fix images (turn paths into full urls)
+        BASE_URL = "https://a.flixify.com"
+        images = movie["images"]
+        previews = images["previews"]
+        images["preview"] = BASE_URL + images["preview"]
+        images["poster"] = BASE_URL + images["poster"]
+        images["preview_large"] = BASE_URL + images["preview_large"]
+        for img, path in enumerate(previews):
+            previews[img] = BASE_URL + path
+
+        return movie
+
     def get_movie_data(self, movie):
         """
         Gets data from flixify about a specific movie.
@@ -171,7 +197,7 @@ class flixify:
             movie = data["item"]
 
             # make any necessary modifications and return
-            movie["url_short"] = movie["url"].replace("/movies/", "")
+            movie = flixify.process_movie_data(movie)
             return movie
 
         else: return False
