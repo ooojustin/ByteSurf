@@ -1,5 +1,8 @@
 import mysql.connector, json, os
 
+# documentation for mysql.connector:
+# https://dev.mysql.com/doc/connector-python/en/connector-python-reference.html
+
 db = None
 cursor = None
 
@@ -27,3 +30,10 @@ def connect():
     cursor = db.cursor() # object used to execute commands
     cursor.execute("USE " + db_cfg['database']) # start using the specified database on the MySQL server
     print("done")
+
+def get_movie(slug):
+    connect()
+    query = "SELECT * FROM movies WHERE slug = %s"
+    params = tuple([slug])
+    cursor.execute(query, params)
+    return cursor.fetchone()
