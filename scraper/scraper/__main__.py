@@ -1,6 +1,8 @@
 import flixify
 import json
+import database
 
+database.connect()
 scraper = flixify.login("justin@garofolo.net", "D3MU&DvWm9%xf*z")
 
 data = scraper.download_data("movies", 1, flixify.GENRES[0])
