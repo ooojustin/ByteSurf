@@ -82,3 +82,25 @@ def get_language_label(srclang):
         # ...
     }
     return labels.get(srclang, "?")
+
+def build_insert_query(table, columns):
+    """
+    Builds a query string to insert data.
+
+    Parameters:
+        table (string): The name of the table to insert into.
+        columns (list): List of column names in 'table'.
+    Returns:
+        string: A generated query string to executed.
+    """
+
+    columns_str = ""
+    for column in columns:
+        columns_str += column + ","
+    columns_str = columns_str[:-1]
+
+    values_str = "%s," * len(columns)
+    values_str = values_str[:-1]
+
+    query_str = "INSERT INTO {} ({}) VALUES ({})".format(table, columns_str, values_str)
+    return query_str
