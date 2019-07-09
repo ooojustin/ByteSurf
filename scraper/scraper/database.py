@@ -55,7 +55,7 @@ def upload_movie(movie):
     Parameters:
         movie (dict): A dictionary of data returned by flixify.get_movie_data.
     """
-
+    connect()
     columns = [
         "slug", "title", "description",
         "duration", "year", "certification",
@@ -72,7 +72,7 @@ def upload_movie(movie):
     data.extend([movie["duration"], movie["year"], movie["certification"]])
     data.extend([json.dumps(movie["genres"]), movie["rating"], movie["imdb_id"]])
     data.extend([movie["images"]["poster"], movie["images"]["preview"]])
-    data.extend([json.dumps(movie["media"]), datetime.now()])
+    data.extend([json.dumps(movie["media"]), datetime.utcnow()])
 
     # execute query :)
     cursor.execute(query, data)
