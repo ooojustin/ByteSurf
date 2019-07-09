@@ -1,4 +1,5 @@
-import mysql.connector, json, os
+import mysql.connector, json, os, utils
+from datetime import datetime
 
 # documentation for mysql.connector:
 # https://dev.mysql.com/doc/connector-python/en/connector-python-reference.html
@@ -53,15 +54,25 @@ def upload_movie(movie):
 
     Parameters:
         movie (dict): A dictionary of data returned by flixify.get_movie_data.
-
-    Returns:
-        bool: Indicates whether or not the upload was successful.
     """
 
-    # colums we need to insert
     columns = [
         "slug", "title", "description",
         "duration", "year", "certification",
         "genres", "rating", "imdb",
         "poster", "preview", "media", "updated"
         ]
+
+    # build insert query
+    query = utils.build_insert_query("movies", columns)
+
+    # build list of values
+    data = list()
+    data.extend([movie["slug"], movie["title"], movie["description"]])
+    data.extend([movie["duration"], movie["year"], movie["certification"]])
+    data.extend([json.dumps(movie["genres"]), movie["rating"], movie["imdb_id"]])
+    data.extend([movie["images"]["poster"], movie["images"]["preview"]])
+    data.extend([json.dumps(movie["media"]), datetime.now()])
+
+    # execute query :)
+    cursor.execute(query, data)
