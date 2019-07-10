@@ -11,18 +11,15 @@ for genre in flixify.GENRES:
 
     while True:
 
+        print("genre: {}, page: {}\n".format(genre, page))
         data = scraper.download_data("movies", page, genre)
 
         # if we're out of videos
-        if not data:
-            print("FINISHED GENRE: " + genre)
-            break
+        if not data: break
 
-        # if the number of movies is 0 (???)
-        # i dont think this will ever happen
+        # make sure we have some movies
         movies = data['items']
-        if len(movies) == 0:
-            break
+        if len(movies) == 0: break
 
         for movie in movies:
 
@@ -31,11 +28,17 @@ for genre in flixify.GENRES:
             if database.get_movie(slug):
                 continue
 
-            # upload movie to database and print something
+            # upload movie to database
+            print("movie: " + slug)
             movie = scraper.get_movie_data(movie)
-            database.upload_movie(movie)
-            print("MOVIE UPLOADED: " + slug)
+            if not movie:
+                print("failed")
+            else:
+                print(movie)
+                database.upload_movie(movie)
+
+            print("------------------------------------\n")
 
         page += 1
 
-print("COMPLETED")
+print("completed")

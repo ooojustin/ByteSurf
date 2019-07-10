@@ -140,21 +140,31 @@ class flixify:
         Returns:
             dict: Modified movie data.
         """
+        try:
 
-        # store the slug (last part of the url)
-        movie["slug"] = movie["url"].replace("/movies/", "")
+            # store the slug (last part of the url)
+            movie["slug"] = movie["url"].replace("/movies/", "")
 
-        # fix images (turn paths into full urls)
-        BASE_URL = "https://a.flixify.com"
-        images = movie["images"]
-        previews = images["previews"]
-        images["preview"] = BASE_URL + images["preview"]
-        images["poster"] = BASE_URL + images["poster"]
-        images["preview_large"] = BASE_URL + images["preview_large"]
-        for img, path in enumerate(previews):
-            previews[img] = BASE_URL + path
+            # fix images (turn paths into full urls)
+            BASE_URL = "https://a.flixify.com"
+            images = movie["images"]
+            previews = images["previews"]
+            images["preview"] = BASE_URL + images["preview"]
+            images["poster"] = BASE_URL + images["poster"]
+            images["preview_large"] = BASE_URL + images["preview_large"]
+            for img, path in enumerate(previews):
+                previews[img] = BASE_URL + path
 
-        return movie
+            if movie["certification"] is None: movie["certification"] = "N/A"
+            if movie["year"] is None: movie["year"] = 0
+            if movie["rating"] is None: movie["rating"] = 0
+
+            if not "imdb_id" in movie: movie["imdb_id"] = ""
+
+
+            return movie
+
+        except: return False
 
     def get_movie_data(self, movie):
         """
