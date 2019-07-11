@@ -18,12 +18,12 @@
 
     $title = $data['title'];
     $description = $data['description'];
-    $thumbnail = authenticate_cdn_url($data['thumbnail']);
-    $preview = authenticate_cdn_url($data['preview']);
+    $thumbnail = $data['poster'];
+    $preview = $data['preview'];
     $year = $data['year'];
     $certification = $data['certification'];
     $duration = intval($data['duration'] / 60);
-    $qualities = authenticated_movie_links($data);
+    $qualities = json_decode($data['media']);
     $rating = $data['rating'];
     $subs = get_subtitles($data);
 
@@ -159,8 +159,8 @@
                             <video controls crossorigin poster="<?= $preview ?>" id="player">
 
                                 <!-- Video files -->
-                                <? foreach ($qualities as $quality) { ?>
-                                    <source src="<?= $quality['link'] ?>" type="video/mp4" size="<?= $quality['resolution'] ?>" />
+                                <? foreach ($qualities as $res => $link) { ?>
+                                    <source src="<?= $link ?>" type="video/mp4" size="<?= $res ?>" />
                                 <? } ?>
 
                                 <!-- Caption files -->
@@ -172,7 +172,7 @@
                                 <? } ?>
 
                                 <!-- Fallback for browsers that don't support the <video> element -->
-                                <a href=<?= '"' . $qualities[0]['link'] . '"' ?> download>Download</a>
+                                <a href=<?= '"' . reset($qualities) . '"' ?> download>Download</a>
                             </video>
 
                             <!-- party btn -->

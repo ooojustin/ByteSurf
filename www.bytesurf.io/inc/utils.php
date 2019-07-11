@@ -779,57 +779,22 @@
     	echo $header;
     }
 
-	function get_movie_data($url) {
+	function get_movie_data($slug) {
 		global $db;
-		$get_data = $db->prepare('SELECT * FROM movies WHERE url=:url');
-    	$get_data->bindValue(':url', $url);
+		$get_data = $db->prepare('SELECT * FROM movies WHERE slug=:slug');
+    	$get_data->bindValue(':slug', $slug);
     	$get_data->execute();
    		return $get_data->fetch();
 	}
 
 	function get_similar_movies($url) {
-		$movie = get_movie_data($url);
+		return array();
+		/*$movie = get_movie_data($url);
 		$similar_str = $movie['similar'];
 		if (is_null($similar_str))
 			return array();
 		else
-			return json_decode($similar_str, true);
-	}
-
-	function authenticated_movie_links($data) {
-   		$qualities = json_decode($data['qualities'], true);
-    	foreach ($qualities as &$quality)
-        	$quality['link'] = authenticate_cdn_url($quality['link']);
-      	return $qualities;
-	}
-
-	function authenticate_cdn_url($url, $is_server_request = false) {
-
-		// important vars
-		$ip = $is_server_request ? get_server_ip() : $GLOBALS['ip'];
-		$key = '04187e37-4014-48cf-95f4-d6e6ea6c5094';
-		$base_url = 'https://cdn.bytesurf.io';
-
-        // determine the path of the file on the cdn server
-        $path = parse_url($url, PHP_URL_PATH);
-
-		// set the time of expiry to one day from now
-		$expires = time() + (60 * 60 * 24);
-
-		// establish token data
-		$token_raw = $key . $path . $expires . $ip;
-
-		// hash data and generate token
-		$token = md5($token_raw, true);
-		$token = base64_encode($token);
-		$token = strtr($token, '+/', '-_');
-		$token = str_replace('=', '', $token);
-
-		// generate new url (note: decode special chars)
-		// http://php.net/manual/en/function.htmlspecialchars-decode.php
-		$url = "{$base_url}{$path}?token={$token}&expires={$expires}&ip={$ip}";
-		return htmlspecialchars_decode($url);
-
+			return json_decode($similar_str, true);*/
 	}
 
     function get_furthest_episode_link($title, $type, $completed) {
