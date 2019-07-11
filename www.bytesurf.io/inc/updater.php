@@ -195,6 +195,19 @@
 
             die_gz(json_encode($data));
 
+        case 'get_movie_url':
+
+            // require slug parameter
+            require_get_params(array('slug'));
+
+            // determine movie quality urls
+            $movie = get_movie_data($_GET['slug']);
+            $qualities = json_decode($movie['media']);
+
+            // return first found url
+            die_gz(reset($qualities));
+
+
     }
 
 ?>
