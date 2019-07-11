@@ -322,7 +322,7 @@
 					    <?
 					        foreach ($new_releases as $movie) {
 					            $data = get_movie_data($movie);
-					            $url = "../movie.php?t=" . $data['url'];
+					            $url = "../movie.php?t=" . $data['slug'];
 					            $genres = json_decode($data['genres']);
 					    ?>
 
@@ -332,8 +332,8 @@
 								<div class="row">
 									<div class="col-12 col-sm-4">
 										<div class="card__cover">
-											<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
-											<a href="<?=$url?>" class="card__play">
+											<img src="<?= $data['poster'] ?>" alt="">
+											<a href="<?= $url ?>" class="card__play">
 												<i class="icon ion-ios-play"></i>
 											</a>
 										</div>
@@ -341,23 +341,23 @@
 
 									<div class="col-12 col-sm-8">
 										<div class="card__content">
-											<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
+											<h3 class="card__title"><a href="<?= $url ?>"><?= $data['title'] ?></a></h3>
 											<span class="card__category">
-												<a href="#"><?=ucwords($genres[0])?></a>
-												<a href="#"><?=ucwords($genres[1])?></a>
+												<a href="#"><?= ucwords($genres[0]) ?></a>
+												<a href="#"><?= ucwords($genres[1]) ?></a>
 											</span>
 
 											<div class="card__wrap">
-												<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+												<span class="card__rate"><i class="icon ion-ios-star"></i><?= $data['rating'] ?></span>
 
 												<ul class="card__list">
-													<li><?=$data['certification']?></li>
-													<li><?=$data['year']?></li>
+													<li><?= $data['certification'] ?></li>
+													<li><?= $data['year'] ?></li>
 												</ul>
 											</div>
 
 											<div class="card__description">
-												<p><?=$data['description']?></p>
+												<p><?= $data['description'] ?></p>
 											</div>
 										</div>
 									</div>
@@ -372,32 +372,51 @@
 				<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
 					<div class="row">
 
-					    <?
+                        <?
 					        foreach ($explore_movies as $movie) {
 					            $data = get_movie_data($movie);
-					            $url = "../movie.php?t=" . $data['url'];
+					            $url = "../movie.php?t=" . $data['slug'];
 					            $genres = json_decode($data['genres']);
 					    ?>
 
 						<!-- card -->
-						<div class="col-6 col-sm-4 col-lg-3 col-xl-2">
-							<div class="card">
-								<div class="card__cover">
-									<img src="<?=authenticate_cdn_url($data['thumbnail'])?>" alt="">
-									<a href="<?=$url?>" class="card__play">
-										<i class="icon ion-ios-play"></i>
-									</a>
-								</div>
-								<div class="card__content">
-									<h3 class="card__title"><a href="<?=$url?>"><?=$data['title']?></a></h3>
-									<span class="card__category">
-											<a href="#"><?=ucwords($genres[0])?></a>
-											<a href="#"><? if (isset($genres[1])) { echo ucwords($genres[1]); }?></a>
-									</span>
-									<span class="card__rate"><i class="icon ion-ios-star"></i><?=$data['rating']?></span>
+						<div class="col-6 col-sm-12 col-lg-6">
+							<div class="card card--list">
+								<div class="row">
+									<div class="col-12 col-sm-4">
+										<div class="card__cover">
+											<img src="<?= $data['poster'] ?>" alt="">
+											<a href="<?= $url ?>" class="card__play">
+												<i class="icon ion-ios-play"></i>
+											</a>
+										</div>
+									</div>
+
+									<div class="col-12 col-sm-8">
+										<div class="card__content">
+											<h3 class="card__title"><a href="<?= $url ?>"><?= $data['title'] ?></a></h3>
+											<span class="card__category">
+												<a href="#"><?= ucwords($genres[0]) ?></a>
+												<a href="#"><?= ucwords($genres[1]) ?></a>
+											</span>
+
+											<div class="card__wrap">
+												<span class="card__rate"><i class="icon ion-ios-star"></i><?= $data['rating'] ?></span>
+
+												<ul class="card__list">
+													<li><?= $data['certification'] ?></li>
+													<li><?= $data['year'] ?></li>
+												</ul>
+											</div>
+
+											<div class="card__description">
+												<p><?= $data['description'] ?></p>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
-                        </div>
+						</div>
 						<!-- end card -->
 						<? } ?>
 

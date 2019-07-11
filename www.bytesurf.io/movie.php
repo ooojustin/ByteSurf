@@ -166,8 +166,7 @@
                                 <!-- Caption files -->
                                 <?
                                 foreach ($subs as $sub) {
-                                    $sub_end = isset($sub['default']) ? ' default' : '';
-                                    ?>
+                                    $sub_end = isset($sub['default']) ? ' default' : '';?>
                                     <track kind="captions" label="<?= $sub['label'] ?>" srclang="<?= $sub['language'] ?>" src="<?= authenticate_cdn_url($sub['url']) ?>" <?= $sub_end ?>>
                                 <? } ?>
 
