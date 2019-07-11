@@ -2,10 +2,9 @@
 from selenium import webdriver
 
 # import general modules
-import urllib, time, json, requests
+import urllib, time, json, requests, threading
+import database, utils
 
-# import uploader.utils module
-import utils
 
 # flixify urls
 SITE_URL = "https://calmx.site/"
@@ -231,15 +230,68 @@ class flixify:
             return json.loads(response.text)
         else: return False
 
-def login(email, password):
-    """
-    Automatically submit flixify login and create instance to download data.
+class scraper(threading.Thread):
 
-    Parameters:
-        email (string): Flixify account email.
-        password (string): Flixify account password.
+    def __init__(self, email, password):
+        threading.Thread.__init__(self)
+        self.email = email
+        self.password = password
+        # note: this may need to automatically re-login eventually?
 
-    Returns:
-        flixify: Flixify class instance, with session.
-    """
-    return flixify(email, password)
+    def handle_movie(self, movie):
+        """
+        Uploads a movie to the database, if we don't already have it.
+
+        Parameters:
+            movie (dict): Movie data from list returned by flixify.download_data().
+        """
+
+        # skip movie if we already have it
+        slug = movie["url"].replace("/movies/", "")
+        print(slug)
+        if database.get_movie(slug):
+            return False
+
+        # upload movie to database
+        print("movie: " + slug)
+        movie = self.scraper.get_movie_data(movie)
+        if not movie:
+            print("failed")
+        else:
+            database.upload_movie(movie)
+
+    def run_once(self):
+        """Loops through every single movie on flixify and stores it if we don't already have it."""
+
+        for genre in GENRES:
+
+            # start at page 1, keep incrementing until we break
+            page = 1
+            while True:
+
+                print("genre: {}, page: {}\n".format(genre, page))
+                data = self.scraper.download_data("movies", page, genre)
+
+                # if we're out of videos
+                if not data: break
+
+                # make sure we have some movies
+                movies = data['items']
+                if len(movies) == 0: break
+
+                for movie in movies:
+                    self.handle_movie(movie)
+                    print("------------------------------------\n")
+
+                page += 1
+
+    def run(self):
+        """Runs run_once every hour to upload all flixify movie data."""
+
+        # login to flixify
+        self.scraper = flixify(self.email, self.password)
+
+        # run scraper every hour
+        while True:
+            self.run_once()
+            time.sleep(60 * 60)
