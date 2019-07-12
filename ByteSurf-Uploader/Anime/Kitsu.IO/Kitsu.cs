@@ -53,7 +53,11 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         /// function to return the first hit 
         /// varies as it the show is a movie or a tv show.
         /// </summary>
-        public static int GetFirstMediatHIT(Media_Production medias) {
+        public static int GetFirstMediatHIT(Media_Production Medias) {
+            if (Medias.hits != null && Medias.hits.Count() >= 1) // at least some data
+            {
+                return Medias.hits[0].id; // first object data
+            }
             return 0;
         }
 
@@ -61,7 +65,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         /// NOTE this function will not work anymore
         /// Finds the first TV show or the first hit.
         /// </summary>
-        public static int GetFirstTVID(Media_Production Medias) {
+        public static int GetFirstTVID_DEPRICIATED(Media_Production Medias) {
             if (Medias.hits != null) {
                 foreach (Hit hit in Medias.hits) {
                     if (hit.subtype.ToLower().Contains("tv")) {
@@ -81,7 +85,7 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
                 Media_Production Media = KitsuAPI.GetMediaProduction(keys, title);
                 if (Media == null)
                     return null;
-                int id = KitsuAPI.GetFirstTVID(Media);
+                int id = KitsuAPI.GetFirstMediatHIT(Media);
                 if (id == 0)
                     return null;
                 string raw = General.GET(string.Format(KITSU_ANIME_LINK, id.ToString()));

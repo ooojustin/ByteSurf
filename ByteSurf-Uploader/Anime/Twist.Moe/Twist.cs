@@ -16,7 +16,25 @@ namespace JexFlix_Scraper.Anime.Twist.Moe
     class Twist
     {
 
-        public static void Run() {
+        /// <summary>
+        /// New version of run
+        /// </summary>
+        public static void Run()
+        {
+            // Setup network stuff
+            ServicePointManager.Expect100Continue = false;
+            ServicePointManager.DefaultConnectionLimit = 10000;
+            ServicePointManager.MaxServicePointIdleTime = 5000;
+
+            // Setup search Anime Details API
+            Aligolia_Keys AligoliaKeys = KitsuAPI.GetAligoliaKeys();
+
+            KitsuAnime.Anime KitsuAnimeInfo = KitsuAPI.GetKitsuAnime(AligoliaKeys, "naruto");
+
+            Console.WriteLine(KitsuAPI.GetTitle(KitsuAnimeInfo));
+        }
+
+        public static void Run_OLD() {
             // Setup network stuff
             ServicePointManager.Expect100Continue = false;
             ServicePointManager.DefaultConnectionLimit = 10000;
