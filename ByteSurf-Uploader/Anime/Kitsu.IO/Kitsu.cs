@@ -50,6 +50,15 @@ namespace JexFlix_Scraper.Anime.Kitsu.IO {
         }
 
         /// <summary>
+        /// function to return the first hit 
+        /// varies as it the show is a movie or a tv show.
+        /// </summary>
+        public static int GetFirstMediatHIT(Media_Production medias) {
+            return 0;
+        }
+
+        /// <summary>
+        /// NOTE this function will not work anymore
         /// Finds the first TV show or the first hit.
         /// </summary>
         public static int GetFirstTVID(Media_Production Medias) {

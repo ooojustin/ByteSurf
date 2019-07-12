@@ -1,10 +1,17 @@
 <?php
+
+	// Anime.php
+	//7
+	// To Add:
+	// https://plainjs.com/javascript/styles/get-and-set-scroll-position-of-an-element-26/
+	// Automatic scrolling down of the accordion when Opened (chatbox)
+
 	require 'inc/server.php';
 	require 'inc/session.php';
 	require 'inc/imdb.php';
 	require_subscription();
 
-	date_default_timezone_set('UTC'); // why?
+	date_default_timezone_set('UTC'); // why? // probs for the chat desync
 
 	global $user;
 
