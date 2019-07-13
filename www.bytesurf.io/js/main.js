@@ -18,14 +18,16 @@ function send_web_request(method, url, params, callback, type = 'text') {
             url += '?' + params;
     }
 
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.response);
+    // https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+    var request = new XMLHttpRequest();
+    request.onload = function() {
+        // request.response is the actual response
+        // we give the actual XMLHttpRequest object to the callback so we can check headers and stuff
+        callback(request);
     }
-    xmlHttp.open(method, url, true); // true for asynchronous
-    xmlHttp.responseType = type;
-    xmlHttp.send(send_data);
+    request.open(method, url, true); // true for asynchronous
+    request.responseType = type;
+    request.send(send_data);
 
 }
 
@@ -41,8 +43,9 @@ function send_update(action, params, callback) {
         method = 'POST';
     }
 
-    send_web_request(method, url, params, function(compressed) {
+    send_web_request(method, url, params, function(request) {
         try {
+            var compressed = request.response;
             var decompressed = pako.inflate(compressed);
             var decompressed_str = arraybuffer_to_string(decompressed);
         } catch (err) {
