@@ -80,19 +80,6 @@
     <? initialize_party_system(); ?>
     <!-- END PARTY SYSTEM -->
 
-    <!-- testing stuff -->
-    function send_update(action, params, callback)
-    <script>
-        let slug = get_important_params()['t'];
-        send_update('get_movie_url', { 'slug' : slug }, function(url) {
-
-            // note: 'url' is an mp4 link to the movie on flixify servers
-            // send a get request to it and check response to determine if it needs to be updated
-
-        });
-    </script>
-    <!-- end testing stuff -->
-
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="../icon/favicon-32x32.png" sizes="32x32">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
