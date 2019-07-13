@@ -35,6 +35,13 @@
     // get user party
     $party = get_active_party();
 
+    // try to request update of mp4 links from server
+    // format: 2019-07-09 23:43:54
+    $updated = DateTime::createFromFormat('Y-m-d H:i:s', $data['updated']);
+    $interval = $updated->diff(new \DateTime());
+    $needs_update = $interval->days > 0; // maybe? lol
+    // ...
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
