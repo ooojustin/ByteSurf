@@ -85,6 +85,20 @@ def get_movies_pending_update():
         movies (list): A list of tuples, where each item in a given tuple is a row.
     """
     connect()
-    query = "SELECT * FROM movies WHERE update_required=1"
+    query = "SELECT * FROM movies WHERE update_required = 1"
     cursor.execute(query)
     return cursor.fetchall()
+
+def update_movie(slug, movie):
+    """
+    Updates a movies information in the database.
+    Only some variables may need to be updated.
+
+    Parameters:
+        slug (string): The last part of the URL, used to uniquely identify a movie.
+        movie (dict): A dictionary of data returned by flixify.get_movie_data.
+    """
+    connect()
+    query = "UPDATE movies SET media = %s, update_required = 0 WHERE slug = %s"
+    data = [json.dumps(movie["media"]), slug]
+    cursor.execute(query, data)

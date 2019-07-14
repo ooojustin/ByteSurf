@@ -308,9 +308,11 @@ class updater(threading.Thread):
         for movie in database.get_movies_pending_update():
 
             # get movie data from slug
-            movie = self.scraper.get_movie_data(movie[1])
+            slug = movie[1]
+            movie = self.scraper.get_movie_data(slug)
 
-            # TODO: update the row
+            # update the row in the database
+            database.update_movie(slug, movie)
 
     def run(self):
         "Runs run_once every minute to update all movie links where update_required = 1 in database."
