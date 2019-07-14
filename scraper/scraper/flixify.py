@@ -295,3 +295,19 @@ class scraper(threading.Thread):
         while True:
             self.run_once()
             time.sleep(60 * 60)
+
+class updater(threading.Thread):
+
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run_once(self):
+        pass
+
+    def run(self):
+        "Runs run_once every minute to update all movie links where update_required = 1 in database."
+
+        # run update every minute
+        while True:
+            self.run_once()
+            time.sleep(60)
