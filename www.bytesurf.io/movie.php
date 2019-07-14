@@ -40,7 +40,12 @@
     $updated = DateTime::createFromFormat('Y-m-d H:i:s', $data['updated']);
     $interval = $updated->diff(new \DateTime());
     $needs_update = $interval->days > 0; // maybe? lol
-    // ...
+    if ($needs_update) {
+        global $db;
+        $request_update = $db->prepare('UPDATE movies SET update_required=1 WHERE slug=:slug');
+        $request_update->bindValue(':slug', $_GET['t']);
+        $request_update->execute();
+    }
 
 ?>
 <!DOCTYPE html>
