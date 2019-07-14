@@ -165,7 +165,7 @@ class flixify:
 
         except: return False
 
-    def get_movie_data(self, movie):
+    def get_movie_data(self, slug):
         """
         Gets data from flixify about a specific movie.
 
@@ -194,7 +194,7 @@ class flixify:
         }
 
         # generate url
-        url = SITE_URL + movie['url'][1:]
+        url = SITE_URL + "movies/" + slug
         url += "?" + urllib.parse.urlencode(params)
 
         # send & parse request
@@ -230,12 +230,15 @@ class flixify:
             return json.loads(response.text)
         else: return False
 
+def login(email, password):
+    """Shortcut to flixify.flixify constructor from external modules."""
+    return flixify(email, password)
+
 class scraper(threading.Thread):
 
-    def __init__(self, email, password):
+    def __init__(self, scraper):
         threading.Thread.__init__(self)
-        self.email = email
-        self.password = password
+        self.scraper = scraper
         # note: this may need to automatically re-login eventually?
 
     def handle_movie(self, movie):
@@ -254,7 +257,7 @@ class scraper(threading.Thread):
 
         # upload movie to database
         print("movie: " + slug)
-        movie = self.scraper.get_movie_data(movie)
+        movie = self.scraper.get_movie_data(slug)
         if not movie:
             print("failed")
         else:
@@ -288,9 +291,6 @@ class scraper(threading.Thread):
     def run(self):
         """Runs run_once every hour to upload all flixify movie data."""
 
-        # login to flixify
-        self.scraper = flixify(self.email, self.password)
-
         # run scraper every hour
         while True:
             self.run_once()
@@ -298,11 +298,19 @@ class scraper(threading.Thread):
 
 class updater(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, scraper):
         threading.Thread.__init__(self)
+        self.scraper = scraper
 
     def run_once(self):
-        pass
+
+        # loop through movies that need to be updated
+        for movie in database.get_movies_pending_update():
+
+            # get movie data from slug
+            movie = self.scraper.get_movie_data(movie[1])
+
+            # TODO: update the row
 
     def run(self):
         "Runs run_once every minute to update all movie links where update_required = 1 in database."

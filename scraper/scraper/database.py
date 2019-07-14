@@ -40,7 +40,7 @@ def get_movie(slug):
     Parameters:
         slug (string): The last part of the URL, used to uniquely identify a movie.
     Returns:
-        list: The movie row, each columns data is a piece of the list. Returns 'None' if no movie is found.
+        tuple: The movie row, each columns data is am item in the tuple. Returns 'None' if no movie is found.
     """
     connect()
     query = "SELECT * FROM movies WHERE slug = %s"
@@ -76,3 +76,15 @@ def upload_movie(movie):
 
     # execute query :)
     cursor.execute(query, data)
+
+def get_movies_pending_update():
+    """
+    Gets a list of movies that need to have their mp4 links updated.
+
+    Returns:
+        movies (list): A list of tuples, where each item in a given tuple is a row.
+    """
+    connect()
+    query = "SELECT * FROM movies WHERE update_required=1"
+    cursor.execute(query)
+    return cursor.fetchall()
