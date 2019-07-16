@@ -99,6 +99,6 @@ def update_movie(slug, movie):
         movie (dict): A dictionary of data returned by flixify.get_movie_data.
     """
     connect()
-    query = "UPDATE movies SET media = %s, update_required = 0 WHERE slug = %s"
-    data = [json.dumps(movie["media"]), slug]
+    query = "UPDATE movies SET media = %s, updated = %s, update_required = 0 WHERE slug = %s"
+    data = [json.dumps(movie["media"]), datetime.utcnow(), slug]
     cursor.execute(query, data)
