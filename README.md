@@ -2,21 +2,22 @@
 
 Software to automatically scrape and reupload content from other websites.
 
-This program will support movies, anime, and porn.
+This website/program is supports movies, anime, and more.
 
 ## Notes
 
-* This project is still in development - made for [ByteSurf](https://bytesurf.io).
+* This project is no longer in development.
 
 ## Developers
 
 * **Justin Garofolo** - *Head Developer* - [ooojustin](https://github.com/ooojustin)
-* **Trevor Caffee** - *Developer* - [nexzoz](https://github.com/nexzoz)
-* **Jacky Wu** - *Developer* - [qtKite](https://github.com/qtKite)
+* **Trevor** - *Developer* - [nexzoz](https://github.com/nexzoz)
+* **Jacky** - *Developer* - [qtKite](https://github.com/qtKite)
 
 ## Preview
 ![Home Page](https://i.imgur.com/rV3efHz.jpg)
 
-## License
+# License
 
-This project is private. All code is owned by listed authors and not meant to be viewed/shared by outside sources.
+This project is licensed under the GNU General Public License v3.0.
+Please read the [license file](LICENSE.md) before utilizing the code in this project.
